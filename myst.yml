@@ -1,0 +1,10 @@
+version: 1
+project:
+  title: Signal Filter Book
+  plugins:
+    - type: executable
+      path: .venv/Scripts/jupyter-book-marimo.exe
+  toc:
+    - file: index.md
+site:
+  template: book-theme
