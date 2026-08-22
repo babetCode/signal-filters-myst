@@ -1,3 +1,5 @@
+export PYTHONUTF8 = 1
+
 .PHONY: book-build book-start clean
 
 setup-plugin:
