@@ -32,10 +32,10 @@ build:
 	uv build
 
 book-build: widget-build
-	cd docs && uv run jupyter-book build --html --strict
+	cd book && uv run jupyter-book build --html --strict
 
 book-start:
-	uv run jupyter-book start --port 3102 --server-port 4102
+	cd book && uv run jupyter-book start --port 3102 --server-port 4102
 
 clean:
 	rm -rf dist _build _site .jupyter-book-marimo docs/_build docs/_site docs/.jupyter-book-marimo
