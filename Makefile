@@ -4,7 +4,7 @@ build:
 	rm -f dist/jupyter_book_marimo-*.whl dist/jupyter_book_marimo-*.tar.gz
 	uv build
 
-book-build: widget-build
+book-build:
 	cd book && uv run jupyter-book build --html --strict
 
 book-start:
