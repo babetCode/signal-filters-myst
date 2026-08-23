@@ -3,7 +3,7 @@ project:
   title: Signal Filter Book
   plugins:
     - type: executable
-      path: ../.venv/bin/jupyter-book-marimo
+      path: ../.venv/Scripts/jupyter-book-marimo.exe
   toc:
     - file: index.md
     - file: part01_basics.md
