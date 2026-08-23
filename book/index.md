@@ -8,14 +8,3 @@ To view Labbe's original book, see
 
 - <u><a href="https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python" target="_blank">github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python</a></u>, or 
 -  <u><a href="https://github.com/babetCode/Kalman-and-Bayesian-Filters-in-Python" target="_blank">github.com/babetCode/Kalman-and-Bayesian-Filters-in-Python</a></u> to run with uv.
-
-<!-- ```{marimo} python
-import marimo as mo
-
-slider = mo.ui.slider(start=1, stop=10, label="items")
-slider
-```
-
-```{marimo} python
-mo.md(f"The slider is set to **{slider.value}**.")
-``` -->
