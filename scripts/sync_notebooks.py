@@ -187,7 +187,10 @@ def transform_md_content(md_content: str, source: str = "") -> str:
     frontmatter_match = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", md_content, re.DOTALL)
 
     header_config_block = ""
-    clean_frontmatter = ""
+    frontmatter_lines = [
+        "numbering:",
+        "  equations: false",
+    ]
 
     if frontmatter_match:
         yaml_text = frontmatter_match.group(1)
@@ -198,39 +201,52 @@ def transform_md_content(md_content: str, source: str = "") -> str:
         if pyproject_data:
             header_config_block = format_marimo_config(pyproject_data)
 
-        # 2. Strip marimo-version, width, and multiline header from YAML frontmatter
-        cleaned_yaml_lines = []
+        # 2. Strip marimo-version, width, header, and existing numbering blocks
         in_header_block = False
+        in_numbering_block = False
 
         for line in yaml_text.splitlines():
-            if line.startswith("marimo-version:") or line.startswith("width:") or line.startswith("title:"):
+            if line.startswith(("marimo-version:", "width:", "title:")):
                 continue
             if line.startswith("header:"):
                 in_header_block = True
                 continue
             if in_header_block:
-                # Continue skipping lines if they are indented or empty
                 if re.match(r"^\s", line) or not line.strip():
                     continue
                 else:
                     in_header_block = False
 
-            cleaned_yaml_lines.append(line)
+            if line.startswith("numbering:"):
+                in_numbering_block = True
+                continue
+            if in_numbering_block:
+                if re.match(r"^\s", line) or not line.strip():
+                    continue
+                else:
+                    in_numbering_block = False
 
-        yaml_str = "\n".join(cleaned_yaml_lines).strip()
-        if yaml_str:
-            clean_frontmatter = f"---\n{yaml_str}\n---"
+            frontmatter_lines.append(line)
     else:
         body_text = md_content
 
-    # 3. Transform code cell blocks, mapping marimo cell attrs and any
-    #    `# jb:` comment onto MyST directive options
+    # 3. Transform code cell blocks
     transformed_body = CODE_FENCE_PATTERN.sub(build_marimo_cell, body_text)
 
-    # 4. Assemble output components in order
-    sections = []
-    if clean_frontmatter:
-        sections.append(clean_frontmatter)
+    # 4. Extract first H1 heading for frontmatter title and remove from body
+    h1_match = re.search(r"^\s*#\s+(.+)$", transformed_body, re.MULTILINE)
+    if h1_match:
+        title_text = h1_match.group(1).strip()
+        frontmatter_lines.insert(0, f'title: "{title_text}"')
+        # Pass flags=re.MULTILINE so ^ matches the start of the H1 line
+        transformed_body = re.sub(
+            r"^\s*#\s+.+?[\r\n]+", "", transformed_body, count=1, flags=re.MULTILINE
+        )
+
+    clean_frontmatter = f"---\n{'\n'.join(frontmatter_lines).strip()}\n---"
+
+    # 5. Assemble output components in order
+    sections = [clean_frontmatter]
     if header_config_block:
         sections.append(header_config_block)
     sections.append(transformed_body.strip())
