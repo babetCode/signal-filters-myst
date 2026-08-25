@@ -531,14 +531,6 @@ def _(key_idea):
     return
 
 
-@app.cell
-def _(mo):
-    mo.md("It's dangerous to go alone $\\LaTeX$!").callout(
-        kind="warn", title="Warning"
-    )
-    return
-
-
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""

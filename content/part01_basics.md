@@ -412,12 +412,6 @@ key_idea(
 )
 ```
 
-```{marimo} python
-mo.md("It's dangerous to go alone $\\LaTeX$!").callout(
-    kind="warn", title="Warning"
-)
-```
-
 This can be implemented in python as:
 
 ```python
