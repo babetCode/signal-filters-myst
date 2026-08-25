@@ -1,4 +1,4 @@
-# Introduction
+# Preface
 
 My goal for this project is an interactive, introduction to signal filtering. I was inspired by *Kalman and Bayesian Filters in Python*, an introductory textbook written using Jupyter Notebook by Roger Labbe. To run his book, he recommends to downoad the notebooks from github, set up a conda environment, and run a local jupyter server. When Labbe wrote it, this was the best option for reactive notebooks. However, <u><a href="https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python#downloading-and-running-the-book" target="_blank">he also notes</a></u> "This is admittedly a somewhat cumbersome interface to a book."
 

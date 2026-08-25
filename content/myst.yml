@@ -8,7 +8,6 @@ project:
   toc:
     - file: index.md
     - file: part01_basics.md
+    - file: part02_alpha_beta_filter.md
 site:
   template: book-theme
-  options:
-    hide_title: true

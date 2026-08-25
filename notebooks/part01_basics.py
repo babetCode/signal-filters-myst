@@ -553,9 +553,9 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(alpha, mo):
+def _(alpha_slider, mo):
     mo.md(rf"""
-    By setting $\alpha = {alpha:.2f}$, we get:
+    By setting $\alpha = {alpha_slider.value}$, we get:
     """)
     return
 
@@ -563,14 +563,13 @@ def _(alpha, mo):
 @app.cell(hide_code=True)
 def _(mo):
     # jb: include=false
-    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05)
+    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
     return (alpha_slider,)
 
 
 @app.cell(hide_code=True)
 def _(alpha_slider, dur, graphic, measurements, mo, np, pd, plt, weight):
-    alpha = alpha_slider.value
-    ema_weight = ema(alpha, measurements)
+    ema_weight = ema(alpha_slider.value, measurements)
 
     _measurements_df = pd.DataFrame({
         "time_s": np.arange(.1, dur+.1, .1),
@@ -594,13 +593,13 @@ def _(alpha_slider, dur, graphic, measurements, mo, np, pd, plt, weight):
         )
         _ax.legend(["Measurement", "EMA"])
         _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
-        _ax.set_title(f"Weight Measurements & EMA with $\\alpha = {alpha:.2f}$", style='italic')
+        _ax.set_title(f"Weight Measurements & EMA with $\\alpha = {alpha_slider.value:.2f}$", style='italic')
 
     mo.vstack([
         alpha_slider,
         graphic(_fig),
     ])
-    return alpha, ema_weight
+    return (ema_weight,)
 
 
 @app.cell(hide_code=True)
