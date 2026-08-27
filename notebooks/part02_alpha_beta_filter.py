@@ -11,8 +11,8 @@
 
 import marimo
 
-__generated_with = "0.23.11"
-app = marimo.App(width="medium")
+__generated_with = "0.24.0"
+app = marimo.App()
 
 
 @app.cell(hide_code=True)
@@ -410,7 +410,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo, target_lbs_per_week):
     mo.md(rf"""
-    This looks really good when $\Delta x \approx {target_lbs_per_week/7:.1f}$, but only because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. In the real world, the value we plug in for $\Delta x_k$ won't be perfect. When we adjust $\Delta x$, we see our filter start to drift (especially when $\alpha$ is small).
+    This looks really good when $\Delta x \approx {target_lbs_per_week/7:.1f}$, but only because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. When we adjust $\Delta x$, we see our filter starts to drift (especially when $\alpha$ is small). In the real world, the value we plug in for $\Delta x_k$ won't be perfect.
     """)
     return
 

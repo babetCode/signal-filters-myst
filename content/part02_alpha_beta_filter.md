@@ -305,7 +305,7 @@ def alpha_delta(alpha, delta, measurements):
 :hide-code: true
 :include: false
 alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
-delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=0.2, label=r"$\Delta x$")
+delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
 ```
 
 ```{marimo} python
@@ -343,4 +343,9 @@ mo.vstack([
 ])
 ```
 
-This looks really good when $\Delta x \approx 0.2$, but this is because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. In the real world, the value we plug in for $\Delta x_k$ won't be perfect.
+```{marimo} python
+:hide-code: true
+mo.md(rf"""
+This looks really good when $\Delta x \approx {target_lbs_per_week/7:.1f}$, but only because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. When we adjust $\Delta x$, we see our filter starts to drift (especially when $\alpha$ is small). In the real world, the value we plug in for $\Delta x_k$ won't be perfect.
+""")
+```
