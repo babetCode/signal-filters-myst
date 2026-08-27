@@ -292,7 +292,7 @@ graphic(_fig)
 
 We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^mean-noise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
 
-[^mean-noise]: More specifically, we only need to assume that the mean of the noise is 0, which means our logic still holds even if the median skews too big or too small.
+[^mean-noise]: More specifically, we assume that the mean of the noise is 0, which means our logic still holds even if the median skews too big or too small.
 
 ```{marimo} python
 :hide-code: true
