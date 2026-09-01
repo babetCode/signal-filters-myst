@@ -8,9 +8,9 @@ numbering:
 :pyproject:
     requires-python = ">=3.13"
     dependencies = [
-        "matplotlib==3.10.0",
-        "numpy==2.1.0",
-        "pandas==2.2.3",
+        "matplotlib==3.11.1",
+        "numpy==2.5.2",
+        "pandas==3.0.5",
         "schemdraw[matplotlib,svgmath]==0.23",
     ]
 ```

@@ -1,12 +1,12 @@
 # /// script
-# requires-python = ">=3.13"
 # dependencies = [
-#     "marimo",
-#     "matplotlib==3.10.0",
-#     "numpy==2.1.0",
-#     "pandas==2.2.3",
+#     "marimo>=0.9.0",
+#     "matplotlib>=3.10.0",
+#     "numpy>=2.1.0",
+#     "pandas>=2.2.3",
 #     "schemdraw[matplotlib,svgmath]==0.23",
 # ]
+# requires-python = ">=3.13"
 # ///
 
 import marimo
