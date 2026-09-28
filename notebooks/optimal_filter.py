@@ -175,6 +175,58 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    # Limits
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    The left hand limit
+
+    $$\lim_{x\rightarrow a}f(x) = b$$
+
+    iff for all $j<a$ there exists some $k$ such that $j<k<a$ and $|f(k)-b|<|f(j)-b|$.
+
+    Similarly, the right hand limit
+
+    $$\lim_{x\rightarrow a}f(x) = b$$
+
+    iff for all $j>a$ there exists some $k$ such that $j>k>a$ and $|f(k)-b|<|f(j)-b|$.
+
+    A function is continuous over $(a, b)$ if for all $c$ with $a<c<b$, the left hand limit $\lim_{x\rightarrow c}f(x)$ equals the right hand limit.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    # Probability density function (PDF)
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    A probability density function (PDF) is a function which represents the probability density of some unkown value. Specifically, any probability density function $P$ represents a
+
+    $$\int_a^b P(x)dx$$
+
+    probability of being between constants $a$ and $b$ for all constants $a<b$. By definition, all PDFs must satisfy
+
+    $$\int_{-\infty}^\infty P(x)dx = 1.$$
+
+    $\lim_{x\rightarrow\infty}$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     Assuming \(x\) and \(y\) are sampled **independently**, write
 
     $$
@@ -221,7 +273,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
- 
+    $\int_{x}^{x}$
     """)
     return
 

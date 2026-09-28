@@ -9,5 +9,6 @@ project:
     - file: index.md
     - file: part01_basics.md
     - file: part02_alpha_beta_filter.md
+    - file: glossary.md
 site:
   template: book-theme
