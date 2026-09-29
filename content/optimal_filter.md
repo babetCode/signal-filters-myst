@@ -154,6 +154,36 @@ def gaussian_noise(
     return measurements
 ```
 
+# Calculus Definitions
+<!---->
+**Left-Hand Limit:** $\lim_{x \rightarrow a^-} f(x) = b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x$, if $a - \delta < x < a$, then $\vert{}f(x) - b\vert{} < \epsilon$.
+
+**Right-Hand Limit:** $\lim_{x \rightarrow a^+} f(x) = b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x$, if $a < x < a + \delta$, then $\vert{}f(x) - b\vert{} < \epsilon$.
+
+**Two-Sided Limit:**
+
+$$\lim_{x \rightarrow a} f(x) = b \iff \lim_{x \rightarrow a^-} f(x) = b \quad \text{and} \quad \lim_{x \rightarrow a^+} f(x) = b.$$
+
+**Continuity on $(a, b)$:** $f$ is continuous on $(a, b)$ iff for every $c \in (a, b)$, $\lim_{x \to c^-} f(x) = \lim_{x \to c^+} f(x) = f(c)$.
+
+**Derivative:** The derivative of a function $f$ at some $x$ in its domain is
+
+$$f'(x) = \lim_{h\rightarrow0}\frac{f(x + h) - f(x)}{h}$$
+
+profided this limit exists.
+<!---->
+# Probability density function (PDF)
+<!---->
+A probability density function (PDF) is a function which represents the probability density of some unkown value. Specifically, any probability density function $P$ represents a
+
+$$\int_a^b P(x)dx$$
+
+probability of being between constants $a$ and $b$ for all constants $a<b$. By definition, all PDFs must satisfy
+
+$$\int_{-\infty}^\infty P(x)dx = 1.$$
+
+$\lim_{x\rightarrow\infty}$
+<!---->
 Assuming \(x\) and \(y\) are sampled **independently**, write
 
 $$
@@ -193,10 +223,7 @@ $$
 This is the same answer whether “closest to 0” means minimizing expected squared distance \(E[z_\alpha^2]\) or expected absolute distance \(E|z_\alpha|\), since both are increasing functions of the standard deviation of this zero-mean normal.
 
 So the noisier variable gets **less weight**: the coefficient on \(y\) is larger when \(a\) is larger, because \(x\) is then the less reliable estimate of \(0\).
-
-```{marimo} python
-:hide-code: true
-mo.md(r"""
-
-""")
-```
+<!---->
+$\int_{x}^{x}$
+<!---->
+{term}`Signal`

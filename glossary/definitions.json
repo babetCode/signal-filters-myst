@@ -2,7 +2,7 @@
   {
     "term": "Continuous time",
     "lexical_category": "Adjective",
-    "definition": "A signal defined at every instant along a continuous time axis (often denoted \\(x(t)\\)), where t can take any real value."
+    "definition": "A signal defined at every instant along a continuous time axis (often denoted $x(t)$), where $t$ can take any real value."
   },
   {
     "term": "Deterministic",
@@ -12,7 +12,7 @@
   {
     "term": "Discrete time",
     "lexical_category": "Adjective",
-    "definition": "A signal defined only at specific, separate instants (denoted x[n]), typically obtained by sampling a continuous signal at regular intervals."
+    "definition": "A signal defined only at specific, separate instants (denoted $x[n]$), typically obtained by sampling a continuous signal at regular intervals."
   },
   {
     "term": "Distributed",

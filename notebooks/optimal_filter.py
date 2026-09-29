@@ -175,7 +175,7 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Limits
+    # Calculus Definitions
     """)
     return
 
@@ -183,19 +183,21 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The left hand limit
+    **Left-Hand Limit:** $\lim_{x \rightarrow a^-} f(x) = b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x$, if $a - \delta < x < a$, then $\vert{}f(x) - b\vert{} < \epsilon$.
 
-    $$\lim_{x\rightarrow a}f(x) = b$$
+    **Right-Hand Limit:** $\lim_{x \rightarrow a^+} f(x) = b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x$, if $a < x < a + \delta$, then $\vert{}f(x) - b\vert{} < \epsilon$.
 
-    iff for all $j<a$ there exists some $k$ such that $j<k<a$ and $|f(k)-b|<|f(j)-b|$.
+    **Two-Sided Limit:**
 
-    Similarly, the right hand limit
+    $$\lim_{x \rightarrow a} f(x) = b \iff \lim_{x \rightarrow a^-} f(x) = b \quad \text{and} \quad \lim_{x \rightarrow a^+} f(x) = b.$$
 
-    $$\lim_{x\rightarrow a}f(x) = b$$
+    **Continuity on $(a, b)$:** $f$ is continuous on $(a, b)$ iff for every $c \in (a, b)$, $\lim_{x \to c^-} f(x) = \lim_{x \to c^+} f(x) = f(c)$.
 
-    iff for all $j>a$ there exists some $k$ such that $j>k>a$ and $|f(k)-b|<|f(j)-b|$.
+    **Derivative:** The derivative of a function $f$ at some $x$ in its domain is
 
-    A function is continuous over $(a, b)$ if for all $c$ with $a<c<b$, the left hand limit $\lim_{x\rightarrow c}f(x)$ equals the right hand limit.
+    $$f'(x) = \lim_{h\rightarrow0}\frac{f(x + h) - f(x)}{h}$$
+
+    profided this limit exists.
     """)
     return
 
@@ -274,6 +276,14 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     $\int_{x}^{x}$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    {term}`Signal`
     """)
     return
 

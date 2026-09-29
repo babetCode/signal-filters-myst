@@ -10,12 +10,13 @@ def _():
     import marimo as mo
     import pandas as pd
     from pathlib import Path
+    from textwrap import dedent
 
-    return Path, json, mo
+    return Path, dedent, json, mo
 
 
 @app.cell(hide_code=True)
-def _(Path, json, mo):
+def _(Path, dedent, json, mo):
     JSON_FILE = Path(__file__).resolve().parent / "definitions.json"
     MD_FILE = Path(__file__).resolve().parent.parent / "content/glossary.md"
 
@@ -39,24 +40,51 @@ def _(Path, json, mo):
         MD_FILE.parent.mkdir(parents=True, exist_ok=True)
         MD_FILE.touch(exist_ok=True)
 
-    # Create a single global helper that updates the state AND the file at the exact same time
     # def save_data(new_list):
     #     sorted_list = sorted(new_list, key=lambda x: x["term"].lower())
+
     #     JSON_FILE.write_text(json.dumps(sorted_list, indent=2), encoding="utf-8")
-        # _set_rows(new_list
+
+    #     md_body = "\n\n".join(
+    #         f'<u>**{r["term"]}**</u> *{r["lexical_category"]}*  \n{r["definition"]}' 
+    #         for r in sorted_list
+    #     )
+    #     md_content = f"---\ntitle: Glossary\n---\n\n{md_body}\n"
+    #     MD_FILE.write_text(md_content, encoding="utf-8")
+
+    #     _set_rows(sorted_list)
 
     def save_data(new_list):
         sorted_list = sorted(new_list, key=lambda x: x["term"].lower())
 
         JSON_FILE.write_text(json.dumps(sorted_list, indent=2), encoding="utf-8")
 
-        md_body = "\n\n".join(
-            f'<u>**{r["term"]}**</u>  \n{r["definition"]}' 
-            for r in sorted_list
-        )
-        md_content = f"---\ntitle: Glossary\n---\n\n{md_body}\n"
-        MD_FILE.write_text(md_content, encoding="utf-8")
+        # Format terms and definitions using MyST colon definition list syntax
+        glossary_entries = []
+        for r in sorted_list:
+            term = r["term"].strip()
+            category = f"*{r['lexical_category']}* — " if r.get("lexical_category") else ""
+            definition = f"{category}{r['definition']}".strip()
 
+            # Handle multi-line definitions while keeping colon continuation aligned
+            indented_def = "\n  ".join(definition.splitlines())
+            glossary_entries.append(f"{term}\n: {indented_def}")
+
+        glossary_body = "\n\n".join(glossary_entries)
+
+        template = dedent("""\
+            ---
+            title: Glossary
+            ---
+    
+            :::{{glossary}}
+            {glossary_body}
+            :::
+        """)
+    
+        md_content = template.format(glossary_body=glossary_body)
+
+        MD_FILE.write_text(md_content, encoding="utf-8")
         _set_rows(sorted_list)
 
     rows = get_rows()
@@ -125,7 +153,7 @@ def _(get_rows, mo):
     {
         "\n\n".join(
             [
-                f'<u>**{r["term"]}**</u>\n{r["definition"]}'
+                f'<u>**{r["term"]}**</u> *{r["lexical_category"]}*\n{r["definition"]}'
                 for r in get_rows()
             ])
     }
