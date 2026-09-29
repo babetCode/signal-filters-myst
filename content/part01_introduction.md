@@ -191,7 +191,8 @@ To see what this might look like, let's walk through a simple example.
 <!---->
 ## Recursive Averaging
 <!---->
-Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both **signals**.
+Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both {term}`signal`s.
+
 [^loadcell]: A strain gauge load cell is an electronic component that converts force into proportional resistance change using metal foil grids (called strain gauges) which change resistance under load (increasing under tension and decreasing under compression). They are used in almost all digital bathroom scales because they are thin, accurate (relatively), mass-producible, and have no moving parts to wear out.
 
 ```{marimo} python

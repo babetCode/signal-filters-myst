@@ -5,7 +5,7 @@ app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-def _():
+def imports():
     import json
     import marimo as mo
     import pandas as pd
@@ -16,7 +16,7 @@ def _():
 
 
 @app.cell(hide_code=True)
-def _(Path, dedent, json, mo):
+def data(Path, dedent, json, mo):
     JSON_FILE = Path(__file__).resolve().parent / "definitions.json"
     MD_FILE = Path(__file__).resolve().parent.parent / "content/glossary.md"
 
@@ -40,20 +40,6 @@ def _(Path, dedent, json, mo):
         MD_FILE.parent.mkdir(parents=True, exist_ok=True)
         MD_FILE.touch(exist_ok=True)
 
-    # def save_data(new_list):
-    #     sorted_list = sorted(new_list, key=lambda x: x["term"].lower())
-
-    #     JSON_FILE.write_text(json.dumps(sorted_list, indent=2), encoding="utf-8")
-
-    #     md_body = "\n\n".join(
-    #         f'<u>**{r["term"]}**</u> *{r["lexical_category"]}*  \n{r["definition"]}' 
-    #         for r in sorted_list
-    #     )
-    #     md_content = f"---\ntitle: Glossary\n---\n\n{md_body}\n"
-    #     MD_FILE.write_text(md_content, encoding="utf-8")
-
-    #     _set_rows(sorted_list)
-
     def save_data(new_list):
         sorted_list = sorted(new_list, key=lambda x: x["term"].lower())
 
@@ -75,6 +61,11 @@ def _(Path, dedent, json, mo):
         template = dedent("""\
             ---
             title: Glossary
+            abbreviations:
+              iff: if and only if
+              diff: null
+            numbering:
+              equations: false
             ---
     
             :::{{glossary}}
@@ -89,14 +80,30 @@ def _(Path, dedent, json, mo):
 
     rows = get_rows()
 
-    mo.vstack([
-        mo.md(f'''
-            <u>**{r["term"]}**</u> *{r["lexical_category"]}*  
-            {r["definition"]}  
-        ''')
-        for r in rows
-    ])
+    # mo.vstack([
+    #     mo.md(f'''
+    #         <u>**{r["term"]}**</u> *{r["lexical_category"]}*  
+    #         {r["definition"]}  
+    #     ''')
+    #     for r in rows
+    # ])
     return get_rows, save_data
+
+
+@app.cell(disabled=True, hide_code=True)
+def _(get_rows, mo):
+    mo.md(f"""
+    ```md
+    {
+        "\n\n".join(
+            [
+                f'<u>**{r["term"]}**</u> *{r["lexical_category"]}*\n{r["definition"]}'
+                for r in get_rows()
+            ])
+    }
+    ```
+    """)
+    return
 
 
 @app.cell(hide_code=True)
@@ -143,22 +150,6 @@ def _(get_rows, mo, save_data):
     )
 
     form
-    return
-
-
-@app.cell(hide_code=True)
-def _(get_rows, mo):
-    mo.md(f"""
-    ```md
-    {
-        "\n\n".join(
-            [
-                f'<u>**{r["term"]}**</u> *{r["lexical_category"]}*\n{r["definition"]}'
-                for r in get_rows()
-            ])
-    }
-    ```
-    """)
     return
 
 

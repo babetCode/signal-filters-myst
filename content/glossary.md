@@ -1,5 +1,10 @@
 ---
 title: Glossary
+abbreviations:
+  iff: if and only if
+  diff: null
+numbering:
+  equations: false
 ---
 
 :::{glossary}
@@ -18,6 +23,12 @@ Distributed
 Filter
 : *Noun* — Any algorithm that selectively modifies or removes noise from a signal.
 
+Left-hand limit
+: *Noun* — The left-hand limit $$\lim_{x \rightarrow a^-} f(x)$$ (read "limit of $f(x)$ as $x$ goes to $a$ from the left") equals $b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a-\delta, a)$, we have $$|f(x) - b| < \epsilon.$$
+
+Limit
+: *Noun* — The (two-sided) limit $$\lim_{x \rightarrow a} f(x)$$ (read "limit of $f(x)$ as $x$ goes to $a$") equals $b$ iff $$\lim_{x \rightarrow a^-} f(x) = \lim_{x \rightarrow a^+} f(x) = b.$$
+
 Linear
 : *Adjective* — A system that satisfies superposition: the response to a weighted sum of inputs equals the same weighted sum of the individual responses (additivity + homogeneity/scaling).
 
@@ -32,6 +43,9 @@ Noise
 
 Non-linear
 : *Adjective* — A system that does not satisfy superposition; output is not simply proportional to input, and combined inputs don't produce a simply combined output.
+
+Right-hand limit
+: *Noun* — The right-hand limit $$\lim_{x \rightarrow a^+} f(x)$$ (read "limit of $f(x)$ as $x$ goes to $a$ from the right") equals $b$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a, a+\delta)$, we have $$|f(x) - b| < \epsilon.$$
 
 Signal
 : *Noun* — Any function that represents how a quantity varies over time or space.
