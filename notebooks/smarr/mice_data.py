@@ -1,21 +1,43 @@
 import marimo
 
-__generated_with = "0.24.0"
+__generated_with = "0.25.0"
 app = marimo.App(width="medium")
 
 
 @app.cell
 def _():
     import marimo as mo
-
-    return (mo,)
+    import pandas as pd
+    from pathlib import Path
+    import numpy as np
+    import matplotlib.pyplot as plt
+    plt.style.use('default')
+    return Path, mo, np, pd, plt
 
 
 @app.cell
-def _():
-    import pandas as pd
-    from pathlib import Path
+def _(mo):
+    from textwrap import dedent
 
+    def graphic(x):
+        return mo.Html(
+            dedent(f'''\
+            <style>
+                .dark .graphic {{ 
+                    filter: invert(1) hue-rotate(180deg); 
+                }}
+            </style>
+            <div class="graphic">
+                {mo.as_html(x)}
+            </div>
+            ''')
+        )
+
+    return (graphic,)
+
+
+@app.cell
+def _(Path, pd):
     # Get the directory where the current script is located
     data_dir = Path(__file__).parent.parent.parent / "assets/smarr"
 
@@ -25,8 +47,8 @@ def _():
         'mLA': pd.read_csv(data_dir / 'micedata-MaleAct.csv'),
         'mCBT': pd.read_csv(data_dir / 'micedata-MaleTemp.csv')
     }
-    df_dict
-    return df_dict, pd
+    # df_dict
+    return (df_dict,)
 
 
 @app.cell(hide_code=True)
@@ -40,16 +62,13 @@ def _(mo):
 
 
 @app.cell
-def _(df_dict):
-    import numpy as np
-    import matplotlib.pyplot as plt
-
+def _(df_dict, graphic, np, plt):
     def plot_raw_temp(data, columns, title, color='blue'):
         fig, ax = plt.subplots(figsize=(12, 6))
-    
+
         for col in columns:
             ax.plot(data['time (min)'], data[col], label=col, alpha=0.5)
-    
+
         ax.set_xlabel('Time (min)')
         ax.set_ylabel('Temperature (°C)')
         ax.set_title(title)
@@ -58,9 +77,9 @@ def _(df_dict):
 
         xticks = np.arange(0, max(data['time (min)']) + 1, 1440)
         ax.set_xticks(xticks)
-    
+
         plt.tight_layout()
-        plt.show()
+        return graphic(fig)
 
     # Plot female temperatures
     fem_data_columns = [f'fem{n}' for n in range(1, 15)]
@@ -69,7 +88,7 @@ def _(df_dict):
     # Plot male temperatures
     male_data_columns = [f'male{n}' for n in range(1, 7)]
     plot_raw_temp(df_dict['mCBT'], male_data_columns, 'Male Temperature Data - All Traces')
-    return fem_data_columns, male_data_columns, np, plt
+    return fem_data_columns, male_data_columns
 
 
 @app.cell(hide_code=True)
@@ -87,16 +106,20 @@ def _(mo):
 
 
 @app.cell
-def _(df_dict):
+def _(df_dict, mo):
     # Check Female Temperature data
     fem_temp_data = df_dict['fCBT'].drop(columns=['time (min)'])
     fem_low_values = (fem_temp_data < 35).any().any()
-    print(f'fCBT has values < 35: {fem_low_values}')
 
     # Check Male Temperature data  
     male_temp_data = df_dict['mCBT'].drop(columns=['time (min)'])
     male_low_values = (male_temp_data < 35).any().any()
-    print(f'mCBT has values < 35: {male_low_values}')
+    mo.show_code(
+    mo.vstack([
+        f'fCBT has values < 35: {fem_low_values}',
+        f'mCBT has values < 35: {male_low_values}'
+    ])
+    )
     return
 
 
@@ -109,54 +132,53 @@ def _(mo):
 
 
 @app.cell
-def _(df_dict, fem_data_columns, male_data_columns, np, plt):
+def _(df_dict, fem_data_columns, graphic, male_data_columns, mo, np, plt):
     # Plot female activity traces in a grid
-    fig, axes = plt.subplots(5, 3, figsize=(15, 18), sharey=True)
-    axes = axes.flatten()
+    fig1, axes1 = plt.subplots(5, 3, figsize=(15, 18), sharey=True)
+    axes1 = axes1.flatten()
     # fem_data_columns = [f'fem{n}' for n in range(1, 15)]
     time_data = df_dict['fLA']['time (min)']
 
     for i, col in enumerate(fem_data_columns):
-        axes[i].plot(time_data, df_dict['fLA'][col], linewidth=0.8)
-        axes[i].set_title(f'{col}', fontsize=10)
-        axes[i].grid(True, alpha=0.3)
-    
+        axes1[i].plot(time_data, df_dict['fLA'][col], linewidth=0.8)
+        axes1[i].set_title(f'{col}', fontsize=10)
+        axes1[i].grid(True, alpha=0.3)
+
         # Set x-axis ticks every 1440 minutes (24 hours)
-        axes[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
-        axes[i].set_xlabel('Time (min)', fontsize=9)
-    
+        axes1[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
+        axes1[i].set_xlabel('Time (min)', fontsize=9)
+
         if i % 3 == 0:  # Left column
-            axes[i].set_ylabel('Activity\n(events/min)', fontsize=9)
+            axes1[i].set_ylabel('Activity\n(events/min)', fontsize=9)
 
     # Hide the last empty subplot (index 14)
-    axes[14].set_visible(False)
+    axes1[14].set_visible(False)
 
     plt.suptitle('Female Locomotor Activity - Individual Traces', fontsize=14, y=0.995)
     plt.tight_layout()
-    plt.show()
 
     # Plot male activity traces in a grid
-    fig, axes = plt.subplots(2, 3, figsize=(15, 8), sharey=True)
-    axes = axes.flatten()
+    fig2, axes2 = plt.subplots(2, 3, figsize=(15, 8), sharey=True)
+    axes2 = axes2.flatten()
 
     # male_data_columns = [f'male{n}' for n in range(1, 7)]
     time_data = df_dict['mLA']['time (min)']
 
     for i, col in enumerate(male_data_columns):
-        axes[i].plot(time_data, df_dict['mLA'][col], linewidth=0.8)
-        axes[i].set_title(f'{col}', fontsize=10)
-        axes[i].grid(True, alpha=0.3)
-    
+        axes2[i].plot(time_data, df_dict['mLA'][col], linewidth=0.8)
+        axes2[i].set_title(f'{col}', fontsize=10)
+        axes2[i].grid(True, alpha=0.3)
+
         # Set x-axis ticks every 1440 minutes (24 hours)
-        axes[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
-        axes[i].set_xlabel('Time (min)', fontsize=9)
-    
+        axes2[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
+        axes2[i].set_xlabel('Time (min)', fontsize=9)
+
         if i % 3 == 0:  # Left column
-            axes[i].set_ylabel('Activity\n(events/min)', fontsize=9)
+            axes2[i].set_ylabel('Activity\n(events/min)', fontsize=9)
 
     plt.suptitle('Male Locomotor Activity - Individual Traces', fontsize=14, y=0.98)
     plt.tight_layout()
-    plt.show()
+    mo.vstack([graphic(fig1), graphic(fig2)])
     return
 
 
@@ -233,6 +255,8 @@ def _(df_dict, np, pd, plt):
     plt.xticks(np.arange(0, max(time) + 1, 1440))
     plt.tight_layout()
     plt.show()
+
+    # TODO make temperature and activity plots use fig, ax so that they can be output rather than printed to console
     return (processed_df,)
 
 
@@ -247,7 +271,7 @@ def _(mo):
 
 
 @app.cell
-def _(np, plt, processed_df):
+def _(graphic, mo, np, plt, processed_df):
     from ssqueezepy import Wavelet, cwt, imshow
     from ssqueezepy.experimental import scale_to_freq
     from matplotlib.colors import LinearSegmentedColormap
@@ -307,11 +331,15 @@ def _(np, plt, processed_df):
         cbar.set_label('Magnitude')
 
         plt.tight_layout()
-        plt.show()
+        return fig
 
     for _col in ['fLA', 'fCBT', 'mLA', 'mCBT']:
         W, freqs, t = morse_cwt(processed_df[_col].to_numpy())
-        plot_scalogram(W, freqs, t, _col)
+        mo.output.append(
+            graphic(
+                plot_scalogram(W, freqs, t, _col)
+            )
+        )
     return
 
 

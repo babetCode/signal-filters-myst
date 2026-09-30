@@ -11,7 +11,7 @@
 
 import marimo
 
-__generated_with = "0.24.0"
+__generated_with = "0.25.0"
 app = marimo.App()
 
 
@@ -24,8 +24,9 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _():
+def imports():
     # jb: include=false
+
     import marimo as mo
     import schemdraw
     from schemdraw import flow
@@ -38,8 +39,9 @@ def _():
 
 
 @app.cell(hide_code=True)
-def admonition(mo):
+def display_funcs(dedent, mo):
     # jb: include=false
+
     def admonition(
         value: str,
         title: str = "<b>Key Idea</b>",
@@ -96,12 +98,6 @@ def admonition(mo):
         </div>
         """)
 
-    return (admonition,)
-
-
-@app.cell(hide_code=True)
-def _(admonition):
-    # jb: include=false
     def key_idea(
         value: str,
         title="<b>Key Idea</b>",
@@ -110,12 +106,6 @@ def _(admonition):
         icon_str = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="color-mix(in srgb, GoldenRod 70%, currentColor 30%)" d="M8.308 13.308q.538-.539.538-1.308t-.538-1.308T7 10.154t-1.308.538T5.154 12t.538 1.308T7 13.846t1.308-.538M7 16.73q-2 0-3.366-1.366Q2.27 14 2.27 12t1.366-3.366T7 7.27q1.698 0 2.941.958t1.593 2.273h9.049l1.494 1.494l-2.48 2.635l-1.828-1.379l-1.827 1.442l-1.557-1.192h-2.85q-.356 1.339-1.608 2.285T7 16.73"></path></svg>'
         return admonition(value=value, title=title, color=color, icon_str=icon_str)
 
-    return
-
-
-@app.cell(hide_code=True)
-def _(admonition):
-    # jb: include=false
     def glossary_def(
         value: str,
         title="<b>Definition</b>",
@@ -126,12 +116,6 @@ def _(admonition):
             value=value, title=title, color=color, icon_str=icon_str
         )
 
-    return
-
-
-@app.cell(hide_code=True)
-def _(dedent, mo):
-    # jb: include=false
     def graphic(x):
         return mo.Html(
             dedent(f'''\
@@ -150,8 +134,9 @@ def _(dedent, mo):
 
 
 @app.cell(hide_code=True)
-def _(np):
+def math_funcs(np):
     # jb: include=false
+
     def gaussian_noise(
         mean=0.,
         std_dev=1.,
@@ -169,49 +154,77 @@ def _(np):
         )
         return measurements
 
-    return (gaussian_noise,)
+    def cumulative_average(measurements):
+        x_k_minus_one = 0
+        output = []
+        for k, z in enumerate(measurements, start=1):
+            x_k = x_k_minus_one + (1/k)*(z - x_k_minus_one)
+            output.append(x_k)
+            x_k_minus_one = x_k
+        return output
 
+    def ema(alpha, measurements):
+        x_k_minus_one = 0
+        ema_output = []
+        for k, z in enumerate(measurements, start=1):
+            if k == 1:
+                x_k_minus_one = z
+            x_k = x_k_minus_one + alpha*(z - x_k_minus_one)
+            ema_output.append(x_k)
+            x_k_minus_one = x_k
+        return ema_output
 
-@app.function(hide_code=True)
-# jb: include=false
-def ema(alpha, measurements):
-    x_k_minus_one = 0
-    ema_output = []
-    for k, z in enumerate(measurements, start=1):
-        if k == 1:
-            x_k_minus_one = z
-        x_k = x_k_minus_one + alpha*(z - x_k_minus_one)
-        ema_output.append(x_k)
-        x_k_minus_one = x_k
-    return ema_output
-
-
-@app.function(hide_code=True)
-# jb: include=false
-def mifflin_st_jeor(
-    age = 25,
-    height_cm = 175,
-    weight = 154.88,
-    sex = "M",
-    unit = "lbs",
-):
-    if unit == "lbs":
-        weight = weight * 0.45359237
-
-    bmr = 10*weight + 6.25*height_cm -5*age
-    if sex.lower() == "m":
-        return  bmr + 5
-
-    elif sex.lower() == "f":
-        return bmr - 161
-
-    else:
-        return -1
+    return ema, gaussian_noise
 
 
 @app.cell(hide_code=True)
-def _(gaussian_noise, np):
+def nutrition_funcs():
     # jb: include=false
+
+    def mifflin_st_jeor(
+        age = 25,
+        height_cm = 175,
+        weight = 154.88,
+        sex = "M",
+        unit = "lbs",
+    ):
+        if unit == "lbs":
+            weight = weight * 0.45359237
+
+        bmr = 10*weight + 6.25*height_cm -5*age
+        if sex.lower() == "m":
+            return  bmr + 5
+
+        elif sex.lower() == "f":
+            return bmr - 161
+
+        else:
+            return -1
+
+    activity_lvl_dict = {
+        "light": 1.2,  # light walking, biking, or chores
+        "moderate": 1.5,  # regular lifting, running, or active work
+        "high": 1.9,  # Professional athletes or military training
+    }
+    sex_dict = {
+        "M": "male",
+        "F": "female",
+    }
+    kcal_per_lb = 3500
+    return activity_lvl_dict, kcal_per_lb, mifflin_st_jeor, sex_dict
+
+
+@app.cell(hide_code=True)
+def biometrics(
+    activity_lvl_dict,
+    ema,
+    gaussian_noise,
+    kcal_per_lb,
+    mifflin_st_jeor,
+    np,
+):
+    # jb: include=false
+
     age = 23
     height_cm = 175
     sex = "M"
@@ -234,17 +247,6 @@ def _(gaussian_noise, np):
     measurements = np.round(weight + noise, 2)
     start_weight = measurements[0]
 
-    activity_lvl_dict = {
-        "light": 1.2,  # light walking, biking, or chores
-        "moderate": 1.5,  # regular lifting, running, or active work
-        "high": 1.9,  # Professional athletes or military training
-    }
-    sex_dict = {
-        "M": "male",
-        "F": "female",
-    }
-    kcal_per_lb = 3500
-
     bmr = mifflin_st_jeor(age, height_cm, start_weight, sex)
     tdee = bmr * activity_lvl_dict[activity_lvl]
 
@@ -255,7 +257,6 @@ def _(gaussian_noise, np):
         height_cm,
         measurements,
         sex,
-        sex_dict,
         target_kcal_per_day,
         target_lbs_per_week,
         total_days,
@@ -412,6 +413,16 @@ def _(mo, target_lbs_per_week):
     mo.md(rf"""
     This looks really good when $\Delta x \approx {target_lbs_per_week/7:.1f}$, but only because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. When we adjust $\Delta x$, we see our filter starts to drift (especially when $\alpha$ is small). In the real world, the value we plug in for $\Delta x_k$ won't be perfect.
     """)
+    return
+
+
+@app.cell(hide_code=True)
+def _():
+    # TODO Make interactive graph the visualizes predicted as well as measurement and estimate (which are already shown).
+
+    # TODO clarify the difference between $\delta x$ and $\beta$.
+
+    # TODO consider replacing nutrition footnotes with glossary.
     return
 
 

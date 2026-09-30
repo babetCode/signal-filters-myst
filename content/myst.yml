@@ -11,6 +11,8 @@ project:
     - file: part02_alpha_beta_filter.md
     - file: optimal_filter.md
     - file: glossary.md
+  references:
+    # kbfp: https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python
 site:
   template: book-theme
   options:

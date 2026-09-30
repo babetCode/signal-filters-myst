@@ -11,7 +11,7 @@
 
 import marimo
 
-__generated_with = "0.24.0"
+__generated_with = "0.25.0"
 app = marimo.App(width="medium")
 
 
@@ -23,8 +23,8 @@ def _(mo):
     return
 
 
-@app.cell
-def _():
+@app.cell(hide_code=True)
+def imports():
     # jb: include=false
     import marimo as mo
     import numpy as np
@@ -38,9 +38,10 @@ def _():
     return dedent, flow, mo, np, pd, plt, schemdraw
 
 
-@app.cell
-def admonition(mo):
+@app.cell(hide_code=True)
+def display_funcs(dedent, mo):
     # jb: include=false
+
     def admonition(
         value: str,
         title: str = "<b>Key Idea</b>",
@@ -97,12 +98,6 @@ def admonition(mo):
         </div>
         """)
 
-    return (admonition,)
-
-
-@app.cell
-def _(admonition):
-    # jb: include=false
     def key_idea(
         value: str,
         title="<b>Key Idea</b>",
@@ -111,12 +106,6 @@ def _(admonition):
         icon_str = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="color-mix(in srgb, GoldenRod 70%, currentColor 30%)" d="M8.308 13.308q.538-.539.538-1.308t-.538-1.308T7 10.154t-1.308.538T5.154 12t.538 1.308T7 13.846t1.308-.538M7 16.73q-2 0-3.366-1.366Q2.27 14 2.27 12t1.366-3.366T7 7.27q1.698 0 2.941.958t1.593 2.273h9.049l1.494 1.494l-2.48 2.635l-1.828-1.379l-1.827 1.442l-1.557-1.192h-2.85q-.356 1.339-1.608 2.285T7 16.73"></path></svg>'
         return admonition(value=value, title=title, color=color, icon_str=icon_str)
 
-    return (key_idea,)
-
-
-@app.cell
-def _(admonition):
-    # jb: include=false
     def glossary_def(
         value: str,
         title="<b>Definition</b>",
@@ -127,12 +116,6 @@ def _(admonition):
             value=value, title=title, color=color, icon_str=icon_str
         )
 
-    return (glossary_def,)
-
-
-@app.cell
-def _(dedent, mo):
-    # jb: include=false
     def graphic(x):
         return mo.Html(
             dedent(f'''\
@@ -147,11 +130,11 @@ def _(dedent, mo):
             ''')
         )
 
-    return (graphic,)
+    return glossary_def, graphic, key_idea
 
 
-@app.cell
-def _(np):
+@app.cell(hide_code=True)
+def math_funcs(np):
     # jb: include=false
     def gaussian_noise(
         mean=0.,
@@ -170,33 +153,27 @@ def _(np):
         )
         return measurements
 
-    return (gaussian_noise,)
+    def cumulative_average(measurements):
+        x_k_minus_one = 0
+        output = []
+        for k, z in enumerate(measurements, start=1):
+            x_k = x_k_minus_one + (1/k)*(z - x_k_minus_one)
+            output.append(x_k)
+            x_k_minus_one = x_k
+        return output
 
+    def ema(alpha, measurements):
+        x_k_minus_one = 0
+        ema_output = []
+        for k, z in enumerate(measurements, start=1):
+            if k == 1:
+                x_k_minus_one = z
+            x_k = x_k_minus_one + alpha*(z - x_k_minus_one)
+            ema_output.append(x_k)
+            x_k_minus_one = x_k
+        return ema_output
 
-@app.function
-# jb: include=false
-def cumulative_average(measurements):
-    x_k_minus_one = 0
-    output = []
-    for k, z in enumerate(measurements, start=1):
-        x_k = x_k_minus_one + (1/k)*(z - x_k_minus_one)
-        output.append(x_k)
-        x_k_minus_one = x_k
-    return output
-
-
-@app.function
-# jb: include=false
-def ema(alpha, measurements):
-    x_k_minus_one = 0
-    ema_output = []
-    for k, z in enumerate(measurements, start=1):
-        if k == 1:
-            x_k_minus_one = z
-        x_k = x_k_minus_one + alpha*(z - x_k_minus_one)
-        ema_output.append(x_k)
-        x_k_minus_one = x_k
-    return ema_output
+    return cumulative_average, ema, gaussian_noise
 
 
 @app.cell(hide_code=True)
@@ -381,7 +358,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(key_idea):
     key_idea(
-        r"Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out"
+        r"Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out."
     )
     return
 
@@ -461,7 +438,7 @@ def _(dur, mo):
 
 
 @app.cell(hide_code=True)
-def _(dur, graphic, measurements, np, pd, plt, weight):
+def _(cumulative_average, dur, graphic, measurements, np, pd, plt, weight):
     _measurements_df = pd.DataFrame({
         "time_s": np.arange(.1, dur+.1, .1),
         "weight_lbs": measurements,
@@ -535,7 +512,13 @@ def _(key_idea):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    This can be implemented in python as:
+    One additional consideration with EMA filters is initialization: our cummulative average simply returns the first measurement as the first estimate, but the EMA takes a weighted combination of each measurement with the previous estimate, so we must give it some initial value to use when calculating the first estimate. There are three common approaches to this.
+
+    1. **First measurement initialization:** We set $\hat x_{0}$ equal to the first measurement as soon as we get it, ensuring the first estimate equals the first measurement. This is the most common and will be used here.
+    2. **Zero initialization:** We set $\hat x_{0} = 0$, so that the first estimate will be $\alpha$ times the first measurement. This is extremely fast and simple, but the filtered will take some time to stabilize, especially with low $\alpha$ values, so the begining of the begining of the filtered signal may need to be cropped out.
+    3. **Callibration period initialization:** We reserve some period of time at the begining of data collection for callibration, during which we average the measurements, then we set $\hat x_0$ equal to the average and begin filtering with our EMA. This is less computationally efficient and is more common in economic forecasting and stock predictions.
+
+    Our first measurement initialization EMA can be implemented in python as:
 
     ```python
     def ema(alpha, measurements):
@@ -569,7 +552,7 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(alpha_slider, dur, graphic, measurements, mo, np, pd, plt, weight):
+def _(alpha_slider, dur, ema, graphic, measurements, mo, np, pd, plt, weight):
     ema_weight = ema(alpha_slider.value, measurements)
 
     _measurements_df = pd.DataFrame({

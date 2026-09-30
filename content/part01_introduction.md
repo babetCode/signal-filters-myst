@@ -195,6 +195,24 @@ Imagine we are building a digital bathroom scale to measure your body weight. Wh
 
 [^loadcell]: A strain gauge load cell is an electronic component that converts force into proportional resistance change using metal foil grids (called strain gauges) which change resistance under load (increasing under tension and decreasing under compression). They are used in almost all digital bathroom scales because they are thin, accurate (relatively), mass-producible, and have no moving parts to wear out.
 
+````{marimo} python
+:hide-code: true
+mo.md(r"""
+This is some text
+```{admonition} This is a title
+  An example of an admonition with a _title_.
+```
+
+this is some more text
+""")
+````
+
+why is this not normal markdown
+
+```{admonition}
+test
+```
+
 ```{marimo} python
 :hide-code: true
 glossary_def(value="<b>Signal:</b> Any function that represents how a quantity varies over time or space.")

@@ -74,3 +74,10 @@ Time invariant
 Time variant
 : *Adjective* — A system whose behavior changes over time, so the same input applied at different times can produce different (non-shifted-equivalent) outputs.
 :::
+
+
+## Index
+
+```{show-index}
+
+```
