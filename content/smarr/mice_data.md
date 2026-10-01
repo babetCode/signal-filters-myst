@@ -6,11 +6,32 @@ numbering:
 
 ```{marimo} python
 import marimo as mo
+import pandas as pd
+from pathlib import Path
+import numpy as np
+import matplotlib.pyplot as plt
+plt.style.use('default')
 ```
 
 ```{marimo} python
-import pandas as pd
-from pathlib import Path
+from textwrap import dedent
+
+def graphic(x):
+    return mo.Html(
+        dedent(f'''\
+        <style>
+            .dark .graphic {{ 
+                filter: invert(1) hue-rotate(180deg); 
+            }}
+        </style>
+        <div class="graphic">
+            {mo.as_html(x)}
+        </div>
+        ''')
+    )
+```
+
+```{marimo} python
 data_dir = Path(__file__).parent.parent.parent / "assets/smarr"
 
 df_dict = {
@@ -19,7 +40,7 @@ df_dict = {
     'mLA': pd.read_csv(data_dir / 'micedata-MaleAct.csv'),
     'mCBT': pd.read_csv(data_dir / 'micedata-MaleTemp.csv')
 }
-df_dict
+# df_dict
 ```
 
 ### Raw Data
@@ -27,9 +48,6 @@ df_dict
 First I'll plot the temperatuere data.
 
 ```{marimo} python
-import numpy as np
-import matplotlib.pyplot as plt
-
 def plot_raw_temp(data, columns, title, color='blue'):
     fig, ax = plt.subplots(figsize=(12, 6))
 
@@ -46,7 +64,7 @@ def plot_raw_temp(data, columns, title, color='blue'):
     ax.set_xticks(xticks)
 
     plt.tight_layout()
-    plt.show()
+    return graphic(fig)
 
 # Plot female temperatures
 fem_data_columns = [f'fem{n}' for n in range(1, 15)]
@@ -69,64 +87,67 @@ Based on the cuttofs in the male data, it appears these corrections have already
 # Check Female Temperature data
 fem_temp_data = df_dict['fCBT'].drop(columns=['time (min)'])
 fem_low_values = (fem_temp_data < 35).any().any()
-print(f'fCBT has values < 35: {fem_low_values}')
 
 # Check Male Temperature data  
 male_temp_data = df_dict['mCBT'].drop(columns=['time (min)'])
 male_low_values = (male_temp_data < 35).any().any()
-print(f'mCBT has values < 35: {male_low_values}')
+mo.show_code(
+mo.vstack([
+    f'fCBT has values < 35: {fem_low_values}',
+    f'mCBT has values < 35: {male_low_values}'
+])
+)
 ```
 
 Now, look at the activity data.
 
 ```{marimo} python
 # Plot female activity traces in a grid
-fig, axes = plt.subplots(5, 3, figsize=(15, 18), sharey=True)
-axes = axes.flatten()
+fig1, axes1 = plt.subplots(5, 3, figsize=(15, 18), sharey=True)
+axes1 = axes1.flatten()
 # fem_data_columns = [f'fem{n}' for n in range(1, 15)]
 time_data = df_dict['fLA']['time (min)']
 
 for i, col in enumerate(fem_data_columns):
-    axes[i].plot(time_data, df_dict['fLA'][col], linewidth=0.8)
-    axes[i].set_title(f'{col}', fontsize=10)
-    axes[i].grid(True, alpha=0.3)
+    axes1[i].plot(time_data, df_dict['fLA'][col], linewidth=0.8)
+    axes1[i].set_title(f'{col}', fontsize=10)
+    axes1[i].grid(True, alpha=0.3)
 
     # Set x-axis ticks every 1440 minutes (24 hours)
-    axes[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
-    axes[i].set_xlabel('Time (min)', fontsize=9)
+    axes1[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
+    axes1[i].set_xlabel('Time (min)', fontsize=9)
 
     if i % 3 == 0:  # Left column
-        axes[i].set_ylabel('Activity\n(events/min)', fontsize=9)
+        axes1[i].set_ylabel('Activity\n(events/min)', fontsize=9)
 
 # Hide the last empty subplot (index 14)
-axes[14].set_visible(False)
+axes1[14].set_visible(False)
 
 plt.suptitle('Female Locomotor Activity - Individual Traces', fontsize=14, y=0.995)
 plt.tight_layout()
-plt.show()
 
 # Plot male activity traces in a grid
-fig, axes = plt.subplots(2, 3, figsize=(15, 8), sharey=True)
-axes = axes.flatten()
+fig2, axes2 = plt.subplots(2, 3, figsize=(15, 8), sharey=True)
+axes2 = axes2.flatten()
 
 # male_data_columns = [f'male{n}' for n in range(1, 7)]
 time_data = df_dict['mLA']['time (min)']
 
 for i, col in enumerate(male_data_columns):
-    axes[i].plot(time_data, df_dict['mLA'][col], linewidth=0.8)
-    axes[i].set_title(f'{col}', fontsize=10)
-    axes[i].grid(True, alpha=0.3)
+    axes2[i].plot(time_data, df_dict['mLA'][col], linewidth=0.8)
+    axes2[i].set_title(f'{col}', fontsize=10)
+    axes2[i].grid(True, alpha=0.3)
 
     # Set x-axis ticks every 1440 minutes (24 hours)
-    axes[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
-    axes[i].set_xlabel('Time (min)', fontsize=9)
+    axes2[i].set_xticks(np.arange(0, max(time_data) + 1, 1440))
+    axes2[i].set_xlabel('Time (min)', fontsize=9)
 
     if i % 3 == 0:  # Left column
-        axes[i].set_ylabel('Activity\n(events/min)', fontsize=9)
+        axes2[i].set_ylabel('Activity\n(events/min)', fontsize=9)
 
 plt.suptitle('Male Locomotor Activity - Individual Traces', fontsize=14, y=0.98)
 plt.tight_layout()
-plt.show()
+mo.vstack([graphic(fig1), graphic(fig2)])
 ```
 
 The [paper also explains that](https://pmc.ncbi.nlm.nih.gov/articles/PMC5301430/#:~:text=For%20LA%2C%20the%20correction%20to%20three%20standard%20deviations%20was%20only%20applied%20in%20the%20positive%20direction%20so%20that%20erroneously%20high%20values%20were%20corrected%20while%20activity%20counts%20of%20%E2%80%9C0%E2%80%9D%20were%20not%20inflated.):
@@ -195,6 +216,8 @@ plt.grid(True, which='both', axis='x', linestyle=':', linewidth=0.5)
 plt.xticks(np.arange(0, max(time) + 1, 1440))
 plt.tight_layout()
 plt.show()
+
+# TODO make temperature and activity plots use fig, ax so that they can be output rather than printed to console
 ```
 
 For wavelet transforms, I'll use ssqueezepy.
@@ -261,9 +284,13 @@ def plot_scalogram(W, freqs, t, title):
     cbar.set_label('Magnitude')
 
     plt.tight_layout()
-    plt.show()
+    return fig
 
 for _col in ['fLA', 'fCBT', 'mLA', 'mCBT']:
     W, freqs, t = morse_cwt(processed_df[_col].to_numpy())
-    plot_scalogram(W, freqs, t, _col)
+    mo.output.append(
+        graphic(
+            plot_scalogram(W, freqs, t, _col)
+        )
+    )
 ```

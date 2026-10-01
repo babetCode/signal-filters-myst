@@ -16,6 +16,8 @@ numbering:
 ```
 
 ```{marimo} python
+:hide-code: true
+:name: imports
 :include: false
 import marimo as mo
 import numpy as np
@@ -28,91 +30,11 @@ import matplotlib.pyplot as plt
 ```
 
 ```{marimo} python
-:name: admonition
+:hide-code: true
+:name: display_format
 :include: false
-def admonition(
-    value: str,
-    title: str = "<b>Key Idea</b>",
-    color: str = "GoldenRod",
-    icon_str='<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="color-mix(in srgb, GoldenRod 70%, currentColor 30%)" d="M8.308 13.308q.538-.539.538-1.308t-.538-1.308T7 10.154t-1.308.538T5.154 12t.538 1.308T7 13.846t1.308-.538M7 16.73q-2 0-3.366-1.366Q2.27 14 2.27 12t1.366-3.366T7 7.27q1.698 0 2.941.958t1.593 2.273h9.049l1.494 1.494l-2.48 2.635l-1.828-1.379l-1.827 1.442l-1.557-1.192h-2.85q-.356 1.339-1.608 2.285T7 16.73"></path></svg>',
-):
-    # Parse LaTeX & Markdown first into a rendered Marimo HTML element
-    content = mo.md(value) if isinstance(value, str) else value
-    title_content = mo.md(title) if isinstance(title, str) and title else None
-
-    title_html = ""
-    if title_content:
-        title_html = f"""
-        <div style="
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            margin-bottom: 8px;
-        ">
-            <div style="
-                flex-shrink: 0;
-                margin-right: 8px;
-                font-size: 1.5em;
-                display: flex;
-            ">
-                {icon_str}
-            </div>
-            <div style="color:color-mix(in srgb, {color} 70%, currentColor 30%)">{title_content.text}</div>
-        </div>
-        """
-
-    # Build body HTML using content.text (already parsed by KaTeX)
-    body_html = f"""
-    <div style="display: flex; align-items: flex-start;">
-        {f"" if title else f'<div style="flex-shrink: 0; margin-right: 12px; font-size: 1.5em; display: flex; padding-top: 2px;">{icon_str}</div>'}
-        <div style="flex-grow: 1; overflow-wrap: anywhere;">
-            {content.text}
-        </div>
-    </div>
-    """
-
-    return mo.Html(f"""
-    <div style="
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        margin: 16px 0;
-        border-left: 4px solid {color};
-        background-color: color-mix(in srgb, {color} 10%, transparent);
-        border-radius: 0 6px 6px 0;
-    ">
-        {title_html}
-        {body_html}
-    </div>
-    """)
-```
-
-```{marimo} python
-:include: false
-def key_idea(
-    value: str,
-    title="<b>Key Idea</b>",
-    color="GoldenRod",
-):
-    icon_str = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="color-mix(in srgb, GoldenRod 70%, currentColor 30%)" d="M8.308 13.308q.538-.539.538-1.308t-.538-1.308T7 10.154t-1.308.538T5.154 12t.538 1.308T7 13.846t1.308-.538M7 16.73q-2 0-3.366-1.366Q2.27 14 2.27 12t1.366-3.366T7 7.27q1.698 0 2.941.958t1.593 2.273h9.049l1.494 1.494l-2.48 2.635l-1.828-1.379l-1.827 1.442l-1.557-1.192h-2.85q-.356 1.339-1.608 2.285T7 16.73"></path></svg>'
-    return admonition(value=value, title=title, color=color, icon_str=icon_str)
-```
-
-```{marimo} python
-:include: false
-def glossary_def(
-    value: str,
-    title="<b>Definition</b>",
-    color="cornflowerblue",
-):
-    icon_str = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="color-mix(in srgb, cornflowerblue 70%, currentColor 30%)" d="M4.385 14.09h.779l.555-1.534h2.87l.561 1.535h.792l-2.31-6.143h-.957zm1.62-2.267l1.124-3.06h.05l1.123 3.06zm7.88-2.23v-.931q.805-.408 1.725-.612t1.89-.204q.554 0 1.064.071q.509.072 1.052.202v.908q-.524-.167-1.02-.232q-.498-.064-1.096-.064q-.97 0-1.892.218q-.924.218-1.724.643m0 5.462v-.97q.768-.407 1.717-.611t1.899-.204q.554 0 1.064.072q.509.07 1.052.201v.908q-.524-.167-1.02-.232q-.498-.064-1.096-.064q-.97 0-1.892.235q-.924.234-1.724.665m0-2.712v-.969q.806-.408 1.726-.611t1.89-.204q.554 0 1.063.07q.51.072 1.052.203v.908q-.523-.168-1.02-.232q-.497-.065-1.095-.065q-.97 0-1.892.238q-.924.237-1.724.662M12.5 17.32q1.216-.678 2.453-.98t2.547-.3q.9 0 1.618.111t1.267.296q.23.096.423-.029t.192-.394V7.008q0-.173-.096-.308q-.096-.134-.327-.23q-.825-.293-1.501-.4T17.5 5.961q-1.31 0-2.613.386q-1.304.387-2.387 1.16zm-.5 1.45q-1.22-.834-2.62-1.282T6.5 17.04q-.78 0-1.534.13q-.753.131-1.466.42q-.544.217-1.022-.131T2 16.496V6.831q0-.371.195-.689t.547-.442q.881-.388 1.833-.563T6.5 4.962q1.47 0 2.866.423q1.398.423 2.634 1.23q1.237-.807 2.634-1.23t2.866-.423q.973 0 1.925.175t1.833.563q.352.125.547.442t.195.689v9.665q0 .614-.516.943q-.517.328-1.1.111q-.693-.27-1.418-.39q-.724-.121-1.466-.121q-1.48 0-2.88.448T12 18.769"></path></svg>'
-    return admonition(
-        value=value, title=title, color=color, icon_str=icon_str
-    )
-```
-
-```{marimo} python
-:include: false
+plt.style.use('default')
+schemdraw.use("svg")
 def graphic(x):
     return mo.Html(
         dedent(f'''\
@@ -129,6 +51,8 @@ def graphic(x):
 ```
 
 ```{marimo} python
+:hide-code: true
+:name: math_funcs
 :include: false
 def gaussian_noise(
     mean=0.,
@@ -146,11 +70,7 @@ def gaussian_noise(
         size=n,
     )
     return measurements
-```
 
-```{marimo} python
-:name: cumulative_average
-:include: false
 def cumulative_average(measurements):
     x_k_minus_one = 0
     output = []
@@ -159,11 +79,7 @@ def cumulative_average(measurements):
         output.append(x_k)
         x_k_minus_one = x_k
     return output
-```
 
-```{marimo} python
-:name: ema
-:include: false
 def ema(alpha, measurements):
     x_k_minus_one = 0
     ema_output = []
@@ -181,63 +97,49 @@ It's impossible to measure anything in the real world with 100% precision. Howev
 Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 
 Signal filters follow a somewhat analogous process of using a variety of measurements to estimate some unknown quantity. For example, when weighing an object with an imprecise scale, a filter might be used to combine multiple different measurements and make a better estimate of the object's actual weight. The crucial point here is that having more measurements allows us to achieve better estimates *even if none of the measurements are 100% correct*.
-
-```{marimo} python
-:hide-code: true
-key_idea(value="Having more measurements allows for better estimates <i>even if none of the measurements are 100% correct.</i>")
-```
-
+<!---->
+:::{attention icon=false} 🗝️ **Key Idea**
+Having more measurements allows for better estimates *even if none of the measurements are 100% correct.*
+:::
+<!---->
 To see what this might look like, let's walk through a simple example.
 <!---->
 ## Recursive Averaging
 <!---->
-Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both {term}`signal`s.
+Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both **signals**.
 
 [^loadcell]: A strain gauge load cell is an electronic component that converts force into proportional resistance change using metal foil grids (called strain gauges) which change resistance under load (increasing under tension and decreasing under compression). They are used in almost all digital bathroom scales because they are thin, accurate (relatively), mass-producible, and have no moving parts to wear out.
-
-````{marimo} python
-:hide-code: true
-mo.md(r"""
-This is some text
-```{admonition} This is a title
-  An example of an admonition with a _title_.
-```
-
-this is some more text
-""")
-````
-
-why is this not normal markdown
-
-```{admonition}
-test
-```
-
-```{marimo} python
-:hide-code: true
-glossary_def(value="<b>Signal:</b> Any function that represents how a quantity varies over time or space.")
-```
-
+<!---->
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Signal
+: Any {term}`function` that represents how a quantity varies over time or space.
+:::
+::::
+<!---->
 Because nobody stands perfectly still, your constant weight shifts on the scale will introduce **noise** to the measurements (and even if you were still, there would still be thermal noise in the load cell).
-
-```{marimo} python
-:hide-code: true
-glossary_def(value="<b>Noise:</b> Any unwanted or random component added to a signal that degrades or obscures the information it carries.")
-```
-
+<!---->
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Noise
+: Any unwanted or random component added to a signal that degrades or obscures the information it carries.
+:::
+::::
+<!---->
 Since the stream of measurements from the ADC will constantly fluctuate, we can never know your true weight with 100% precision (remember, it's impossible to measure anything with 100% precision). Instead, we must attempt to remove the noise from this signal to make our best estimate. Hence, the term **filter**.
-
-```{marimo} python
-:hide-code: true
-glossary_def(value="<b>Filter:</b> Any algorithm that selectively modifies or removes noise from a signal.")
-```
-
+<!---->
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Filter
+: Any algorithm that selectively modifies or removes noise from a signal.
+:::
+::::
+<!---->
 Here is the setup we are working with at this point, where each arrow is annotated with the result or output of the prior box:
 
 ```{marimo} python
 :hide-code: true
-schemdraw.use("svg")
-
+:name: scale_diagram
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
 
@@ -269,6 +171,7 @@ Imagine you step on the scale and the first 10 digital measurements look like th
 
 ```{marimo} python
 :hide-code: true
+:name: measurements_fig
 weight = 155
 Hz = 10
 dur = 3
@@ -288,23 +191,22 @@ ten_measurements_df = pd.DataFrame(
     }
 )
 
-with plt.style.context("default"):
-    _fig, _ax = plt.subplots()
+_fig, _ax = plt.subplots()
 
-    ten_measurements_df.plot(
-        x="time_s",
-        y="weight_lbs",
-        ax=_ax,
-        legend=False,
-        xlabel="Time (s)",
-        ylabel="Weight (lbs.)",
-        ylim=(weight-3, weight+3),
-        xticks=ten_measurements_df["time_s"],
-        yticks=np.arange(weight-3, weight+4, 1),
-    )
+ten_measurements_df.plot(
+    x="time_s",
+    y="weight_lbs",
+    ax=_ax,
+    legend=False,
+    xlabel="Time (s)",
+    ylabel="Weight (lbs.)",
+    ylim=(weight-3, weight+3),
+    xticks=ten_measurements_df["time_s"],
+    yticks=np.arange(weight-3, weight+4, 1),
+)
 
-    _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
-    _ax.set_title("Weight Measurements at 10 Hz Sample Rate", style='italic')
+_ax.grid(visible=True, alpha=0.9, linewidth=0.4)
+_ax.set_title("Weight Measurements at 10 Hz Sample Rate", style='italic')
 
 graphic(_fig)
 ```
@@ -312,13 +214,10 @@ graphic(_fig)
 We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^mean-noise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
 
 [^mean-noise]: More specifically, we assume that the mean of the noise is 0, which means our logic still holds even if the median skews too big or too small.
-
-```{marimo} python
-:hide-code: true
-key_idea(
-    r"Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out"
-)
-```
+<!---->
+:::{attention icon=false} 🗝️ **Key Idea**
+Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out.
+:::
 
 ```{marimo} python
 :hide-code: true
@@ -351,14 +250,11 @@ Now we can calculate each $\bar{x}_k$ (pronounced "x bar", where the bar is stat
 $$\bar{x}_k = \frac{\bar{x}_{k-1}(k-1) + z_k}{k} = \bar{x}_{k-1} + \frac{1}{k}(z_k - \bar{x}_{k-1}).$$
 
 By writing each estimate in terms of the previous estimate, a weighting term ($1/k$ in this example), and the new measurement, we can allow this algorithm to run on our scale's limited memory.
-
-```{marimo} python
-:hide-code: true
-key_idea(
-    "We avoid storing a list of all measurements by writing each estimate in terms of the previous one."
-)
-```
-
+<!---->
+:::{attention icon=false} 🗝️ **Key Idea**
+We avoid storing a list of all measurements by writing each estimate in terms of the previous one.
+:::
+<!---->
 This can be implemented in python as
 
 ```py
@@ -381,29 +277,29 @@ Over {dur} seconds, this looks like:
 
 ```{marimo} python
 :hide-code: true
+:name: cumulative_avg_fig
 _measurements_df = pd.DataFrame({
     "time_s": np.arange(.1, dur+.1, .1),
     "weight_lbs": measurements,
     "cumulative_avg_weight": cumulative_average(measurements),
 })
 
-with plt.style.context("default"):
-    _fig, _ax = plt.subplots()
+_fig, _ax = plt.subplots()
 
-    _measurements_df.plot(
-        x="time_s",
-        y=["weight_lbs", "cumulative_avg_weight"],
-        ax=_ax,
-        xlabel="Time (s)",
-        ylabel="Weight (lbs.)",
-        ylim=(weight-3, weight+3),
-        xticks=np.arange(0, dur+.1, .2),
-        yticks=np.arange(weight-3, weight+4, 1),
-        rot=45,
-    )
-    _ax.legend(["Measurement", "Cumulative Avg"])
-    _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
-    _ax.set_title("Weight Measurements & Cumulative Average at 10 Hz", style='italic')
+_measurements_df.plot(
+    x="time_s",
+    y=["weight_lbs", "cumulative_avg_weight"],
+    ax=_ax,
+    xlabel="Time (s)",
+    ylabel="Weight (lbs.)",
+    ylim=(weight-3, weight+3),
+    xticks=np.arange(0, dur+.1, .2),
+    yticks=np.arange(weight-3, weight+4, 1),
+    rot=45,
+)
+_ax.legend(["Measurement", "Cumulative Avg"])
+_ax.grid(visible=True, alpha=0.9, linewidth=0.4)
+_ax.set_title("Weight Measurements & Cumulative Average at 10 Hz", style='italic')
 
 graphic(_fig)
 ```
@@ -423,15 +319,18 @@ $$\hat{x}_k = \hat{x}_{k-1} + \alpha (z_k - \hat{x}_{k-1}).$$
 Note that we have also substituted "$\bar x$" with "$\hat x$" (pronounced "x hat"), where the hat indicates an estimated value, rather than an average. This new equation is called the exponential moving average (EMA)[^ema]. Importantly, $z_k$ has a weighting of $\alpha$, and $\hat x_{k-1}$ has a weighting of $(1-\alpha)$, so that as $\alpha$ goes to $0$, the function goes to $\hat{x}_{k-1}$, and as $\alpha$ goes to $1$, the function goes to $z_k$. In other words, each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$) we go closer to the prior estimate. With a larger $\alpha$ (closer to $1$) we go closer to our new measurement.
 
 [^ema]: The exponential moving average gets its name because each term $z_{k-n}$ is weighted by a factor of $\alpha(1-\alpha)^n$, where $k$ is the number of measurements and $n\le k$. This is clearer when the equation is rearranged into its more common form: $\hat{x}_k = \alpha z_k + (1-\alpha) \hat x_{k-1}$, and we can see that each measurement is multiplied by $\alpha$ when initially taken, and then by $(1-\alpha)$ at every iteration afterwards.
+<!---->
+:::{attention icon=false} 🗝️ **Key Idea**
+Each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$) we choose closer to $\hat x_{k-1}$. With a larger $\alpha$ (closer to $1$) we choose closer to $z_k$.
+:::
+<!---->
+One additional consideration with EMA filters is initialization: our cummulative average simply returns the first measurement as the first estimate, but the EMA takes a weighted combination of each measurement with the previous estimate, so we must give it some initial value to use when calculating the first estimate. There are three common approaches to this.
 
-```{marimo} python
-:hide-code: true
-key_idea(
-    value=r"Each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement \(z_k\). With a smaller $\alpha$ (closer to $0$) we choose closer to $\hat x_{k-1}$. With a larger $\alpha$ (closer to $1$) we choose closer to $z_k$."
-)
-```
+1. *First measurement initialization:* We set $\hat x_{0}$ equal to the first measurement as soon as we get it, ensuring the first estimate equals the first measurement. This is the most common and will be used here.
+2. *Zero initialization:* We set $\hat x_{0} = 0$, so that the first estimate will be $\alpha$ times the first measurement. This is extremely fast and simple, but the filtered will take some time to stabilize, especially with low $\alpha$ values, so the begining of the begining of the filtered signal may need to be cropped out.
+3. *Callibration period initialization:* We reserve some period of time at the begining of data collection for callibration, during which we average the measurements, then we set $\hat x_0$ equal to the average and begin filtering with our EMA. This is less computationally efficient and is more common in economic forecasting and stock predictions.
 
-This can be implemented in python as:
+Our first measurement initialization EMA can be implemented in python as:
 
 ```python
 def ema(alpha, measurements):
@@ -455,6 +354,7 @@ By setting $\alpha = {alpha_slider.value}$, we get:
 
 ```{marimo} python
 :hide-code: true
+:name: ema_alpha_slider
 :include: false
 alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
 ```
@@ -519,6 +419,7 @@ Throughout all these topics, the general framework of real world value, noisy me
 
 ```{marimo} python
 :hide-code: true
+:name: filter_diagram
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
 
