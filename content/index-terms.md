@@ -1,5 +1,5 @@
 ---
-title: Appendix
+title: Index
 abbreviations:
   iff: if and only if
   diff: null

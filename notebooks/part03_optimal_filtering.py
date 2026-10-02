@@ -13,7 +13,7 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(mo):
+def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     abbreviations:
@@ -83,18 +83,21 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    As previously discussed, it is impossible to measure anything with 100% precision. Because measurements are unpredicatble, we say that the measurement {term}`signal` is {term}`stochastic`. Therefore, we model measurements as being sampled from a **probability density function**.
+    As previously discussed, it is impossible to measure anything with 100% precision. Because measurements are unpredicatble, we say that the measurement {term}`signal` is {term}`stochastic`. Therefore, we model measurements as being sampled from a **probability density function** (PDF).
     """)
     return
 
 
 @app.cell(hide_code=True)
-def _(mo):
+def pdf_definition(mo):
     mo.md(r"""
     ::::{admonition icon=false} 📖 **Definition**
     :::{glossary}
     Probability Density Function
-    : A {term}`function` which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the {term}`integral`: $$\int_a^b P(x)dx.$$ By definition, all PDFs must satisfy $$\int_{-\infty}^\infty P(x)dx = 1.$$
+    : A {term}`function` which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the {term}`integral`:
+      $$\int_a^b P(x)\, dx.$$
+      By definition, all PDFs must satisfy
+      $$\int_{-\infty}^\infty P(x)\, dx = 1.$$
     :::
     ::::
     """)
