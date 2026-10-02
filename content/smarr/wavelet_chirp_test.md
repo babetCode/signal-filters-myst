@@ -1,9 +1,3 @@
----
-title: "Flip to put longer periods at top"
-numbering:
-  equations: false
----
-
 ```{marimo} python
 import marimo as mo
 from typing import Iterable
@@ -36,6 +30,8 @@ def morse_cwt_by_period(
 
     freqs = scale_to_freq(scales, wavelet, len(x), fs=sample_freq)
     periods = 1 / freqs
+
+    # Flip to put longer periods at top
     print(Wx.shape)
     Wx_flipped = np.flipud(Wx)
     periods_flipped = periods[::-1]

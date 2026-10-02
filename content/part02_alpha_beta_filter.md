@@ -1,9 +1,3 @@
----
-title: "The Alpha-Beta Filter"
-numbering:
-  equations: false
----
-
 ```{marimo-config}
 :pyproject:
     requires-python = ">=3.13"
@@ -14,6 +8,8 @@ numbering:
         "schemdraw[matplotlib,svgmath]==0.23",
     ]
 ```
+
+# The Alpha-Beta Filter
 
 ```{marimo} python
 :hide-code: true

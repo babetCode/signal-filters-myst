@@ -13,6 +13,21 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    <!-- jb-frontmatter
+    abbreviations:
+      iff: if and only if
+      diff: null
+      PDF: probability density function
+    numbering:
+      equations: false
+    -->
+    """)
+    return
+
+
+@app.cell(hide_code=True)
 def imports():
     # jb: include=false
     import marimo as mo

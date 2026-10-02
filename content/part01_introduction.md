@@ -1,9 +1,3 @@
----
-title: "Introduction"
-numbering:
-  equations: false
----
-
 ```{marimo-config}
 :pyproject:
     requires-python = ">=3.13"
@@ -14,6 +8,8 @@ numbering:
         "schemdraw[matplotlib,svgmath]==0.23",
     ]
 ```
+
+# Introduction
 
 ```{marimo} python
 :hide-code: true
@@ -92,7 +88,7 @@ def ema(alpha, measurements):
     return ema_output
 ```
 
-It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
+Itt's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
 
 Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 

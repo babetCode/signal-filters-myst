@@ -1,8 +1,14 @@
 ---
-title: "Optimal Filtering"
+abbreviations:
+  iff: if and only if
+  diff: null
+  PDF: probability density function
 numbering:
   equations: false
 ---
+
+# Optimal Filtering
+<!---->
 
 ```{marimo} python
 :hide-code: true

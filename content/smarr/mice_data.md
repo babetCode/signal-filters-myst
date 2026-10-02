@@ -1,9 +1,3 @@
----
-title: "Get the directory where the current script is located"
-numbering:
-  equations: false
----
-
 ```{marimo} python
 import marimo as mo
 import pandas as pd
@@ -32,6 +26,7 @@ def graphic(x):
 ```
 
 ```{marimo} python
+# Get the directory where the current script is located
 data_dir = Path(__file__).parent.parent.parent / "assets/smarr"
 
 df_dict = {
