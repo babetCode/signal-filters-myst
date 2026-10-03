@@ -60,6 +60,15 @@ JB_FRONTMATTER_PATTERN = re.compile(
     re.DOTALL,
 )
 
+# Any fenced code block, used to mask out code when scanning prose for a
+# title heading below (so a `# comment` at column 0 in a code cell doesn't
+# get mistaken for a Markdown H1).
+FENCE_SPLIT_PATTERN = re.compile(r"(```.*?```)", re.DOTALL)
+
+# The first top-level `# Heading` line, used as the page title when nothing
+# more specific is set via `jb-frontmatter`.
+H1_PATTERN = re.compile(r"^#[ \t]+(.+?)[ \t]*$\n?", re.MULTILINE)
+
 
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs."""
@@ -189,6 +198,37 @@ def build_marimo_cell(match: re.Match) -> str:
     return "\n".join(lines)
 
 
+def has_title(yaml_lines: list) -> bool:
+    return any(re.match(r"^title\s*:", line) for line in yaml_lines)
+
+
+def format_yaml_title(title: str) -> str:
+    escaped = title.replace('"', '\\"')
+    return f'title: "{escaped}"'
+
+
+def extract_title_heading(body: str) -> tuple:
+    """Find and remove the first top-level `# Heading` line in the body,
+    skipping anything inside fenced code blocks (where a Python comment like
+    `# note` at column 0 would otherwise look like a heading).
+
+    Returns (body_with_heading_removed, heading_text_or_None). Trailing ATX
+    closing hashes (`# Heading #`) are stripped from the extracted text, but
+    inline Markdown formatting (bold, links, code spans) is not — it is kept
+    as-is in the title.
+    """
+    segments = FENCE_SPLIT_PATTERN.split(body)
+    for i, segment in enumerate(segments):
+        if segment.startswith("```"):
+            continue  # leave fenced code blocks untouched
+        match = H1_PATTERN.search(segment)
+        if match:
+            title = re.sub(r"\s*#+\s*$", "", match.group(1)).strip()
+            segments[i] = segment[: match.start()] + segment[match.end():]
+            return "".join(segments), title
+    return body, None
+
+
 def transform_md_content(md_content: str, source: str = "") -> str:
     """Transform raw marimo export md to jupyter-book-marimo MyST format."""
 
@@ -207,7 +247,9 @@ def transform_md_content(md_content: str, source: str = "") -> str:
         if pyproject_data:
             header_config_block = format_marimo_config(pyproject_data)
 
-        # 2. Strip marimo-version, width, and multiline header from YAML frontmatter
+        # 2. Strip marimo-version, width, title, and multiline header from YAML
+        #    frontmatter. marimo's own `title` is dropped unconditionally —
+        #    see steps 3-4 below for how the real title is determined.
         in_header_block = False
         for line in yaml_text.splitlines():
             if (
@@ -241,16 +283,26 @@ def transform_md_content(md_content: str, source: str = "") -> str:
     body_text = JB_FRONTMATTER_PATTERN.sub(collect_frontmatter, body_text)
     body_text = re.sub(r"\n{3,}", "\n\n", body_text)  # tidy gaps left by removed comments
 
+    # 4. Use the first H1 heading as the page title — and remove it from the
+    #    body, since the frontmatter title is rendered separately and leaving
+    #    the heading in place would show it twice — unless `jb-frontmatter`
+    #    already set an explicit title, in which case leave the body as-is.
+    if not has_title(yaml_lines):
+        body_text, extracted_title = extract_title_heading(body_text)
+        if extracted_title:
+            yaml_lines.append(format_yaml_title(extracted_title))
+            body_text = re.sub(r"\n{3,}", "\n\n", body_text)
+
     clean_frontmatter = ""
     yaml_str = "\n".join(yaml_lines).strip()
     if yaml_str:
         clean_frontmatter = f"---\n{yaml_str}\n---"
 
-    # 4. Transform code cell blocks, mapping marimo cell attrs and any
+    # 5. Transform code cell blocks, mapping marimo cell attrs and any
     #    `# jb:` comment onto MyST directive options
     transformed_body = CODE_FENCE_PATTERN.sub(build_marimo_cell, body_text)
 
-    # 5. Assemble output components in order
+    # 6. Assemble output components in order
     sections = []
     if clean_frontmatter:
         sections.append(clean_frontmatter)
@@ -292,7 +344,7 @@ def sync_all() -> bool:
 def watch_and_serve(port: str, server_port: str):
     sync_all()
 
-    mtimes: dict[pathlib.Path, float] = {}
+    mtimes: dict = {}
     for py_file in iter_notebooks():
         mtimes[py_file] = py_file.stat().st_mtime
 
