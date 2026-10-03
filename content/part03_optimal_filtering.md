@@ -7,7 +7,7 @@ numbering:
   equations: false
 ---
 
-# Optimal Filtering
+# Optimal Filterings
 <!---->
 
 ```{marimo} python
@@ -61,21 +61,22 @@ Probability Density Function
 :::
 ::::
 <!---->
-## Brainstorm
+## brainstorm
 <!---->
-The **Reimman sum** is something like:
+The mean of a PDF is defined as
+<!---->
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Mean
+: 1. (Of a sample of data $n$ values) The sum of the values divided by n:
+  $$\bar x := \sum_{x=1}^n x_i$$
 
-if we break the area under a curve $f(x)$ between points $a$ and $b$ (where $a<b$) into partitions with maximum width $k$, and we let $p_i$ be the $x$ value at the start of the $i$-th partition, then area of the $i$-th partition under the curve has the left-hand approximation
-
-$$f(p_i)p_i,$$
-
-so the area under the whole curve has the left-hand approximation
-
-$$\sum f(p_i)p_i*.$$
-
-and the definite integral of $f(x)$ from $a$ to $b$ is
-
-$$\int_a^b f(x)dx = \lim_{k\rightarrow0}\left(\sum f(p_i)p_i*\right).$$
+  2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:
+  $$\mu_{[a,b]} := \int_a^b f(x)x\, dx.$$
+  If no interval is specified, it is assumed to be over the reals:
+  $$\mu := \int_{-\infty}^\infty f(x)x\, dx.$$
+:::
+::::
 
 ```{marimo} python
 # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?

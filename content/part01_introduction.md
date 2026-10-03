@@ -1,15 +1,11 @@
-```{marimo-config}
-:pyproject:
-    requires-python = ">=3.13"
-    dependencies = [
-        "matplotlib==3.11.1",
-        "numpy==2.5.2",
-        "pandas==3.0.5",
-        "schemdraw[matplotlib,svgmath]==0.23",
-    ]
-```
+---
+numbering:
+  equations: false
+---
 
-# Introduction
+
+# Introductions
+<!---->
 
 ```{marimo} python
 :hide-code: true
@@ -118,7 +114,7 @@ Because nobody stands perfectly still, your constant weight shifts on the scale 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Noise
-: Any unwanted or random component added to a signal that degrades or obscures the information it carries.
+: Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
 :::
 ::::
 <!---->
@@ -127,7 +123,7 @@ Since the stream of measurements from the ADC will constantly fluctuate, we can 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Filter
-: Any algorithm that selectively modifies or removes noise from a signal.
+: Any algorithm that selectively modifies or removes noise from a {term}`signal`.
 :::
 ::::
 <!---->

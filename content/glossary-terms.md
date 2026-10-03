@@ -3,7 +3,6 @@ title: Glossary Terms
 abbreviations:
   iff: if and only if
   diff: null
-  $:=$: defined as
 numbering:
   equations: false
 ---
@@ -22,13 +21,13 @@ Derivative
   It is often thought of as the instantaneous rate of change (or slope) of a function at a given point.
 
 Deterministic
-: *Adjective* — A signal or system whose future values can be exactly predicted from a known mathematical rule or past behavior, whith no randomness involved.
+: (Of a {term}`signal` or {term}`system model`) Having no randmomness involved and therefore being fully predictable from set of mathematical rules, given the current value or state.
 
 Discrete time
-: *Adjective* — A signal defined only at specific, separate instants (denoted $x[n]$), typically obtained by sampling a continuous signal at regular intervals.
+: (Of a {term}`signal`) defined only at specific, separate instants (denoted $x[n]$), typically obtained by sampling a continuous signal at regular intervals.
 
 Distributed
-: *Adjective* — A system whose parameters are distributed consistently over space, so behavior depends on both time and position. Described by partial differential equations (eg. a transmission line or a vibrating string).
+: (Of a {term}`system`) having parameters distributed consistently over space, so behavior depends on both time and position. Described by partial differential equations (eg. a transmission line or a vibrating string).
 
 Domain
 : The set of allowed inputs for a {term}`function`.
@@ -37,14 +36,17 @@ Function
 : A mathematical process that gives a unique output for each distinct input in its {term}`domain`.
 
 Integral
-: 1. The **definite integral** of a {term}`function` $f(x)$ from $a$ to $b$ (where $a<b$) is defined as the {term}`limit` of the {term}`riemann sum` for $f(x)$ on the interval $[a,b]$ as the maximum subinterval width of the partition goes to zero. Applying the definition of the limit, this means that the integral of $f(x)$ over $[a,b]$ is defined as
+: 1. The **definite integral** of a {term}`function` $f(x)$ from $a$ to $b$ is the exact signed area under the curve $y = f(x)$ over $[a,b]$, defined as the {term}`limit` of the {term}`riemann sum` as the partition's maximum subinterval width goes to zero. Applying the definition of the limit, this means that the integral of $f(x)$ over $[a,b]$ is defined as
   $$\int_a^b f(x) \, dx := I$$
   iff for every $\epsilon > 0$, there exists a $\delta > 0$ such that for any partition $P$ with maximum subinterval width less than $\delta$ and any choice of sample points $x_i^* \in [x_{i-1}, x_i]$, we have
   $$\left\vert{} \left( \sum_{i=1}^{n} f(x_i^*) \Delta x_i \right) - I \right\vert{} < \epsilon.$$
   
   2. The **indefinite integral** of a {term}`function` $f(x)$ represents the set of all {term}`antiderivatives <antiderivative>` of $f(x)$:
-  $$\int f(x) \, dx = F(x) + C,$$
+  $$\int f(x) \, dx := F(x) + C,$$
   where $C$ is the constant of integration that accounts for every vertical shift.
+
+  By the Fundamental Theorem of Calculus, the definite integral of $f(x)$ over $[a,b]$ equals the difference between any antiderivative evaluated at $b$ and $a$:
+  $$\int_a^b f(x) \, dx = F(b) - F(a).$$
 
 Left-hand limit
 : The limit of a {term}`function` $f(x)$ as $x$ goes to $a$ from the left is defined as $$\lim_{x \rightarrow a^-} f(x) := b$$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a-\delta, a)$, we have $$|f(x) - b| < \epsilon.$$
@@ -95,7 +97,7 @@ System output
 : A {term}`signal` produced by a {term}`system model` according to some set of rules or operations.
 
 System state
-: (Of a {term}`system`) the minimum set of variables such that, given only their values at the present time, together with the values of the input at the present and all future times, can be used to fully determine the system's defined outputs into the future (or their probability distribution if the system includes randomness).
+: (Of a {term}`system`) the minimum set of variables such that—given only their values at the present time, together with the values of the input at the present and all future times—the systems defined outputs (or their probability distributions, if the system includes randomness) can be fully determined into the future.
 
 Time invariant
 : (Of a {term}`system`) not changing over time: a time-shifted input produces an identically time-shifted output.

@@ -18,7 +18,18 @@ app = marimo.App(width="medium")
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Introduction
+    # Introductions
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def frontmatter(mo):
+    mo.md(r"""
+    <!-- jb-frontmatter
+    numbering:
+      equations: false
+    -->
     """)
     return
 
@@ -178,7 +189,7 @@ def _(mo):
     ::::{admonition icon=false} 📖 **Definition**
     :::{glossary}
     Noise
-    : Any unwanted or random component added to a signal that degrades or obscures the information it carries.
+    : Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
     :::
     ::::
     """)
@@ -199,7 +210,7 @@ def _(mo):
     ::::{admonition icon=false} 📖 **Definition**
     :::{glossary}
     Filter
-    : Any algorithm that selectively modifies or removes noise from a signal.
+    : Any algorithm that selectively modifies or removes noise from a {term}`signal`.
     :::
     ::::
     """)
