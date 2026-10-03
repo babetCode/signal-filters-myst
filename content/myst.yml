@@ -1,7 +1,11 @@
 version: 1
 project:
   title: Signal Filter Book
+  authors:
+    - name: Adrien Babet
+  abstract: An introductory guide to signal filtering.
   plugins:
+    - ../scripts/strip-terms.mjs
     - type: executable
       # path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
       path: ../.venv/bin/jupyter-book-marimo # Unix
@@ -10,11 +14,15 @@ project:
     - file: part01_introduction.md
     - file: part02_alpha_beta_filter.md
     - file: part03_optimal_filtering.md
-    - file: index-terms.md
     - file: glossary-terms.md
-      hidden: true
-  references:
-    # kbfp: https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python
+  exports:
+    - format: typst
+      output: documents/project-download.pdf
+      articles:
+        - index.md
+        - part01_introduction.md
+        - part02_alpha_beta_filter.md
+        - part03_optimal_filtering.md
 site:
   template: book-theme
   options:

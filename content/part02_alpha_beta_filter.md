@@ -1,3 +1,9 @@
+---
+numbering:
+  equations: false
+title: "The Alpha-Beta Filter"
+---
+
 ```{marimo-config}
 :pyproject:
     requires-python = ">=3.13"
@@ -9,7 +15,7 @@
     ]
 ```
 
-# The Alpha-Beta Filter
+<!---->
 
 ```{marimo} python
 :hide-code: true
@@ -177,17 +183,19 @@ Therefore, we can substitute $\hat x_{k-1}$ for $(\hat x_{k-1} + \Delta x_k)$ in
 
 $$\hat{x}_k = (\hat x_{k-1} + \Delta x_k) + \alpha (z_k - (\hat x_{k-1} + \Delta x_k)).$$
 
+Here, the $(\hat x_{k-1} + \Delta x_k)$ term is called the **prior** (often denoted $\hat x_k^-$), because it represents our estimate at time $k$ *prior* to getting the measurement $z_k$. Using this notation, we can rewrite our equation as
+$$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
 We are now much closer to running our filter just like in the last section.
 <!---->
 :::{attention icon=false} 🗝️ **Key Idea**
-If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can use $\alpha$ to choose a value between the expression and $z_k$.
+If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can combine them (with some weighting $\alpha$) to increase the probablity that the noise cancels out.
 :::
 <!---->
-However, we must first figure out how to estimate the delta. To see how this plays out, let's walk through an example.
+However, we must first figure out how to estimate $\Delta x_k$. To see how this plays out, let's walk through an example.
 <!---->
 ## Estimating the Rate of Change
 <!---->
-Imagine that after the scale measures you at 154.95 lbs, you decide to bulk up and start eating more. Then, we weigh you again every day. You track your caloric intake and then use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain with your new diet [@wishnofsky1958].
+Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
 
 [^mifflin-st-jeor]:
     The Mifflin-St Jeor equation estimates basal metabolic rate (BMR):

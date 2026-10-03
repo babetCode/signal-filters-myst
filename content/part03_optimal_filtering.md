@@ -5,9 +5,19 @@ abbreviations:
   PDF: probability density function
 numbering:
   equations: false
+title: "Optimal Filterings"
 ---
 
-# Optimal Filterings
+```{marimo-config}
+:pyproject:
+    dependencies = [
+        "matplotlib==3.11.2",
+        "numpy==2.5.3",
+        "pandas==3.0.6",
+        "schemdraw==0.23",
+    ]
+```
+
 <!---->
 
 ```{marimo} python
@@ -68,7 +78,7 @@ The mean of a PDF is defined as
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Mean
-: 1. (Of a sample of data $n$ values) The sum of the values divided by n:
+: 1. (Of a sample of $n$ values) The sum of the values divided by n:
   $$\bar x := \sum_{x=1}^n x_i$$
 
   2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:

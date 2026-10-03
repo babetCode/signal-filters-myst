@@ -1,6 +1,16 @@
+# /// script
+# dependencies = [
+#     "marimo>=0.25.1",
+#     "matplotlib==3.11.2",
+#     "numpy==2.5.3",
+#     "pandas==3.0.6",
+#     "schemdraw==0.23",
+# ]
+# ///
+
 import marimo
 
-__generated_with = "0.25.0"
+__generated_with = "0.25.1"
 app = marimo.App(width="medium")
 
 
@@ -126,7 +136,7 @@ def mean_definition(mo):
     ::::{admonition icon=false} 📖 **Definition**
     :::{glossary}
     Mean
-    : 1. (Of a sample of data $n$ values) The sum of the values divided by n:
+    : 1. (Of a sample of $n$ values) The sum of the values divided by n:
       $$\bar x := \sum_{x=1}^n x_i$$
 
       2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:

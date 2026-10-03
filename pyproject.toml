@@ -13,6 +13,7 @@ dependencies = [
 dev = [
     "marimo>=0.9.0",
     "matplotlib>=3.10.0",
+    "mystmd",
     "numpy>=2.1.0",
     "pandas>=2.2.3",
     "schemdraw[matplotlib,svgmath]==0.23",

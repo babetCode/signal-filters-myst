@@ -11,14 +11,14 @@
 
 import marimo
 
-__generated_with = "0.25.0"
+__generated_with = "0.25.1"
 app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Introductions
+    # Introduction
     """)
     return
 
@@ -40,7 +40,6 @@ def imports():
     import marimo as mo
     import numpy as np
     import pandas as pd
-    import matplotlib
     import schemdraw
     from schemdraw import flow
     from textwrap import dedent
@@ -117,7 +116,7 @@ def math_funcs(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Itt's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
+    It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
 
     Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 

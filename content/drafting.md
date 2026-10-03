@@ -4,6 +4,7 @@ abbreviations:
   diff: null
 numbering:
   equations: false
+title: "Drafting"
 ---
 
 ```{marimo-config}
@@ -17,7 +18,6 @@ numbering:
     ]
 ```
 
-# Drafting
 <!---->
 
 ```{marimo} python
