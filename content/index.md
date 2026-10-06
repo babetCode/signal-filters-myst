@@ -1,6 +1,6 @@
 # About
 
-My goal for this project is an interactive, introduction to signal filtering. I was inspired by *Kalman and Bayesian Filters in Python*, an introductory textbook written using Jupyter Notebook by Roger Labbe. To run his book, he recommends to downoad the notebooks from github, set up a conda environment, and run a local jupyter server. When Labbe wrote it, this was the best option for reactive notebooks. However, [he also notes](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python#downloading-and-running-the-book) "This is admittedly a somewhat cumbersome interface to a book."
+My goal for this project is an interactive, introduction to signal filtering. I was inspired by *Kalman and Bayesian Filters in Python*, an introductory textbook written using Jupyter Notebook by Roger Labbe. [To read his book](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python#downloading-and-running-the-book), he recommends downoading the notebooks from github, setting up a conda environment, and running a local jupyter server. When Labbe wrote it, this was the best option for reactive notebooks. However, he also notes, "this is admittedly a somewhat cumbersome interface to a book."
 
 Now, [marimo](https://marimo.io/) and [uv](https://docs.astral.sh/uv/) offer much easier sharing and dependency management. My goal here is to adapt what I have learned from Labbe's work and make it more easily shareable with modern tools.
 

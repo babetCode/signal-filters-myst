@@ -177,15 +177,17 @@ z_k &= x_k.
 
 You might say, "well of course if there were no imperfections then our estimate and measurement would be perfect, but how is that useful?" In order for this be useful, we need an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, that way we can use our same strategy with $\alpha$ to choose a value between the expression and $z_k$. By letting $\Delta x_k$ represent the change in value arriving at step $k$: $(x_k - x_{k-1})$, we can say that *if there was no noise*, then we would have
 
-$$\hat x_{k-1} + \Delta x_k = z_k = x_k.$$
+$$\hat x_{k-1} + \Delta x_k = z_k = x_k$$
 
-Therefore, we can substitute $\hat x_{k-1}$ for $(\hat x_{k-1} + \Delta x_k)$ in our EMA equation to get
+(we don't know what $\Delta x_k$ is yet, but we'll figure out how to deal with that later). Therefore, we can substitute $(\hat x_{k-1} + \Delta x_k)$ in place of $\hat x_{k-1}$ in our EMA equation to get
 
 $$\hat{x}_k = (\hat x_{k-1} + \Delta x_k) + \alpha (z_k - (\hat x_{k-1} + \Delta x_k)).$$
 
-Here, the $(\hat x_{k-1} + \Delta x_k)$ term is called the **prior** (often denoted $\hat x_k^-$), because it represents our estimate at time $k$ *prior* to getting the measurement $z_k$. Using this notation, we can rewrite our equation as
+Here, the $(\hat x_{k-1} + \Delta x_k)$ term is called the **prior** (often denoted $\hat x_k^-$), because it represents our estimate for time $k$ *prior* to getting the measurement $z_k$. Using this notation, we can rewrite our equation as
+
 $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
-We are now much closer to running our filter just like in the last section.
+
+This is starting to look quite similar to our filter in the last section.
 <!---->
 :::{attention icon=false} 🗝️ **Key Idea**
 If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can combine them (with some weighting $\alpha$) to increase the probablity that the noise cancels out.

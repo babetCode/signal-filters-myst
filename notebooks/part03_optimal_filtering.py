@@ -105,9 +105,9 @@ def pdf_definition(mo):
     :::{glossary}
     Probability Density Function
     : A {term}`function` which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the {term}`integral`:
-      $$\int_a^b P(x)\, dx.$$
+      \[\int_a^b P(x)\, dx.\]
       By definition, all PDFs must satisfy
-      $$\int_{-\infty}^\infty P(x)\, dx = 1.$$
+      \[\int_{-\infty}^\infty P(x)\, dx = 1.\]
     :::
     ::::
     """)
@@ -117,7 +117,23 @@ def pdf_definition(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## brainstorm
+    ::::{admonition icon=false} 📖 **Definition**
+    :::{glossary}
+    Probability Density Function
+    : A <!--{term}`--> function <!--`s--> which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the {term}`integral`:
+      \[\int_a^b P(x)\, dx.\]
+      By definition, all PDFs must satisfy
+      \[\int_{-\infty}^\infty P(x)\, dx = 1.\]
+    :::
+    ::::
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Brainstorm
     """)
     return
 
@@ -152,6 +168,35 @@ def mean_definition(mo):
 @app.cell
 def _():
     # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Bayesian statistics
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Consider a game of three card monte, where we must guess which one of three shuffled cards is the queen. If we guess perfectly at random we would have a $\frac13$ chance of guessing correctly. Put differently, if we had no information about the cards (other than exactly one of them being the queen), then the most reasonable probability distribution to assign would be:
+
+    $$\begin{align*}
+    \text{card 1: } & 1/3 \\
+    \text{card 2: } & 1/3 \\
+    \text{card 3: } & 1/3 \\
+    \end{align*}$$
+
+    Now consider how card 1's probability would change if card 3 was reavealed to *not* be the queen. According the the Bayesian formula, this is calculated as
+
+    $$\begin{align*}
+    P(\text{card 1} | \neg \text{card 3}) &= \frac{P^-(\text{card 1})P(\neg\text{card 3}|\text{card 1})}{P(\neg\text{card 3})} \\
+    &= \frac{(1/3)(1)}{(2/3)} = \boxed{\frac12}.
+    \end{align*}$$
+    """)
     return
 
 

@@ -15,6 +15,10 @@ project:
     - file: part02_alpha_beta_filter.md
     - file: part03_optimal_filtering.md
     - file: glossary-terms.md
+    - file: philosophy/philosophy.md
+      hidden: true
+    - file: philosophy/glossary-philosophy.md
+      hidden: true
   exports:
     - format: typst
       output: documents/project-download.pdf
