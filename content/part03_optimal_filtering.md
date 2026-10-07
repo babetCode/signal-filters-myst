@@ -13,7 +13,6 @@ pyproject: |-
       "pandas==3.0.6",
       "schemdraw==0.23",
   ]
-width: medium
 ---
 ```
 
@@ -29,8 +28,8 @@ numbering:
 ```{marimo} python
 :hide-code: true
 :name: imports
+:include: false
 
-# jb: include=false
 import marimo as mo
 import numpy as np
 import pandas as pd
@@ -44,8 +43,8 @@ import matplotlib.pyplot as plt
 ```{marimo} python
 :hide-code: true
 :name: display_format
+:include: false
 
-# jb: include=false
 plt.style.use('default')
 schemdraw.use("svg")
 def graphic(x):

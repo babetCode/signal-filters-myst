@@ -26,8 +26,8 @@ numbering:
 ```{marimo} python
 :hide-code: true
 :name: imports
+:include: false
 
-# jb: include=false
 import marimo as mo
 import numpy as np
 import pandas as pd
@@ -40,8 +40,8 @@ import matplotlib.pyplot as plt
 ```{marimo} python
 :hide-code: true
 :name: display_format
+:include: false
 
-# jb: include=false
 plt.style.use('default')
 schemdraw.use("svg")
 def graphic(x):
@@ -62,8 +62,8 @@ def graphic(x):
 ```{marimo} python
 :hide-code: true
 :name: math_funcs
+:include: false
 
-# jb: include=false
 def gaussian_noise(
     mean=0.,
     std_dev=1.,
@@ -102,7 +102,7 @@ def ema(alpha, measurements):
     return ema_output
 ```
 
-It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
+It's impossibles to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
 
 Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 
@@ -371,8 +371,8 @@ By setting $\alpha = {alpha_slider.value}$, we get:
 ```{marimo} python
 :hide-code: true
 :name: ema_alpha_slider
+:include: false
 
-# jb: include=false
 alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
 ```
 

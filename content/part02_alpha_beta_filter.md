@@ -25,8 +25,8 @@ numbering:
 ```{marimo} python
 :hide-code: true
 :name: imports
+:include: false
 
-# jb: include=false
 import marimo as mo
 import schemdraw
 from schemdraw import flow
@@ -39,8 +39,8 @@ from textwrap import dedent
 ```{marimo} python
 :hide-code: true
 :name: display_format
+:include: false
 
-# jb: include=false
 plt.style.use('default')
 schemdraw.use("svg")
 def graphic(x):
@@ -61,8 +61,8 @@ def graphic(x):
 ```{marimo} python
 :hide-code: true
 :name: math_funcs
+:include: false
 
-# jb: include=false
 def gaussian_noise(
     mean=0.,
     std_dev=1.,
@@ -104,8 +104,8 @@ def ema(alpha, measurements):
 ```{marimo} python
 :hide-code: true
 :name: nutrition_funcs
+:include: false
 
-# jb: include=false
 def mifflin_st_jeor(
     age = 25,
     height_cm = 175,
@@ -141,8 +141,8 @@ kcal_per_lb = 3500
 ```{marimo} python
 :hide-code: true
 :name: biometrics
+:include: false
 
-# jb: include=false
 age = 23
 height_cm = 175
 sex = "M"
@@ -234,8 +234,8 @@ For example, imagine you are a {height_cm} cm, {age} year old {sex_dict[sex]}, y
 ```{marimo} python
 :hide-code: true
 :name: alpha_delta_sliders
+:include: false
 
-# jb: include=false
 def alpha_delta(alpha, delta, measurements):
     x_k_minus_one = 0
     ema_output = []

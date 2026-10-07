@@ -11,7 +11,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(width="medium", app_title="Optimal Filtering")
+app = marimo.App(app_title="Optimal Filtering")
 
 
 @app.cell(hide_code=True)

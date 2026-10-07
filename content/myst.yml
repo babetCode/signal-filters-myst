@@ -33,3 +33,4 @@ site:
     favicon: ../assets/filter-book-icon.svg
     logo: ../assets/filter-book-icon.svg
     logo_text: Signal Filters
+    hide_authors: true

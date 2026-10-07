@@ -5,8 +5,12 @@ for use with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-m
 
 import argparse
 import pathlib
+import re
 import subprocess
 import sys
+
+from watchdog.events import PatternMatchingEventHandler
+from watchdog.observers import Observer
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
@@ -16,6 +20,22 @@ CONTENT_DIR = PROJECT_ROOT / "content"
 # (e.g. marimo's own session/layout state).
 IGNORED_DIRS = {"__marimo__", "__pycache__"}
 
+# jupyter-book-marimo directive options with no marimo-native equivalent.
+# --flavor mystmd already handles everything else (name, column, hide-code,
+# disabled) directly from marimo cell kwargs. Set these per-cell via a
+# `# jb: key=value ...` comment anywhere in the cell.
+JB_ONLY_OPTIONS = {
+    "eval", "echo", "editor", "output",
+    "server-output", "error", "include",
+    "hide-output", "unparsable",
+}
+
+JB_COMMENT_PATTERN = re.compile(r"^[ \t]*#\s*jb:\s*(.+?)\s*$\n?", re.MULTILINE)
+MARIMO_FENCE_PATTERN = re.compile(
+    r"```\{marimo\}\s*python\n(?P<options>(?::[^\n]*\n)*)(?P<body>.*?\n)```",
+    re.DOTALL,
+)
+
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs."""
     for py_file in NOTEBOOKS_DIR.rglob("*.py"):
@@ -24,6 +44,41 @@ def iter_notebooks():
         if IGNORED_DIRS.isdisjoint(parts):
             output_path = (CONTENT_DIR / rel_path).with_suffix(".md")
             yield py_file, output_path
+
+def apply_jb_options(content: str, source: str = "") -> str:
+    """Find `{marimo}` cells with a `# jb: key=value ...` comment, turn that
+    comment into MyST directive options, and strip it from the visible code."""
+
+    def replace(match: re.Match) -> str:
+        body = match.group("body")
+        jb_match = JB_COMMENT_PATTERN.search(body)
+        if not jb_match:
+            return match.group(0)
+
+        new_options = []
+        for pair in jb_match.group(1).split():
+            if "=" not in pair:
+                print(f"[marimo-sync] Warning: malformed jb option '{pair}' in {source}, skipping", file=sys.stderr)
+                continue
+            key, value = pair.split("=", 1)
+            if key not in JB_ONLY_OPTIONS:
+                print(f"[marimo-sync] Warning: unknown jb option '{key}' in {source}", file=sys.stderr)
+                continue
+            new_options.append(f":{key}: {value}\n")
+
+        cleaned_body = JB_COMMENT_PATTERN.sub("", body, count=1)
+        return f"```{{marimo}} python\n{match.group('options')}{''.join(new_options)}{cleaned_body}```"
+
+    return MARIMO_FENCE_PATTERN.sub(replace, content)
+
+def postprocess_file(output_path: pathlib.Path):
+    try:
+        content = output_path.read_text(encoding="utf-8")
+    except (FileNotFoundError, UnicodeDecodeError):
+        return
+    updated = apply_jb_options(content, source=str(output_path))
+    if updated != content:
+        output_path.write_text(updated, encoding="utf-8")
 
 def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) -> pathlib.Path | None:
     cmd = [
@@ -45,6 +100,7 @@ def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) ->
             encoding="utf-8",
             check=True,
         )
+        postprocess_file(output_path)
         print(f"[marimo-sync] Successfully exported {notebook_path.name} -> {output_path.name}")
         return output_path
 
@@ -77,9 +133,26 @@ def start_watcher(notebook_path: pathlib.Path, output_path: pathlib.Path) -> sub
     ]
     return subprocess.Popen(cmd)
 
+class JbOptionsHandler(PatternMatchingEventHandler):
+    """Watches content/*.md for writes from marimo's own --watch processes
+    and re-applies `# jb:` comment options after each one."""
+
+    def __init__(self):
+        super().__init__(patterns=["*.md"], ignore_directories=True)
+
+    def on_created(self, event):
+        postprocess_file(pathlib.Path(event.src_path))
+
+    def on_modified(self, event):
+        postprocess_file(pathlib.Path(event.src_path))
+
 def serve(port: str, server_port: str):
     watchers = [start_watcher(nb, out) for nb, out in iter_notebooks()]
     print(f"[marimo-sync] Watching {len(watchers)} notebook(s) with marimo --watch...")
+
+    jb_observer = Observer()
+    jb_observer.schedule(JbOptionsHandler(), str(CONTENT_DIR), recursive=True)
+    jb_observer.start()
 
     jb_cmd = [
         "uv", "run", "jupyter-book", "start",
@@ -94,6 +167,8 @@ def serve(port: str, server_port: str):
     except KeyboardInterrupt:
         print("\n[marimo-sync] Shutting down...")
     finally:
+        jb_observer.stop()
+        jb_observer.join()
         if jb_proc.poll() is None:
             jb_proc.terminate()
         for proc in watchers:
