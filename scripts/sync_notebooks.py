@@ -103,6 +103,21 @@ def apply_jb_frontmatter(content: str, source: str = "") -> str:
 
     return f"---\n{extra_yaml}\n---\n\n{stripped.lstrip()}"
 
+def comment_out_marimo_version(content: str) -> str:
+    """Comment out the `marimo-version:` line marimo adds to frontmatter by
+    default, so it's preserved for reference without being read as a page's
+    actual YAML key."""
+    match = FRONTMATTER_PATTERN.match(content)
+    if not match:
+        return content
+
+    yaml_text, rest = match.group(1), match.group(2)
+    yaml_lines = [
+        f"# {line}" if line.startswith("marimo-version:") else line
+        for line in yaml_text.splitlines()
+    ]
+    return f"---\n{chr(10).join(yaml_lines)}\n---\n{rest}"
+
 def postprocess_file(output_path: pathlib.Path):
     try:
         content = output_path.read_text(encoding="utf-8")
@@ -110,6 +125,7 @@ def postprocess_file(output_path: pathlib.Path):
         return
     updated = apply_jb_options(content, source=str(output_path))
     updated = apply_jb_frontmatter(updated, source=str(output_path))
+    updated = comment_out_marimo_version(updated)
     if updated != content:
         output_path.write_text(updated, encoding="utf-8")
 
