@@ -1,26 +1,32 @@
 ---
-numbering:
-  equations: false
-title: "The Alpha-Beta Filter"
+title: The Alpha-Beta Filter
+marimo-version: 0.25.1
 ---
 
 ```{marimo-config}
-:pyproject:
-    requires-python = ">=3.13"
-    dependencies = [
-        "matplotlib>=3.10.0",
-        "numpy>=2.1.0",
-        "pandas>=2.2.3",
-        "schemdraw[matplotlib,svgmath]==0.23",
-    ]
+---
+pyproject: |-
+  dependencies = [
+      "marimo>=0.9.0",
+      "matplotlib>=3.10.0",
+      "numpy>=2.1.0",
+      "pandas>=2.2.3",
+      "schemdraw[matplotlib,svgmath]==0.23",
+  ]
+  requires-python = ">=3.13"
+---
 ```
 
-<!---->
+<!-- jb-frontmatter
+numbering:
+  equations: false
+-->
 
 ```{marimo} python
 :hide-code: true
 :name: imports
-:include: false
+
+# jb: include=false
 import marimo as mo
 import schemdraw
 from schemdraw import flow
@@ -33,7 +39,8 @@ from textwrap import dedent
 ```{marimo} python
 :hide-code: true
 :name: display_format
-:include: false
+
+# jb: include=false
 plt.style.use('default')
 schemdraw.use("svg")
 def graphic(x):
@@ -54,7 +61,8 @@ def graphic(x):
 ```{marimo} python
 :hide-code: true
 :name: math_funcs
-:include: false
+
+# jb: include=false
 def gaussian_noise(
     mean=0.,
     std_dev=1.,
@@ -96,7 +104,8 @@ def ema(alpha, measurements):
 ```{marimo} python
 :hide-code: true
 :name: nutrition_funcs
-:include: false
+
+# jb: include=false
 def mifflin_st_jeor(
     age = 25,
     height_cm = 175,
@@ -132,7 +141,8 @@ kcal_per_lb = 3500
 ```{marimo} python
 :hide-code: true
 :name: biometrics
-:include: false
+
+# jb: include=false
 age = 23
 height_cm = 175
 sex = "M"
@@ -215,6 +225,7 @@ Imagine that after the scale measures you at 154.95 lbs, you decide to start eat
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 For example, imagine you are a {height_cm} cm, {age} year old {sex_dict[sex]}, you eat {target_kcal_per_day:.0f} kcal/day, and you have a moderate activity level. This means you will likely gain about {target_lbs_per_week/7:.1f} lbs./day, meaning we have $\Delta x_k = {target_lbs_per_week/7:.1f}$. Applying this filter over 4 weeks of measurements looks like:
 """)
@@ -223,7 +234,8 @@ For example, imagine you are a {height_cm} cm, {age} year old {sex_dict[sex]}, y
 ```{marimo} python
 :hide-code: true
 :name: alpha_delta_sliders
-:include: false
+
+# jb: include=false
 def alpha_delta(alpha, delta, measurements):
     x_k_minus_one = 0
     ema_output = []
@@ -242,6 +254,7 @@ delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_pe
 ```{marimo} python
 :hide-code: true
 :name: alpha_delta_fig
+
 _alpha_delta_weight = alpha_delta(alpha_slider.value, delta_slider.value, measurements)
 
 _measurements_df = pd.DataFrame({
@@ -276,6 +289,7 @@ mo.vstack([
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 This looks really good when $\Delta x \approx {target_lbs_per_week/7:.1f}$, but only because we've used the same Mifflin-St Jeor equation to simulate the data and also to predict your weight gain. When we adjust $\Delta x$, we see our filter starts to drift (especially when $\alpha$ is small).
 """)
@@ -289,6 +303,7 @@ $$z_k = \Delta x_k$$
 
 ```{marimo} python
 :hide-code: true
+
 # TODO Make interactive graph the visualizes predicted as well as measurement and estimate (which are already shown).
 
 # TODO clarify the difference between $\delta x$ and $\beta$.

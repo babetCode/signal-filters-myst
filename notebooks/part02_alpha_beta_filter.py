@@ -12,15 +12,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App()
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    # The Alpha-Beta Filter
-    """)
-    return
+app = marimo.App(app_title="The Alpha-Beta Filter")
 
 
 @app.cell(hide_code=True)

@@ -1,5 +1,5 @@
 ---
-title: Glossary Terms
+title: Glossary
 abbreviations:
   iff: if and only if
   diff: null
@@ -52,7 +52,7 @@ Left-hand limit
 : The limit of a {term}`function` $f(x)$ as $x$ goes to $a$ from the left is defined as $$\lim_{x \rightarrow a^-} f(x) := b$$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a-\delta, a)$, we have $$|f(x) - b| < \epsilon.$$
 
 Limit
-: The (two-sided) limit of a {term}`function` $f(x)$ as $x$ goes to $a$" is defined as $$\lim_{x \rightarrow a} f(x) := b$$ iff $b$ is equal to both the {term}`right-hand limit` and the {term}`left-hand limit`: $$\lim_{x \rightarrow a^-} f(x) = \lim_{x \rightarrow a^+} f(x) = b.$$
+: The (two-sided) limit of a {term}`function` $f(x)$ as $x$ goes to $a$ is defined as $$\lim_{x \rightarrow a} f(x) := b$$ iff $b$ is equal to both the {term}`right-hand limit` and the {term}`left-hand limit`: $$\lim_{x \rightarrow a^-} f(x) = \lim_{x \rightarrow a^+} f(x) = b.$$
 
 Linear
 : *Adjective* — A system that satisfies superposition: the response to a weighted sum of inputs equals the same weighted sum of the individual responses (additivity + homogeneity/scaling).
@@ -79,7 +79,7 @@ Riemann sum
   $$R(f, P, \{x_i^*\}) := \sum_{i=1}^{n} f(x_i^*) \Delta x_i.$$
 
 Right-hand limit
-: The limit of a {term}`function` $f(x)$ as $x$ goes to $a$ from the left is defined as $$\lim_{x \rightarrow a^+} f(x) := b$$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a, a+\delta)$, we have $$|f(x) - b| < \epsilon.$$
+: The limit of a {term}`function` $f(x)$ as $x$ goes to $a$ from the right is defined as $$\lim_{x \rightarrow a^+} f(x) := b$$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a, a+\delta)$, we have $$|f(x) - b| < \epsilon.$$
 
 Stochastic
 : (Of a {term}`signal` or {term}`system`) involving randomness or uncertainty; its future values can only be described in terms of probabilities, not exact predictions.

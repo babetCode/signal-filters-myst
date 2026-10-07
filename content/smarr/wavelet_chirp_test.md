@@ -1,3 +1,14 @@
+---
+title: Wavelet Chirp Test
+marimo-version: 0.25.1
+---
+
+```{marimo-config}
+---
+width: medium
+---
+```
+
 ```{marimo} python
 import marimo as mo
 from typing import Iterable

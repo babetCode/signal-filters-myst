@@ -1,26 +1,33 @@
 ---
-numbering:
-  equations: false
-title: "Introduction"
+title: Introduction
+marimo-version: 0.25.1
 ---
 
 ```{marimo-config}
-:pyproject:
-    requires-python = ">=3.13"
-    dependencies = [
-        "matplotlib==3.11.1",
-        "numpy==2.5.2",
-        "pandas==3.0.5",
-        "schemdraw[matplotlib,svgmath]==0.23",
-    ]
+---
+pyproject: |-
+  dependencies = [
+      "marimo>=0.9.0",
+      "matplotlib==3.11.1",
+      "numpy==2.5.2",
+      "pandas==3.0.5",
+      "schemdraw[matplotlib,svgmath]==0.23",
+  ]
+  requires-python = ">=3.13"
+width: medium
+---
 ```
 
-<!---->
+<!-- jb-frontmatter
+numbering:
+  equations: false
+-->
 
 ```{marimo} python
 :hide-code: true
 :name: imports
-:include: false
+
+# jb: include=false
 import marimo as mo
 import numpy as np
 import pandas as pd
@@ -33,7 +40,8 @@ import matplotlib.pyplot as plt
 ```{marimo} python
 :hide-code: true
 :name: display_format
-:include: false
+
+# jb: include=false
 plt.style.use('default')
 schemdraw.use("svg")
 def graphic(x):
@@ -54,7 +62,8 @@ def graphic(x):
 ```{marimo} python
 :hide-code: true
 :name: math_funcs
-:include: false
+
+# jb: include=false
 def gaussian_noise(
     mean=0.,
     std_dev=1.,
@@ -141,6 +150,7 @@ Here is the setup we are working with at this point, where each arrow is annotat
 ```{marimo} python
 :hide-code: true
 :name: scale_diagram
+
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
 
@@ -173,6 +183,7 @@ Imagine you step on the scale and the first 10 digital measurements look like th
 ```{marimo} python
 :hide-code: true
 :name: measurements_fig
+
 weight = 155
 Hz = 10
 dur = 3
@@ -222,6 +233,7 @@ Because we assume that the noise is random and has a mean of 0, we combine multi
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 The most basic way to combine measurements is by averaging them. For example, if we only had the two measurements our estimate would be
 
@@ -271,6 +283,7 @@ def cumulative_average(measurements):
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 Over {dur} seconds, this looks like:
 """)
@@ -279,6 +292,7 @@ Over {dur} seconds, this looks like:
 ```{marimo} python
 :hide-code: true
 :name: cumulative_avg_fig
+
 _measurements_df = pd.DataFrame({
     "time_s": np.arange(.1, dur+.1, .1),
     "weight_lbs": measurements,
@@ -348,6 +362,7 @@ def ema(alpha, measurements):
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 By setting $\alpha = {alpha_slider.value}$, we get:
 """)
@@ -356,12 +371,14 @@ By setting $\alpha = {alpha_slider.value}$, we get:
 ```{marimo} python
 :hide-code: true
 :name: ema_alpha_slider
-:include: false
+
+# jb: include=false
 alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
 ```
 
 ```{marimo} python
 :hide-code: true
+
 ema_weight = ema(alpha_slider.value, measurements)
 
 _measurements_df = pd.DataFrame({
@@ -396,6 +413,7 @@ mo.vstack([
 
 ```{marimo} python
 :hide-code: true
+
 mo.md(rf"""
 where our EMA settles on ${ema_weight[-1]:.2f}$ lbs. after {dur} seconds. We have now built a filter algorithm used in the real world by millions of digital bathroom scales.
 """)
@@ -421,6 +439,7 @@ Throughout all these topics, the general framework of real world value, noisy me
 ```{marimo} python
 :hide-code: true
 :name: filter_diagram
+
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
 

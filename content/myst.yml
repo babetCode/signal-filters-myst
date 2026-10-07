@@ -5,7 +5,7 @@ project:
     - name: Adrien Babet
   abstract: An introductory guide to signal filtering.
   plugins:
-    - ../scripts/strip-terms.mjs
+    # - ../scripts/strip-terms.mjs
     - type: executable
       # path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
       path: ../.venv/bin/jupyter-book-marimo # Unix
@@ -15,9 +15,9 @@ project:
     - file: part02_alpha_beta_filter.md
     - file: part03_optimal_filtering.md
     - file: glossary-terms.md
-    - file: philosophy/philosophy.md
+    - file: philosophy.md
       hidden: true
-    - file: philosophy/glossary-philosophy.md
+    - file: glossary-philosophy.md
       hidden: true
   exports:
     - format: typst

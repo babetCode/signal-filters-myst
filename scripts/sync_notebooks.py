@@ -1,22 +1,12 @@
-"""Sync marimo notebooks (notebooks/*.py) into jupyter-book-marimo MyST markdown
-(content/*.md).
-
-Run via `make sync-notebooks` / `make book-start`, or directly with
-`uv run python scripts/sync_notebooks.py [--serve]`.
-
-Relies on the (undocumented) output format of `marimo export md`, tested against
-marimo's current CLI as of this writing. If the export format changes upstream,
-the regex-based transforms in this file may need updating.
+"""
+Convert marimo notebooks (.py) to MyST (.md) files
+for use with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-marimo) plugin
 """
 
 import argparse
 import pathlib
-import re
 import subprocess
 import sys
-import textwrap
-import time
-import tomllib
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
@@ -26,391 +16,101 @@ CONTENT_DIR = PROJECT_ROOT / "content"
 # (e.g. marimo's own session/layout state).
 IGNORED_DIRS = {"__marimo__", "__pycache__"}
 
-# marimo @app.cell(...) kwargs that map directly onto jupyter-book-marimo
-# directive options of equivalent meaning — picked up automatically from
-# the `{.marimo ...}` attrs marimo already exports, no extra syntax needed.
-MARIMO_ATTR_TO_JB_OPTION = {
-    "hide_code": "hide-code",
-    "column": "column",
-    "name": "name",
-    "disabled": "disabled",
-}
-
-# jupyter-book-marimo options with no marimo-native equivalent. Set these
-# per-cell via a `# jb: key=value ...` comment anywhere in the cell.
-JB_ONLY_OPTIONS = {
-    "eval", "echo", "editor", "output",
-    "server-output", "error", "include",
-    "hide-output", "unparsable",
-}
-ALL_JB_OPTION_KEYS = JB_ONLY_OPTIONS | set(MARIMO_ATTR_TO_JB_OPTION.values())
-
-CELL_ATTR_PATTERN = re.compile(r'(\w+)=(?:"([^"]*)"|(\S+))')
-JB_COMMENT_PATTERN = re.compile(r"^[ \t]*#\s*jb:\s*(.+?)\s*$\n?", re.MULTILINE)
-CODE_FENCE_PATTERN = re.compile(
-    r"```python\s*\{\.marimo(?P<attrs>(?:\s+[^}]+)?)\}\n(?P<body>.*?\n)```",
-    re.DOTALL,
-)
-
-# A `<!-- jb-frontmatter ... -->` HTML comment, typically written inside a
-# `mo.md(r"""...""")` markdown cell, whose contents get merged into the page's
-# YAML frontmatter and then stripped from the rendered body.
-JB_FRONTMATTER_PATTERN = re.compile(
-    r"<!--\s*jb-frontmatter\s*\n(?P<content>.*?)\n\s*-->",
-    re.DOTALL,
-)
-
-# Any fenced code block, used to mask out code when scanning prose for a
-# title heading below (so a `# comment` at column 0 in a code cell doesn't
-# get mistaken for a Markdown H1).
-FENCE_SPLIT_PATTERN = re.compile(r"(```.*?```)", re.DOTALL)
-
-# The first top-level `# Heading` line, used as the page title when nothing
-# more specific is set via `jb-frontmatter`.
-H1_PATTERN = re.compile(r"^#[ \t]+(.+?)[ \t]*$\n?", re.MULTILINE)
-
-
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs."""
     for py_file in NOTEBOOKS_DIR.rglob("*.py"):
-        parts = py_file.relative_to(NOTEBOOKS_DIR).parts[:-1]
+        rel_path = py_file.relative_to(NOTEBOOKS_DIR)
+        parts = rel_path.parts[:-1]
         if IGNORED_DIRS.isdisjoint(parts):
-            yield py_file
+            output_path = (CONTENT_DIR / rel_path).with_suffix(".md")
+            yield py_file, output_path
 
-
-def run_marimo_export(notebook_path: pathlib.Path) -> str:
-    cmd = ["marimo", "export", "md", str(notebook_path)]
-    try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, encoding="utf-8", check=True
-        )
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        print(f"[marimo-sync] Error exporting {notebook_path.name}:", file=sys.stderr)
-        print(e.stderr, file=sys.stderr)
-        return ""
-    except FileNotFoundError:
-        print(
-            "[marimo-sync] 'marimo' command not found — is it installed and on PATH?",
-            file=sys.stderr,
-        )
-        return ""
-
-
-def parse_pep723_script_metadata(yaml_text: str, source: str = "") -> dict:
-    """Extract and parse PEP 723 inline script metadata from indented YAML frontmatter."""
-    # Normalize non-breaking spaces and line breaks
-    text = yaml_text.replace("\xa0", " ")
-
-    # Match `# /// script` ... `# ///` handling leading indentation and \r\n
-    pattern = r"^\s*#\s*///\s*script\s*[\r\n]+((?:[^\n]*\n)+?)\s*#\s*///"
-    match = re.search(pattern, text, re.MULTILINE)
-    if not match:
-        return {}
-
-    script_block = match.group(1)
-    toml_lines = []
-    for line in script_block.splitlines():
-        # Remove leading indentation and comment character '#'
-        cleaned_line = re.sub(r"^\s*#\s?", "", line)
-        toml_lines.append(cleaned_line)
-
-    try:
-        return tomllib.loads("\n".join(toml_lines))
-    except tomllib.TOMLDecodeError as e:
-        label = f" in {source}" if source else ""
-        print(f"[marimo-sync] Error parsing TOML metadata{label}: {e}", file=sys.stderr)
-        return {}
-
-
-def format_marimo_config(pyproject_data: dict) -> str:
-    """Format parsed TOML dict into a {marimo-config} MyST block."""
-    requires_python = pyproject_data.get("requires-python")
-    dependencies = pyproject_data.get("dependencies", [])
-
-    # Filter out 'marimo' dependency as it's implied by jupyter-book-marimo
-    filtered_deps = [
-        dep for dep in dependencies
-        if not re.match(r"^marimo([<>=!~]|$)", dep.strip())
+def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) -> pathlib.Path | None:
+    cmd = [
+        "marimo",
+        "export",
+        "md",
+        str(notebook_path),
+        "-o",
+        str(output_path),
+        "--flavor",
+        "mystmd",
     ]
 
-    lines = ["```{marimo-config}", ":pyproject:"]
-    if requires_python:
-        lines.append(f'    requires-python = "{requires_python}"')
-    if filtered_deps:
-        lines.append("    dependencies = [")
-        for dep in filtered_deps:
-            lines.append(f'        "{dep}",')
-        lines.append("    ]")
-    lines.append("```")
-    return "\n".join(lines)
+    try:
+        subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True,
+        )
+        print(f"[marimo-sync] Successfully exported {notebook_path.name} -> {output_path.name}")
+        return output_path
 
+    except subprocess.CalledProcessError as e:
+        print(f"[marimo-sync] Error exporting {notebook_path.name}:", file=sys.stderr)
+        if e.stderr:
+            print(e.stderr, file=sys.stderr)
+        return None
 
-def parse_marimo_attrs(attrs_text: str) -> dict:
-    """Parse `key="value"` / `key=value` pairs from a `{.marimo ...}` fence."""
-    return {
-        key: (quoted if quoted is not None else bare)
-        for key, quoted, bare in CELL_ATTR_PATTERN.findall(attrs_text)
-    }
+    except FileNotFoundError:
+        print(
+            f"[marimo-sync] 'marimo' command not found while trying to export {notebook_path.name}. "
+            "Is marimo installed and on your PATH?",
+            file=sys.stderr,
+        )
+        return None
 
+def export_all():
+    for file, output_path in iter_notebooks():
+        run_marimo_export(file, output_path)
 
-def extract_jb_options(body: str) -> tuple[str, dict]:
-    """Pull a `# jb: key=value ...` config comment out of a cell body.
+def start_watcher(notebook_path: pathlib.Path, output_path: pathlib.Path) -> subprocess.Popen:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        "marimo", "export", "md",
+        str(notebook_path),
+        "-o", str(output_path),
+        "--flavor", "mystmd",
+        "--watch",
+    ]
+    return subprocess.Popen(cmd)
 
-    Returns (body_with_comment_removed, options_dict). Only the first such
-    comment is honored, and it can appear on any line in the cell.
-    """
-    match = JB_COMMENT_PATTERN.search(body)
-    if not match:
-        return body, {}
-
-    options = {}
-    for pair in match.group(1).split():
-        if "=" not in pair:
-            print(f"[marimo-sync] Warning: malformed jb option '{pair}', skipping", file=sys.stderr)
-            continue
-        key, value = pair.split("=", 1)
-        options[key] = value
-
-    unknown = set(options) - ALL_JB_OPTION_KEYS
-    if unknown:
-        print(f"[marimo-sync] Warning: unknown jb option(s): {', '.join(sorted(unknown))}", file=sys.stderr)
-
-    cleaned_body = JB_COMMENT_PATTERN.sub("", body, count=1)
-    return cleaned_body, options
-
-
-def build_marimo_cell(match: re.Match) -> str:
-    marimo_attrs = parse_marimo_attrs(match.group("attrs"))
-    body, jb_options = extract_jb_options(match.group("body"))
-
-    options = {}
-    for marimo_key, jb_key in MARIMO_ATTR_TO_JB_OPTION.items():
-        if marimo_key in marimo_attrs:
-            options[jb_key] = marimo_attrs[marimo_key]
-    options.update(jb_options)  # explicit `# jb:` comment wins on conflicts
-
-    lines = ["```{marimo} python"]
-    for key, value in options.items():
-        lines.append(f":{key}: {value}")
-    lines.append(body.rstrip("\n"))
-    lines.append("```")
-    return "\n".join(lines)
-
-
-def has_title(yaml_lines: list) -> bool:
-    return any(re.match(r"^title\s*:", line) for line in yaml_lines)
-
-
-def format_yaml_title(title: str) -> str:
-    escaped = title.replace('"', '\\"')
-    return f'title: "{escaped}"'
-
-
-def extract_title_heading(body: str) -> tuple:
-    """Find and remove the first top-level `# Heading` line in the body,
-    skipping anything inside fenced code blocks (where a Python comment like
-    `# note` at column 0 would otherwise look like a heading).
-
-    Returns (body_with_heading_removed, heading_text_or_None). Trailing ATX
-    closing hashes (`# Heading #`) are stripped from the extracted text, but
-    inline Markdown formatting (bold, links, code spans) is not — it is kept
-    as-is in the title.
-    """
-    segments = FENCE_SPLIT_PATTERN.split(body)
-    for i, segment in enumerate(segments):
-        if segment.startswith("```"):
-            continue  # leave fenced code blocks untouched
-        match = H1_PATTERN.search(segment)
-        if match:
-            title = re.sub(r"\s*#+\s*$", "", match.group(1)).strip()
-            segments[i] = segment[: match.start()] + segment[match.end():]
-            return "".join(segments), title
-    return body, None
-
-
-def transform_md_content(md_content: str, source: str = "") -> str:
-    """Transform raw marimo export md to jupyter-book-marimo MyST format."""
-
-    # Parse YAML frontmatter (supports \r\n line endings)
-    frontmatter_match = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", md_content, re.DOTALL)
-
-    header_config_block = ""
-    yaml_lines = []
-
-    if frontmatter_match:
-        yaml_text = frontmatter_match.group(1)
-        body_text = frontmatter_match.group(2)
-
-        # 1. Parse PEP 723 metadata into {marimo-config} block
-        pyproject_data = parse_pep723_script_metadata(yaml_text, source=source)
-        if pyproject_data:
-            header_config_block = format_marimo_config(pyproject_data)
-
-        # 2. Strip marimo-version, width, title, and multiline header from YAML
-        #    frontmatter. marimo's own `title` is dropped unconditionally —
-        #    see steps 3-4 below for how the real title is determined.
-        in_header_block = False
-        for line in yaml_text.splitlines():
-            if (
-                line.startswith("marimo-version:")
-                or line.startswith("width:")
-                or line.startswith("title:")
-            ):
-                continue
-            if line.startswith("header:"):
-                in_header_block = True
-                continue
-            if in_header_block:
-                # Continue skipping lines if they are indented or empty
-                if re.match(r"^\s", line) or not line.strip():
-                    continue
-                else:
-                    in_header_block = False
-            yaml_lines.append(line)
-    else:
-        body_text = md_content
-
-    # 3. Pull any `<!-- jb-frontmatter ... -->` blocks out of the body, dedent
-    #    their contents, and merge the resulting lines into the YAML frontmatter.
-    #    Multiple blocks are supported but must not define overlapping keys.
-    def collect_frontmatter(match: re.Match) -> str:
-        content = textwrap.dedent(match.group("content")).strip("\n")
-        if content:
-            yaml_lines.extend(content.splitlines())
-        return ""
-
-    body_text = JB_FRONTMATTER_PATTERN.sub(collect_frontmatter, body_text)
-    body_text = re.sub(r"\n{3,}", "\n\n", body_text)  # tidy gaps left by removed comments
-
-    # 4. Use the first H1 heading as the page title — and remove it from the
-    #    body, since the frontmatter title is rendered separately and leaving
-    #    the heading in place would show it twice — unless `jb-frontmatter`
-    #    already set an explicit title, in which case leave the body as-is.
-    if not has_title(yaml_lines):
-        body_text, extracted_title = extract_title_heading(body_text)
-        if extracted_title:
-            yaml_lines.append(format_yaml_title(extracted_title))
-            body_text = re.sub(r"\n{3,}", "\n\n", body_text)
-
-    clean_frontmatter = ""
-    yaml_str = "\n".join(yaml_lines).strip()
-    if yaml_str:
-        clean_frontmatter = f"---\n{yaml_str}\n---"
-
-    # 5. Transform code cell blocks, mapping marimo cell attrs and any
-    #    `# jb:` comment onto MyST directive options
-    transformed_body = CODE_FENCE_PATTERN.sub(build_marimo_cell, body_text)
-
-    # 6. Assemble output components in order
-    sections = []
-    if clean_frontmatter:
-        sections.append(clean_frontmatter)
-    if header_config_block:
-        sections.append(header_config_block)
-    sections.append(transformed_body.strip())
-
-    return "\n\n".join(sections) + "\n"
-
-
-def convert_file(src_file: pathlib.Path) -> bool:
-    rel_path = src_file.relative_to(NOTEBOOKS_DIR)
-    dest_file = (CONTENT_DIR / rel_path).with_suffix(".md")
-    dest_file.parent.mkdir(parents=True, exist_ok=True)
-
-    raw_md = run_marimo_export(src_file)
-    if not raw_md:
-        return False
-
-    processed_md = transform_md_content(raw_md, source=str(rel_path))
-    dest_file.write_text(processed_md, encoding="utf-8")
-    print(
-        f"[marimo-sync] Synced: notebooks/{rel_path.as_posix()} "
-        f"-> content/{dest_file.relative_to(CONTENT_DIR).as_posix()}"
-    )
-    return True
-
-
-def sync_all() -> bool:
-    """Convert every notebook. Returns False if any conversion failed."""
-    print("[marimo-sync] Building notebooks...")
-    all_ok = True
-    for py_file in iter_notebooks():
-        if not convert_file(py_file):
-            all_ok = False
-    return all_ok
-
-
-def watch_and_serve(port: str, server_port: str):
-    sync_all()
-
-    mtimes: dict = {}
-    for py_file in iter_notebooks():
-        mtimes[py_file] = py_file.stat().st_mtime
+def serve(port: str, server_port: str):
+    watchers = [start_watcher(nb, out) for nb, out in iter_notebooks()]
+    print(f"[marimo-sync] Watching {len(watchers)} notebook(s) with marimo --watch...")
 
     jb_cmd = [
         "uv", "run", "jupyter-book", "start",
         "--port", port,
-        "--server-port", server_port
+        "--server-port", server_port,
     ]
     print("[marimo-sync] Launching Jupyter Book dev server...")
-    try:
-        jb_proc = subprocess.Popen(jb_cmd, cwd=CONTENT_DIR)
-    except FileNotFoundError:
-        print(
-            "[marimo-sync] Could not launch Jupyter Book — is 'uv' installed and on PATH?",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    jb_proc = subprocess.Popen(jb_cmd, cwd=CONTENT_DIR)
 
     try:
-        while True:
-            time.sleep(0.5)
-            if jb_proc.poll() is not None:
-                break
-
-            current_files = set(iter_notebooks())
-
-            # Handle deleted notebooks: remove their generated .md and stop tracking them
-            for stale_file in set(mtimes) - current_files:
-                del mtimes[stale_file]
-                rel_path = stale_file.relative_to(NOTEBOOKS_DIR)
-                dest_file = (CONTENT_DIR / rel_path).with_suffix(".md")
-                if dest_file.exists():
-                    dest_file.unlink()
-                    print(f"[marimo-sync] Removed: content/{dest_file.relative_to(CONTENT_DIR).as_posix()}")
-
-            for py_file in current_files:
-                try:
-                    current_mtime = py_file.stat().st_mtime
-                except FileNotFoundError:
-                    continue
-
-                if py_file not in mtimes or current_mtime > mtimes[py_file]:
-                    mtimes[py_file] = current_mtime
-                    convert_file(py_file)
-
+        jb_proc.wait()
     except KeyboardInterrupt:
-        print("\n[marimo-sync] Shutting down server...")
+        print("\n[marimo-sync] Shutting down...")
     finally:
         if jb_proc.poll() is None:
             jb_proc.terminate()
-            jb_proc.wait()
-
+        for proc in watchers:
+            if proc.poll() is None:
+                proc.terminate()
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--serve", action="store_true", help="Start watcher and dev server")
-    parser.add_argument("--port", default="3102", help="Jupyter Book port")
-    parser.add_argument("--server-port", default="4102", help="Jupyter Book server port")
+    parser.add_argument("--serve", action="store_true", help="Start watchers and dev server")
+    parser.add_argument("--port", default="3102")
+    parser.add_argument("--server-port", default="4102")
     args = parser.parse_args()
 
     if args.serve:
-        watch_and_serve(args.port, args.server_port)
+        serve(args.port, args.server_port)
     else:
-        if not sync_all():
-            sys.exit(1)
+        export_all()
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     main()

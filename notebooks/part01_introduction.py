@@ -16,14 +16,6 @@ app = marimo.App(width="medium", app_title="Introduction")
 
 
 @app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    # Introduction
-    """)
-    return
-
-
-@app.cell(hide_code=True)
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
