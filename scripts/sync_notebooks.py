@@ -36,6 +36,16 @@ MARIMO_FENCE_PATTERN = re.compile(
     re.DOTALL,
 )
 
+# The first `<!-- jb-frontmatter ... -->` HTML comment in the file, typically
+# written inside a `mo.md(r"""...""")` markdown cell. Its contents are merged
+# into the page's YAML frontmatter and then stripped from the rendered body.
+# Only the first such comment is used; later ones are left untouched.
+JB_FRONTMATTER_PATTERN = re.compile(
+    r"<!--\s*jb-frontmatter\s*\n(?P<content>.*?)\n\s*-->",
+    re.DOTALL,
+)
+FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
+
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs."""
     for py_file in NOTEBOOKS_DIR.rglob("*.py"):
@@ -71,12 +81,35 @@ def apply_jb_options(content: str, source: str = "") -> str:
 
     return MARIMO_FENCE_PATTERN.sub(replace, content)
 
+def apply_jb_frontmatter(content: str, source: str = "") -> str:
+    """Merge the first `<!-- jb-frontmatter ... -->` comment's contents into
+    the file's YAML frontmatter, and strip the comment from the body."""
+    match = JB_FRONTMATTER_PATTERN.search(content)
+    if not match:
+        return content
+
+    extra_yaml = match.group("content").strip("\n")
+    stripped = content[:match.start()] + content[match.end():]
+    stripped = re.sub(r"\n{3,}", "\n\n", stripped)
+
+    if not extra_yaml:
+        return stripped
+
+    fm_match = FRONTMATTER_PATTERN.match(stripped)
+    if fm_match:
+        yaml_text, rest = fm_match.group(1), fm_match.group(2)
+        merged_yaml = yaml_text.rstrip("\n") + "\n" + extra_yaml
+        return f"---\n{merged_yaml}\n---\n{rest}"
+
+    return f"---\n{extra_yaml}\n---\n\n{stripped.lstrip()}"
+
 def postprocess_file(output_path: pathlib.Path):
     try:
         content = output_path.read_text(encoding="utf-8")
     except (FileNotFoundError, UnicodeDecodeError):
         return
     updated = apply_jb_options(content, source=str(output_path))
+    updated = apply_jb_frontmatter(updated, source=str(output_path))
     if updated != content:
         output_path.write_text(updated, encoding="utf-8")
 
@@ -135,7 +168,7 @@ def start_watcher(notebook_path: pathlib.Path, output_path: pathlib.Path) -> sub
 
 class JbOptionsHandler(PatternMatchingEventHandler):
     """Watches content/*.md for writes from marimo's own --watch processes
-    and re-applies `# jb:` comment options after each one."""
+    and re-applies `# jb:` and `jb-frontmatter` processing after each one."""
 
     def __init__(self):
         super().__init__(patterns=["*.md"], ignore_directories=True)
