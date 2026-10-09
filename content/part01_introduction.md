@@ -1,6 +1,8 @@
 ---
 title: Introduction
-marimo-version: 0.25.1
+# marimo-version: 0.25.1
+numbering:
+  equations: false
 ---
 
 ```{marimo-config}
@@ -17,11 +19,6 @@ pyproject: |-
 width: medium
 ---
 ```
-
-<!-- jb-frontmatter
-numbering:
-  equations: false
--->
 
 ```{marimo} python
 :hide-code: true

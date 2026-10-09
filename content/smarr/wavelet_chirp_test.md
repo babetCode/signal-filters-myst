@@ -1,6 +1,6 @@
 ---
 title: Wavelet Chirp Test
-marimo-version: 0.25.1
+# marimo-version: 0.25.1
 ---
 
 ```{marimo-config}

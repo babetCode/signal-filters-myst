@@ -1,6 +1,12 @@
 ---
 title: Optimal Filtering
-marimo-version: 0.25.1
+# marimo-version: 0.25.1
+abbreviations:
+  iff: if and only if
+  diff: null
+  PDF: probability density function
+numbering:
+  equations: false
 ---
 
 ```{marimo-config}
@@ -15,15 +21,6 @@ pyproject: |-
   ]
 ---
 ```
-
-<!-- jb-frontmatter
-abbreviations:
-  iff: if and only if
-  diff: null
-  PDF: probability density function
-numbering:
-  equations: false
--->
 
 ```{marimo} python
 :hide-code: true

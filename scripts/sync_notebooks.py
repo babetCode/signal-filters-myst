@@ -14,7 +14,8 @@ from watchdog.observers import Observer
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
-CONTENT_DIR = PROJECT_ROOT / "content"
+EXPORT_DIR = PROJECT_ROOT / ".marimo-export"  # raw `marimo export md` output; not committed
+CONTENT_DIR = PROJECT_ROOT / "content"        # postprocessed output served by Jupyter Book
 
 # Directories under notebooks/ that should never be treated as notebook sources
 # (e.g. marimo's own session/layout state).
@@ -36,10 +37,9 @@ MARIMO_FENCE_PATTERN = re.compile(
     re.DOTALL,
 )
 
-# The first `<!-- jb-frontmatter ... -->` HTML comment in the file, typically
-# written inside a `mo.md(r"""...""")` markdown cell. Its contents are merged
-# into the page's YAML frontmatter and then stripped from the rendered body.
-# Only the first such comment is used; later ones are left untouched.
+# The first `<!-- jb-frontmatter ... -->` HTML comment in the file. Its
+# contents are merged into the page's YAML frontmatter and then stripped
+# from the rendered body. Only the first such comment is used.
 JB_FRONTMATTER_PATTERN = re.compile(
     r"<!--\s*jb-frontmatter\s*\n(?P<content>.*?)\n\s*-->",
     re.DOTALL,
@@ -47,13 +47,18 @@ JB_FRONTMATTER_PATTERN = re.compile(
 FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
 
 def iter_notebooks():
-    """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs."""
+    """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs,
+    paired with the path marimo should export raw markdown to."""
     for py_file in NOTEBOOKS_DIR.rglob("*.py"):
         rel_path = py_file.relative_to(NOTEBOOKS_DIR)
         parts = rel_path.parts[:-1]
         if IGNORED_DIRS.isdisjoint(parts):
-            output_path = (CONTENT_DIR / rel_path).with_suffix(".md")
-            yield py_file, output_path
+            export_path = (EXPORT_DIR / rel_path).with_suffix(".md")
+            yield py_file, export_path
+
+def content_path_for(export_path: pathlib.Path) -> pathlib.Path:
+    rel_path = export_path.relative_to(EXPORT_DIR)
+    return CONTENT_DIR / rel_path
 
 def apply_jb_options(content: str, source: str = "") -> str:
     """Find `{marimo}` cells with a `# jb: key=value ...` comment, turn that
@@ -118,25 +123,31 @@ def comment_out_marimo_version(content: str) -> str:
     ]
     return f"---\n{chr(10).join(yaml_lines)}\n---\n{rest}"
 
-def postprocess_file(output_path: pathlib.Path):
+def postprocess_file(export_path: pathlib.Path):
+    """Read marimo's raw export from EXPORT_DIR, apply jb transforms, and
+    write the result to the matching path in CONTENT_DIR."""
     try:
-        content = output_path.read_text(encoding="utf-8")
+        content = export_path.read_text(encoding="utf-8")
     except (FileNotFoundError, UnicodeDecodeError):
         return
-    updated = apply_jb_options(content, source=str(output_path))
-    updated = apply_jb_frontmatter(updated, source=str(output_path))
-    updated = comment_out_marimo_version(updated)
-    if updated != content:
-        output_path.write_text(updated, encoding="utf-8")
 
-def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) -> pathlib.Path | None:
+    updated = apply_jb_options(content, source=str(export_path))
+    updated = apply_jb_frontmatter(updated, source=str(export_path))
+    updated = comment_out_marimo_version(updated)
+
+    content_path = content_path_for(export_path)
+    content_path.parent.mkdir(parents=True, exist_ok=True)
+    content_path.write_text(updated, encoding="utf-8")
+
+def run_marimo_export(notebook_path: pathlib.Path, export_path: pathlib.Path) -> pathlib.Path | None:
+    export_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "marimo",
         "export",
         "md",
         str(notebook_path),
         "-o",
-        str(output_path),
+        str(export_path),
         "--flavor",
         "mystmd",
     ]
@@ -149,9 +160,9 @@ def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) ->
             encoding="utf-8",
             check=True,
         )
-        postprocess_file(output_path)
-        print(f"[marimo-sync] Successfully exported {notebook_path.name} -> {output_path.name}")
-        return output_path
+        postprocess_file(export_path)
+        print(f"[marimo-sync] Successfully exported {notebook_path.name} -> {content_path_for(export_path).name}")
+        return export_path
 
     except subprocess.CalledProcessError as e:
         print(f"[marimo-sync] Error exporting {notebook_path.name}:", file=sys.stderr)
@@ -168,23 +179,23 @@ def run_marimo_export(notebook_path: pathlib.Path, output_path: pathlib.Path) ->
         return None
 
 def export_all():
-    for file, output_path in iter_notebooks():
-        run_marimo_export(file, output_path)
+    for file, export_path in iter_notebooks():
+        run_marimo_export(file, export_path)
 
-def start_watcher(notebook_path: pathlib.Path, output_path: pathlib.Path) -> subprocess.Popen:
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+def start_watcher(notebook_path: pathlib.Path, export_path: pathlib.Path) -> subprocess.Popen:
+    export_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "marimo", "export", "md",
         str(notebook_path),
-        "-o", str(output_path),
+        "-o", str(export_path),
         "--flavor", "mystmd",
         "--watch",
     ]
     return subprocess.Popen(cmd)
 
 class JbOptionsHandler(PatternMatchingEventHandler):
-    """Watches content/*.md for writes from marimo's own --watch processes
-    and re-applies `# jb:` and `jb-frontmatter` processing after each one."""
+    """Watches EXPORT_DIR for writes from marimo's own --watch processes and
+    postprocesses each one into CONTENT_DIR."""
 
     def __init__(self):
         super().__init__(patterns=["*.md"], ignore_directories=True)
@@ -196,11 +207,13 @@ class JbOptionsHandler(PatternMatchingEventHandler):
         postprocess_file(pathlib.Path(event.src_path))
 
 def serve(port: str, server_port: str):
-    watchers = [start_watcher(nb, out) for nb, out in iter_notebooks()]
+    export_all()
+
+    watchers = [start_watcher(nb, export_path) for nb, export_path in iter_notebooks()]
     print(f"[marimo-sync] Watching {len(watchers)} notebook(s) with marimo --watch...")
 
     jb_observer = Observer()
-    jb_observer.schedule(JbOptionsHandler(), str(CONTENT_DIR), recursive=True)
+    jb_observer.schedule(JbOptionsHandler(), str(EXPORT_DIR), recursive=True)
     jb_observer.start()
 
     jb_cmd = [

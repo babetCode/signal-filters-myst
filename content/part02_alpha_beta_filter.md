@@ -1,6 +1,8 @@
 ---
 title: The Alpha-Beta Filter
-marimo-version: 0.25.1
+# marimo-version: 0.25.1
+numbering:
+  equations: false
 ---
 
 ```{marimo-config}
@@ -16,11 +18,6 @@ pyproject: |-
   requires-python = ">=3.13"
 ---
 ```
-
-<!-- jb-frontmatter
-numbering:
-  equations: false
--->
 
 ```{marimo} python
 :hide-code: true

@@ -22,3 +22,5 @@ src/jupyter_book_marimo/assets/*
 
 # marimo cache
 __marimo__/
+
+.marimo-export/
