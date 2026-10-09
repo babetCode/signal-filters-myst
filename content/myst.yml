@@ -7,8 +7,8 @@ project:
   plugins:
     # - ../scripts/strip-terms.mjs
     - type: executable
-      path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
-      # path: ../.venv/bin/jupyter-book-marimo # Unix
+      # path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
+      path: ../.venv/bin/jupyter-book-marimo # Unix
   toc:
     - file: index.md
     - file: part01_introduction.md
