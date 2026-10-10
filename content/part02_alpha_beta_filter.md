@@ -1,11 +1,13 @@
 ---
 title: The Alpha-Beta Filter
 # marimo-version: 0.25.1
+# css_file: notebook-styles.css
 numbering:
   equations: false
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -35,30 +37,26 @@ from textwrap import dedent
 
 ```{marimo} python
 :hide-code: true
-:name: display_format
+:name: display_settings
 :include: false
 
 plt.style.use('default')
 schemdraw.use("svg")
+```
+
+```{marimo} python
+:hide-code: true
+:name: my_functions
+:include: false
+
 def graphic(x):
     return mo.Html(
         dedent(f'''\
-        <style>
-            .dark .graphic {{ 
-                filter: invert(1) hue-rotate(180deg); 
-            }}
-        </style>
         <div class="graphic">
             {mo.as_html(x)}
         </div>
         ''')
     )
-```
-
-```{marimo} python
-:hide-code: true
-:name: math_funcs
-:include: false
 
 def gaussian_noise(
     mean=0.,
@@ -96,12 +94,6 @@ def ema(alpha, measurements):
         ema_output.append(x_k)
         x_k_minus_one = x_k
     return ema_output
-```
-
-```{marimo} python
-:hide-code: true
-:name: nutrition_funcs
-:include: false
 
 def mifflin_st_jeor(
     age = 25,
@@ -123,6 +115,23 @@ def mifflin_st_jeor(
     else:
         return -1
 
+def alpha_delta(alpha, delta, measurements):
+    x_k_minus_one = 0
+    ema_output = []
+    for k, z in enumerate(measurements, start=1):
+        if k == 1:
+            x_k_minus_one = z - delta
+        x_k = x_k_minus_one + delta + alpha*(z - x_k_minus_one - delta)
+        ema_output.append(x_k)
+        x_k_minus_one = x_k
+    return ema_output
+```
+
+```{marimo} python
+:hide-code: true
+:name: my_variables
+:include: false
+
 activity_lvl_dict = {
     "light": 1.2,  # light walking, biking, or chores
     "moderate": 1.5,  # regular lifting, running, or active work
@@ -133,12 +142,6 @@ sex_dict = {
     "F": "female",
 }
 kcal_per_lb = 3500
-```
-
-```{marimo} python
-:hide-code: true
-:name: biometrics
-:include: false
 
 age = 23
 height_cm = 175
@@ -167,6 +170,9 @@ tdee = bmr * activity_lvl_dict[activity_lvl]
 
 target_kcal_per_day = tdee + (kcal_per_lb * target_lbs_per_week / 7)
 guess_kcal_per_day = 2800
+
+alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
+delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
 ```
 
 In the last section, we used the EMA equation
@@ -195,15 +201,15 @@ Here, the $(\hat x_{k-1} + \Delta x_k)$ term is called the **prior** (often deno
 $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
 
 This is starting to look quite similar to our filter in the last section.
-<!---->
+  
 :::{attention icon=false} 🗝️ **Key Idea**
 If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can combine them (with some weighting $\alpha$) to increase the probablity that the noise cancels out.
 :::
-<!---->
+  
 However, we must first figure out how to estimate $\Delta x_k$. To see how this plays out, let's walk through an example.
-<!---->
+  
 ## Estimating the Rate of Change
-<!---->
+  
 Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
 
 [^mifflin-st-jeor]:
@@ -230,27 +236,7 @@ For example, imagine you are a {height_cm} cm, {age} year old {sex_dict[sex]}, y
 
 ```{marimo} python
 :hide-code: true
-:name: alpha_delta_sliders
-:include: false
-
-def alpha_delta(alpha, delta, measurements):
-    x_k_minus_one = 0
-    ema_output = []
-    for k, z in enumerate(measurements, start=1):
-        if k == 1:
-            x_k_minus_one = z - delta
-        x_k = x_k_minus_one + delta + alpha*(z - x_k_minus_one - delta)
-        ema_output.append(x_k)
-        x_k_minus_one = x_k
-    return ema_output
-
-alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
-delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
-```
-
-```{marimo} python
-:hide-code: true
-:name: alpha_delta_fig
+:name: alpha_delta_fig_interactive
 
 _alpha_delta_weight = alpha_delta(alpha_slider.value, delta_slider.value, measurements)
 

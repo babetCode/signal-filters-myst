@@ -13,7 +13,7 @@ project:
     - file: index.md
     - file: part01_introduction.md
     - file: part02_alpha_beta_filter.md
-    - file: part03_optimal_filtering.md
+    - file: part03_bayesian_probability.md
     - file: glossary-terms.md
     - file: philosophy.md
       hidden: true
@@ -26,11 +26,12 @@ project:
         - index.md
         - part01_introduction.md
         - part02_alpha_beta_filter.md
-        - part03_optimal_filtering.md
+        - part03_bayesian_probability.md
 site:
   template: book-theme
   options:
-    favicon: ../assets/filter-book-icon.svg
-    logo: ../assets/filter-book-icon.svg
+    favicon: ../static/filter-book-icon.svg
+    logo: ../static/filter-book-icon.svg
     logo_text: Signal Filters
     hide_authors: true
+    style: ../notebooks/notebook-styles.css

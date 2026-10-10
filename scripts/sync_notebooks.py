@@ -4,7 +4,7 @@ for use with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-m
 """
 
 import argparse
-import pathlib
+from pathlib import Path
 import re
 import subprocess
 import sys
@@ -12,7 +12,7 @@ import sys
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
 
-PROJECT_ROOT = pathlib.Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 EXPORT_DIR = PROJECT_ROOT / ".marimo-export"  # raw `marimo export md` output; not committed
 CONTENT_DIR = PROJECT_ROOT / "content"        # postprocessed output served by Jupyter Book
@@ -46,6 +46,27 @@ JB_FRONTMATTER_PATTERN = re.compile(
 )
 FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
 
+# pymdownx-style `/// admonition | Title` block with a `no-icon` class and a
+# `<u>**Term**</u>` first line, used here for glossary definitions.
+GLOSSARY_ADMONITION_PATTERN = re.compile(
+    r"^///[ \t]*note[ \t]*\|[ \t]*(?P<title>[^\n]*)\n"
+    r"[ \t]*attrs:[ \t]*\{[ \t]*class:[ \t]*no-icon[ \t]*\}[ \t]*\n"
+    r"<u>\*\*(?P<term>[^\n]+?)\*\*</u>[ \t]*\n"
+    r"(?P<definition>.*?)"
+    r"^///[ \t]*$",
+    re.MULTILINE | re.DOTALL,
+)
+
+# pymdownx-style `/// <type> | Title` block with an `attrs: {class: no-icon}`
+# line, e.g. `/// attention | My Title`.
+NO_ICON_ADMONITION_PATTERN = re.compile(
+    r"^///[ \t]*(?P<kind>[\w-]+)[ \t]*(?:\|[ \t]*(?P<title>[^\n]*))?\n"
+    r"[ \t]*attrs:[ \t]*\{[ \t]*class:[ \t]*no-icon[ \t]*\}[ \t]*\n"
+    r"(?P<body>.*?)"
+    r"^///[ \t]*$",
+    re.MULTILINE | re.DOTALL,
+)
+
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs,
     paired with the path marimo should export raw markdown to."""
@@ -56,7 +77,7 @@ def iter_notebooks():
             export_path = (EXPORT_DIR / rel_path).with_suffix(".md")
             yield py_file, export_path
 
-def content_path_for(export_path: pathlib.Path) -> pathlib.Path:
+def content_path_for(export_path: Path) -> Path:
     rel_path = export_path.relative_to(EXPORT_DIR)
     return CONTENT_DIR / rel_path
 
@@ -118,12 +139,62 @@ def comment_out_marimo_version(content: str) -> str:
 
     yaml_text, rest = match.group(1), match.group(2)
     yaml_lines = [
-        f"# {line}" if line.startswith("marimo-version:") else line
+        f"# {line}" if line.startswith(("marimo-version:", "css_file:")) else line
         for line in yaml_text.splitlines()
     ]
     return f"---\n{chr(10).join(yaml_lines)}\n---\n{rest}"
 
-def postprocess_file(export_path: pathlib.Path):
+def apply_glossary_admonitions(content: str) -> str:
+    """Convert `/// note` glossary blocks into MyST admonition + glossary
+    directives, indenting every definition line after the first by two spaces."""
+
+    def replace(match: re.Match) -> str:
+        title = match.group("title").strip()
+        term = match.group("term").strip()
+        lines = match.group("definition").strip("\n").splitlines()
+        if not lines:
+            return match.group(0)
+
+        definition = [f": {lines[0]}"] + [
+            f"  {line}" if line.strip() else "" for line in lines[1:]
+        ]
+        return "\n".join([
+            f"::::{{admonition icon=false}} {title}",
+            ":::{glossary}",
+            term,
+            *definition,
+            ":::",
+            "::::",
+        ])
+
+    return GLOSSARY_ADMONITION_PATTERN.sub(replace, content)
+
+def apply_no_icon_admonitions(content: str) -> str:
+    """Convert `/// <type> | Title` blocks with `attrs: {class: no-icon}` into
+    MyST `:::{<type> icon=false} Title` admonitions."""
+
+    def replace(match: re.Match) -> str:
+        kind = match.group("kind")
+        title = (match.group("title") or "").strip()
+        body = match.group("body").strip("\n")
+
+        opening = f":::{{{kind} icon=false}}" + (f" {title}" if title else "")
+        return "\n".join([opening, body, ":::"])
+
+    return NO_ICON_ADMONITION_PATTERN.sub(replace, content)
+
+def rewrite_public_paths(content: str) -> str:
+    """Point `src="public/..."` asset references at the notebooks' public dir."""
+    return content.replace('src="public/', 'src="../notebooks/public/')
+
+def remove_empty_comments(content: str) -> str:
+    """Remove empty <!----> HTML comments."""
+    return content.replace('<!---->', '  ')
+
+def set_eval_false(content: str) -> str:
+    return content.replace("```{marimo-config}\n", "```{marimo-config}\n:eval: false\n")
+
+def postprocess_file(export_path: Path):
     """Read marimo's raw export from EXPORT_DIR, apply jb transforms, and
     write the result to the matching path in CONTENT_DIR."""
     try:
@@ -133,13 +204,18 @@ def postprocess_file(export_path: pathlib.Path):
 
     updated = apply_jb_options(content, source=str(export_path))
     updated = apply_jb_frontmatter(updated, source=str(export_path))
+    updated = apply_glossary_admonitions(updated)
+    updated = apply_no_icon_admonitions(updated)
+    updated = rewrite_public_paths(updated)
+    updated = remove_empty_comments(updated)
+    updated = set_eval_false(updated)
     updated = comment_out_marimo_version(updated)
 
     content_path = content_path_for(export_path)
     content_path.parent.mkdir(parents=True, exist_ok=True)
     content_path.write_text(updated, encoding="utf-8")
 
-def run_marimo_export(notebook_path: pathlib.Path, export_path: pathlib.Path) -> pathlib.Path | None:
+def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
     export_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "marimo",
@@ -182,7 +258,7 @@ def export_all():
     for file, export_path in iter_notebooks():
         run_marimo_export(file, export_path)
 
-def start_watcher(notebook_path: pathlib.Path, export_path: pathlib.Path) -> subprocess.Popen:
+def start_watcher(notebook_path: Path, export_path: Path) -> subprocess.Popen:
     export_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "marimo", "export", "md",
@@ -201,10 +277,10 @@ class JbOptionsHandler(PatternMatchingEventHandler):
         super().__init__(patterns=["*.md"], ignore_directories=True)
 
     def on_created(self, event):
-        postprocess_file(pathlib.Path(event.src_path))
+        postprocess_file(Path(event.src_path))
 
     def on_modified(self, event):
-        postprocess_file(pathlib.Path(event.src_path))
+        postprocess_file(Path(event.src_path))
 
 def serve(port: str, server_port: str):
     export_all()

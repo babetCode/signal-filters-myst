@@ -4,6 +4,7 @@ title: Wavelet Chirp Test
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 width: medium
 ---

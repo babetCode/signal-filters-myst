@@ -7,6 +7,14 @@ numbering:
   equations: false
 ---
 
+:::{index}
+single: index one
+single: index parent; index child
+pair: index two; index three
+pair: index four; index five
+triple: index six; index seven; index eight
+:::
+
 :::{glossary}
 Antiderivative
 : An antiderivative of a {term}`function` $f(x)$ is any function $F(x)$ whose {term}`derivative` equals $f(x)$:

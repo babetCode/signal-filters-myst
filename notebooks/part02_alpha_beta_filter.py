@@ -12,7 +12,10 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="The Alpha-Beta Filter")
+app = marimo.App(
+    app_title="The Alpha-Beta Filter",
+    css_file="notebook-styles.css",
+)
 
 
 @app.cell(hide_code=True)
@@ -41,30 +44,25 @@ def imports():
 
 
 @app.cell(hide_code=True)
-def display_format(dedent, mo, plt, schemdraw):
+def display_settings(plt, schemdraw):
     # jb: include=false
     plt.style.use('default')
     schemdraw.use("svg")
+    return
+
+
+@app.cell(hide_code=True)
+def my_functions(dedent, mo, np):
+    # jb: include=false
     def graphic(x):
         return mo.Html(
             dedent(f'''\
-            <style>
-                .dark .graphic {{ 
-                    filter: invert(1) hue-rotate(180deg); 
-                }}
-            </style>
             <div class="graphic">
                 {mo.as_html(x)}
             </div>
             ''')
         )
 
-    return (graphic,)
-
-
-@app.cell(hide_code=True)
-def math_funcs(np):
-    # jb: include=false
     def gaussian_noise(
         mean=0.,
         std_dev=1.,
@@ -102,12 +100,6 @@ def math_funcs(np):
             x_k_minus_one = x_k
         return ema_output
 
-    return ema, gaussian_noise
-
-
-@app.cell(hide_code=True)
-def nutrition_funcs():
-    # jb: include=false
     def mifflin_st_jeor(
         age = 25,
         height_cm = 175,
@@ -128,6 +120,23 @@ def nutrition_funcs():
         else:
             return -1
 
+    def alpha_delta(alpha, delta, measurements):
+        x_k_minus_one = 0
+        ema_output = []
+        for k, z in enumerate(measurements, start=1):
+            if k == 1:
+                x_k_minus_one = z - delta
+            x_k = x_k_minus_one + delta + alpha*(z - x_k_minus_one - delta)
+            ema_output.append(x_k)
+            x_k_minus_one = x_k
+        return ema_output
+
+    return alpha_delta, ema, gaussian_noise, graphic, mifflin_st_jeor
+
+
+@app.cell(hide_code=True)
+def my_variables(ema, gaussian_noise, mifflin_st_jeor, mo, np):
+    # jb: include=false
     activity_lvl_dict = {
         "light": 1.2,  # light walking, biking, or chores
         "moderate": 1.5,  # regular lifting, running, or active work
@@ -138,19 +147,7 @@ def nutrition_funcs():
         "F": "female",
     }
     kcal_per_lb = 3500
-    return activity_lvl_dict, kcal_per_lb, mifflin_st_jeor, sex_dict
 
-
-@app.cell(hide_code=True)
-def biometrics(
-    activity_lvl_dict,
-    ema,
-    gaussian_noise,
-    kcal_per_lb,
-    mifflin_st_jeor,
-    np,
-):
-    # jb: include=false
     age = 23
     height_cm = 175
     sex = "M"
@@ -178,11 +175,17 @@ def biometrics(
 
     target_kcal_per_day = tdee + (kcal_per_lb * target_lbs_per_week / 7)
     guess_kcal_per_day = 2800
+
+    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
+    delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
     return (
         age,
+        alpha_slider,
+        delta_slider,
         height_cm,
         measurements,
         sex,
+        sex_dict,
         target_kcal_per_day,
         target_lbs_per_week,
         total_days,
@@ -226,9 +229,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    :::{attention icon=false} 🗝️ **Key Idea**
+    /// attention | 🗝️ **Key Idea**
+        attrs: {class: no-icon}
     If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can combine them (with some weighting $\alpha$) to increase the probablity that the noise cancels out.
-    :::
+    ///
     """)
     return
 
@@ -288,26 +292,7 @@ def _(
 
 
 @app.cell(hide_code=True)
-def alpha_delta_sliders(mo, target_lbs_per_week):
-    # jb: include=false
-    def alpha_delta(alpha, delta, measurements):
-        x_k_minus_one = 0
-        ema_output = []
-        for k, z in enumerate(measurements, start=1):
-            if k == 1:
-                x_k_minus_one = z - delta
-            x_k = x_k_minus_one + delta + alpha*(z - x_k_minus_one - delta)
-            ema_output.append(x_k)
-            x_k_minus_one = x_k
-        return ema_output
-
-    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
-    delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
-    return alpha_delta, alpha_slider, delta_slider
-
-
-@app.cell(hide_code=True)
-def alpha_delta_fig(
+def alpha_delta_fig_interactive(
     alpha_delta,
     alpha_slider,
     delta_slider,

@@ -12,7 +12,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(width="medium", app_title="Introduction")
+app = marimo.App(app_title="Introduction", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)
@@ -36,35 +36,31 @@ def imports():
     from schemdraw import flow
     from textwrap import dedent
     import matplotlib.pyplot as plt
+    from pathlib import Path
 
-    return dedent, flow, mo, np, pd, plt, schemdraw
+    return Path, dedent, flow, mo, np, pd, plt, schemdraw
 
 
 @app.cell(hide_code=True)
-def display_format(dedent, mo, plt, schemdraw):
+def display_settings(plt, schemdraw):
     # jb: include=false
     plt.style.use('default')
     schemdraw.use("svg")
+    return
+
+
+@app.cell(hide_code=True)
+def my_functions(dedent, mo, np):
+    # jb: include=false
     def graphic(x):
         return mo.Html(
             dedent(f'''\
-            <style>
-                .dark .graphic {{ 
-                    filter: invert(1) hue-rotate(180deg); 
-                }}
-            </style>
             <div class="graphic">
                 {mo.as_html(x)}
             </div>
             ''')
         )
 
-    return (graphic,)
-
-
-@app.cell(hide_code=True)
-def math_funcs(np):
-    # jb: include=false
     def gaussian_noise(
         mean=0.,
         std_dev=1.,
@@ -102,13 +98,48 @@ def math_funcs(np):
             x_k_minus_one = x_k
         return ema_output
 
-    return cumulative_average, ema, gaussian_noise
+    return cumulative_average, ema, gaussian_noise, graphic
+
+
+@app.cell(hide_code=True)
+def my_variables(Path, gaussian_noise, mo, np, pd):
+    # jb: include=false
+    IMAGES_DIR = Path(__file__).parent / "public"
+    weight = 155
+    Hz = 10
+    dur = 3
+    noise = gaussian_noise(
+        mean=0.,
+        std_dev=1.,
+        Hz=Hz,
+        duration_sec=dur,
+    ).round(2)
+    measurements = noise + weight
+    ten_measurements = measurements[:10]
+
+    ten_measurements_df = pd.DataFrame(
+        {
+            "time_s": np.arange(.1, 1.1, .1),
+            "weight_lbs": ten_measurements,
+        }
+    )
+
+    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
+    return (
+        IMAGES_DIR,
+        alpha_slider,
+        dur,
+        measurements,
+        ten_measurements,
+        ten_measurements_df,
+        weight,
+    )
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    It's impossibles to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
+    It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
 
     Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 
@@ -120,9 +151,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    :::{attention icon=false} 🗝️ **Key Idea**
+    /// attention | 🗝️ **Key Idea**
+        attrs: {class: no-icon}
     Having more measurements allows for better estimates *even if none of the measurements are 100% correct.*
-    :::
+    ///
     """)
     return
 
@@ -156,12 +188,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ::::{admonition icon=false} 📖 **Definition**
-    :::{glossary}
-    Signal
-    : Any {term}`function` that represents how a quantity varies over time or space.
-    :::
-    ::::
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Signal**</u>
+    Definition of the term.
+    Any {term}`function` that represents how a quantity varies over time or space.
+    ///
     """)
     return
 
@@ -177,12 +209,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ::::{admonition icon=false} 📖 **Definition**
-    :::{glossary}
-    Noise
-    : Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
-    :::
-    ::::
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Noise**</u>
+    Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
+    ///
     """)
     return
 
@@ -198,12 +229,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ::::{admonition icon=false} 📖 **Definition**
-    :::{glossary}
-    Filter
-    : Any algorithm that selectively modifies or removes noise from a {term}`signal`.
-    :::
-    ::::
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Filter**</u>
+    Any algorithm that selectively modifies or removes noise from a {term}`signal`.
+    ///
     """)
     return
 
@@ -217,7 +247,16 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def scale_diagram(flow, graphic, schemdraw):
+def _(mo):
+    mo.md(r"""
+    <img src="public/part01_scale_diagram.svg" class="graphic" alt="Scale Diagram" />
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def make_scale_diagram(IMAGES_DIR, flow, schemdraw):
+    # jb: include=false
     with schemdraw.Drawing(show=False) as _d:
         _d.config(fontsize=12)
 
@@ -242,7 +281,7 @@ def scale_diagram(flow, graphic, schemdraw):
         flow.Arrow().down(1).label("Weight estimate", loc="bottom")
         flow.Terminal().label("Scale reading")
 
-    graphic(_d)
+    _d.save(IMAGES_DIR / "part01_scale_diagram.svg")
     return
 
 
@@ -255,26 +294,22 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def measurements_fig(gaussian_noise, graphic, np, pd, plt):
-    weight = 155
-    Hz = 10
-    dur = 3
-    noise = gaussian_noise(
-        mean=0.,
-        std_dev=1.,
-        Hz=Hz,
-        duration_sec=dur,
-    ).round(2)
-    measurements = noise + weight
-    ten_measurements = measurements[:10]
+def _(mo):
+    mo.md(r"""
+    <img src="public/part01_weight_measurements_fig.svg" class="graphic" alt="Scale Diagram" />
+    """)
+    return
 
-    ten_measurements_df = pd.DataFrame(
-        {
-            "time_s": np.arange(.1, 1.1, .1),
-            "weight_lbs": ten_measurements,
-        }
-    )
 
+@app.cell(hide_code=True)
+def make_weight_measurements_fig(
+    IMAGES_DIR,
+    np,
+    plt,
+    ten_measurements_df,
+    weight,
+):
+    # jb: include=false
     _fig, _ax = plt.subplots()
 
     ten_measurements_df.plot(
@@ -292,16 +327,16 @@ def measurements_fig(gaussian_noise, graphic, np, pd, plt):
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.set_title("Weight Measurements at 10 Hz Sample Rate", style='italic')
 
-    graphic(_fig)
-    return dur, measurements, ten_measurements, weight
+    _fig.savefig(IMAGES_DIR / "part01_weight_measurements_fig.svg")
+    return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^mean-noise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
+    We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^meannoise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
 
-    [^mean-noise]: More specifically, we assume that the mean of the noise is 0, which means our logic still holds even if the median skews too big or too small.
+    [^meannoise]: More specifically, we assume that the mean of the noise distribution is 0, which means our logic still holds even if the median skews too big or too small. More on this later in [test](/part03-bayesian-probability).
     """)
     return
 
@@ -309,9 +344,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    :::{attention icon=false} 🗝️ **Key Idea**
+    /// attention | 🗝️ **Key Idea**
+        attrs: {class: no-icon}
     Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out.
-    :::
+    ///
     """)
     return
 
@@ -350,7 +386,9 @@ def _(mo):
 
     $$\bar{x}_k = \frac{\bar{x}_{k-1}(k-1) + z_k}{k} = \bar{x}_{k-1} + \frac{1}{k}(z_k - \bar{x}_{k-1}).$$
 
-    By writing each estimate in terms of the previous estimate, a weighting term ($1/k$ in this example), and the new measurement, we can allow this algorithm to run on our scale's limited memory.
+    By writing each estimate in terms of the previous estimate, a weighting term[^weighting-term], and the new measurement, we can allow this algorithm to run on our scale's limited memory.
+
+    [^weighting-term]: We are using $\frac{1}{k}$ in this example, but we will soon see that this is not the only option.
     """)
     return
 
@@ -358,9 +396,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    :::{attention icon=false} 🗝️ **Key Idea**
+    /// attention | 🗝️ **Key Idea**
+        attrs: {class: no-icon}
     We avoid storing a list of all measurements by writing each estimate in terms of the previous one.
-    :::
+    ///
     """)
     return
 
@@ -370,7 +409,7 @@ def _(mo):
     mo.md(r"""
     This can be implemented in python as
 
-    ```py
+    ```python
     def cumulative_average(measurements):
         x_k_minus_one = 0
         output = []
@@ -385,24 +424,33 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(dur, mo):
-    mo.md(rf"""
-    Over {dur} seconds, this looks like:
+def _(mo):
+    mo.md(r"""
+    Over 3 seconds, this looks like:
     """)
     return
 
 
 @app.cell(hide_code=True)
-def cumulative_avg_fig(
+def _(mo):
+    mo.md(r"""
+    <img src="public/part01_cumulative_avg_fig.svg" class="graphic" alt="Scale Diagram" />
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def make_cummulative_avg_fig(
+    IMAGES_DIR,
     cumulative_average,
     dur,
-    graphic,
     measurements,
     np,
     pd,
     plt,
     weight,
 ):
+    # jb: include=false
     _measurements_df = pd.DataFrame({
         "time_s": np.arange(.1, dur+.1, .1),
         "weight_lbs": measurements,
@@ -426,7 +474,7 @@ def cumulative_avg_fig(
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.set_title("Weight Measurements & Cumulative Average at 10 Hz", style='italic')
 
-    graphic(_fig)
+    _fig.savefig(IMAGES_DIR / "part01_cumulative_avg_fig.svg")
     return
 
 
@@ -467,9 +515,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    :::{attention icon=false} 🗝️ **Key Idea**
+    /// attention | 🗝️ **Key Idea**
+        attrs: {class: no-icon}
     Each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$) we choose closer to $\hat x_{k-1}$. With a larger $\alpha$ (closer to $1$) we choose closer to $z_k$.
-    :::
+    ///
     """)
     return
 
@@ -510,14 +559,18 @@ def _(alpha_slider, mo):
 
 
 @app.cell(hide_code=True)
-def ema_alpha_slider(mo):
-    # jb: include=false
-    alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
-    return (alpha_slider,)
-
-
-@app.cell(hide_code=True)
-def _(alpha_slider, dur, ema, graphic, measurements, mo, np, pd, plt, weight):
+def ema_fig_interactive(
+    alpha_slider,
+    dur,
+    ema,
+    graphic,
+    measurements,
+    mo,
+    np,
+    pd,
+    plt,
+    weight,
+):
     ema_weight = ema(alpha_slider.value, measurements)
 
     _measurements_df = pd.DataFrame({
@@ -589,7 +642,16 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def filter_diagram(flow, graphic, schemdraw):
+def _(mo):
+    mo.md(r"""
+    <img src="public/part01_filter_diagram.svg" class="graphic" alt="Filter Diagram" />
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def make_filter_diagram(IMAGES_DIR, flow, schemdraw):
+    # jb: include=false
     with schemdraw.Drawing(show=False) as _d:
         _d.config(fontsize=12)
 
@@ -607,7 +669,7 @@ def filter_diagram(flow, graphic, schemdraw):
         flow.Arrow().down(1)
         flow.Terminal().label("Estimate of the real-world value")
 
-    graphic(_d)
+    _d.save(IMAGES_DIR / "part01_filter_diagram.svg")
     return
 
 

@@ -1,11 +1,13 @@
 ---
 title: Introduction
 # marimo-version: 0.25.1
+# css_file: notebook-styles.css
 numbering:
   equations: false
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -16,7 +18,6 @@ pyproject: |-
       "schemdraw[matplotlib,svgmath]==0.23",
   ]
   requires-python = ">=3.13"
-width: medium
 ---
 ```
 
@@ -32,34 +33,31 @@ import schemdraw
 from schemdraw import flow
 from textwrap import dedent
 import matplotlib.pyplot as plt
+from pathlib import Path
 ```
 
 ```{marimo} python
 :hide-code: true
-:name: display_format
+:name: display_settings
 :include: false
 
 plt.style.use('default')
 schemdraw.use("svg")
+```
+
+```{marimo} python
+:hide-code: true
+:name: my_functions
+:include: false
+
 def graphic(x):
     return mo.Html(
         dedent(f'''\
-        <style>
-            .dark .graphic {{ 
-                filter: invert(1) hue-rotate(180deg); 
-            }}
-        </style>
         <div class="graphic">
             {mo.as_html(x)}
         </div>
         ''')
     )
-```
-
-```{marimo} python
-:hide-code: true
-:name: math_funcs
-:include: false
 
 def gaussian_noise(
     mean=0.,
@@ -99,54 +97,86 @@ def ema(alpha, measurements):
     return ema_output
 ```
 
-It's impossibles to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
+```{marimo} python
+:hide-code: true
+:name: my_variables
+:include: false
+
+IMAGES_DIR = Path(__file__).parent / "public"
+weight = 155
+Hz = 10
+dur = 3
+noise = gaussian_noise(
+    mean=0.,
+    std_dev=1.,
+    Hz=Hz,
+    duration_sec=dur,
+).round(2)
+measurements = noise + weight
+ten_measurements = measurements[:10]
+
+ten_measurements_df = pd.DataFrame(
+    {
+        "time_s": np.arange(.1, 1.1, .1),
+        "weight_lbs": ten_measurements,
+    }
+)
+
+alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
+```
+
+It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
 
 Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
 
 Signal filters follow a somewhat analogous process of using a variety of measurements to estimate some unknown quantity. For example, when weighing an object with an imprecise scale, a filter might be used to combine multiple different measurements and make a better estimate of the object's actual weight. The crucial point here is that having more measurements allows us to achieve better estimates *even if none of the measurements are 100% correct*.
-<!---->
+  
 :::{attention icon=false} 🗝️ **Key Idea**
 Having more measurements allows for better estimates *even if none of the measurements are 100% correct.*
 :::
-<!---->
+  
 To see what this might look like, let's walk through a simple example.
-<!---->
+  
 ## Recursive Averaging
-<!---->
+  
 Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both **signals**.
 
 [^loadcell]: A strain gauge load cell is an electronic component that converts force into proportional resistance change using metal foil grids (called strain gauges) which change resistance under load (increasing under tension and decreasing under compression). They are used in almost all digital bathroom scales because they are thin, accurate (relatively), mass-producible, and have no moving parts to wear out.
-<!---->
+  
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Signal
-: Any {term}`function` that represents how a quantity varies over time or space.
+: Definition of the term.
+  Any {term}`function` that represents how a quantity varies over time or space.
 :::
 ::::
-<!---->
+  
 Because nobody stands perfectly still, your constant weight shifts on the scale will introduce **noise** to the measurements (and even if you were still, there would still be thermal noise in the load cell).
-<!---->
+  
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Noise
 : Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
 :::
 ::::
-<!---->
+  
 Since the stream of measurements from the ADC will constantly fluctuate, we can never know your true weight with 100% precision (remember, it's impossible to measure anything with 100% precision). Instead, we must attempt to remove the noise from this signal to make our best estimate. Hence, the term **filter**.
-<!---->
+  
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Filter
 : Any algorithm that selectively modifies or removes noise from a {term}`signal`.
 :::
 ::::
-<!---->
+  
 Here is the setup we are working with at this point, where each arrow is annotated with the result or output of the prior box:
+  
+<img src="../notebooks/public/part01_scale_diagram.svg" class="graphic" alt="Scale Diagram" />
 
 ```{marimo} python
 :hide-code: true
-:name: scale_diagram
+:name: make_scale_diagram
+:include: false
 
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
@@ -172,33 +202,17 @@ with schemdraw.Drawing(show=False) as _d:
     flow.Arrow().down(1).label("Weight estimate", loc="bottom")
     flow.Terminal().label("Scale reading")
 
-graphic(_d)
+_d.save(IMAGES_DIR / "part01_scale_diagram.svg")
 ```
 
 Imagine you step on the scale and the first 10 digital measurements look like this:
+  
+<img src="../notebooks/public/part01_weight_measurements_fig.svg" class="graphic" alt="Scale Diagram" />
 
 ```{marimo} python
 :hide-code: true
-:name: measurements_fig
-
-weight = 155
-Hz = 10
-dur = 3
-noise = gaussian_noise(
-    mean=0.,
-    std_dev=1.,
-    Hz=Hz,
-    duration_sec=dur,
-).round(2)
-measurements = noise + weight
-ten_measurements = measurements[:10]
-
-ten_measurements_df = pd.DataFrame(
-    {
-        "time_s": np.arange(.1, 1.1, .1),
-        "weight_lbs": ten_measurements,
-    }
-)
+:name: make_weight_measurements_fig
+:include: false
 
 _fig, _ax = plt.subplots()
 
@@ -217,13 +231,13 @@ ten_measurements_df.plot(
 _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
 _ax.set_title("Weight Measurements at 10 Hz Sample Rate", style='italic')
 
-graphic(_fig)
+_fig.savefig(IMAGES_DIR / "part01_weight_measurements_fig.svg")
 ```
 
-We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^mean-noise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
+We can immediately tell that you're in the mid 150's, but we're not sure exactly where. Since the fluctuations are generally random, it is reasonable to assume each measurement is just as likely to be too high as it is to be too low[^meannoise]. Therefore, we can get a better estimate of the person's true weight by combining many measurements, in hopes of the noise canceling itself out.
 
-[^mean-noise]: More specifically, we assume that the mean of the noise is 0, which means our logic still holds even if the median skews too big or too small.
-<!---->
+[^meannoise]: More specifically, we assume that the mean of the noise distribution is 0, which means our logic still holds even if the median skews too big or too small. More on this later in [test](/part03-bayesian-probability).
+  
 :::{attention icon=false} 🗝️ **Key Idea**
 Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out.
 :::
@@ -259,15 +273,17 @@ Now we can calculate each $\bar{x}_k$ (pronounced "x bar", where the bar is stat
 
 $$\bar{x}_k = \frac{\bar{x}_{k-1}(k-1) + z_k}{k} = \bar{x}_{k-1} + \frac{1}{k}(z_k - \bar{x}_{k-1}).$$
 
-By writing each estimate in terms of the previous estimate, a weighting term ($1/k$ in this example), and the new measurement, we can allow this algorithm to run on our scale's limited memory.
-<!---->
+By writing each estimate in terms of the previous estimate, a weighting term[^weighting-term], and the new measurement, we can allow this algorithm to run on our scale's limited memory.
+
+[^weighting-term]: We are using $\frac{1}{k}$ in this example, but we will soon see that this is not the only option.
+  
 :::{attention icon=false} 🗝️ **Key Idea**
 We avoid storing a list of all measurements by writing each estimate in terms of the previous one.
 :::
-<!---->
+  
 This can be implemented in python as
 
-```py
+```python
 def cumulative_average(measurements):
     x_k_minus_one = 0
     output = []
@@ -277,18 +293,15 @@ def cumulative_average(measurements):
         x_k_minus_one = x_k
     return output
 ```
+  
+Over 3 seconds, this looks like:
+  
+<img src="../notebooks/public/part01_cumulative_avg_fig.svg" class="graphic" alt="Scale Diagram" />
 
 ```{marimo} python
 :hide-code: true
-
-mo.md(rf"""
-Over {dur} seconds, this looks like:
-""")
-```
-
-```{marimo} python
-:hide-code: true
-:name: cumulative_avg_fig
+:name: make_cummulative_avg_fig
+:include: false
 
 _measurements_df = pd.DataFrame({
     "time_s": np.arange(.1, dur+.1, .1),
@@ -313,13 +326,13 @@ _ax.legend(["Measurement", "Cumulative Avg"])
 _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
 _ax.set_title("Weight Measurements & Cumulative Average at 10 Hz", style='italic')
 
-graphic(_fig)
+_fig.savefig(IMAGES_DIR / "part01_cumulative_avg_fig.svg")
 ```
 
 As desired, we can see that the orange line of averages has quickly stabalized relative to the blue measurements. While this is very close to the algorithm that real scales use, we still need one tweak.
-<!---->
+  
 ## Exponential Moving Average
-<!---->
+  
 Currently, our formula is
 
 $$\bar{x}_k = \bar{x}_{k-1} + \frac{1}{k}(z_k - \bar{x}_{k-1}),$$
@@ -331,11 +344,11 @@ $$\hat{x}_k = \hat{x}_{k-1} + \alpha (z_k - \hat{x}_{k-1}).$$
 Note that we have also substituted "$\bar x$" with "$\hat x$" (pronounced "x hat"), where the hat indicates an estimated value, rather than an average. This new equation is called the exponential moving average (EMA)[^ema]. Importantly, $z_k$ has a weighting of $\alpha$, and $\hat x_{k-1}$ has a weighting of $(1-\alpha)$, so that as $\alpha$ goes to $0$, the function goes to $\hat{x}_{k-1}$, and as $\alpha$ goes to $1$, the function goes to $z_k$. In other words, each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$) we go closer to the prior estimate. With a larger $\alpha$ (closer to $1$) we go closer to our new measurement.
 
 [^ema]: The exponential moving average gets its name because each term $z_{k-n}$ is weighted by a factor of $\alpha(1-\alpha)^n$, where $k$ is the number of measurements and $n\le k$. This is clearer when the equation is rearranged into its more common form: $\hat{x}_k = \alpha z_k + (1-\alpha) \hat x_{k-1}$, and we can see that each measurement is multiplied by $\alpha$ when initially taken, and then by $(1-\alpha)$ at every iteration afterwards.
-<!---->
+  
 :::{attention icon=false} 🗝️ **Key Idea**
 Each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$) we choose closer to $\hat x_{k-1}$. With a larger $\alpha$ (closer to $1$) we choose closer to $z_k$.
 :::
-<!---->
+  
 One additional consideration with EMA filters is initialization: our cummulative average simply returns the first measurement as the first estimate, but the EMA takes a weighted combination of each measurement with the previous estimate, so we must give it some initial value to use when calculating the first estimate. There are three common approaches to this.
 
 1. *First measurement initialization:* We set $\hat x_{0}$ equal to the first measurement as soon as we get it, ensuring the first estimate equals the first measurement. This is the most common and will be used here.
@@ -367,14 +380,7 @@ By setting $\alpha = {alpha_slider.value}$, we get:
 
 ```{marimo} python
 :hide-code: true
-:name: ema_alpha_slider
-:include: false
-
-alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
-```
-
-```{marimo} python
-:hide-code: true
+:name: ema_fig_interactive
 
 ema_weight = ema(alpha_slider.value, measurements)
 
@@ -417,7 +423,7 @@ where our EMA settles on ${ema_weight[-1]:.2f}$ lbs. after {dur} seconds. We hav
 ```
 
 ## Summary
-<!---->
+  
 In this section, we saw how to use the EMA equation
 
 $$\hat{x}_k = \hat{x}_{k-1} + \alpha (z_k - \hat{x}_{k-1})$$
@@ -432,10 +438,13 @@ However, we've barely scatched the surface of signal filtering. In the coming se
 - System dynamics and signal classifications
 
 Throughout all these topics, the general framework of real world value, noisy measurement, filter, and estimate will remain the same.
+  
+<img src="../notebooks/public/part01_filter_diagram.svg" class="graphic" alt="Filter Diagram" />
 
 ```{marimo} python
 :hide-code: true
-:name: filter_diagram
+:name: make_filter_diagram
+:include: false
 
 with schemdraw.Drawing(show=False) as _d:
     _d.config(fontsize=12)
@@ -454,5 +463,5 @@ with schemdraw.Drawing(show=False) as _d:
     flow.Arrow().down(1)
     flow.Terminal().label("Estimate of the real-world value")
 
-graphic(_d)
+_d.save(IMAGES_DIR / "part01_filter_diagram.svg")
 ```

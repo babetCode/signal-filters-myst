@@ -11,7 +11,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Optimal Filtering")
+app = marimo.App(app_title="Optimal Filtering", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)
@@ -91,17 +91,16 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def pdf_definition(mo):
+def _(mo):
     mo.md(r"""
-    ::::{admonition icon=false} 📖 **Definition**
-    :::{glossary}
-    Probability Density Function
-    : A {term}`function` which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the {term}`integral`:
-      $$\int_a^b P(x)\, dx.$$
-      By definition, all PDFs must satisfy
-      $$\int_{-\infty}^\infty P(x)\, dx = 1.$$
-    :::
-    ::::
+    /// admonition | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Probability Density Function**</u>
+    A&nbsp;function&nbsp;which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the &nbsp;integral&nbsp;:
+    $$\int_a^b P(x)\, dx.$$
+    By definition, all PDFs must satisfy
+    $$\int_{-\infty}^\infty P(x)\, dx = 1.$$
+    ///
     """)
     return
 
@@ -123,29 +122,28 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def mean_definition(mo):
+def _(mo):
     mo.md(r"""
-    ::::{admonition icon=false} 📖 **Definition**
-    :::{glossary}
-    Mean
-    : 1. (Of a sample of $n$ values) The sum of the values divided by n:
-      $$\bar x := \sum_{x=1}^n x_i$$
+    /// admonition | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Mean**</u>
+    1. (Of a sample of $n$ values) The sum of the values divided by n:
+    $$\bar x := \sum_{x=1}^n x_i$$
 
-      2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:
-      $$\mu_{[a,b]} := \int_a^b f(x)x\, dx.$$
-      If no interval is specified, it is assumed to be over the reals:
-      $$\mu := \int_{-\infty}^\infty f(x)x\, dx.$$
-    :::
-    ::::
+    2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:
+    $$\mu_{[a,b]} := \int_a^b f(x)x\, dx.$$
+    If no interval is specified, it is assumed to be over the reals:
+    $$\mu := \int_{-\infty}^\infty f(x)x\, dx.$$
+    ///
     """)
     return
 
 
-@app.cell
-def _():
-    # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?
-
-    # TODO explain convolutions
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ###
+    """)
     return
 
 
@@ -181,7 +179,85 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Now, consider the following thought experiement: you suddenly find yourself driving a car on an infinitely long, perfectly straight road. Your are completely lost, but have a GPS to locate your position on the road—the GPS has some Gaussian noise in the reading. In other words, given some position reading by the GPS, the probability distribution of your position can be represented as a normal curve centered at the reading.
+    Now, consider a hypothetical game of darts where the horizontal position of the dart is normally distributed. In other words, the probability that the dart's horizontal position lands $x$ to the right of the the bullseye is
+    $$x \sim \mathcal N(0, \sigma^2).$$
+    Imagine that a dart is thrown while you are not watching, and then you are only told that dart fell to the right of the bullseye. Given only this information, how should you update your distribution for $x$?
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Now, consider the following thought experiement: you are driving a car on "x-axis ave." in mythical math world. an infinitely long, perfectly straight road. Your are completely lost, but have a GPS to locate your position on the road—the GPS has some Gaussian noise in the reading. In other words, given some position reading by the GPS, the probability distribution of your position can be represented as a normal curve centered at the reading.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Bayes theorem gives
+
+    $$p(X|Z) = \frac{p(Z|X)p(X)}{p(Z)},$$
+    where:
+    - $p(X)$ is the prior density.
+    - $p(Z|X)$ is the likelihood.
+    - $p(X|Z)$ is the posterior density.
+    - $p(Z)$ is the evidence, or marginal likelihood.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// admonition | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Convolution**</u>
+    The convolution of functions $f$ and $g$ is defined as
+    $$(f * g)(x) = \int_{-\infty}^\infty f(x-t)g(t)\, dt.$$
+    ///
+    """)
+    return
+
+
+@app.cell
+def _():
+    # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?
+
+    # TODO explain convolutions
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    # TODO
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Edit `sync_notebooks.py` to convert
+    ```md
+    /// admonition | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Term**</u>
+    Definition of the term.
+    ///
+    ```
+    into
+    ```md
+    ::::{admonition icon=false} 📖 **Definition**
+    :::{glossary}
+    term
+    : Definition of the term with all new lines being indented by two spaces.
+    :::
+    ::::
+    ```
     """)
     return
 

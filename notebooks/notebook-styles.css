@@ -1,0 +1,11 @@
+.admonition.no-icon .admonition-title::before,
+.admonition.no-icon .admonition-icon,
+.admonition.no-icon svg {
+    display: none !important;
+    content: none !important;
+    padding-left: 0 !important;
+}
+
+.dark .graphic {
+    filter: invert(1) hue-rotate(180deg); 
+}

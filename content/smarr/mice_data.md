@@ -4,6 +4,7 @@ title: Mice Data
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 width: medium
 ---
@@ -38,7 +39,7 @@ def graphic(x):
 
 ```{marimo} python
 # Get the directory where the current script is located
-data_dir = Path(__file__).parent.parent.parent / "assets/smarr"
+data_dir = Path(__file__).parent.parent.parent / "static/smarr"
 
 df_dict = {
     'fLA': pd.read_csv(data_dir / 'micedata-FemAct.csv'),
