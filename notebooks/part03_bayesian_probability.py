@@ -143,6 +143,44 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    | Axiom | Statement |
+    | :-----: | :---------: |
+    | Null Set | $\exists S[\forall x(x \notin S)]$ |
+    | Extensionality | $[(S_1 \subseteq S_2) \land (S_2 \subseteq S_1)] \rightarrow (S_1 = S_2)$ |
+    | Pairs | $\forall S_1 \forall S_2(\exists S_3[(S_1 \in S_3) \land (S_2 \in S_3)])$ |
+    | Power Set | $\forall S_1 \exists S_2[\forall x(x \subseteq S_1 \rightarrow x \in S_2)]$ |
+    | Union | $\forall S_1 \exists S_2[\forall S_3 \forall x([S_3 \in S_1 \land x \in S_3] \rightarrow x \in S_2)]$ |
+    | Infinity | $\exists S_1[(\emptyset \in S_1) \land \forall x(x \in S_1 \rightarrow \exists S_2[(x \in S_2) \land (S_2 \in S_1)])]$ |
+    | Separation | I don't know |
+    | Replacement | I don't know |
+    | Regularity | $\forall S(S \notin S)$ |
+    | Choice | I don't know |
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    | Axiom | Statement |
+    | :-----: | :---------: |
+    | Null Set | *Write here* |
+    | Extensionality | *Write here* |
+    | Pairs | *Write here* |
+    | Power Set | *Write here* |
+    | Union | *Write here* |
+    | Infinity | *Write here* |
+    | Separation | *Write here* |
+    | Replacement | *Write here* |
+    | Regularity | *Write here* |
+    | Choice | *Write here* |
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     Using these symbols, we can write our axioms as:
 
     - **Null Set:** $\exists S[\forall x(x \notin S)]$ (This set is called the "null set" and is denoted $\emptyset$).
