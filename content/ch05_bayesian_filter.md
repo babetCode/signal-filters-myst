@@ -1,7 +1,8 @@
 ---
-title: Optimal Filtering
+title: Chapter 5
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
+subtitle: "Bayesian Filter: Applying what we built"
 abbreviations:
   iff: if and only if
   diff: null

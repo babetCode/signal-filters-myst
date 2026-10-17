@@ -1,11 +1,12 @@
 ---
-title: Bayesian Probability
+title: Chapter 3
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
+subtitle: "Mathematical Foundations: The basis of everything"
 abbreviations:
   iff: if and only if
   diff: null
-  PDF: probability density function
+  ZFC: Zermelo-Frankel set theory with Axiom of Choice
 numbering:
   equations: false
 ---
@@ -61,15 +62,121 @@ def graphic(x):
     )
 ```
 
-Our goal when designing a signal filter is to algorithmically remove noise from a measurement signal. As we saw in the past two sections, this is usually done by combining our knowlege and measurements in a way that increases the probability that the noise cancels out. To understand what that means, this section will develop a more rigorous notion of probability. Since probability is built on set theory, we will first address set theory and notation.
+Our goal when designing a signal filter is to algorithmically remove noise from a measurement signal. As we saw in the past two sections, this is usually done by combining our knowlege and measurements in a way that increases the probability that the noise cancels out. In terms of the equations we've been working with:
+
+$$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-),$$
+
+the next three chapters lay the groundwork needed for answering the question:
+
+>"Given some amounts of noise in our prior ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?"
+
+Since modeling noise relies on probabilities, probabilities are built on set theory, and set theory is built on logic, we will briefly introduce these topics along the way.
   
-## ZFC Sets
+## Set Theory Language
+  
+A **Boolean variable**[^george-boole] represents a truth value: either **True** or **False**. In the lingo, we say that if $A$ is a boolean variable, then it **evaluates** to $T$ (true) or $F$ (false). We can create **boolean expressions** by combining boolean variables with the following **connective operators**[^connectives]:
+
+[^george-boole]: Named after British mathematician George Boole.
+
+[^connectives]: This is not an exhaustive list of all connectives, but it includes the most common ones which are useful for building our notion of set theory.
+  
+### Logical Connectives
+  
+#### Negation
+
+The negation operator is denoted $\neg$ (read as "not"). When placed to the left of an expression, it evaluates to the opposite of the original expression[^expression]:
+
+$$\begin{array}{r | c}
+\neg & \\
+\hline
+\mathbf{T} & \text{F} \\
+\mathbf{F} & \text{T} \\
+\end{array}$$
+
+For example, "$\neg T$" evaluates to $F$.
+
+[^expression]: The $\neg$ operator may also be placed to left of a boolean variable or a bare truth value, since these count as expressions.
+  
+#### Conjunction
+
+The conjunction operator is denoted $\land$ (read as "and"). When placed between two expressions, it evaluates to $T$ if and only if both expressions evaluate to $T$, otherwise it evaluates to $F$:
+
+$$\begin{array}{r | cc}
+\land & \mathbf{T} & \mathbf{F} \\
+\hline
+\mathbf{T} & \text{T} & \text{F} \\
+\mathbf{F} & \text{F} & \text{F} \\
+\end{array}$$
+
+For example, "$T \land F$" evaluates to $F$.
+  
+#### Disjunction
+
+The disjunction operator is denoted $\lor$ (read "or"). When placed between two expressions, it evaluates to $F$ if and only if both expressions evaluate to $F$, otherwise it evaluates to $T$:
+
+$$\begin{array}{r | cc}
+\lor & \mathbf{T} & \mathbf{F} \\
+\hline
+\mathbf{T} & \text{T} & \text{T} \\
+\mathbf{F} & \text{T} & \text{F} \\
+\end{array}$$
+
+For example, "$T \lor F$" evaluates to $T$[^de-morgan].
+
+[^de-morgan]: The disjunction operator may also be defined in terms of conjunction, where  $A \lor B$ is just shorthand for $\neg(\neg A \land \neg B)$. Similarly, had we taken $\lor$ as primitive, then $\land$ could be defined as an abbreviation, where $A \land B$ would be shorthand for $\neg(\neg A \lor \neg B)$. This ability to express conjunctions and disjunctions in terms of each other using negation is known as a **dual** in [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
+  
+#### Conditional
+
+The conditional operator is denoted $\rightarrow$ (read "implies", or "if ... then ..."). When placed between two expressions, such as $A \rightarrow B$, it acts as shorthand for
+
+$$\neg A \lor B.$$
+  
+#### Bionditional
+
+The biconditional operator is denoted $\leftrightarrow$ (read "if and only if"). When placed between two expressions, such as $A \leftrightarrow B$, it acts as shorthand for
+
+$$(A \rightarrow B) \land (B \rightarrow A).$$
+  
+### Logical Quantifiers
+  
+Unlike connectives, which
+  
+#### For All
+
+The quantifier $\forall$ (read as "for all"),
+  
+#### There Exists
+  
+### Relation Operators
+  
+#### Equality
+  
+#### Membership
+  
+### Formulas
+  
+The **formulas** of set theory are defined recursively according to the following 4 rules:
+
+1. **(Atomic)** If $u$ and $v$ are variables (not necessarily distinct), then
+   $u \in v$ and $u = v$ are formulas.
+2. **(Connectives)** If $\psi$ and $\chi$ are formulas, then so are
+   $\neg\psi$, $(\psi \land \chi)$, $(\psi \lor \chi)$,
+   $(\psi \to \chi)$, and $(\psi \leftrightarrow \chi)$.
+3. **(Quantifiers)** If $\psi$ is a formula and $u$ is a variable, then
+   $\forall u\,\psi$ and $\exists u\,\psi$ are formulas.
+4. **(Closure)** Nothing else is a formula.
+  
+## ZFC Axioms
+  
+Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. In this section we will introduce the notion, theory, and some of its implications.
+
+[^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms (usually ZFC). However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
   
 A "set" in math can be approximately thought of as "any unordered collection of unique objects." However, no single, precise definition exists, because sets considered are a "primitive concept"—meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms[^zfc-axioms]:
 
 [^zfc-axioms]: There are many equivalent ways to formulate the ZFC axioms. The list shown here from [quanta magazine](https://www.quantamagazine.org/why-maths-final-axiom-proved-so-controversial-20260429/) includes all 10 for pedagogical/historical reasons. However, the Null Set axiom is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionall, the axiom of Separation is sometimes omitted since it can be proven using the axiom of Replacement.
   
-<img src="../notebooks/public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="700" />
+<img src="../notebooks/public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="700" style="max-height: 50em" />
   
 The objects in a set are called "elements", and we denote that an element $x$ is in a set $S$ as
 
@@ -96,6 +203,32 @@ As well as the following abbreviations:
 | $S_1 \subseteq S_2$ | "$S_1$ is a **subset** of $S_2$" | $\forall x(x \in S_1 \rightarrow x \in S_2)$ | `\subseteq` |
 | $a \leftrightarrow b$ | "$a$ **if and only if** $b$" (Biconditional) | $(a \rightarrow b) \land (b \rightarrow a)$ | `\leftrightarrow` |
   
+| Axiom | Statement |
+| :-----: | :---------: |
+| Null Set | $\exists S[\forall x(x \notin S)]$ |
+| Extensionality | $[(S_1 \subseteq S_2) \land (S_2 \subseteq S_1)] \rightarrow (S_1 = S_2)$ |
+| Pairs | $\forall S_1 \forall S_2(\exists S_3[(S_1 \in S_3) \land (S_2 \in S_3)])$ |
+| Power Set | $\forall S_1 \exists S_2[\forall x(x \subseteq S_1 \rightarrow x \in S_2)]$ |
+| Union | $\forall S_1 \exists S_2[\forall S_3 \forall x([S_3 \in S_1 \land x \in S_3] \rightarrow x \in S_2)]$ |
+| Infinity | $\exists S_1[(\emptyset \in S_1) \land \forall x(x \in S_1 \rightarrow \exists S_2[(x \in S_2) \land (S_2 \in S_1)])]$ |
+| Separation | I don't know |
+| Replacement | I don't know |
+| Regularity | $\forall S(S \notin S)$ |
+| Choice | I don't know |
+  
+| Axiom | Statement |
+| :-----: | :---------: |
+| Null Set | *Write here* |
+| Extensionality | *Write here* |
+| Pairs | *Write here* |
+| Power Set | *Write here* |
+| Union | *Write here* |
+| Infinity | *Write here* |
+| Separation | *Write here* |
+| Replacement | *Write here* |
+| Regularity | *Write here* |
+| Choice | *Write here* |
+  
 Using these symbols, we can write our axioms as:
 
 - **Null Set:** $\exists S[\forall x(x \notin S)]$ (This set is called the "null set" and is denoted $\emptyset$).
@@ -113,16 +246,6 @@ Using these symbols, we can write our axioms as:
   
 In mathematical terms, the notion of probability depends on a **probability space**
   
-::::{admonition icon=false} 📖 **Definition**
-:::{glossary}
-Probability Space
-: a triple $(\Omega, F, P)$, where:
-  - $\Omega$ is a set (the sample space),
-  - $F$ is a $\sigma$-algebra of subsets of $\Omega$ (the “events”),
-  - $P$ is a function from $F$ to $[0,1]$ satisfying: $P(\Omega) = 1$, and countable additivity (for pairwise disjoint events $A_1, A_2, ..., P(\bigcup A_i) = ΣP(Aᵢ))$.
-:::
-::::
-  
 ## Discrete probabilties.
   
 Discrete probablity distributions are the typical type of probablity we encounter in a "50/50" coin toss or "hitting the red" in roulette. There are a finite nubmer of possible outcomes, exactly one of which will actually be true. Since we don't know which one, we assign some probabilty to each, and since *something* must be true, the sum of all probabilities is 1.
@@ -136,14 +259,6 @@ $$P(A|B) := \frac{P(A\cap B)}{P(B)}$$
   
 As previously discussed, it is impossible to measure anything with 100% precision. Because measurements are unpredicatble, we say that the measurement {term}`signal` is {term}`stochastic`. Therefore, we model measurements as being sampled from a **probability density function** (PDF).
   
-:::{admonition icon=false} 📖 **Definition**
-<u>**Probability Density Function**</u>
-A&nbsp;function&nbsp;which represents the probability density of some unkown value. Specifically, for any PDF $P$, the probability of its represented value falling between constants $a$ and $b$ (where $a<b$) is defined by the &nbsp;integral&nbsp;:
-$$\int_a^b P(x)\, dx.$$
-By definition, all PDFs must satisfy
-$$\int_{-\infty}^\infty P(x)\, dx = 1.$$
-:::
-  
 ## Brainstorm
   
 modeling the measurement as the sum of the true value with a noise value, which we can write as
@@ -151,17 +266,6 @@ $$z = x + \eta$$
 combining our knowlege and measurements to increase the
   
 The mean of a PDF is defined as
-  
-:::{admonition icon=false} 📖 **Definition**
-<u>**Mean**</u>
-1. (Of a sample of $n$ values) The sum of the values divided by n:
-$$\bar x := \sum_{x=1}^n x_i$$
-
-2. (Of a continuous function $f(x)$ over $[a,b]$) The integral of $f(x)x$ over $[a,b]$:
-$$\mu_{[a,b]} := \int_a^b f(x)x\, dx.$$
-If no interval is specified, it is assumed to be over the reals:
-$$\mu := \int_{-\infty}^\infty f(x)x\, dx.$$
-:::
   
 ###
   
@@ -196,12 +300,6 @@ where:
 - $p(Z|X)$ is the likelihood.
 - $p(X|Z)$ is the posterior density.
 - $p(Z)$ is the evidence, or marginal likelihood.
-  
-:::{admonition icon=false} 📖 **Definition**
-<u>**Convolution**</u>
-The convolution of functions $f$ and $g$ is defined as
-$$(f * g)(x) = \int_{-\infty}^\infty f(x-t)g(t)\, dt.$$
-:::
 
 ```{marimo} python
 # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?
@@ -209,27 +307,6 @@ $$(f * g)(x) = \int_{-\infty}^\infty f(x-t)g(t)\, dt.$$
 # TODO explain convolutions
 ```
 
-Edit `sync_notebooks.py` to convert
-```md
-:::{admonition icon=false} 📖 **Definition**
-<u>**Term**</u>
-Definition of the term.
-$$x = \text{equation on a new line}$$
-Another line of text
-:::
-```
-into
-```md
-::::{admonition icon=false} 📖 **Definition**
-:::{glossary}
-term
-: Definition of the term with all new lines being indented by two spaces.
-  $$x = \text{equation on a new line}$$
-  Another line of text
-:::
-::::
-```
-  
 | Symbol / Abbreviation | LaTeX Command | English Reading / Meaning |
 | :--- | :--- | :--- |
 | $\wedge$ | `\wedge` or `\land` | **"and"** (Conjunction) |

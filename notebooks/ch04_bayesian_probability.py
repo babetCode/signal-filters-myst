@@ -11,13 +11,14 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Optimal Filtering", css_file="notebook-styles.css")
+app = marimo.App(app_title="Chapter 4", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
+    subtitle: "Bayesian Porbability: Building on the foundations"
     abbreviations:
       iff: if and only if
       diff: null
@@ -69,7 +70,89 @@ def display_format(dedent, mo, plt, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Our goal when designing a signal filter is to algorithmically combine multiple measurements to increase the probability that the noise "cancels out". In the last two sections, we've seen different examples of using an $\alpha$ value to take a weighed average of a prior estimate and a measurement. In this section, we will address the problem of choosing a value of $\alpha$ given different expected {term}`noise` components from our estimate and measurement.
+    Our goal when designing a signal filter is to algorithmically remove noise from a measurement signal. As we saw in the past two sections, this is usually done by combining our knowlege and measurements in a way that increases the probability that the noise cancels out. To understand what that means, it is helpful to develop a more rigorous notion of probability. Since probability is built on set theory, we will first address sets and their notation.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Sets
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    While the term "set" is not rigorously defined in mathematics[^primitive-terms], we can think of it as "any unordered collection of unique objects" for now. For a more precise understanding, see the [set theory](/extra-set-theory) section.
+
+    [^primitive-terms]: This is because the term set is a "primitive term", meaning it is a foundational block on which other terms are defined; its meaning in strictly derived from the axioms which describe how it *behaves*, rather than what it *is*.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## What is probability
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    In mathematical terms, the notion of probability depends on a **probability space**
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Probability Space**</u>
+    a triple $(\Omega, F, P)$, where:
+    - $\Omega$ is a set (the sample space),
+    - $F$ is a $\sigma$-algebra of subsets of $\Omega$ (the “events”),
+    - $P$ is a function from $F$ to $[0,1]$ satisfying: $P(\Omega) = 1$, and countable additivity (for pairwise disjoint events $A_1, A_2, ..., P(\bigcup A_i) = ΣP(Aᵢ))$.
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Discrete probabilties.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Discrete probablity distributions are the typical type of probablity we encounter in a "50/50" coin toss or "hitting the red" in roulette. There are a finite nubmer of possible outcomes, exactly one of which will actually be true. Since we don't know which one, we assign some probabilty to each, and since *something* must be true, the sum of all probabilities is 1.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Intersections
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    The conditional probability $A$ given $B$ is defined
+    $$P(A|B) := \frac{P(A\cap B)}{P(B)}$$
     """)
     return
 
@@ -109,6 +192,16 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ## Brainstorm
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    modeling the measurement as the sum of the true value with a noise value, which we can write as
+    $$z = x + \eta$$
+    combining our knowlege and measurements to increase the
     """)
     return
 
@@ -233,20 +326,14 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # TODO
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     Edit `sync_notebooks.py` to convert
     ```md
     /// admonition | 📖 **Definition**
         attrs: {class: no-icon}
     <u>**Term**</u>
     Definition of the term.
+    $$x = \text{equation on a new line}$$
+    Another line of text
     ///
     ```
     into
@@ -255,9 +342,45 @@ def _(mo):
     :::{glossary}
     term
     : Definition of the term with all new lines being indented by two spaces.
+      $$x = \text{equation on a new line}$$
+      Another line of text
     :::
     ::::
     ```
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    | Symbol / Abbreviation | LaTeX Command | English Reading / Meaning |
+    | :--- | :--- | :--- |
+    | $\wedge$ | `\wedge` or `\land` | **"and"** (Conjunction) |
+    | $\vee$ | `\vee` or `\lor` | **"or"** (Disjunction) |
+    | $\neg$ | `\neg` or `\lnot` | **"not"** (Negation) |
+    | $\rightarrow$ | `\rightarrow` or `\to` | **"implies"** / **"if... then..."** |
+    | $\leftrightarrow$ | `\leftrightarrow` or `\iff` | **"if and only if"** (Biconditional) |
+    | $\oplus$ | `\oplus` | **"exclusive or"** (XOR) |
+    | $\forall$ | `\forall` | **"for all"** / **"for every"** |
+    | $\exists$ | `\exists` | **"there exists"** |
+    | $\exists!$ | `\exists!` | **"there exists a unique"** |
+    | $\therefore$ | `\therefore` | **"therefore"** |
+    | $\because$ | `\because` | **"because"** |
+    | $\in$ | `\in` | **"is an element of"** / **"is in"** |
+    | $\notin$ | `\notin` | **"is not an element of"** |
+    | $\subseteq$ | `\subseteq` | **"is a subset of"** (Inclusive) |
+    | $\subset$ | `\subset` or `\subsetneq` | **"is a proper subset of"** (Strict) |
+    | $\cap$ | `\cap` | **"intersection"** (Elements in both) |
+    | $\cup$ | `\cup` | **"union"** (Elements in either or both) |
+    | $\setminus$ | `\setminus` | **"set difference"** / **"minus"** |
+    | $\times$ | `\times` | **"Cartesian product of"** |
+    | $\mathcal{P}$ | `\mathcal{P}` or `\wp` | **"power set of"** |
+    | $\emptyset$ | `\emptyset` or `\varnothing` | **"the empty set"** |
+    | s.t. / $\mid$ | `:` or `\mid` | **"such that"** |
+    | WLOG | *N/A* | **"Without loss of generality"** |
+    | Q.E.D. / $\blacksquare$ | `\blacksquare` | **"Which was to be demonstrated"** (End of proof) |
+    | iff | *N/A* | **"if and only if"** |
     """)
     return
 

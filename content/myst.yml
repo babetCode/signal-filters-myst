@@ -11,22 +11,33 @@ project:
       path: ../.venv/bin/jupyter-book-marimo # Unix
   toc:
     - file: index.md
-    - file: part01_introduction.md
-    - file: part02_alpha_beta_filter.md
-    - file: part03_bayesian_probability.md
+    # - file: toc.md
+    - file: ch01_recursive_average.md
+      title: 1. Recursive Average
+    - file: ch02_alpha_beta_filter.md
+      title: 2. Alpha-Beta Filter
+    - file: ch03_mathematical_foundations.md
+      title: 3. Mathematical Foundations
+    - file: ch04_bayesian_probability.md
+      title: 4. Bayesian Probability
+    - file: ch05_bayesian_filter.md
+      title: 5. Bayesian Filter
     - file: glossary-terms.md
+    # - title: Extras
+    #   children:
+    #   - file: extra_set_theory.md
     - file: philosophy.md
       hidden: true
     - file: glossary-philosophy.md
       hidden: true
-  exports:
-    - format: typst
-      output: documents/project-download.pdf
-      articles:
-        - index.md
-        - part01_introduction.md
-        - part02_alpha_beta_filter.md
-        - part03_bayesian_probability.md
+  # exports:
+  #   - format: typst
+  #     output: documents/project-download.pdf
+  #     articles:
+  #       - index.md
+  #       - ch01_introduction.md
+  #       - ch02_alpha_beta_filter.md
+  #       - ch03_bayesian_probability.md
 site:
   template: book-theme
   options:

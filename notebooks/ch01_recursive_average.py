@@ -12,13 +12,14 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Introduction", css_file="notebook-styles.css")
+app = marimo.App(app_title="Chapter 1", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
+    subtitle: "Recursive Average: Building intuition"
     numbering:
       equations: false
     -->
@@ -170,7 +171,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Recursive Averaging
+    ## Recursive Average
     """)
     return
 

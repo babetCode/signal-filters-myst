@@ -1,7 +1,8 @@
 ---
-title: The Alpha-Beta Filter
+title: Chapter 2
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
+subtitle: "Alpha-Beta Filter: Adapting to a changing signal"
 numbering:
   equations: false
 ---

@@ -12,16 +12,14 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(
-    app_title="The Alpha-Beta Filter",
-    css_file="notebook-styles.css",
-)
+app = marimo.App(app_title="Chapter 2", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
+    subtitle: "Alpha-Beta Filter: Adapting to a changing signal"
     numbering:
       equations: false
     -->
