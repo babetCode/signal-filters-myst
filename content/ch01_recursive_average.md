@@ -3,6 +3,8 @@ title: Chapter 1
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Recursive Average: Building intuition"
+abbreviations:
+  ADC: analog-to-digital converter
 numbering:
   equations: false
 ---
@@ -126,42 +128,27 @@ ten_measurements_df = pd.DataFrame(
 alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
 ```
 
-It's impossible to measure anything in the real world with 100% precision. However, by combining multiple measurements and knowledge about what's being measured, it is possible to make better estimates. This is what signal filters do.
-
-Humans generally have intuition on handling imperfect data: when making hard decisions, they consult multiple people (a type of social measurement) and decide based on a combination of the input received and their understanding of the situation. Moreover, most understand that getting more input can lead to better understanding even if no single piece of input is perfect.
-
-Signal filters follow a somewhat analogous process of using a variety of measurements to estimate some unknown quantity. For example, when weighing an object with an imprecise scale, a filter might be used to combine multiple different measurements and make a better estimate of the object's actual weight. The crucial point here is that having more measurements allows us to achieve better estimates *even if none of the measurements are 100% correct*.
-  
-:::{attention icon=false} 🗝️ **Key Idea**
-Having more measurements allows for better estimates *even if none of the measurements are 100% correct.*
-:::
-  
-To see what this might look like, let's walk through a simple example.
-  
-## Recursive Average
-  
-Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement with an analog-to-digital converter (ADC). A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since we could represent both the output from the loadcell and the output from the ADC as funtions over time, they are both **signals**.
+Imagine we are building a digital bathroom scale to measure your body weight. When you step on the scale, a sensor—called a strain gauge load cell[^loadcell]—underneath the platform measures your downward force. The loadcell outputs an analog voltage that is then converted to a digital measurement via the ADC. A typical ADC such as the HX711 will sample the voltage signal between 10-80 Hz [@avia_hx711_datasheet]. Since the output from the loadcell and the output from the ADC can both be represented as funtions over time, we call both of them "**signals**".
 
 [^loadcell]: A strain gauge load cell is an electronic component that converts force into proportional resistance change using metal foil grids (called strain gauges) which change resistance under load (increasing under tension and decreasing under compression). They are used in almost all digital bathroom scales because they are thin, accurate (relatively), mass-producible, and have no moving parts to wear out.
   
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Signal
-: Definition of the term.
-  Any {term}`function` that represents how a quantity varies over time or space.
+: Any {term}`function` that represents how a quantity varies over time or space.
 :::
 ::::
   
-Because nobody stands perfectly still, your constant weight shifts on the scale will introduce **noise** to the measurements (and even if you were still, there would still be thermal noise in the load cell).
+Because nobody stands perfectly still, your constant weight shifts on the scale will introduce "**noise**" to the measurements (and even if you were still, there would still be thermal noise in the load cell).
   
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Noise
-: Any unwanted or random component added to a {term}`signal` that degrades or obscures the information it carries.
+: Any unwanted or random component of a {term}`signal` that degrades or obscures the information it carries.
 :::
 ::::
   
-Since the stream of measurements from the ADC will constantly fluctuate, we can never know your true weight with 100% precision (remember, it's impossible to measure anything with 100% precision). Instead, we must attempt to remove the noise from this signal to make our best estimate. Hence, the term **filter**.
+Since the stream of measurements from the ADC will constantly fluctuate, we can never know your true weight with 100% precision (remember, it's impossible to measure anything with 100% precision). Instead, we must attempt to remove the noise from this signal to make our best estimate of your true weight, hence the term "**filter**".
   
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
@@ -170,7 +157,7 @@ Filter
 :::
 ::::
   
-Here is the setup we are working with at this point, where each arrow is annotated with the result or output of the prior box:
+The diagram below shows the setup for our example so far, where each arrow is annotated with the result/output of the prior box:
   
 <img src="../notebooks/public/part01_scale_diagram.svg" class="graphic" alt="Scale Diagram" />
 
@@ -240,27 +227,33 @@ We can immediately tell that you're in the mid 150's, but we're not sure exactly
 [^meannoise]: More specifically, we assume that the mean of the noise distribution is 0, which means our logic still holds even if the median skews too big or too small. More on this later in [test](/part03-bayesian-probability).
   
 :::{attention icon=false} 🗝️ **Key Idea**
-Because we assume that the noise is random and has a mean of 0, we combine multiple measurements to increase the probability that the noise cancels out.
+By assuming that the noise is random and has a mean of 0, we can combine multiple measurements to increase the probability that the noise cancels out.
 :::
+  
+The most basic way to combine measurements is by averaging them. For example, if we only had the two measurements our estimate would be
 
 ```{marimo} python
 :hide-code: true
 
 mo.md(rf"""
-The most basic way to combine measurements is by averaging them. For example, if we only had the two measurements our estimate would be
-
 $$({ten_measurements[0]}+{ten_measurements[1]})/2={round(.5*(ten_measurements[0]+ten_measurements[1]), 2)}\text{{ lbs.}}$$
-
-After the third, we would have
-
-$$({ten_measurements[0]}+{ten_measurements[1]}+{ten_measurements[2]})/3={(ten_measurements[0]+ten_measurements[1]+ten_measurements[2])/3:.2f} \text{{ lbs.}},$$
-
-and so on. In general, the more measurements we continue to average, the better we expect our estimate to get.
 """)
 ```
 
-This seems like a good strategy, but our list of measurements is growing quite quickly and many scales have only 64 out of 256 bytes of memory available for data processing [@holtek_ht45f75_data_sheet]. At this rate, with each number stored as a 32-bit integer (4 bytes), our memory would be completely full within about 1.6 seconds. We can fix this by using a recursive average to store only two values: the number of measurements, and the previous average.
+After the third, we would have
 
+```{marimo} python
+:hide-code: true
+
+mo.md(rf"""
+$$({ten_measurements[0]}+{ten_measurements[1]}+{ten_measurements[2]})/3={(ten_measurements[0]+ten_measurements[1]+ten_measurements[2])/3:.2f} \text{{ lbs.}},$$
+""")
+```
+
+and so on. In general, the more measurements we continue to average, the better we expect our estimate to get.
+
+This seems like a good strategy, but our list of measurements is growing quite quickly and many scales have only 64 out of 256 bytes of memory available for data processing [@holtek_ht45f75_data_sheet]. At this rate, with each number stored as a 32-bit integer (4 bytes), our memory would be completely full within about 1.6 seconds. We can fix this by using a recursive average to store only two values: the number of measurements, and the previous average.
+  
 Let our measurements be denoted $z_1$, $z_2$, $z_3$, etc..., so that after $k$ measurements, we have $z_1$, $z_2$, ..., $z_k$. This means that after
 $k-1$ measurements, our average will be
 
@@ -276,7 +269,7 @@ $$\bar{x}_k = \frac{\bar{x}_{k-1}(k-1) + z_k}{k} = \bar{x}_{k-1} + \frac{1}{k}(z
 
 By writing each estimate in terms of the previous estimate, a weighting term[^weighting-term], and the new measurement, we can allow this algorithm to run on our scale's limited memory.
 
-[^weighting-term]: We are using $\frac{1}{k}$ in this example, but we will soon see that this is not the only option.
+[^weighting-term]: We are using $\frac{1}{k}$ as our weighting here, but we will soon see other options.
   
 :::{attention icon=false} 🗝️ **Key Idea**
 We avoid storing a list of all measurements by writing each estimate in terms of the previous one.

@@ -1,6 +1,6 @@
 version: 1
 project:
-  title: Signal Filter Book
+  title: Intro to Signal Filters
   authors:
     - name: Adrien Babet
   abstract: An introductory guide to signal filtering.
@@ -26,10 +26,10 @@ project:
     # - title: Extras
     #   children:
     #   - file: extra_set_theory.md
-    - file: philosophy.md
-      hidden: true
-    - file: glossary-philosophy.md
-      hidden: true
+    # - file: philosophy.md
+    #   hidden: true
+    # - file: glossary-philosophy.md
+    #   hidden: true
   # exports:
   #   - format: typst
   #     output: documents/project-download.pdf
@@ -43,6 +43,6 @@ site:
   options:
     favicon: ../static/filter-book-icon.svg
     logo: ../static/filter-book-icon.svg
-    logo_text: Signal Filters
+    logo_text: Intro to Signal Filters
     hide_authors: true
     style: ../notebooks/notebook-styles.css

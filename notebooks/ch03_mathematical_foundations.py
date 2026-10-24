@@ -86,7 +86,30 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Set Theory Language
+    ## Language of Logic
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Developing precise language is vital for communicating a precise understanding of any topic. As we introduce new language over the coming chapters, it is important to keep in mind that we will be switching back and fourth between three different layers of language:
+    - **Metalanguage:** This is plain language we use to talk *about* the formal language we are developing. While we try our best to be articulate and specific when talking about formal language, metalanguage is not formal. For example, most of the writing found between the lines of math in this book is plain english, and not rigourously defined.
+    - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
+    - **Semantics:** This the list of rules and convetions which dictate how the symbols (or strings of symbols) in our syntax are interpereted. For example the convention is this book is to interperet "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Statement**</u>
+    Any finite string of symbols (most statements are meaningless, such as $a \forall)6!$").
+    ///
     """)
     return
 
