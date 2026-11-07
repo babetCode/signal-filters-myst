@@ -3,6 +3,10 @@ title: Chapter 2
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Alpha-Beta Filter: Adapting to a changing signal"
+abbreviations:
+  TDEE: total daily energy expenditure
+  BMR: basal metabolic rate
+  DEI: daily energy intake
 numbering:
   equations: false
 ---
@@ -34,6 +38,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from textwrap import dedent
+from pathlib import Path
 ```
 
 ```{marimo} python
@@ -133,6 +138,8 @@ def alpha_delta(alpha, delta, measurements):
 :name: my_variables
 :include: false
 
+IMAGES_DIR = Path(__file__).parent / "public"
+
 activity_lvl_dict = {
     "light": 1.2,  # light walking, biking, or chores
     "moderate": 1.5,  # regular lifting, running, or active work
@@ -165,6 +172,10 @@ noise = np.array(
 )
 measurements = np.round(weight + noise, 2)
 start_weight = measurements[0]
+measurements_df = pd.DataFrame({
+    "day": np.arange(1, total_days+1, 1),
+    "weight_lbs": measurements,
+})
 
 bmr = mifflin_st_jeor(age, height_cm, start_weight, sex)
 tdee = bmr * activity_lvl_dict[activity_lvl]
@@ -211,7 +222,37 @@ However, we must first figure out how to estimate $\Delta x_k$. To see how this 
   
 ## Estimating the Rate of Change
   
-Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
+Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. Over the first 4 weeks this might look like:
+  
+<img src="../notebooks/public/ch02_weight_measurements_fig.svg" class="graphic" alt="Scale Diagram" />
+
+```{marimo} python
+:hide-code: true
+:name: make_weight_measurements_fig
+:include: false
+
+_fig, _ax = plt.subplots()
+
+measurements_df.plot(
+    x="day",
+    y="weight_lbs",
+    ax=_ax,
+    legend=False,
+    xlabel="Time (days)",
+    ylabel="Weight (lbs.)",
+    ylim=(np.floor(np.min(weight))-1, np.ceil(np.max(weight))+1),
+    xticks=measurements_df["day"],
+    yticks=np.arange(np.floor(np.min(weight))-1, np.ceil(np.max(weight))+1, 1),
+    rot=45,
+)
+
+_ax.grid(visible=True, alpha=0.9, linewidth=0.4)
+_ax.set_title(f"Bulking Daily Weigh-Ins", style='italic')
+
+_fig.savefig(IMAGES_DIR / "ch02_weight_measurements_fig.svg")
+```
+
+We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
 
 [^mifflin-st-jeor]:
     The Mifflin-St Jeor equation estimates basal metabolic rate (BMR):

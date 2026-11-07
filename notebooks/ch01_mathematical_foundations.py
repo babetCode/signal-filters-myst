@@ -11,14 +11,14 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Chapter 3", css_file="notebook-styles.css")
+app = marimo.App(app_title="Foundations", css_file="notebook-styles.css")
 
 
-@app.cell(hide_code=True)
+@app.cell
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
-    subtitle: "Mathematical Foundations: The basis of everything"
+    subtitle: "The Basis of Everything"
     abbreviations:
       iff: if and only if
       diff: null
@@ -30,7 +30,7 @@ def frontmatter(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def imports():
     # jb: include=false
     import marimo as mo
@@ -45,7 +45,7 @@ def imports():
     return dedent, mo, plt, schemdraw
 
 
-@app.cell(hide_code=True)
+@app.cell
 def display_format(dedent, mo, plt, schemdraw):
     # jb: include=false
     plt.style.use('default')
@@ -72,9 +72,15 @@ def _(mo):
     mo.md(r"""
     Our goal when designing a signal filter is to algorithmically remove noise from a measurement signal. As we saw in the past two sections, this is usually done by combining our knowlege and measurements in a way that increases the probability that the noise cancels out. In terms of the equations we've been working with:
 
-    $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-),$$
+    $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
 
-    the next three chapters lay the groundwork needed for answering the question:
+    :::{div}
+    :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
+
+    ## Key Question
+    :::
+
+    Now we lay the groundwork for answering the question:
 
     >"Given some amounts of noise in our prior ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?"
 
@@ -95,8 +101,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     Developing precise language is vital for communicating a precise understanding of any topic. As we introduce new language over the coming chapters, it is important to keep in mind that we will be switching back and fourth between three different layers of language:
-    - **Metalanguage:** This is plain language we use to talk *about* the formal language we are developing. While we try our best to be articulate and specific when talking about formal language, metalanguage is not formal. For example, most of the writing found between the lines of math in this book is plain english, and not rigourously defined.
-    - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
+    - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain english, and not rigourously defined. While we try our best to be articulate and specific, metalanguage is not formal.
+    - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
     - **Semantics:** This the list of rules and convetions which dictate how the symbols (or strings of symbols) in our syntax are interpereted. For example the convention is this book is to interperet "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
     """)
     return
@@ -249,6 +255,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     #### There Exists
+
+    The quantifier $\exists$ (read as "there exists")
     """)
     return
 
@@ -272,7 +280,17 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    The equals sign "$=$" is placed between expressions which evaluate identically.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Membership
+
+    The membership symbol $\in$ (read as "is in", or "in") represents membership in a set and is placed between the member (to the left) and the set (to the right), such as $x \in S$.
     """)
     return
 
@@ -444,6 +462,27 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     In mathematical terms, the notion of probability depends on a **probability space**
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    :::{div}
+    :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
+
+    ### Probability Space
+    :::
+
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Probability Space**</u>
+    a triple $(\Omega, F, P)$, where:
+    - $\Omega$ is a set (the sample space),
+    - $F$ is a $\sigma$-algebra of subsets of $\Omega$ (the “events”),
+    - $P$ is a function from $F$ to $[0,1]$ satisfying: $P(\Omega) = 1$, and countable additivity (for pairwise disjoint events $A_1, A_2, ..., P(\bigcup A_i) = ΣP(Aᵢ))$.
+    ///
     """)
     return
 

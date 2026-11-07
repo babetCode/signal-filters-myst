@@ -20,6 +20,10 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Alpha-Beta Filter: Adapting to a changing signal"
+    abbreviations:
+      TDEE: total daily energy expenditure
+      BMR: basal metabolic rate
+      DEI: daily energy intake
     numbering:
       equations: false
     -->
@@ -37,8 +41,9 @@ def imports():
     import numpy as np
     import pandas as pd
     from textwrap import dedent
+    from pathlib import Path
 
-    return dedent, mo, np, pd, plt, schemdraw
+    return Path, dedent, mo, np, pd, plt, schemdraw
 
 
 @app.cell(hide_code=True)
@@ -133,8 +138,10 @@ def my_functions(dedent, mo, np):
 
 
 @app.cell(hide_code=True)
-def my_variables(ema, gaussian_noise, mifflin_st_jeor, mo, np):
+def my_variables(Path, ema, gaussian_noise, mifflin_st_jeor, mo, np, pd):
     # jb: include=false
+    IMAGES_DIR = Path(__file__).parent / "public"
+
     activity_lvl_dict = {
         "light": 1.2,  # light walking, biking, or chores
         "moderate": 1.5,  # regular lifting, running, or active work
@@ -167,6 +174,10 @@ def my_variables(ema, gaussian_noise, mifflin_st_jeor, mo, np):
     )
     measurements = np.round(weight + noise, 2)
     start_weight = measurements[0]
+    measurements_df = pd.DataFrame({
+        "day": np.arange(1, total_days+1, 1),
+        "weight_lbs": measurements,
+    })
 
     bmr = mifflin_st_jeor(age, height_cm, start_weight, sex)
     tdee = bmr * activity_lvl_dict[activity_lvl]
@@ -177,11 +188,13 @@ def my_variables(ema, gaussian_noise, mifflin_st_jeor, mo, np):
     alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label=r"$\alpha$")
     delta_slider = mo.ui.slider(start=-1, stop=1, step=.1, value=round(target_lbs_per_week/7, 1), label=r"$\Delta x$")
     return (
+        IMAGES_DIR,
         age,
         alpha_slider,
         delta_slider,
         height_cm,
         measurements,
+        measurements_df,
         sex,
         sex_dict,
         target_kcal_per_day,
@@ -254,7 +267,48 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
+    Imagine that after the scale measures you at 154.95 lbs, you decide to start eating more in order to bulk up. Then, we weigh you again every day. Over the first 4 weeks this might look like:
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    <img src="public/ch02_weight_measurements_fig.svg" class="graphic" alt="Scale Diagram" />
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def make_weight_measurements_fig(IMAGES_DIR, measurements_df, np, plt, weight):
+    # jb: include=false
+    _fig, _ax = plt.subplots()
+
+    measurements_df.plot(
+        x="day",
+        y="weight_lbs",
+        ax=_ax,
+        legend=False,
+        xlabel="Time (days)",
+        ylabel="Weight (lbs.)",
+        ylim=(np.floor(np.min(weight))-1, np.ceil(np.max(weight))+1),
+        xticks=measurements_df["day"],
+        yticks=np.arange(np.floor(np.min(weight))-1, np.ceil(np.max(weight))+1, 1),
+        rot=45,
+    )
+
+    _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
+    _ax.set_title(f"Bulking Daily Weigh-Ins", style='italic')
+
+    _fig.savefig(IMAGES_DIR / "ch02_weight_measurements_fig.svg")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    We also use the Mifflin-St Jeor equation[^mifflin-st-jeor], an activity multiplier[^activity-multiplier], and the Wishnofsky approximation[^wishnofsky] to estimate how much weight you will likely gain given your new diet [@wishnofsky1958].
 
     [^mifflin-st-jeor]:
         The Mifflin-St Jeor equation estimates basal metabolic rate (BMR):

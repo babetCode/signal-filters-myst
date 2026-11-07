@@ -1,27 +1,27 @@
 version: 1
 project:
-  title: Intro to Signal Filters
+  title: Signal Filter Guidebook
   authors:
     - name: Adrien Babet
   abstract: An introductory guide to signal filtering.
   plugins:
     # - ../scripts/strip-terms.mjs
     - type: executable
-      # path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
-      path: ../.venv/bin/jupyter-book-marimo # Unix
+      path: ../.venv/Scripts/jupyter-book-marimo.exe # Windows
+      # path: ../.venv/bin/jupyter-book-marimo # Unix
   toc:
     - file: index.md
     # - file: toc.md
-    - file: ch01_recursive_average.md
-      title: 1. Recursive Average
-    - file: ch02_alpha_beta_filter.md
-      title: 2. Alpha-Beta Filter
-    - file: ch03_mathematical_foundations.md
-      title: 3. Mathematical Foundations
-    - file: ch04_bayesian_probability.md
-      title: 4. Bayesian Probability
-    - file: ch05_bayesian_filter.md
-      title: 5. Bayesian Filter
+    - file: introduction.md
+      title: Introduction
+    # - file: ch02_alpha_beta_filter.md
+    #   title: 2. Alpha-Beta Filter
+    - file: ch01_mathematical_foundations.md
+      title: Mathematical Foundations
+    # - file: ch04_bayesian_probability.md
+    #   title: 4. Bayesian Probability
+    # - file: ch05_bayesian_filter.md
+    #   title: 5. Bayesian Filter
     - file: glossary-terms.md
     # - title: Extras
     #   children:
@@ -43,6 +43,6 @@ site:
   options:
     favicon: ../static/filter-book-icon.svg
     logo: ../static/filter-book-icon.svg
-    logo_text: Intro to Signal Filters
+    logo_text: Signal Filter Guidebook
     hide_authors: true
     style: ../notebooks/notebook-styles.css
