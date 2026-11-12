@@ -284,6 +284,14 @@ Probability Space
 :::
 ::::
   
+### Sigma Algebra
+
+A $\sigma$-algebra $F$ og a set $\Omega$ (called the ambient set) is a set of subsets of $\Omega$ which satisfy three criteria:
+
+1. $\Omega \in F$
+2. $S \in F \rightarrow S^c = \{x \in \Omega: x \notin S\} \in F$
+3. $S_1, S_2, S_3, \ldots \in F \rightarrow \bigcup_{i=1}^\infty S_i \in F$
+  
 ## Discrete probabilties.
   
 Discrete probablity distributions are the typical type of probablity we encounter in a "50/50" coin toss or "hitting the red" in roulette. There are a finite nubmer of possible outcomes, exactly one of which will actually be true. Since we don't know which one, we assign some probabilty to each, and since *something* must be true, the sum of all probabilities is 1.

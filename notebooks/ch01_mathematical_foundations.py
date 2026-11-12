@@ -490,6 +490,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Sigma Algebra
+
+    A $\sigma$-algebra $F$ og a set $\Omega$ (called the ambient set) is a set of subsets of $\Omega$ which satisfy three criteria:
+
+    1. $\Omega \in F$
+    2. $S \in F \rightarrow S^c = \{x \in \Omega: x \notin S\} \in F$
+    3. $S_1, S_2, S_3, \ldots \in F \rightarrow \bigcup_{i=1}^\infty S_i \in F$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Discrete probabilties.
     """)
     return

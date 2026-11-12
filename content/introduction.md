@@ -68,12 +68,12 @@ def gaussian_noise(
     mean=0.,
     std_dev=1.,
     Hz=1.,
-    duration_sec=10.,
+    duration=10.,
     seed=1,
 ):
     rng = np.random.default_rng(seed=seed)
 
-    n = int(Hz * duration_sec)
+    n = int(Hz * duration)
     measurements = rng.normal(
         loc=mean,
         scale=std_dev,
@@ -137,7 +137,7 @@ ema_noise = gaussian_noise(
     mean=0.,
     std_dev=1.,
     Hz=Hz,
-    duration_sec=dur,
+    duration=dur,
 ).round(2)
 
 ema_measurements = ema_noise + weight
@@ -149,8 +149,6 @@ ten_measurements_df = pd.DataFrame(
         "weight_lbs": ten_measurements,
     }
 )
-
-alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
 ```
 
 Every time we want to know a real-world value, we must measure it. Since our measurements always have limited precision, we can often combine multiple measurements to get a better estimate of our real world value.
@@ -431,6 +429,10 @@ def ema(alpha, measurements):
 ```
 
 ```{marimo} python
+alpha_slider = mo.ui.slider(start=0, stop=1, step=.05, value=0.05, label="$\\alpha$")
+```
+
+```{marimo} python
 :hide-code: true
 
 mo.md(rf"""
@@ -450,23 +452,22 @@ _measurements_df = pd.DataFrame({
     "ema_weight": ema_weight,
 })
 
-with plt.style.context("default"):
-    _fig, _ax = plt.subplots()
+_fig, _ax = plt.subplots()
 
-    _measurements_df.plot(
-        x="time_s",
-        y=["weight_lbs", "ema_weight"],
-        ax=_ax,
-        xlabel="Time (s)",
-        ylabel="Weight (lbs.)",
-        ylim=(weight-3, weight+3),
-        xticks=np.arange(0, dur+.1, .2),
-        yticks=np.arange(weight-3, weight+4, 1),
-        rot=45,
-    )
-    _ax.legend(["Measurement", "EMA"])
-    _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
-    _ax.set_title(f"Weight Measurements & EMA with $\\alpha = {alpha_slider.value:.2f}$", style='italic')
+_measurements_df.plot(
+    x="time_s",
+    y=["weight_lbs", "ema_weight"],
+    ax=_ax,
+    xlabel="Time (s)",
+    ylabel="Weight (lbs.)",
+    ylim=(weight-3, weight+3),
+    xticks=np.arange(0, dur+.1, .2),
+    yticks=np.arange(weight-3, weight+4, 1),
+    rot=45,
+)
+_ax.legend(["Measurement", "EMA"])
+_ax.grid(visible=True, alpha=0.9, linewidth=0.4)
+_ax.set_title(f"Weight Measurements & EMA with $\\alpha = {alpha_slider.value:.2f}$", style='italic')
 
 mo.vstack([
     alpha_slider,
@@ -522,7 +523,7 @@ alpha_beta_noise = np.array(
         ema(
             0.05,
             gaussian_noise(
-                mean=0.0, std_dev=1.0, Hz=10, duration_sec=3, seed=i
+                mean=0.0, std_dev=1.0, Hz=10, duration=3, seed=i
             ),
         )[-1]
         for i in range(1, 29)
@@ -582,6 +583,8 @@ This is starting to look quite similar to our filter in the last section.
 If we can get an expresion in terms of $\hat x_{k-1}$ that—without noise—would be equal to $x_k$, then we can combine them (with some weighting $\alpha$) to increase the probablity that the noise cancels out.
 :::
   
+### Step-by-Step Example
+
 As an example, imagine that after weighing yourself on your bathroom scale, you decide to start eating more in order to bulk up. Then you start weighing yourself every day to track your weight gain. For our EMA, we had 10 measurements per second. Here, we are only taking one measurement per day.
 
 **Day 1:** The scale reads 155 lbs: our first measurement is $z_1 = 155$. Using first measurement initialization, we set our first estimate
@@ -627,7 +630,123 @@ $$\hat x_1 = z_1 = 155.$$
   
 And then we continue in this fasion, reapeating prediction step, then measurement step for each of our future measurements.
   
+In code, this could look like
+
+```python
+def alpha_filter(alpha, measurements, delta_x):
+    x_k_minus_one = measurements[0]
+    alpha_output = []
+
+    for k, z in enumerate(measurements[1:], start=1):
+        # Prediction Step
+        x_prior_k = x_k_minus_one + delta_x
+
+        # Measurement Update
+        x_k = x_prior_k + alpha*(z - x_prior_k)
+        alpha_output.append(x_k)
+        x_k_minus_one = x_k
+
+    return alpha_output
+```
+  
+Let's try simulating some data for this filter.
+
+```{marimo} python
+alpha_filter_alpha_slider = mo.ui.slider(0, 1, 0.1)
+```
+
+```{marimo} python
+# Simulate Data
+_real_world_weights = np.linspace(
+    start = 155,
+    stop = 184,
+    num = 10,
+)
+_noise = gaussian_noise(
+    mean=0.0, std_dev=9.0, duration=10,
+)
+_measurements = _real_world_weights + _noise
+_days = np.arange(1, 11)
+
+# Filter Data
+def alpha_filter(alpha, measurements, delta_x):
+    x_k_minus_one = measurements[0]
+    predictions = [x_k_minus_one]
+    estimates = [x_k_minus_one]
+
+    for k, z in enumerate(measurements[1:], start=1):
+        # Prediction Step
+        x_prior_k = x_k_minus_one + delta_x
+        predictions.append(x_prior_k)
+
+        # Measurement Update
+        x_k = x_prior_k + alpha*(z - x_prior_k)
+        estimates.append(x_k)
+        x_k_minus_one = x_k
+
+    return predictions, estimates
+
+_predictions, _estimates = alpha_filter(
+    0.5, _measurements, 1,
+)
+
+_fig, _ax = plt.subplots()
+
+_ax.plot(_days, _estimates, marker='o', color='#1f77b4', linestyle='-', label='Estimates')
+_ax.plot(_days, _predictions, marker='D', color='red', linestyle=':', label='Predictions')
+_ax.plot(_days, _real_world_weights, color='black', linestyle='-', linewidth=1, label='Actual')
+_ax.plot(_days, _measurements, marker='o', color='none', markeredgecolor='black', 
+         markeredgewidth=2, linestyle='None', label='Measurements')
+
+_ax.set_xlabel('day')
+_ax.set_ylabel('weight (lbs)')
+_ax.grid(True)
+_ax.legend(loc='lower right')
+_fig.tight_layout()
+
+_fig
+```
+
+### Beta Weighting Term
+
+Unsurprisingly, this works quite well when our values of $\Delta x$ are correct. However, we get a lot of drift when $\Delta x$ is wrong. To fix this, we want some way to update $\Delta x$ in addition to updating our estimate. We've already been updating our estimate by scaling the measurement by a factor of $\alpha$. Similarly, we can update each $\Delta x$ by scaling the *change* in $\hat x$ by a factor of $\beta$. In code, this could look like
+
+```python
+def alpha_beta_filter(
+    alpha,
+    beta,
+    measurements,
+    delta_x_initial,
+):
+    x_k_minus_one = measurements[0]
+    alpha_beta_output = []
+    delta_x = delta_x_initial
+
+    for k, z in enumerate(measurements[1:], start=1):
+        # Prediction Step
+        x_prior_k = x_k_minus_one + delta_x
+
+        # Measurement Update
+        x_k = x_prior_k + alpha*(z - x_prior_k)
+        alpha_beta_output.append(x_k)
+
+        delta_x = delta_x + beta((x_k - x_k_minus_one) - delta_x)
+
+        x_k_minus_one = x_k
+
+    return alpha_beta_output
+```
+
+```{marimo} python
+:hide-code: true
+:include: false
+
+_foobar = 0
+
+mo.md(r"""
 <img src="../notebooks/public/intro_alpha_beta_weight_measurements_fig.svg" class="graphic" alt="Scale Diagram" />
+""")
+```
 
 ```{marimo} python
 :hide-code: true
@@ -655,14 +774,6 @@ _ax.set_title(f"Bulking Daily Weigh-Ins", style='italic')
 _fig.savefig(IMAGES_DIR / "intro_alpha_beta_weight_measurements_fig.svg")
 ```
 
-:::{div}
-:class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
-
-### Beta Weighting Term
-:::
-
-Unsurprisingly, this looks quite good when our values of $\Delta x$ are correct. However, we get a lot of drift when $\Delta x$ is wrong. To fix this, we want some way to update $\Delta x$ between each measurement as well. We already have a way of updating unknown values: we've been updating our estimate by scaling the measurement by a factor of $\alpha$. Similarly, we can update an estimate of $\Delta x$ by scaling the change in $x$ by a factor of $\beta$.
-  
 ## Summary
   
 In this section, we saw how to use the EMA equation

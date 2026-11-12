@@ -48,7 +48,7 @@ By using [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-marim
 
 Proofs have long been my favorite type of writing. In highschool, I would regularly spend hours on the [AoPS TeXeR](https://artofproblemsolving.com/texer), drafting proofs for my homework problems. It was often a [type 2](https://www.rei.com/blog/climb/fun-scale) experience, but something about the rigor was satisfying. It was like building a puzzle, where the pieces were made of language and the language was precisely defined.
 
-Here is my favorite definition, both because of its utility, and because of my penchant for self-referential ideas[^self-referential-ideas]:
+Here is a favorite definition, both because of its utility, and because of my penchant for self-referential ideas[^self-referential-ideas]:
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
@@ -76,29 +76,15 @@ In other words, if you have a set of requirements which are necessary and suffic
 
     Note: It is important to remember that "if $A$ then $B$" means the same thing as "$B$ if $A$", and *not* the same as "$A$ if $B$". This is because in english the word "if" applies to whatever is to the right of it, so we flip the order of the variables in the sentence to preserve this relationship.
   
-<!-- You may dismiss this as overly constraining:
-
-*But words often have different meanings based on context! If I wait 5 hours at the doctor's office, we would agree this is a "long" wait. If the doctor says my new-born child will live a "long" life, then 5 hours would be quite dissapointing. Doesn't that mean the definition of "long" is actually more fluid and context based, rather than a strict set of requirements?*
-
-Not so fast! This just means that "5 hours" is not the correct requirement for the term "long". Something like "lasting over a greater period of time than usual" would work for both our scenarios. Furthermore, we can make requirements that have multiple ways of being satisfied, i.e. "Adjective: lasting over a greater period of time, or greater distance than usual OR Verb: to have a deep desire for something".
-
-In general, if a word takes on different meanings based on context, then   -->
-  
 In my pursuit of a middle ground between the accessible writing of introductory blog posts and the academically dense writing of engineering textbooks, I've come to the following conclusion: all rigor in my writing must be in the form of precisely defined language. Outside of this, the only goal is to be maximally informative to as many readers as possible.
 
 To quote Hormozi:
 
 > Words matter because they affect how we think. How we think affects what we do. And if words have us thinking the wrong way, then we will probably do the wrong stuff. I hate doing the wrong stuff. So to do the right stuff more and the wrong stuff less, it's best we know what words mean and use them.
 >
-> – Alex Hormozi, $100M Leads (p. 41)
+> – $100M Leads
   
-In this spirit, I will frequently include definition cards for words (like for "definition" above) whenever I think their technical use contains important specificity often missing from colloquial usage. After establishing definitions, the way to be accessible to the most readers is to be clear about the key points that I'm communicating and to provide a complete path for understanding the organizational hierarchy of concepts these key points are built on:
-
-> If we think about learning as a bridge, every step is needed, right? You can't skip a step to get across, you have to have every single foundational piece. And so the more general skills you have, the more gaps you can fill when someone provides incomplete information... All of us provide incomplete information, right? Otherwise, we'd literally have to start at zero and start at goooo gaga and then go all the way to coding AI, right? It's just we don't have the time to do it.
->
-> – Alex Hormozi, $100M Virtual Implementation Workshop ([9:58](https://www.youtube.com/watch?v=eV3BTnlc_tI&list=PLCGQSFOSt3B0&t=9m58s))
-  
-After developing some general intuition for filters, we will define zero using set theory and discussing the structure of mathematical language. Then we will use these foundations to build up to coding signal filters.
+In this spirit, I will frequently include definition cards for words (like for "definition" above) whenever I think their technical use contains important specificity often missing from colloquial usage. After establishing definitions, the way to be accessible to the most readers is to be clear about the key points that I'm communicating and to provide a complete path for understanding the organizational hierarchy of concepts these key points are built on.
   
 :::{tip icon=false} **Tips for reading online**
 As you have likely already figured out if you are reading this on a computer with a cursor, you can hover over terms with a dotted underline to view information about them. The information may be a {term}`definition` or a [Wikipedia](https://en.wikipedia.org/wiki/Wikipedia) preview. If they are blue, you may also click on these terms to navigate to the source link as normal.
