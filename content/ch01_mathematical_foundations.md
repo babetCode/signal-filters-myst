@@ -83,24 +83,13 @@ Developing precise language is vital for communicating a precise understanding o
 - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
 - **Semantics:** This the list of rules and convetions which dictate how the symbols (or strings of symbols) in our syntax are interpereted. For example the convention is this book is to interperet "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
   
-::::{admonition icon=false} 📖 **Definition**
-:::{glossary}
-Statement
-: Any finite string of symbols (most statements are meaningless, such as $a \forall)6!$").
-:::
-::::
-  
-A **Boolean variable**[^george-boole] represents a truth value: either **True** or **False**. In the lingo, we say that if $A$ is a boolean variable, then it **evaluates** to $T$ (true) or $F$ (false). We can create **boolean expressions** by combining boolean variables with the following **connective operators**[^connectives]:
-
-[^george-boole]: Named after British mathematician George Boole.
-
-[^connectives]: This is not an exhaustive list of all connectives, but it includes the most common ones which are useful for building our notion of set theory.
-  
 ### Logical Connectives
+
+Logical connectives combine one or more statements into a new statement whose truth value depends only on the truth values fo the parts.
   
 #### Negation
 
-The negation operator is denoted $\neg$ (read as "not"). When placed to the left of an expression, it evaluates to the opposite of the original expression[^expression]:
+The negation operator is denoted $\neg$ (read as "not"). When placed to the left of a statement, the new statement has the opposite truth value of the original statement. Letting $T$ represent a placeholder for some true statement, and $F$ represent a placeholder for some false statement, then we say that "$\neg T$" evaluates to $F$ and "$\neg F$" evaluates to $T$. This is often represented in the form of a truth table:
 
 $$\begin{array}{r | c}
 \neg & \\
@@ -108,14 +97,10 @@ $$\begin{array}{r | c}
 \mathbf{T} & \text{F} \\
 \mathbf{F} & \text{T} \\
 \end{array}$$
-
-For example, "$\neg T$" evaluates to $F$.
-
-[^expression]: The $\neg$ operator may also be placed to left of a boolean variable or a bare truth value, since these count as expressions.
   
 #### Conjunction
 
-The conjunction operator is denoted $\land$ (read as "and"). When placed between two expressions, it evaluates to $T$ if and only if both expressions evaluate to $T$, otherwise it evaluates to $F$:
+The conjunction operator is denoted $\land$ (read as "and"). When placed between two statements, it evaluates to $T$ if and only if both statements evaluate to $T$, otherwise it evaluates to $F$:
 
 $$\begin{array}{r | cc}
 \land & \mathbf{T} & \mathbf{F} \\
@@ -123,12 +108,10 @@ $$\begin{array}{r | cc}
 \mathbf{T} & \text{T} & \text{F} \\
 \mathbf{F} & \text{F} & \text{F} \\
 \end{array}$$
-
-For example, "$T \land F$" evaluates to $F$.
   
 #### Disjunction
 
-The disjunction operator is denoted $\lor$ (read "or"). When placed between two expressions, it evaluates to $F$ if and only if both expressions evaluate to $F$, otherwise it evaluates to $T$:
+The disjunction operator is denoted $\lor$ (read "or"). When placed between two expressions, it evaluates to $F$ if and only if both expressions evaluate to $F$, otherwise it evaluates to $T$[^de-morgan]:
 
 $$\begin{array}{r | cc}
 \lor & \mathbf{T} & \mathbf{F} \\
@@ -136,8 +119,6 @@ $$\begin{array}{r | cc}
 \mathbf{T} & \text{T} & \text{T} \\
 \mathbf{F} & \text{T} & \text{F} \\
 \end{array}$$
-
-For example, "$T \lor F$" evaluates to $T$[^de-morgan].
 
 [^de-morgan]: The disjunction operator may also be defined in terms of conjunction, where  $A \lor B$ is just shorthand for $\neg(\neg A \land \neg B)$. Similarly, had we taken $\lor$ as primitive, then $\land$ could be defined as an abbreviation, where $A \land B$ would be shorthand for $\neg(\neg A \lor \neg B)$. This ability to express conjunctions and disjunctions in terms of each other using negation is known as a **dual** in [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
   
@@ -155,103 +136,54 @@ $$(A \rightarrow B) \land (B \rightarrow A).$$
   
 ### Logical Quantifiers
   
-Unlike connectives, which
+Logical quantifiers allow us to make claims about collections of objects by stating how many things in a given domain satisfy some property.
   
-#### For All
+#### Universal
 
-The quantifier $\forall$ (read as "for all"),
+The universal quantifier is denoted $\forall$ (read as "for all"). When placed to the left of a variable, followed by some statement, we interperet the new statement as "for all values of the variable, the statement is true".
   
-#### There Exists
+#### Existential
 
-The quantifier $\exists$ (read as "there exists")
+The existential quantifier is denoted $\exists$ (read as "there exists"). When placed to the left of a variable, followed by some statement, we interpered the new statement as "There exists at least one value of the variable for which the statement is true".
   
-### Relation Operators
+### Relational Operators
+
+Relational operators compare two quantities or objects and produce a true or false statement (these are different from logical connectives in that they compare values, rather than combining statements).
   
 #### Equality
-  
-The equals sign "$=$" is placed between expressions which evaluate identically.
+
+The equality operator (aka equals sign) is denoted "$=$". When placed between two quantities or objects, it produces a true statement iff they have identical values.
   
 #### Membership
 
-The membership symbol $\in$ (read as "is in", or "in") represents membership in a set and is placed between the member (to the left) and the set (to the right), such as $x \in S$.
-  
-### Formulas
-  
-The **formulas** of set theory are defined recursively according to the following 4 rules:
+The membership symbol is denoted $\in$ (read as "is in", or "in"). When placed between a quantity/object and a set, it produces a true statement iff the object on the left is a member of the set on the right, such as $x \in S$.
 
-1. **(Atomic)** If $u$ and $v$ are variables (not necessarily distinct), then
-   $u \in v$ and $u = v$ are formulas.
-2. **(Connectives)** If $\psi$ and $\chi$ are formulas, then so are
-   $\neg\psi$, $(\psi \land \chi)$, $(\psi \lor \chi)$,
-   $(\psi \to \chi)$, and $(\psi \leftrightarrow \chi)$.
-3. **(Quantifiers)** If $\psi$ is a formula and $u$ is a variable, then
-   $\forall u\,\psi$ and $\exists u\,\psi$ are formulas.
-4. **(Closure)** Nothing else is a formula.
+*Note:* A "set" in math can be approximately thought of as "any unordered collection of unique objects." The objects in the set are called "members" or "elements" of the set. However, no single, precise definition exists, because sets considered are a "primitive concept"—meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms, discussed below.
   
 ## ZFC Axioms
   
-Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. In this section we will introduce the notion, theory, and some of its implications.
+Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. Below is a forumlation of the axioms which comprise it[^zfc-axioms].
 
-[^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms (usually ZFC). However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
-  
-A "set" in math can be approximately thought of as "any unordered collection of unique objects." However, no single, precise definition exists, because sets considered are a "primitive concept"—meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms[^zfc-axioms]:
+[^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
 
 [^zfc-axioms]: There are many equivalent ways to formulate the ZFC axioms. The list shown here from [quanta magazine](https://www.quantamagazine.org/why-maths-final-axiom-proved-so-controversial-20260429/) includes all 10 for pedagogical/historical reasons. However, the Null Set axiom is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionall, the axiom of Separation is sometimes omitted since it can be proven using the axiom of Replacement.
   
 <img src="../notebooks/public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="700" style="max-height: 50em" />
   
-The objects in a set are called "elements", and we denote that an element $x$ is in a set $S$ as
+### Formulas
 
-$$x \in S,$$
+To formalize the axiom of replacement, we must develop a notion of what it means to "apply an operation". For this, we use the concept of formulas, defined recursively according to the following 4 rules:
 
-where "$\in$" is read as "is in". Additionally, the following symbols are useful when discussing sets:
-
-| Symbol | Read as | TeX command |
-| :--- | :--- | :--- |
-| $\in$ | **"is an element of"** / **"is in"** | `\in` |
-| $\forall$ | **"for all"** / **"for every"** | `\forall` |
-| $\exists$ | **"there exists"** | `\exists` |
-| $\exists!$ | **"there exists a unique"** | `\exists!` |
-| $\land$ | **"and"** (Conjunction) | `\wedge` or `\land` |
-| $\lor$ | **"or"** (Disjunction) | `\vee` or `\lor` |
-| $\neg$ | **"not"** (Negation) | `\neg` or `\lnot` |
-| $\rightarrow$ | **"implies"** / **"if... then..."** | `\rightarrow` or `\to` |
+1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then
+   $u \in v$ and $u = v$ are formulas.
+2. **Connectives:** If $\psi$ and $\chi$ are formulas, then so are
+   $\neg\psi$, $(\psi \land \chi)$, $(\psi \lor \chi)$,
+   $(\psi \to \chi)$, and $(\psi \leftrightarrow \chi)$.
+3. **Quantifiers:** If $\psi$ is a formula and $u$ is a variable, then
+   $\forall u\,\psi$ and $\exists u\,\psi$ are formulas.
+4. **Closure:** Nothing else is a formula.
   
-As well as the following abbreviations:
-
-| Symbol | Read as | Abbreviation for | TeX command |
-| :--- | :--- | :--- | :--- |
-| $x \notin S$ | "$x$ is **not in** $S$" | $\neg(x \in S)$ | `\notin` |
-| $S_1 \subseteq S_2$ | "$S_1$ is a **subset** of $S_2$" | $\forall x(x \in S_1 \rightarrow x \in S_2)$ | `\subseteq` |
-| $a \leftrightarrow b$ | "$a$ **if and only if** $b$" (Biconditional) | $(a \rightarrow b) \land (b \rightarrow a)$ | `\leftrightarrow` |
-  
-| Axiom | Statement |
-| :-----: | :---------: |
-| Null Set | $\exists S[\forall x(x \notin S)]$ |
-| Extensionality | $[(S_1 \subseteq S_2) \land (S_2 \subseteq S_1)] \rightarrow (S_1 = S_2)$ |
-| Pairs | $\forall S_1 \forall S_2(\exists S_3[(S_1 \in S_3) \land (S_2 \in S_3)])$ |
-| Power Set | $\forall S_1 \exists S_2[\forall x(x \subseteq S_1 \rightarrow x \in S_2)]$ |
-| Union | $\forall S_1 \exists S_2[\forall S_3 \forall x([S_3 \in S_1 \land x \in S_3] \rightarrow x \in S_2)]$ |
-| Infinity | $\exists S_1[(\emptyset \in S_1) \land \forall x(x \in S_1 \rightarrow \exists S_2[(x \in S_2) \land (S_2 \in S_1)])]$ |
-| Separation | I don't know |
-| Replacement | I don't know |
-| Regularity | $\forall S(S \notin S)$ |
-| Choice | I don't know |
-  
-| Axiom | Statement |
-| :-----: | :---------: |
-| Null Set | *Write here* |
-| Extensionality | *Write here* |
-| Pairs | *Write here* |
-| Power Set | *Write here* |
-| Union | *Write here* |
-| Infinity | *Write here* |
-| Separation | *Write here* |
-| Replacement | *Write here* |
-| Regularity | *Write here* |
-| Choice | *Write here* |
-  
-Using these symbols, we can write our axioms as:
+### Formal Axioms
 
 - **Null Set:** $\exists S[\forall x(x \notin S)]$ (This set is called the "null set" and is denoted $\emptyset$).
 - **Extensionality:** $[(S_1 \subseteq S_2) \land (S_2 \subseteq S_1)] \rightarrow (S_1 = S_2)$.
@@ -259,12 +191,32 @@ Using these symbols, we can write our axioms as:
 - **Power Set:** $\forall S_1 \exists S_2[\forall x(x \subseteq S_1 \rightarrow x \in S_2)]$.
 - **Union:** $\forall S_1 \exists S_2[\forall S_3 \forall x([S_3 \in S_1 \land x \in S_3] \rightarrow x \in S_2)]$.
 - **Infinity:** $\exists S_1[(\emptyset \in S_1) \land ]$.
-- **Null Set:** $$.
-- **Null Set:** $$.
-- **Null Set:** $$.
-- **Null Set:** $$.
+- **Separation:** $$.
+- **Replacement:** $$.
+- **Regularity:** $$.
+- **Choice:** $$.
   
-## What is probability
+### Set-Builder Notation
+
+When referencing sets, we often use curly braces as shorthand for sets whose existence is guaranteed by the axiom schema of separation. Specifically, separation tells us that for any formula $\varphi(x)$ and any set $Z$,
+
+$$\forall Z \exists S \forall x (x \in S \leftrightarrow x \in Z \land \varphi(x)).$$
+
+By extensionality, this set is unique and $\{x \in Z: \varphi (x)\}$ is the notation for it.
+  
+## Set Operators
+  
+### Union
+
+The union operator is denoted $\cup$. When placed between two sets, it creates a new set which contains all elements of either set (whose existence is guaranteed by the union axiom).
+  
+### Intersection
+
+The intersection operator is denoted $\cap$. When placed between two sets, it creates a new set which contains all elements contained in both sets:
+
+$$A \cap B = \{x \in A: x \in B\}$$
+  
+## Probabilities
   
 In mathematical terms, the notion of probability depends on a **probability space**
   
@@ -284,13 +236,19 @@ Probability Space
 :::
 ::::
   
-### Sigma Algebra
+#### Sigma Algebra
 
-A $\sigma$-algebra $F$ og a set $\Omega$ (called the ambient set) is a set of subsets of $\Omega$ which satisfy three criteria:
+A $\sigma$-algebra $F$ of a set $\Omega$ (called the ambient set) is a set of subsets of $\Omega$ which satisfy three criteria:
 
 1. $\Omega \in F$
 2. $S \in F \rightarrow S^c = \{x \in \Omega: x \notin S\} \in F$
 3. $S_1, S_2, S_3, \ldots \in F \rightarrow \bigcup_{i=1}^\infty S_i \in F$
+  
+### Conditional Probability
+
+If $A$ and $B$ are events in a probability space, then the conditional probability $P(A|B)$ (read as "probability of A given B") is defined as
+
+$$P(A|B) := \frac{P(A \cap B)}{P(B)}$$
   
 ## Discrete probabilties.
   
@@ -300,6 +258,15 @@ Discrete probablity distributions are the typical type of probablity we encounte
   
 The conditional probability $A$ given $B$ is defined
 $$P(A|B) := \frac{P(A\cap B)}{P(B)}$$
+  
+From this definition, Bayes theorem becomes
+
+$$\begin{align*}
+P(A|B) &= \frac{P(A)P(B|A)}{P(B)} \\
+&= \frac{P(A)\frac{P(B\cap A)}{P(A)}}{P(B)} \\
+&= \frac{P(B\cap A)}{P(B)} \\
+&= \frac{P(A\cap B)}{P(B)} \\
+\end{align*}$$
   
 ## Modeling Noise
   
