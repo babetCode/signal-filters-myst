@@ -94,3 +94,6 @@ As well as the following abbreviations:
 | Replacement | *Write here* |
 | Regularity | *Write here* |
 | Choice | *Write here* |
+  
+Here is summary of the ZFC axioms from [quanta magazine](https://www.quantamagazine.org/why-maths-final-axiom-proved-so-controversial-20260429/):
+<img src="../notebooks/public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="600" style="max-height: 50em" />

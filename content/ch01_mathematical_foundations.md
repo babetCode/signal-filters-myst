@@ -1,5 +1,5 @@
 ---
-title: Foundations
+title: Mathematical Foundations
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "The Basis of Everything"
@@ -83,13 +83,13 @@ Developing precise language is vital for communicating a precise understanding o
 - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
 - **Semantics:** This the list of rules and convetions which dictate how the symbols (or strings of symbols) in our syntax are interpereted. For example the convention is this book is to interperet "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
   
-### Logical Connectives
+### Connectives
 
-Logical connectives combine one or more statements into a new statement whose truth value depends only on the truth values fo the parts.
+Logical connectives combine one or more statements into a new statement whose truth value depends only on the truth values of the parts.
   
 #### Negation
 
-The negation operator is denoted $\neg$ (read as "not"). When placed to the left of a statement, the new statement has the opposite truth value of the original statement. Letting $T$ represent a placeholder for some true statement, and $F$ represent a placeholder for some false statement, then we say that "$\neg T$" evaluates to $F$ and "$\neg F$" evaluates to $T$. This is often represented in the form of a truth table:
+The negation operator is denoted $\neg$ (read as "not"). When placed to the left of a statement, the new statement has the opposite truth value of the original statement. Letting $T$ represent a placeholder for some true statement, and $F$ represent a placeholder for some false statement, we say that "$\neg T$" evaluates to $F$ and "$\neg F$" evaluates to $T$. This is often represented in the form of a truth table:
 
 $$\begin{array}{r | c}
 \neg & \\
@@ -124,27 +124,39 @@ $$\begin{array}{r | cc}
   
 #### Conditional
 
-The conditional operator is denoted $\rightarrow$ (read "implies", or "if ... then ..."). When placed between two expressions, such as $A \rightarrow B$, it acts as shorthand for
+The conditional operator is denoted $\rightarrow$ (read "implies", or "if ... then ..."). When placed between two expressions, such as:
 
-$$\neg A \lor B.$$
+$$A \rightarrow B$$
+
+it acts as shorthand for "$\neg A \lor B$".
   
-#### Bionditional
+#### Biconditional
 
-The biconditional operator is denoted $\leftrightarrow$ (read "if and only if"). When placed between two expressions, such as $A \leftrightarrow B$, it acts as shorthand for
+The biconditional operator is denoted $\leftrightarrow$ (read "if and only if"). When placed between two expressions, such as:
 
-$$(A \rightarrow B) \land (B \rightarrow A).$$
+$$A \leftrightarrow B$$
+
+it acts as shorthand for "$(A \rightarrow B) \land (B \rightarrow A)$".
   
-### Logical Quantifiers
+### Quantifiers
   
 Logical quantifiers allow us to make claims about collections of objects by stating how many things in a given domain satisfy some property.
   
-#### Universal
-
-The universal quantifier is denoted $\forall$ (read as "for all"). When placed to the left of a variable, followed by some statement, we interperet the new statement as "for all values of the variable, the statement is true".
-  
 #### Existential
 
-The existential quantifier is denoted $\exists$ (read as "there exists"). When placed to the left of a variable, followed by some statement, we interpered the new statement as "There exists at least one value of the variable for which the statement is true".
+The existential quantifier is denoted $\exists$ (read as "there exists"). When placed to the left of a variable, followed by some statement, we interperet the new statement as "There exists at least one value of the variable for which the statement is true":
+
+$$\exists x\, A$$
+
+is interpereted as the statement "there exists at least one value of $x$ such that the statement $A$ is true".
+  
+#### Universal
+
+The universal quantifier is denoted $\forall$ (read as "for all"). When placed to the left of a variable, followed by some statement, we interperet the new statement as "for all values of the variable, the statement is true":
+
+$$\forall x\, A$$
+
+is a shorthand for "$\neg \exists x\, (\neg A)$".
   
 ### Relational Operators
 
@@ -152,69 +164,133 @@ Relational operators compare two quantities or objects and produce a true or fal
   
 #### Equality
 
-The equality operator (aka equals sign) is denoted "$=$". When placed between two quantities or objects, it produces a true statement iff they have identical values.
+The equality operator (aka equals sign) is denoted "$=$". When placed between two quantities or objects, it produces a true statement iff they have identical values, such as:
+
+$$x = y.$$
   
 #### Membership
 
-The membership symbol is denoted $\in$ (read as "is in", or "in"). When placed between a quantity/object and a set, it produces a true statement iff the object on the left is a member of the set on the right, such as $x \in S$.
+The membership symbol is denoted $\in$ (read as "is in", or "in"). When placed between a quantity/object and a set, it produces a true statement iff the object on the left is a member of the set on the right, such as:
 
-*Note:* A "set" in math can be approximately thought of as "any unordered collection of unique objects." The objects in the set are called "members" or "elements" of the set. However, no single, precise definition exists, because sets considered are a "primitive concept"—meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms, discussed below.
-  
-## ZFC Axioms
-  
-Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. Below is a forumlation of the axioms which comprise it[^zfc-axioms].
+$$x \in y.$$
 
-[^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
-
-[^zfc-axioms]: There are many equivalent ways to formulate the ZFC axioms. The list shown here from [quanta magazine](https://www.quantamagazine.org/why-maths-final-axiom-proved-so-controversial-20260429/) includes all 10 for pedagogical/historical reasons. However, the Null Set axiom is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionall, the axiom of Separation is sometimes omitted since it can be proven using the axiom of Replacement.
-  
-<img src="../notebooks/public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="700" style="max-height: 50em" />
+*Note:* A "set" in math can be approximately thought of as "any unordered collection of unique objects." The objects in the set are called "members" or "elements" of the set. However, no precise definition exists because sets are a "primitive concept", meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms, discussed below.
   
 ### Formulas
 
-To formalize the axiom of replacement, we must develop a notion of what it means to "apply an operation". For this, we use the concept of formulas, defined recursively according to the following 4 rules:
+Formulas are defined recursively according to the following 5 rules:
 
 1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then
    $u \in v$ and $u = v$ are formulas.
-2. **Connectives:** If $\psi$ and $\chi$ are formulas, then so are
-   $\neg\psi$, $(\psi \land \chi)$, $(\psi \lor \chi)$,
-   $(\psi \to \chi)$, and $(\psi \leftrightarrow \chi)$.
-3. **Quantifiers:** If $\psi$ is a formula and $u$ is a variable, then
-   $\forall u\,\psi$ and $\exists u\,\psi$ are formulas.
-4. **Closure:** Nothing else is a formula.
-  
-### Formal Axioms
+2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.
+3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$.
+4. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then
+   $\exists x\,\varphi$ is a formula.
+5. **Closure:** Nothing else is a formula.
 
-- **Null Set:** $\exists S[\forall x(x \notin S)]$ (This set is called the "null set" and is denoted $\emptyset$).
-- **Extensionality:** $[(S_1 \subseteq S_2) \land (S_2 \subseteq S_1)] \rightarrow (S_1 = S_2)$.
-- **Pairs:** $\forall S_1 \forall S_2(\exists S_3[(S_1 \in S_3) \land (S_2 \in S_3)])$.
-- **Power Set:** $\forall S_1 \exists S_2[\forall x(x \subseteq S_1 \rightarrow x \in S_2)]$.
-- **Union:** $\forall S_1 \exists S_2[\forall S_3 \forall x([S_3 \in S_1 \land x \in S_3] \rightarrow x \in S_2)]$.
-- **Infinity:** $\exists S_1[(\emptyset \in S_1) \land ]$.
-- **Separation:** $$.
-- **Replacement:** $$.
-- **Regularity:** $$.
-- **Choice:** $$.
-  
-### Set-Builder Notation
+Their utility will become apparent shortly, when defining the Axiom of Separation and Axiom of Replacement.
 
-When referencing sets, we often use curly braces as shorthand for sets whose existence is guaranteed by the axiom schema of separation. Specifically, separation tells us that for any formula $\varphi(x)$ and any set $Z$,
+*Note:* Since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+  
+### Useful Abbreviations
+
+For ease of writing, we will sometimes use the following abbreviations:
+
+| Symbol | Read as | Abbreviation for |
+| :---: | :---: | :---: |
+| $x \notin y$ | "$x$ is **not in** $y$" | $\neg(x \in y)$ |
+| $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
+| $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists y\, \forall x\, (\varphi \leftrightarrow x = y)$ |
+  
+## ZFC Axioms
+  
+Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+
+[^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
+  
+### 1. Axiom of Extensionality
+
+Two sets are equal iff they contain the exact same members:
+
+$$\forall S_1\forall S_2\,[\forall z\,(z\in S_1\leftrightarrow z\in S_2)\rightarrow S_1=S_2]$$
+  
+### 2. Axiom of the Null Set
+
+There exists a set $S$ such that for all x, x is not an element of $S$:
+
+$$\exists S \forall x (x \notin S)$$
+
+By Extensionality, this set is unique. It is called the "null set" or "empty set" and is denoted "$\emptyset$".
+  
+### 3. Axiom of Pairing
+
+Given any two sets (or objects) $a$ and $b$, there exists $a$ set $c$ that contains $a$ and $b$ as its only members:
+
+$$\forall a \, \forall b \, \exists c \, \forall x \, (x \in c \leftrightarrow x = a \lor x = b).$$
+
+By extensionality, this set $c$ is unique.
+  
+#### Singleton Sets
+
+By letting $a = b$, the Axiom of Pairing tells us that
+
+$$\forall a\, \exists c\, \forall x\, (x \in c \leftrightarrow x = a).$$
+
+This set $c$ is called a singleton set because it contains exactly one element, and is denoted $\{a\}$.
+  
+### 4. Axiom of Power Set
+
+For any given set $x$, there exists a unique set $y$ containing precisely all the subsets of $x$:
+
+$$\forall x\,\exists y\,\forall z\,[z\in y \leftrightarrow \forall w\,(w\in z \rightarrow w\in x)]$$
+
+This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
+  
+### 5. Axiom of Union
+
+For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
+
+$$\forall X\,\exists U\,\forall y\,\left(y\in U\leftrightarrow \exists z(z\in X \land y\in z)\right)$$
+
+By Extensionality, this union set $U$ is unique. It is commonly denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
+  
+#### Union Operator
+
+The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the unique pairing set containing $x$ and $y$:
+
+$$x \cup y.$$
+  
+### 6. Axiom of Infinity
+
+At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$.
+
+$$\exists I\, (\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)).$$
+  
+### 7. Axiom Schema of Separation
+
+For any formula $\varphi(x)$ and any set $Z$, there exists a set $S$ which is a subset of $Z$ containing exactly the elements of $Z$ which satisfy $\varphi$:
 
 $$\forall Z \exists S \forall x (x \in S \leftrightarrow x \in Z \land \varphi(x)).$$
-
-By extensionality, this set is unique and $\{x \in Z: \varphi (x)\}$ is the notation for it.
   
-## Set Operators
-  
-### Union
+#### Set-Builder Notation
 
-The union operator is denoted $\cup$. When placed between two sets, it creates a new set which contains all elements of either set (whose existence is guaranteed by the union axiom).
-  
-### Intersection
+When referencing sets, we often use curly braces as shorthand for any set $S$ whose existence is guaranteed by the axiom schema of separation:
 
-The intersection operator is denoted $\cap$. When placed between two sets, it creates a new set which contains all elements contained in both sets:
+$$\{x \in Z: \varphi\}.$$
+
+By extensionality, this set is unique.
+  
+#### Intersection Operator
+
+The intersection operator is denoted $\cap$. When placed between two sets, it references the set which contains all elements contained in both sets:
 
 $$A \cap B = \{x \in A: x \in B\}$$
+  
+### 8. Axiom of Replacement
+  
+### 9. Axiom of Regularity
+  
+### 10. Axiom of Choice
   
 ## Probabilities
   

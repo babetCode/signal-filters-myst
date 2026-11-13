@@ -134,5 +134,14 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Here is summary of the ZFC axioms from [quanta magazine](https://www.quantamagazine.org/why-maths-final-axiom-proved-so-controversial-20260429/):
+    <img src="public/zfc_axioms.svg" class="graphic" alt="Scale Diagram" height="600" style="max-height: 50em" />
+    """)
+    return
+
+
 if __name__ == "__main__":
     app.run()
