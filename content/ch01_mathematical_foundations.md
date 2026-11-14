@@ -174,11 +174,11 @@ The membership symbol is denoted $\in$ (read as "is in", or "in"). When placed b
 
 $$x \in y.$$
 
-*Note:* A "set" in math can be approximately thought of as "any unordered collection of unique objects." The objects in the set are called "members" or "elements" of the set. However, no precise definition exists because sets are a "primitive concept", meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms, discussed below.
+*Note:* A "set" object in math can be approximately thought of as "any unordered collection of unique objects." The objects in the set are called "members" or "elements" of the set. However, no precise definition exists because sets are a "primitive concept", meaning they are a foundational block on which other terms are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have infinite regress of definitions). As such, the concept of sets derives meaning from the [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) axioms, discussed below.
   
 ### Formulas
 
-Formulas are defined recursively according to the following 5 rules:
+Now that we have the ability to connect statements, quantify claims about collections of objects, and compare relations between objects, we want some way to combine all of these abilities together. Formulas combine connectives, quantifiers, and relational operators to specify properties of objects. Formulas are defined recursively according to the following 5 rules:
 
 1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas. Here, $u$ and $v$ are called "free variables".
 2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$. Here, $\neg \varphi$ has the same free variables as $\varphi$.
@@ -189,19 +189,44 @@ Formulas are defined recursively according to the following 5 rules:
 
 7. **Closure:** Nothing else is a formula.
 
-Their utility will become apparent shortly, when defining the Axiom of Separation and Axiom of Replacement. Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+  
+#### Free Variable Notation
+
+When we want to constrain the free variables of some unspecified formula $\varphi$, we write
+
+$$\varphi(p_1,\ldots,p_n)$$
+
+to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. In other words, if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
   
 #### Formula Substitution
 
-Since the first order language of logic does not include a built-in way to substitue variables, we sometimes use the metalanguage notation
+We use the metalanguage notation
 
 $$\varphi[x/y]$$
 
 to reference the result of replacing every *free* occurence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
   
+#### Sentences
+
+A sentence is a formula with no free variables; every variable occuring in it is bound by a quantifier. While a formula with free variables doens't have a truth value until you assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points, which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
+  
+:::{div}
+:class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
+
+### Axiom
+:::
+
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Axiom
+: A {term}`sentence` that is a starting point in a mathematical structure, which can be used in a proof without justification.
+:::
+::::
+  
 ### More Useful Abbreviations
 
-For ease of writing, we will sometimes use the following abbreviations:
+Beforer we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
 
 | Abbreviation | Read as | Abbreviation for |
 | :---: | :---: | :---: |
@@ -210,6 +235,8 @@ For ease of writing, we will sometimes use the following abbreviations:
 | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[y/x] \leftrightarrow y = x))$ |
 | $\exists x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\exists x\, (x \in S \land \varphi)$ |
 | $\forall x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\forall x\, (x \in S \rightarrow \varphi)$ |
+
+We take is as intuitive that anything written with these abbreviations could have been written without them.
   
 ## ZFC Axioms
   
@@ -251,7 +278,7 @@ This set $S_3$ is called a singleton set because it contains exactly one element
 
 For any given set $S_1$, there exists a unique set $S_2$ containing precisely all the subsets of $S_1$:
 
-$$\forall S_1\,\exists S_2\,\forall x\,[x\in S_2 \leftrightarrow x \subseteq S_1]$$
+$$\forall S_1\,\exists S_2\,\forall x\, (x\in S_2 \leftrightarrow x \subseteq S_1)$$
 
 This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
   
@@ -259,7 +286,7 @@ This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
 
 For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
 
-$$\forall X\,\exists U\,\forall y\,\left(y\in U\leftrightarrow \exists z(z\in X \land y\in z)\right)$$
+$$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \exists z(z\in X \land y\in z)]$$
 
 By Extensionality, this union set $U$ is unique. It is commonly denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
   
@@ -271,17 +298,17 @@ $$S_1 \cup S_2.$$
   
 ### 6. Axiom of Infinity
 
-At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$.
+At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$:
 
-$$\exists I\, (\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)).$$
+$$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
   
 ### 7. Axiom Schema of Separation
 
-For any set $A$ and any formula $\varphi$ in which $B$ is not free, there exists a set $B$ such that $B$ contains exactly the elements of $A$ which satisfy $\varphi$:
+For every formula $\varphi(x, A, p_1, \dots, p_n)$, for any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $(x, A, p_1, \dots, p_n)$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$. In other words, every property definable by a formula carves out a subset of any given set:
 
-$$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, (x \in B \leftrightarrow (x \in A \land \varphi)),$$
+$$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B \leftrightarrow (x \in A \land \varphi)].$$
 
-where $p_1, \ldots, p_n$ are the other free variables of $\varphi$.
+This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$.
   
 #### Set-Builder Notation
 

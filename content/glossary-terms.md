@@ -89,6 +89,9 @@ Riemann sum
 Right-hand limit
 : The limit of a {term}`function` $f(x)$ as $x$ goes to $a$ from the right is defined as $$\lim_{x \rightarrow a^+} f(x) := b$$ iff for every $\epsilon > 0$, there exists some $\delta > 0$ such that for all $x \in (a, a+\delta)$, we have $$|f(x) - b| < \epsilon.$$
 
+Sentence
+: A formula with no free variables; every variable in it is bound by a quantifier.
+
 Stochastic
 : (Of a {term}`signal` or {term}`system`) involving randomness or uncertainty; its future values can only be described in terms of probabilities, not exact predictions.
 
