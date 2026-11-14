@@ -289,17 +289,16 @@ def _(mo):
 
     Formulas are defined recursively according to the following 5 rules:
 
-    1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then
-       $u \in v$ and $u = v$ are formulas.
-    2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.
-    3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$.
-    4. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then
-       $\exists x\,\varphi$ is a formula.
-    5. **Closure:** Nothing else is a formula.
+    1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas. Here, $u$ and $v$ are called "free variables".
+    2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$. Here, $\neg \varphi$ has the same free variables as $\varphi$.
 
-    Their utility will become apparent shortly, when defining the Axiom of Separation and Axiom of Replacement.
+    3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$. Here, $(\varphi \land \psi)$ has the free variables of $\varphi$ together with those of $\psi$.
 
-    *Note:* Since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+    5. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula. Here, the free variables of $\exists x\,\varphi$ are those of $\varphi$ except $x$. We say $x$ is bound by the quantifier.
+
+    7. **Closure:** Nothing else is a formula.
+
+    Their utility will become apparent shortly, when defining the Axiom of Separation and Axiom of Replacement. Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
     """)
     return
 
@@ -307,15 +306,31 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Useful Abbreviations
+    #### Formula Substitution
+
+    Since the first order language of logic does not include a built-in way to substitue variables, we sometimes use the metalanguage notation
+
+    $$\varphi[x/y]$$
+
+    to reference the result of replacing every *free* occurence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### More Useful Abbreviations
 
     For ease of writing, we will sometimes use the following abbreviations:
 
-    | Symbol | Read as | Abbreviation for |
+    | Abbreviation | Read as | Abbreviation for |
     | :---: | :---: | :---: |
     | $x \notin y$ | "$x$ is **not in** $y$" | $\neg(x \in y)$ |
     | $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
-    | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists y\, \forall x\, (\varphi \leftrightarrow x = y)$ |
+    | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[y/x] \leftrightarrow y = x))$ |
+    | $\exists x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\exists x\, (x \in S \land \varphi)$ |
+    | $\forall x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\forall x\, (x \in S \rightarrow \varphi)$ |
     """)
     return
 
@@ -355,7 +370,7 @@ def _(mo):
     mo.md(r"""
     ### 2. Axiom of the Null Set
 
-    There exists a set $S$ such that for all x, x is not an element of $S$:
+    There exists a set $S$ such that for all $x$, $x$ is not an element of $S$:
 
     $$\exists S \forall x (x \notin S)$$
 
@@ -369,11 +384,11 @@ def _(mo):
     mo.md(r"""
     ### 3. Axiom of Pairing
 
-    Given any two sets (or objects) $a$ and $b$, there exists $a$ set $c$ that contains $a$ and $b$ as its only members:
+    Given any two sets (or objects) $S_1$ and $S_2$, there exists a set $S_3$ that contains $S_1$ and $S_2$ as its only members:
 
-    $$\forall a \, \forall b \, \exists c \, \forall x \, (x \in c \leftrightarrow x = a \lor x = b).$$
+    $$\forall S_1 \, \forall S_2 \, \exists S_3 \, \forall x \, (x \in S_3 \leftrightarrow x = S_1 \lor x = S_2).$$
 
-    By extensionality, this set $c$ is unique.
+    By extensionality, this set $S_3$ is unique.
     """)
     return
 
@@ -383,11 +398,11 @@ def _(mo):
     mo.md(r"""
     #### Singleton Sets
 
-    By letting $a = b$, the Axiom of Pairing tells us that
+    By letting $S_1 = S_2$, the Axiom of Pairing tells us that
 
-    $$\forall a\, \exists c\, \forall x\, (x \in c \leftrightarrow x = a).$$
+    $$\forall S_1\, \exists S_3\, \forall x\, (x \in S_3 \leftrightarrow x = S_3).$$
 
-    This set $c$ is called a singleton set because it contains exactly one element, and is denoted $\{a\}$.
+    This set $S_3$ is called a singleton set because it contains exactly one element, and is denoted $\{S_1\}$.
     """)
     return
 
@@ -397,9 +412,9 @@ def _(mo):
     mo.md(r"""
     ### 4. Axiom of Power Set
 
-    For any given set $x$, there exists a unique set $y$ containing precisely all the subsets of $x$:
+    For any given set $S_1$, there exists a unique set $S_2$ containing precisely all the subsets of $S_1$:
 
-    $$\forall x\,\exists y\,\forall z\,[z\in y \leftrightarrow \forall w\,(w\in z \rightarrow w\in x)]$$
+    $$\forall S_1\,\exists S_2\,\forall x\,[x\in S_2 \leftrightarrow x \subseteq S_1]$$
 
     This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
     """)
@@ -425,9 +440,9 @@ def _(mo):
     mo.md(r"""
     #### Union Operator
 
-    The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the unique pairing set containing $x$ and $y$:
+    The union operator is denoted $\cup$. When placed between two sets $S_1$ and $S_2$, it is a shorthand to reference the union of the pairing set containing $S_1$ and $S_2$:
 
-    $$x \cup y.$$
+    $$S_1 \cup S_2.$$
     """)
     return
 
@@ -449,9 +464,11 @@ def _(mo):
     mo.md(r"""
     ### 7. Axiom Schema of Separation
 
-    For any formula $\varphi(x)$ and any set $Z$, there exists a set $S$ which is a subset of $Z$ containing exactly the elements of $Z$ which satisfy $\varphi$:
+    For any set $A$ and any formula $\varphi$ in which $B$ is not free, there exists a set $B$ such that $B$ contains exactly the elements of $A$ which satisfy $\varphi$:
 
-    $$\forall Z \exists S \forall x (x \in S \leftrightarrow x \in Z \land \varphi(x)).$$
+    $$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, (x \in B \leftrightarrow (x \in A \land \varphi)),$$
+
+    where $p_1, \ldots, p_n$ are the other free variables of $\varphi$.
     """)
     return
 
@@ -461,9 +478,9 @@ def _(mo):
     mo.md(r"""
     #### Set-Builder Notation
 
-    When referencing sets, we often use curly braces as shorthand for any set $S$ whose existence is guaranteed by the axiom schema of separation:
+    When referencing sets, we often use curly braces as shorthand for any set $B$ whose existence is guaranteed by the axiom schema of separation:
 
-    $$\{x \in Z: \varphi\}.$$
+    $$\{x \in A: \varphi\}.$$
 
     By extensionality, this set is unique.
     """)
@@ -477,7 +494,7 @@ def _(mo):
 
     The intersection operator is denoted $\cap$. When placed between two sets, it references the set which contains all elements contained in both sets:
 
-    $$A \cap B = \{x \in A: x \in B\}$$
+    $$A \cap B = \{x \in A: x \in B\}.$$
     """)
     return
 
@@ -486,6 +503,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ### 8. Axiom of Replacement
+
+    For any set $A$ and formula $\varphi$ in which $B$ is not free, there exists a set $B$ such that ... :
+
+    $$\forall p_1 \cdots \forall p_n\, \forall A[\forall x \in A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \exists x \in A\, \varphi)].$$
     """)
     return
 
@@ -517,7 +538,34 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In mathematical terms, the notion of probability depends on a **probability space**
+    In mathematical terms, the notion of probability depends on sigma algebra
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Sigma Algebra
+
+    A $\sigma$-algebra $F$ of a set $\Omega$ (called the ambient set) is a subset of $\mathcal P (\Omega)$ which satisfy three criteria:
+
+    1. **Contains the sample space:**
+       $$\Omega \in F.$$
+    2. **Closed under complementation:**
+       $$S \in F \rightarrow S^c \in F,$$
+       where $S^c$ is the complement of $S$: $\{x \in \Omega: x \notin S\}$.
+    3. **Closed under countable unions:**
+        $$S_1, S_2, S_3, \ldots \in F \rightarrow \bigcup_{i=1}^\infty S_i \in F,$$
+       where $\bigcup_{i=1}^\infty$ is shorthand for $S_1 \cup S_2 \cup \cdots$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Now, we can define a **probability space**:
     """)
     return
 
@@ -539,20 +587,6 @@ def _(mo):
     - $F$ is a $\sigma$-algebra of subsets of $\Omega$ (the “events”),
     - $P$ is a function from $F$ to $[0,1]$ satisfying: $P(\Omega) = 1$, and countable additivity (for pairwise disjoint events $A_1, A_2, ..., P(\bigcup A_i) = ΣP(Aᵢ))$.
     ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    #### Sigma Algebra
-
-    A $\sigma$-algebra $F$ of a set $\Omega$ (called the ambient set) is a set of subsets of $\Omega$ which satisfy three criteria:
-
-    1. $\Omega \in F$
-    2. $S \in F \rightarrow S^c = \{x \in \Omega: x \notin S\} \in F$
-    3. $S_1, S_2, S_3, \ldots \in F \rightarrow \bigcup_{i=1}^\infty S_i \in F$
     """)
     return
 
