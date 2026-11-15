@@ -12,6 +12,7 @@ numbering:
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -139,7 +140,7 @@ it acts as shorthand for "$(A \rightarrow B) \land (B \rightarrow A)$".
   
 ### Quantifiers
   
-Logical quantifiers allow us to make claims about collections of objects by stating how many things in a given domain satisfy some property.
+Logical quantifiers allow us to make statements about collections of objects by stating how many things in a given domain satisfy some property.
   
 #### Existential
 
@@ -177,7 +178,7 @@ $$x \in y.$$
   
 ### Formulas
 
-Now that we have the ability to connect statements, quantify claims about collections of objects, and compare relations between objects, we want some way to combine all of these abilities together. Formulas combine connectives, quantifiers, and relational operators to specify properties of objects. Formulas are defined recursively according to the following 5 rules:
+Now that we have the ability to connect statements, make quantitative statements about collections of objects, and state relations between objects, we want some way to combine all of these abilities together. Formulas combine connectives, quantifiers, and relational operators to specify properties of objects. Formulas are defined recursively according to the following 5 rules:
 
 1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas.
 2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.
@@ -190,6 +191,16 @@ Now that we have the ability to connect statements, quantify claims about collec
 
 Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
   
+#### Free Variable Notation
+
+Any variable in a formula which is directly to the right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variable*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, any other variable in a formula which we can freely assign a value to (such as $x$ in the formula $x = y$) is called a *free variable*.
+
+When we want to specify the free variables of some unspecified formula $\varphi$, we write
+
+$$\varphi(p_1,\ldots,p_n)$$
+
+to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then it does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
+  
 #### Formula Substitution
 
 We use the metalanguage notation
@@ -198,19 +209,9 @@ $$\varphi[x/y]$$
 
 to reference the result of replacing every *free* occurence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
   
-#### Free Variable Notation
-
-Any variable in a formula which is directly to the right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variables*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, any other variable in a formula which we can freely assign a value to (such as $x$ in the formula $x = y$) is called a *free variable*.
-
-When we want to specify the free variables of some unspecified formula $\varphi$, we write
-
-$$\varphi(p_1,\ldots,p_n)$$
-
-to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then it does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
-  
 #### Sentences
 
-A sentence is a formula with no free variables; every variable occuring in it is bound by a quantifier. While a formula with free variables doens't have a truth value until you assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
+A sentence is a formula with no free variables; every variable occurring in it is bound by a quantifier. While a formula with free variables doesn't have a truth value until we assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical structure, we must choose some sentences as starting points which we define as true in our structure. We call these starting point sentences **axioms**.
   
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
@@ -227,13 +228,13 @@ Axiom
   
 ### More Useful Abbreviations
 
-Beforer we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
+Before we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
 
 | Abbreviation | Read as | Abbreviation for |
 | :---: | :---: | :---: |
 | $x \notin y$ | "$x$ is **not in** $y$" | $\neg(x \in y)$ |
 | $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
-| $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[y/x] \leftrightarrow y = x))$ |
+| $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[x/y] \leftrightarrow y = x))$ |
 | $\exists x \in y\, \varphi$ | "There exists $x$ in $y$ such that $\varphi$" | $\exists x\, (x \in y \land \varphi)$ |
 | $\forall x \in y\, \varphi$ | "For all $x$ in $y$, $\varphi$" | $\forall x\, (x \in y \rightarrow \varphi)$ |
 | $\exists x \subseteq y\, \varphi$ | "There exists $x$ which is a subset of $y$ such that $\varphi$" | $\exists x\, (x \subseteq y \land \varphi)$ |
@@ -243,7 +244,7 @@ We take is as intuitive that anything written with these abbreviations could hav
   
 ## ZFC Axioms
   
-Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
 
 [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
   
@@ -273,7 +274,7 @@ By extensionality, this set $z$ is unique and may be referred to as $\{x, y\}$.
 
 By letting $y=x$, the Axiom of Pairing tells us that
 
-$$\forall x\, \exists z\, \forall x\, (x \in z \leftrightarrow x = x).$$
+$$\forall x\, \exists z\, \forall w\, (w \in z \leftrightarrow w = x).$$
 
 This set $z$ is called a singleton set because it contains exactly one element, and is denoted $\{x\}$.
   
@@ -295,7 +296,7 @@ By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bi
   
 #### Union Operator
 
-The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the pairing set containing $x$ and $y$:
+The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union $\bigcup \{x, y\}$:
 
 $$x \cup y.$$
 
@@ -307,7 +308,7 @@ $$x \cup y = y \cup x.$$
 
 For every formula $\varphi(x, A, p_1, \dots, p_n)$, for any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $(x, A, p_1, \dots, p_n)$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$. In other words, every property definable by a formula carves out a subset of any given set:
 
-$$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B \leftrightarrow (x \in A \land \varphi)].$$
+$$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, (x \in B \leftrightarrow [x \in A \land \varphi(x, A, p_1, \dots, p_n)]).$$
 
 This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$.
   

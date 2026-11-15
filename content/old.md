@@ -4,6 +4,7 @@ title: Old
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 width: medium
 ---

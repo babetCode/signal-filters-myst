@@ -4,6 +4,7 @@ title: Mice Data
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 width: medium
 ---
