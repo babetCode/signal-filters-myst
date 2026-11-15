@@ -180,24 +180,16 @@ $$x \in y.$$
 
 Now that we have the ability to connect statements, quantify claims about collections of objects, and compare relations between objects, we want some way to combine all of these abilities together. Formulas combine connectives, quantifiers, and relational operators to specify properties of objects. Formulas are defined recursively according to the following 5 rules:
 
-1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas. Here, $u$ and $v$ are called "free variables".
-2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$. Here, $\neg \varphi$ has the same free variables as $\varphi$.
+1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas.
+2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.
 
-3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$. Here, $(\varphi \land \psi)$ has the free variables of $\varphi$ together with those of $\psi$.
+3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$.
 
-5. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula. Here, the free variables of $\exists x\,\varphi$ are those of $\varphi$ except $x$. We say $x$ is bound by the quantifier.
+5. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula.
 
 7. **Closure:** Nothing else is a formula.
 
 Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
-  
-#### Free Variable Notation
-
-When we want to constrain the free variables of some unspecified formula $\varphi$, we write
-
-$$\varphi(p_1,\ldots,p_n)$$
-
-to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. In other words, if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
   
 #### Formula Substitution
 
@@ -206,6 +198,16 @@ We use the metalanguage notation
 $$\varphi[x/y]$$
 
 to reference the result of replacing every *free* occurence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
+  
+#### Free Variable Notation
+
+Any variables in a formula which are directly to right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variable*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, the other variables in a formula which we can freely assign values to (such as $x$ in the formula $x = y$) are called *free variables*.
+
+When we want to specify the free variables of some unspecified formula $\varphi$, we write
+
+$$\varphi(p_1,\ldots,p_n)$$
+
+to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
   
 #### Sentences
 
@@ -368,6 +370,8 @@ Probability Space
   - $P$ is a function from $F$ to $[0,1]$ satisfying: $P(\Omega) = 1$, and countable additivity (for pairwise disjoint events $A_1, A_2, ..., P(\bigcup A_i) = ΣP(Aᵢ))$.
 :::
 ::::
+  
+Whenever we talk about the probablility of something happening, we are refering to some $P(A)$, where $P$ is a probability function in some probability space $(\Omega, F, P)$, and $A$ is some event in $F$.
   
 ### Conditional Probability
 

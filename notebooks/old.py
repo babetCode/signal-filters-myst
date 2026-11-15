@@ -143,5 +143,26 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Formulas
+
+    Now that we have the ability to connect statements, quantify claims about collections of objects, and compare relations between objects, we want some way to combine all of these abilities together. Formulas combine connectives, quantifiers, and relational operators to specify properties of objects. Formulas are defined recursively according to the following 5 rules:
+
+    1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas. Here, $u$ and $v$ are called "free variables".
+    2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$. Here, $\neg \varphi$ has the same free variables as $\varphi$.
+
+    3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$. Here, $(\varphi \land \psi)$ has the free variables of $\varphi$ together with those of $\psi$.
+
+    5. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula. Here, the free variables of $\exists x\,\varphi$ are those of $\varphi$ except $x$. We say $x$ is bound by the quantifier.
+
+    7. **Closure:** Nothing else is a formula.
+
+    Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+    """)
+    return
+
+
 if __name__ == "__main__":
     app.run()
