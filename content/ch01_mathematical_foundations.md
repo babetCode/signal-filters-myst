@@ -201,17 +201,17 @@ to reference the result of replacing every *free* occurence of $x$ in $\varphi$ 
   
 #### Free Variable Notation
 
-Any variable in a formula which is directly to the right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variables*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, any other variable in a formula which we can freely assign a value to (such as $x$ in the formula $x = y$) is called a *free variable*.
+Any variables in a formula which are directly to right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variable*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, the other variables in a formula which we can freely assign values to (such as $x$ in the formula $x = y$) are called *free variables*.
 
 When we want to specify the free variables of some unspecified formula $\varphi$, we write
 
 $$\varphi(p_1,\ldots,p_n)$$
 
-to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then it does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
+to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
   
 #### Sentences
 
-A sentence is a formula with no free variables; every variable occurring in it is bound by a quantifier. While a formula with free variables doesn't have a truth value until we assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points, which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
+A sentence is a formula with no free variables; every variable occuring in it is bound by a quantifier. While a formula with free variables doens't have a truth value until you assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
   
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
@@ -228,21 +228,23 @@ Axiom
   
 ### More Useful Abbreviations
 
-Before we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
+Beforer we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
 
 | Abbreviation | Read as | Abbreviation for |
 | :---: | :---: | :---: |
 | $x \notin y$ | "$x$ is **not in** $y$" | $\neg(x \in y)$ |
 | $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
 | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[y/x] \leftrightarrow y = x))$ |
-| $\exists x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\exists x\, (x \in S \land \varphi)$ |
-| $\forall x \in S\, \varphi$ | "For all $x$ in $S$, $\varphi$" | $\forall x\, (x \in S \rightarrow \varphi)$ |
+| $\exists x \in y\, \varphi$ | "There exists $x$ in $y$ such that $\varphi$" | $\exists x\, (x \in y \land \varphi)$ |
+| $\forall x \in y\, \varphi$ | "For all $x$ in $y$, $\varphi$" | $\forall x\, (x \in y \rightarrow \varphi)$ |
+| $\exists x \subseteq y\, \varphi$ | "There exists $x$ which is a subset of $y$ such that $\varphi$" | $\exists x\, (x \subseteq y \land \varphi)$ |
+| $\forall x \subseteq y\, \varphi$ | "For all $x$ which are subsets of $y$, $\varphi$" | $\forall x\, (x \subseteq y \rightarrow \varphi)$ |
 
 We take is as intuitive that anything written with these abbreviations could have been written without them.
   
 ## ZFC Axioms
   
-Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
 
 [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
   
@@ -250,39 +252,39 @@ Set theory is a foundation for nearly all of mathematics[^other-math-foundations
 
 Two sets are equal iff they contain the exact same members:
 
-$$\forall S_1\forall S_2\,[\forall z\,(z\in S_1\leftrightarrow z\in S_2)\rightarrow S_1=S_2]$$
+$$\forall x\forall y\,[\forall z\,(z\in x\leftrightarrow z\in y)\rightarrow x=y]$$
   
 ### 2. Axiom of the Null Set
 
-There exists a set $S$ such that for all $x$, $x$ is not an element of $S$:
+There exists a set $x$ such that for all $y$, $y$ is not an element of $x$:
 
-$$\exists S \forall x (x \notin S)$$
+$$\exists x \forall y (y \notin x)$$
 
 By Extensionality, this set is unique. It is called the "null set" or "empty set" and is denoted "$\emptyset$".
   
 ### 3. Axiom of Pairing
 
-Given any two sets (or objects) $S_1$ and $S_2$, there exists a set $S_3$ that contains $S_1$ and $S_2$ as its only members:
+Given any two sets $x$ and $y$, there exists a set $z$ that contains $x$ and $y$ as its only members:
 
-$$\forall S_1 \, \forall S_2 \, \exists S_3 \, \forall x \, (x \in S_3 \leftrightarrow x = S_1 \lor x = S_2).$$
+$$\forall x \, \forall y \, \exists z \, \forall w \, (w \in z \leftrightarrow w = x \lor w = y).$$
 
-By extensionality, this set $S_3$ is unique.
+By extensionality, this set $z$ is unique and may be referred to as $\{x, y\}$.
   
 #### Singleton Sets
 
-By letting $S_1 = S_2$, the Axiom of Pairing tells us that
+By letting $y=x$, the Axiom of Pairing tells us that
 
-$$\forall S_1\, \exists S_3\, \forall x\, (x \in S_3 \leftrightarrow x = S_1).$$
+$$\forall x\, \exists z\, \forall x\, (x \in z \leftrightarrow x = x).$$
 
-This set $S_3$ is called a singleton set because it contains exactly one element, and is denoted $\{S_1\}$.
+This set $z$ is called a singleton set because it contains exactly one element, and is denoted $\{x\}$.
   
 ### 4. Axiom of Power Set
 
-For any given set $S_1$, there exists a unique set $S_2$ containing precisely all the subsets of $S_1$:
+For any given set $x$, there exists a unique set $y$ containing precisely all the subsets of $x$:
 
-$$\forall S_1\,\exists S_2\,\forall x\, (x\in S_2 \leftrightarrow x \subseteq S_1)$$
+$$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x)$$
 
-This set $S_2$ is known as the power set of $S_1$ and is denoted $\mathcal{P}(S_1)$.
+This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
   
 ### 5. Axiom of Union
 
@@ -290,25 +292,19 @@ For any set of sets $X$, there exists a set $U$ whose elements are precisely the
 
 $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \exists z(z\in X \land y\in z)]$$
 
-By Extensionality, this union set $U$ is unique. It is commonly denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
+By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
   
 #### Union Operator
 
-The union operator is denoted $\cup$. When placed between two sets $S_1$ and $S_2$, it is a shorthand to reference the union of the pairing set containing $S_1$ and $S_2$:
+The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the pairing set containing $x$ and $y$:
 
-$$S_1 \cup S_2.$$
+$$x \cup y.$$
 
 Since the paring set is unordered, this operation is commutative and we have
 
-$$S_1 \cup S_2 = S_2 \cup S_1.$$
+$$x \cup y = y \cup x.$$
   
-### 6. Axiom of Infinity
-
-At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$:
-
-$$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
-  
-### 7. Axiom Schema of Separation
+### 6. Axiom Schema of Separation
 
 For every formula $\varphi(x, A, p_1, \dots, p_n)$, for any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $(x, A, p_1, \dots, p_n)$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$. In other words, every property definable by a formula carves out a subset of any given set:
 
@@ -334,13 +330,19 @@ Since this separation treats $A$ and $B$ symetrically, we have
 
 $$A \cap B = B \cap A.$$
   
-### 8. Axiom Schema of Replacement
+### 7. Axiom Schema of Replacement
 
 For every formula $\varphi(x, y, A, p_1, \dots, p_n)$ in which $B$ is not free, if $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all those $y$ values forms a set $B$:
 
 $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forall x \in A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \exists x \in A\, \varphi)].$$
 
 Informally, $\varphi$ acts like a function defined on $A$ (though $\varphi$ is a formula, not a set, so it is not yet a function in the formal sense). Replacement says that the image of a set under such a “function” is again a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
+  
+### 8. Axiom of Infinity
+
+At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$:
+
+$$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
   
 ### 9. Axiom of Regularity
 
@@ -362,6 +364,51 @@ $$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A
 The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
 
 Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.
+  
+## Numbers
+
+When most people think of math, they think of numbers. We finally have the tools required to build numbers.
+  
+### Natural Numbers
+
+Natural numbers are the basic numbers used for counting and ordering things in everyday life[^zero]. To build them, we first, we define $0 = \emptyset$, then define each number as the set of all smaller numbers:
+
+$$\begin{align*}
+0 &= \emptyset, \\
+1 &= \{0\} = \{\emptyset\} \\
+2 &= \{0,1\} = \{\emptyset, \{\emptyset\}\} \\
+&\ \ \vdots
+\end{align*}$$
+
+since each of these is the successor of the previous, the Axiom of Infinity guarantees the existence of a set containing all these numbers. We call these the natural numbers and denote the set $\mathbb N$.
+
+[^zero]: While set theory inludes zero in the natural numbers for ease of definition (as we will do here), it should be noted that number theorists often exclude zero from the natural numbers, and specify "whole numbers" when zero is included.
+  
+### Integers
+
+An integer is a whole number that can be positive, negative, or zero. To build the integers, we must first define ordered pairs and the cartesian product.
+  
+#### Ordered Pairs
+
+An ordered pair $(a, b)$ is defined as:
+
+$$\{\{a\},\{a,b\}\}.$$
+
+By Extensionality, this gives us
+
+$$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
+  
+#### Eqivalence Operator
+
+The equivalence operator (denoted $\sim$) is a relational operator defined as
+
+$$(a, b) \sim (c, d) \leftrightarrow a + d = b + c$$
+  
+#### Cartesian Product
+
+For sets $x$ and $y$, define $x \times y$ as
+
+$$x \times y := \{z \in \mathcal P(\mathcal P(x \cup y)): \exists a \in x \exists b \in y\, [z = (a, b)]\}$$
   
 ## Probabilities
   
@@ -461,13 +508,36 @@ Note that this $P$ depends entirely on our arbitrary choice of enumeration. Reor
   
 ### Random Number
 
-Now, let's model picking a random number from $[0, 1]$.
+Now, let's model picking a random number from $[0, 1]$. This is the example the previous section was pointing toward: we want every number to be "equally likely," and now it will turn out that we can get something close to that, provided we are careful about which sets we call events.
 
-**Defining $\Omega$:**
+**Defining $\Omega$:** We take the sample space to be the closed unit interval of real numbers:
 
-**Defining $F$:**
+$$\Omega = [0, 1] = \{x \in \mathbb R : 0 \le x \le 1\}.$$
 
-**Defining $P$:**
+Unlike $\mathbb Q \cap [0,1]$, this set is *uncountable*, meaning there is no way to list all of its elements in a sequence $x_1, x_2, x_3, \ldots$ (this is Cantor's diagonal argument). This is exactly what lets us escape the problem from the last section: countable additivity only lets us add up countably many probabilities, so it no longer forces the probability of $\Omega$ to be a sum of single-point probabilities.
+
+**Defining $F$:** Our first instinct is to copy the previous examples and take $F = \mathcal P(\Omega)$. This is a valid $\sigma$-algebra, but it turns out to be *too big*: it can be proven (using the Axiom of Choice) that no function $P$ on all of $\mathcal P([0,1])$ can satisfy countable additivity, $P(\Omega) = 1$, and also assign every interval $[a, b]$ the probability $b - a$ (the Vitali set is the classic counterexample). So we must settle for a smaller $\sigma$-algebra.
+
+We want $F$ to contain every interval, since "the number lands between $a$ and $b$" is surely an event we care about. Rather than listing the members of $F$ by hand, we define it as the *smallest* $\sigma$-algebra containing all of those intervals. This is well defined because the intersection of any collection of $\sigma$-algebras on $\Omega$ is again a $\sigma$-algebra, so we can take
+
+$$F = \bigcap \{G : G \text{ is a } \sigma\text{-algebra on } \Omega \text{ and } [a,b] \in G \text{ for all } 0 \le a \le b \le 1\}.$$
+
+This is called the **Borel $\sigma$-algebra** on $[0,1]$ and its members are called **Borel sets**. By closure under complements and countable unions, it automatically contains many more sets than just intervals, such as open intervals, single points, and every countable set (including $\mathbb Q \cap [0,1]$). In practice, every set you are likely to write down is a Borel set, so we lose very little by excluding the others.
+
+**Defining $P$:** We want the probability of landing in an interval to equal its length:
+
+$$P([a, b]) = b - a.$$
+
+A major theorem of measure theory (the existence of the **Lebesgue measure**, usually proven with Carathéodory's extension theorem) guarantees that there is exactly one function $P : F \to [0,1]$ which satisfies this and also countable additivity. We will take this for granted here, since constructing it takes more machinery than we have built so far. This $P$ is called the **uniform distribution** on $[0, 1]$.
+
+Several consequences follow directly from the axioms:
+
+- **Every single point has probability zero.** For any $x \in \Omega$, $P(\{x\}) = P([x, x]) = x - x = 0$. So unlike the discrete examples, we can no longer find the probability of an event by adding up the probabilities of its individual outcomes.
+- **Countable sets have probability zero.** Any countable set $\{x_1, x_2, \ldots\}$ is a countable disjoint union of singletons, so countable additivity gives $P(\{x_1, x_2, \ldots\}) = \sum_i 0 = 0$. In particular, $P(\mathbb Q \cap [0,1]) = 0$, so a uniformly random real number is irrational with probability $1$.
+- **Zero probability does not mean impossible.** The outcome $x = 0.5$ is a member of $\Omega$ and could happen, even though $P(\{0.5\}) = 0$. Similarly, probability $1$ does not mean certain. Events like these are described as holding *almost surely*, and this subtlety is unavoidable once $\Omega$ is uncountable.
+- **Endpoints don't matter.** Since single points have probability zero, $P([a,b]) = P((a,b)) = P([a,b)) = P((a,b]) = b - a$.
+
+Going forward, this is the model we will use whenever we talk about a quantity (like the noise in a measurement) taking a value from a continuous range. In that setting, we will rarely ask for the probability of a single value, and will instead ask for the probability of landing in some interval.
   
 ### Conditional Probability
 
