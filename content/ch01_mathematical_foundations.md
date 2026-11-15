@@ -420,20 +420,6 @@ P(A|B) &= \frac{P(A \cap B)}{P(B)} \\
   
 Discrete probablity distributions are the typical type of probablity we encounter in a "50/50" coin toss or "hitting the red" in roulette. There are a finite nubmer of possible outcomes, exactly one of which will actually be true. Since we don't know which one, we assign some probabilty to each, and since *something* must be true, the sum of all probabilities is 1.
   
-## Intersections
-  
-The conditional probability $A$ given $B$ is defined
-$$P(A|B) := \frac{P(A\cap B)}{P(B)}$$
-  
-From this definition, Bayes theorem becomes
-
-$$\begin{align*}
-P(A|B) &= \frac{P(A)P(B|A)}{P(B)} \\
-&= \frac{P(A)\frac{P(B\cap A)}{P(A)}}{P(B)} \\
-&= \frac{P(B\cap A)}{P(B)} \\
-&= \frac{P(A\cap B)}{P(B)} \\
-\end{align*}$$
-  
 ## Modeling Noise
   
 As previously discussed, it is impossible to measure anything with 100% precision. Because measurements are unpredicatble, we say that the measurement {term}`signal` is {term}`stochastic`. Therefore, we model measurements as being sampled from a **probability density function** (PDF).
@@ -485,31 +471,3 @@ where:
 
 # TODO explain convolutions
 ```
-
-| Symbol / Abbreviation | LaTeX Command | English Reading / Meaning |
-| :--- | :--- | :--- |
-| $\wedge$ | `\wedge` or `\land` | **"and"** (Conjunction) |
-| $\vee$ | `\vee` or `\lor` | **"or"** (Disjunction) |
-| $\neg$ | `\neg` or `\lnot` | **"not"** (Negation) |
-| $\rightarrow$ | `\rightarrow` or `\to` | **"implies"** / **"if... then..."** |
-| $\leftrightarrow$ | `\leftrightarrow` or `\iff` | **"if and only if"** (Biconditional) |
-| $\oplus$ | `\oplus` | **"exclusive or"** (XOR) |
-| $\forall$ | `\forall` | **"for all"** / **"for every"** |
-| $\exists$ | `\exists` | **"there exists"** |
-| $\exists!$ | `\exists!` | **"there exists a unique"** |
-| $\therefore$ | `\therefore` | **"therefore"** |
-| $\because$ | `\because` | **"because"** |
-| $\in$ | `\in` | **"is an element of"** / **"is in"** |
-| $\notin$ | `\notin` | **"is not an element of"** |
-| $\subseteq$ | `\subseteq` | **"is a subset of"** (Inclusive) |
-| $\subset$ | `\subset` or `\subsetneq` | **"is a proper subset of"** (Strict) |
-| $\cap$ | `\cap` | **"intersection"** (Elements in both) |
-| $\cup$ | `\cup` | **"union"** (Elements in either or both) |
-| $\setminus$ | `\setminus` | **"set difference"** / **"minus"** |
-| $\times$ | `\times` | **"Cartesian product of"** |
-| $\mathcal{P}$ | `\mathcal{P}` or `\wp` | **"power set of"** |
-| $\emptyset$ | `\emptyset` or `\varnothing` | **"the empty set"** |
-| s.t. / $\mid$ | `:` or `\mid` | **"such that"** |
-| WLOG | *N/A* | **"Without loss of generality"** |
-| Q.E.D. / $\blacksquare$ | `\blacksquare` | **"Which was to be demonstrated"** (End of proof) |
-| iff | *N/A* | **"if and only if"** |

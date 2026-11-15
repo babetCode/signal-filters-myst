@@ -720,38 +720,6 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Intersections
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    The conditional probability $A$ given $B$ is defined
-    $$P(A|B) := \frac{P(A\cap B)}{P(B)}$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    From this definition, Bayes theorem becomes
-
-    $$\begin{align*}
-    P(A|B) &= \frac{P(A)P(B|A)}{P(B)} \\
-    &= \frac{P(A)\frac{P(B\cap A)}{P(A)}}{P(B)} \\
-    &= \frac{P(B\cap A)}{P(B)} \\
-    &= \frac{P(A\cap B)}{P(B)} \\
-    \end{align*}$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     ## Modeling Noise
     """)
     return
@@ -866,40 +834,6 @@ def _():
     # TODO figure out if there's a difference between the mean vs the expected value of a PDF, does the term "expected value" even apply to a PDF or only to a sample taken from it?
 
     # TODO explain convolutions
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    | Symbol / Abbreviation | LaTeX Command | English Reading / Meaning |
-    | :--- | :--- | :--- |
-    | $\wedge$ | `\wedge` or `\land` | **"and"** (Conjunction) |
-    | $\vee$ | `\vee` or `\lor` | **"or"** (Disjunction) |
-    | $\neg$ | `\neg` or `\lnot` | **"not"** (Negation) |
-    | $\rightarrow$ | `\rightarrow` or `\to` | **"implies"** / **"if... then..."** |
-    | $\leftrightarrow$ | `\leftrightarrow` or `\iff` | **"if and only if"** (Biconditional) |
-    | $\oplus$ | `\oplus` | **"exclusive or"** (XOR) |
-    | $\forall$ | `\forall` | **"for all"** / **"for every"** |
-    | $\exists$ | `\exists` | **"there exists"** |
-    | $\exists!$ | `\exists!` | **"there exists a unique"** |
-    | $\therefore$ | `\therefore` | **"therefore"** |
-    | $\because$ | `\because` | **"because"** |
-    | $\in$ | `\in` | **"is an element of"** / **"is in"** |
-    | $\notin$ | `\notin` | **"is not an element of"** |
-    | $\subseteq$ | `\subseteq` | **"is a subset of"** (Inclusive) |
-    | $\subset$ | `\subset` or `\subsetneq` | **"is a proper subset of"** (Strict) |
-    | $\cap$ | `\cap` | **"intersection"** (Elements in both) |
-    | $\cup$ | `\cup` | **"union"** (Elements in either or both) |
-    | $\setminus$ | `\setminus` | **"set difference"** / **"minus"** |
-    | $\times$ | `\times` | **"Cartesian product of"** |
-    | $\mathcal{P}$ | `\mathcal{P}` or `\wp` | **"power set of"** |
-    | $\emptyset$ | `\emptyset` or `\varnothing` | **"the empty set"** |
-    | s.t. / $\mid$ | `:` or `\mid` | **"such that"** |
-    | WLOG | *N/A* | **"Without loss of generality"** |
-    | Q.E.D. / $\blacksquare$ | `\blacksquare` | **"Which was to be demonstrated"** (End of proof) |
-    | iff | *N/A* | **"if and only if"** |
-    """)
     return
 
 
