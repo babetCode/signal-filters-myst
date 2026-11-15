@@ -294,9 +294,9 @@ def _(mo):
 
     3. **Conjunction:** If $\varphi$ and $\psi$ are formulas, so is $(\varphi \land \psi)$.
 
-    5. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula.
+    4. **Quantifiers:** If $\varphi$ is a formula and $x$ is a variable, then $\exists x\,\varphi$ is a formula.
 
-    7. **Closure:** Nothing else is a formula.
+    5. **Closure:** Nothing else is a formula.
 
     Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
     """)
@@ -375,7 +375,7 @@ def _(mo):
     | $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
     | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[y/x] \leftrightarrow y = x))$ |
     | $\exists x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\exists x\, (x \in S \land \varphi)$ |
-    | $\forall x \in S\, \varphi$ | "There exists $x$ in $S$ such that $\varphi$" | $\forall x\, (x \in S \rightarrow \varphi)$ |
+    | $\forall x \in S\, \varphi$ | "For all $x$ in $S$, $\varphi$" | $\forall x\, (x \in S \rightarrow \varphi)$ |
 
     We take is as intuitive that anything written with these abbreviations could have been written without them.
     """)
@@ -447,7 +447,7 @@ def _(mo):
 
     By letting $S_1 = S_2$, the Axiom of Pairing tells us that
 
-    $$\forall S_1\, \exists S_3\, \forall x\, (x \in S_3 \leftrightarrow x = S_3).$$
+    $$\forall S_1\, \exists S_3\, \forall x\, (x \in S_3 \leftrightarrow x = S_1).$$
 
     This set $S_3$ is called a singleton set because it contains exactly one element, and is denoted $\{S_1\}$.
     """)
@@ -463,7 +463,7 @@ def _(mo):
 
     $$\forall S_1\,\exists S_2\,\forall x\, (x\in S_2 \leftrightarrow x \subseteq S_1)$$
 
-    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
+    This set $S_@$ is known as the power set of $S_1$ and is denoted $\mathcal{P}(S_1)$.
     """)
     return
 
@@ -490,6 +490,10 @@ def _(mo):
     The union operator is denoted $\cup$. When placed between two sets $S_1$ and $S_2$, it is a shorthand to reference the union of the pairing set containing $S_1$ and $S_2$:
 
     $$S_1 \cup S_2.$$
+
+    Since the paring set is unordered, this operation is commutative and we have
+
+    $$S_1 \cup S_2 = S_2 \cup S_1.$$
     """)
     return
 
@@ -542,6 +546,10 @@ def _(mo):
     The intersection operator is denoted $\cap$. When placed between two sets, it references the set which contains all elements contained in both sets:
 
     $$A \cap B = \{x \in A: x \in B\}.$$
+
+    Since this separation treats $A$ and $B$ symetrically, we have
+
+    $$A \cap B = B \cap A.$$
     """)
     return
 
@@ -549,11 +557,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### 8. Axiom of Replacement
+    ### 8. Axiom Schema of Replacement
 
-    For any set $A$ and formula $\varphi$ in which $B$ is not free, there exists a set $B$ such that ... :
+    For every formula $\varphi(x, y, A, p_1, \dots, p_n)$ in which $B$ is not free, if $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all those $y$ values forms a set $B$:
 
-    $$\forall p_1 \cdots \forall p_n\, \forall A[\forall x \in A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \exists x \in A\, \varphi)].$$
+    $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forall x \in A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \exists x \in A\, \varphi)].$$
+
+    Informally, $\varphi$ acts like a function defined on $A$ (though $\varphi$ is a formula, not a set, so it is not yet a function in the formal sense). Replacement says that the image of a set under such a “function” is again a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
     """)
     return
 
@@ -562,6 +572,15 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ### 9. Axiom of Regularity
+
+    Every nonempty set $A$ has a member $x$ that shares no members with $A$:
+
+    $$\forall A\,[\exists x\,(x \in A) \rightarrow \exists x \in A\,\neg\exists z\,(z \in x \land z \in A)].$$
+
+    Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. Two consequences:
+
+    No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
+    There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
     """)
     return
 
@@ -570,6 +589,14 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ### 10. Axiom of Choice
+
+    For any set $X$ whose members are nonempty, pairwise disjoint sets, there exists a set $C$ that contains exactly one element from each member of $X$:
+
+    $$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A \in X\,\forall B \in X\,(\neg(A = B) \rightarrow \neg\exists z\,(z \in A \land z \in B))\big) \rightarrow \exists C\,\forall A \in X\,\exists! z\,(z \in A \land z \in C)\big].$$
+
+    The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
+
+    Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.
     """)
     return
 
@@ -654,6 +681,22 @@ def _(mo):
     If $A$ and $B$ are events in a probability space, then the conditional probability $P(A|B)$ (read as "probability of A given B") is defined as
 
     $$P(A|B) := \frac{P(A \cap B)}{P(B)}$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Bayes Theorem
+
+    Since $A \cap B = B\cap A$, we have
+
+    $$\begin{align*}
+    P(A|B) &= \frac{P(A \cap B)}{P(B)} \\
+    &= \frac{P(A)\left(\frac{P(B \cap A}{P(A)}\right)}{P(B)} \\
+    &= \frac{P(A)P(B|A)}{P(B)}
+    \end{align*}$$
     """)
     return
 
