@@ -463,7 +463,7 @@ def _(mo):
 
     $$\forall S_1\,\exists S_2\,\forall x\, (x\in S_2 \leftrightarrow x \subseteq S_1)$$
 
-    This set $S_@$ is known as the power set of $S_1$ and is denoted $\mathcal{P}(S_1)$.
+    This set $S_2$ is known as the power set of $S_1$ and is denoted $\mathcal{P}(S_1)$.
     """)
     return
 
@@ -620,7 +620,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    #### Sigma Algebra
+    ### Sigma Algebra
 
     A $\sigma$-algebra $F$ of a set $\Omega$ (called the ambient set) is a subset of $\mathcal P (\Omega)$ which satisfy three criteria:
 
@@ -668,7 +668,88 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Whenever we talk about the probablility of something happening, we are refering to some $P(A)$, where $P$ is a probability function in some probability space $(\Omega, F, P)$, and $A$ is some event in $F$.
+    ### Coin Toss
+
+    Whenever we talk about the probablility of something happening, we are refering to the value of some $P(A)$, where $P$ is a probability function in some probability space $(\Omega, F, P)$, and $A$ is some event in $F$. For example, let's define a probability space for a coin flip that might produce heads or tails:
+
+    **Defining $\Omega$:** Since we only have two possible samples (heads or tails), $\Omega$ will only have two elements in this case:
+
+    $$\Omega = \{H, T\}.$$
+
+    Note: this is a shorthand for $\exists \Omega\, (x \in \Omega \leftrightarrow x = H \lor x = T)$. More generally, we will sometimes use "$S = \{x_1, \ldots, x_n\}$" as a shorthand for $\exists S\, (y \in S \leftrightarrow y = x_1 \lor \cdots \lor y = x_n)$, or simply "$\{x_1, \ldots, x_n\}$" to refer to that set $S$.
+
+    **Defining $F$:** Since $\mathcal P(\Omega) = \{\{H, T\}, \{H\}, \{T\}, \emptyset\}$, we only have a couple options here which are closed under complementation and countable unions:
+
+    1. $F = \{\{H, T\}, \emptyset\}$. This is the simplest, but the only events are "something happening" (equal to $\Omega$, with $P(\Omega) = 1$), and "nothing happening" (where $P(\emptyset)$ is always zero to satisfy additivity). The rules allow it, but it's not very interesting.
+    2. $F = \mathcal P(\Omega)$. This also works as a $\sigma$-algebra and is much more interesting because it includes $\{H\}$ and $\{T\}$ as events. Let's use this one.
+
+    **Defining $P$:** We must have $P(\Omega) = 1$ and $P(\emptyset) = 0$, but we are free to pick any $P(\{H\})$ and $P(\{T\})$ that satisfy
+
+    $$P(\{H\}) + P(\{T\}) = P(\{H\} \cup \{T\}) = P(\{H, T\}) = P(\Omega) = 1.$$
+
+    The natural choice is $P(\{H\}) = P(\{T\}) = 0.5$, but we're free to model an unfair coin if we wish.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Random Rational
+
+    Now, let's model picking a random number from $\mathbb Q \cap [0, 1]$. This example is more subtle than the coin toss, because the sample space is infinite and the natural-sounding choice ("every rational is equally likely") turns out to be impossible.
+
+    **Defining $\Omega$:** We take the sample space to be the set of rationals in the unit interval:
+
+    $$\Omega = \mathbb Q \cap [0, 1] = \{x \in \mathbb Q : 0 \le x \le 1\}.$$
+
+    This set is infinite, but it is *countable*, meaning we can list all of its elements in a sequence $q_1, q_2, q_3, \ldots$ in which every element appears exactly once. For example, we can list them by increasing denominator:
+
+    $$0,\; 1,\; \tfrac12,\; \tfrac13,\; \tfrac23,\; \tfrac14,\; \tfrac34,\; \tfrac15,\; \tfrac25,\; \tfrac35,\; \tfrac45,\; \ldots$$
+
+    (skipping any fraction that is not in lowest terms, so that no number is listed twice). Fix this enumeration for the rest of the section.
+
+    **Defining $F$:** Just as in the coin toss, we can take $F = \mathcal P(\Omega)$. The power set always satisfies the three $\sigma$-algebra criteria: it contains $\Omega$, since $\Omega \subseteq \Omega$; it is closed under complementation, since $S^c \subseteq \Omega$ whenever $S \subseteq \Omega$; and it is closed under countable unions, since a union of subsets of $\Omega$ is again a subset of $\Omega$. In particular, every singleton $\{q\}$ is an event.
+
+    **Defining $P$:** The natural guess is to make every rational equally likely, say $P(\{q\}) = c$ for every $q \in \Omega$. But the singletons $\{q_1\}, \{q_2\}, \ldots$ are pairwise disjoint and their union is $\Omega$, so countable additivity would require
+
+    $$1 = P(\Omega) = \sum_{n=1}^\infty P(\{q_n\}) = \sum_{n=1}^\infty c.$$
+
+    If $c = 0$ the sum is $0$, and if $c > 0$ the sum diverges to $\infty$. Neither equals $1$, so **no uniform probability function exists on a countably infinite set.**
+
+    We can still build a valid $P$ by giving up on "equally likely". Using our enumeration, assign
+
+    $$P(\{q_n\}) = 2^{-n},$$
+
+    and for a general event $A \in F$, add up the probabilities of the points it contains:
+
+    $$P(A) = \sum_{n \,:\, q_n \in A} 2^{-n}.$$
+
+    This satisfies the requirements:
+
+    - $P(\Omega) = \sum_{n=1}^\infty 2^{-n} = 1$.
+    - $P(A) \in [0, 1]$ for every event, since $P(A) \le P(\Omega) = 1$ (all terms are nonnegative).
+    - If $A_1, A_2, \ldots$ are pairwise disjoint, each index $n$ belongs to at most one $A_i$, so the sum over $\bigcup A_i$ splits into the sums over each $A_i$ (this rearrangement is allowed because all terms are nonnegative). Hence $P(\bigcup A_i) = \sum P(A_i)$.
+
+    Note that this $P$ depends entirely on our arbitrary choice of enumeration. Reordering the list would give the same rational a different probability. There is no canonical way to pick a "random rational", and this is the price of working in a countable set.
+
+    *Note:* If we want a truly uniform random number, we have to move to $\Omega = [0,1]$ (the real numbers) and use the Lebesgue measure, where $P([a,b]) = b - a$. There, $F$ cannot be the full power set, and must be a smaller $\sigma$-algebra (the Borel sets). In that model, every single point has probability $0$, and since $\mathbb Q \cap [0,1]$ is countable, countable additivity gives $P(\mathbb Q \cap [0,1]) = 0$. In other words, a uniformly random real number in $[0,1]$ is irrational with probability $1$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Random Number
+
+    Now, let's model picking a random number from $[0, 1]$.
+
+    **Defining $\Omega$:**
+
+    **Defining $F$:**
+
+    **Defining $P$:**
     """)
     return
 
