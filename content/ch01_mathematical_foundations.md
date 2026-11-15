@@ -12,7 +12,6 @@ numbering:
 ---
 
 ```{marimo-config}
-:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -201,13 +200,13 @@ to reference the result of replacing every *free* occurence of $x$ in $\varphi$ 
   
 #### Free Variable Notation
 
-Any variables in a formula which are directly to right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variable*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, the other variables in a formula which we can freely assign values to (such as $x$ in the formula $x = y$) are called *free variables*.
+Any variable in a formula which is directly to the right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variables*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, any other variable in a formula which we can freely assign a value to (such as $x$ in the formula $x = y$) is called a *free variable*.
 
 When we want to specify the free variables of some unspecified formula $\varphi$, we write
 
 $$\varphi(p_1,\ldots,p_n)$$
 
-to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
+to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then it does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
   
 #### Sentences
 
