@@ -322,7 +322,7 @@ def _(mo):
     mo.md(r"""
     #### Free Variable Notation
 
-    Any variables in a formula which are directly to right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variable*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, the other variables in a formula which we can freely assign values to (such as $x$ in the formula $x = y$) are called *free variables*.
+    Any variable in a formula which is directly to the right of a quantifier (such as $x$ in the formula $\exists x\, \varphi$) is called a *bound variables*. This is because it acts as a place holder value for the collection of objects being quantified, rather than a value which we can freely assign. By contrast, any other variable in a formula which we can freely assign a value to (such as $x$ in the formula $x = y$) is called a *free variable*.
 
     When we want to specify the free variables of some unspecified formula $\varphi$, we write
 
