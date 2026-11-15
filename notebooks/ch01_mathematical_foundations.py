@@ -328,7 +328,7 @@ def _(mo):
 
     $$\varphi(p_1,\ldots,p_n)$$
 
-    to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then is does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
+    to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We might not know how many $p_i$ there are, or even if the $p_i$ necessarily occur as free variables in $\varphi$, but this notation ensures that if a variable is not one of $p_1,\ldots,p_n$, then it does not occur as a free variable in $\varphi(p_1,\ldots,p_n)$.
     """)
     return
 
@@ -338,7 +338,7 @@ def _(mo):
     mo.md(r"""
     #### Sentences
 
-    A sentence is a formula with no free variables; every variable occuring in it is bound by a quantifier. While a formula with free variables doens't have a truth value until you assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points, which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
+    A sentence is a formula with no free variables; every variable occurring in it is bound by a quantifier. While a formula with free variables doesn't have a truth value until we assign values to the variables, sentences are simply true or false in a given structure. In order to build a mathematical system, we must choose some sentences as starting points, which we define as true in our mathematical structure. We call these starting point sentences **axioms**.
     """)
     return
 
@@ -367,7 +367,7 @@ def _(mo):
     mo.md(r"""
     ### More Useful Abbreviations
 
-    Beforer we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
+    Before we put this all together to build the foundational axioms of mathematics, here are a few abbreviations that will make our writing easier:
 
     | Abbreviation | Read as | Abbreviation for |
     | :---: | :---: | :---: |
@@ -393,7 +393,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+    Set theory is a foundation for nearly all of mathematics[^other-math-foundations], including number theory, functions, topology, algebra, and probability. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
 
     [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
     """)
