@@ -171,7 +171,7 @@ When you step on a bathroom scale, a sensor—called a strain gauge load cell[^l
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-### Signal
+### Definition - Signal
 :::
 
 ::::{admonition icon=false} 📖 **Definition**
@@ -186,7 +186,7 @@ Because nobody stands perfectly still, your constant weight shifts on the scale 
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-### Noise
+### Definition - Noise
 :::
 
 ::::{admonition icon=false} 📖 **Definition**
@@ -201,7 +201,7 @@ Since the stream of measurements from the ADC will constantly fluctuate, we can 
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-### Filter
+### Definition - Filter
 :::
 
 ::::{admonition icon=false} 📖 **Definition**
@@ -563,7 +563,7 @@ Here, the $(\hat x_{k-1} + \Delta x_k)$ term is called the **prior** (often deno
 :::{div}
 :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-### Prior
+### Definition - Prior
 :::
 
 ::::{admonition icon=false} 📖 **Definition**

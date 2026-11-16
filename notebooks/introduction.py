@@ -213,7 +213,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Signal
+    ### Definition - Signal
     :::
 
     /// note | 📖 **Definition**
@@ -240,7 +240,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Noise
+    ### Definition - Noise
     :::
 
     /// note | 📖 **Definition**
@@ -267,7 +267,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Filter
+    ### Definition - Filter
     :::
 
     /// note | 📖 **Definition**
@@ -822,7 +822,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Prior
+    ### Definition - Prior
     :::
 
     /// note | 📖 **Definition**

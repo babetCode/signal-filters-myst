@@ -11,33 +11,14 @@ project:
       path: ../.venv/bin/jupyter-book-marimo # Unix
   toc:
     - file: index.md
-    # - file: toc.md
     - file: introduction.md
       title: Introduction
-    # - file: ch02_alpha_beta_filter.md
-    #   title: 2. Alpha-Beta Filter
-    - file: ch01_mathematical_foundations.md
-      title: Mathematical Foundations
-    # - file: ch04_bayesian_probability.md
-    #   title: 4. Bayesian Probability
-    # - file: ch05_bayesian_filter.md
-    #   title: 5. Bayesian Filter
+    - file: part1_mathematical_foundations.md
+      children:
+      - file: part1_ch1_language_of_logic.md
+      - file: part1_ch2_zfc_axioms.md
+      - file: part1_ch3_numbers_probabilities.md
     - file: glossary-terms.md
-    # - title: Extras
-    #   children:
-    #   - file: extra_set_theory.md
-    # - file: philosophy.md
-    #   hidden: true
-    # - file: glossary-philosophy.md
-    #   hidden: true
-  # exports:
-  #   - format: typst
-  #     output: documents/project-download.pdf
-  #     articles:
-  #       - index.md
-  #       - ch01_introduction.md
-  #       - ch02_alpha_beta_filter.md
-  #       - ch03_bayesian_probability.md
 site:
   template: book-theme
   options:
