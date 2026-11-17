@@ -55,12 +55,14 @@ def display_format(dedent, mo, plt, schemdraw):
     # jb: include=false
     plt.style.use('default')
     schemdraw.use("svg")
-    mo.latex(r"""
-    \newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
-    \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
-    \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
-    \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
-    """)
+    mo.latex(dedent(
+        r"""
+        \newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
+        \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
+        \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
+        \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
+        """
+    ))
     def graphic(x):
         return mo.Html(
             dedent(f'''\
@@ -81,10 +83,10 @@ def display_format(dedent, mo, plt, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Developing precise language is vital for communicating a precise understanding of any topic. As we introduce new language over the coming chapters, it is important to keep in mind that we will be switching back and fourth between three different layers of language:
-    - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain english, and not rigourously defined. While we try our best to be articulate and specific, metalanguage is not formal.
-    - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpereted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
-    - **Semantics:** This the list of rules and convetions which dictate how the symbols (or strings of symbols) in our syntax are interpereted. For example the convention is this book is to interperet "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
+    Developing precise language is vital for communicating a precise understanding of any topic. As we introduce new language over the coming chapters, it is important to keep in mind that we will be switching back and forth between three different layers of language:
+    - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain english, and not rigorously defined. While we try our best to be articulate and specific, metalanguage is not formal.
+    - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpreted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
+    - **Semantics:** This the list of rules and conventions which dictate how the symbols (or strings of symbols) in our syntax are interpreted. For example the convention is this book is to interpret "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
     """)
     return
 
@@ -165,7 +167,7 @@ def _(mo):
     \mathbf{F} & \text{T} & \text{F} \\
     \end{array}$$
 
-    [^de-morgan]: Similarly, had we taken $\lor$ as primitive, then $\land$ could be defined as an abbreviation, where $A \land B$ would be shorthand for $\neg(\neg A \lor \neg B)$. This ability to express conjunctions and disjunctions in terms of each other using negation is known as a **dual** in [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
+    [^de-morgan]: Similarly, had we taken $\lor$ as primitive, then $\land$ could be defined as an abbreviation, where $A \land B$ would be shorthand for $\neg(\neg A \lor \neg B)$. This ability to express conjunctions and disjunctions in terms of each other using negation is known as a "dual" in [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
     """)
     return
 
@@ -235,7 +237,7 @@ def _(mo):
 
     $$\exists x\, A$$
 
-    it creates a new statement interpereted as "There exists at least one value of $x$ for which $A$ is true".
+    it creates a new statement interpreted as "There exists at least one value of $x$ for which $A$ is true".
     """)
     return
 
@@ -342,7 +344,7 @@ def _(mo):
 
     $$\varphi[x/y]$$
 
-    to reference the result of replacing every *free* occurence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
+    to reference the result of replacing every *free* occurrence of $x$ in $\varphi$ by $y$. We only use this when $y$ is a variable that does not occur in $\varphi$, so there are no capture issues.
     """)
     return
 
@@ -360,21 +362,25 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## More Abbreviations
+    ## More Definitions
 
-    Before we put this all together to build the foundational axioms of mathematics in the next section, here are a few abbreviations that will make our writing easier:
+    When we want to introduce a new notation for an object we've already described, we write
 
-    | Abbreviation | Read as | Abbreviation for |
-    | :---: | :---: | :---: |
-    | $x \notin y$ | "$x$ is **not in** $y$" | $\neg(x \in y)$ |
-    | $x \subseteq y$ | "$x$ is a **subset** of $y$" | $\forall z(z \in x \rightarrow z \in y)$ |
-    | $\exists! x\, \varphi$ | "There **exists unique** $x$ such that $\varphi$" | $\exists x\, (\varphi \land \forall y\, (\varphi[x/y] \leftrightarrow y = x))$ |
-    | $\existsin{x}{y} \varphi$ | "There **exists** $x$ **in** $y$ such that $\varphi$" | $\exists x\, (x \in y \land \varphi)$ |
-    | $\forallin{x}{y} \varphi$ | "**For all** $x$ **in** $y$, $\varphi$" | $\forall x\, (x \in y \rightarrow \varphi)$ |
-    | $\existssubseteq{x}{y} \varphi$ | "There **exists** $x$ which is a **subset** of $y$ such that $\varphi$" | $\exists x\, (x \subseteq y \land \varphi)$ |
-    | $\forallsubseteq{x}{y} \varphi$ | "**For all** $x$ which are **subsets** of $y$, $\varphi$" | $\forall x\, (x \subseteq y \rightarrow \varphi)$ |
+    $$\text{new notation} := \text{description}$$
 
-    We take is as intuitive that anything written with these abbreviations could have been written without them.
+    to mean "the left side is defined to stand for the right side." Unlike "$=$", the symbol "$:=$" is not part of our formal language. It belongs to the metalanguage and simply tells the reader that we are introducing shorthand. Any formula written using such shorthand can be rewritten by substituting in the definition.
+
+    Before we move on to building the foundational axioms of mathematics, let's define a few more notations that will make our writing easier:
+
+    | Definition | Read as |
+    | :--- | :--- |
+    | $x \notin y := \neg(x \in y)$ | "$x$ is **not in** $y$" |
+    | $x \subseteq y := \forall z(z \in x \rightarrow z \in y)$ | "$x$ is a **subset** of $y$" |
+    | $\exists! x\, \varphi := \exists x\, (\varphi \land \forall y\, (\varphi[x/y] \leftrightarrow y = x))$ | "There **exists unique** $x$ such that $\varphi$" |
+    | $\existsin{x}{y} \varphi := \exists x\, (x \in y \land \varphi)$ | "There **exists** $x$ **in** $y$ such that $\varphi$" |
+    | $\forallin{x}{y} \varphi := \forall x\, (x \in y \rightarrow \varphi)$ | "**For all** $x$ **in** $y$, $\varphi$" |
+    | $\existssubseteq{x}{y} \varphi := \exists x\, (x \subseteq y \land \varphi)$ | "There **exists** $x$ which is a **subset** of $y$ such that $\varphi$" |
+    | $\forallsubseteq{x}{y} \varphi := \forall x\, (x \subseteq y \rightarrow \varphi)$ | "**For all** $x$ which are **subsets** of $y$, $\varphi$" |
     """)
     return
 

@@ -114,7 +114,7 @@ def _(mo):
 
     Two sets are equal iff they contain the exact same members:
 
-    $$\forall x\forall y\,[\forall z\,(z\in x\leftrightarrow z\in y)\rightarrow x=y]$$
+    $$\forall x\forall y\,[\forall z\,(z\in x\leftrightarrow z\in y)\rightarrow x=y].$$
     """)
     return
 
@@ -126,7 +126,7 @@ def _(mo):
 
     There exists a set $x$ such that for all $y$, $y$ is not an element of $x$:
 
-    $$\exists x \forall y (y \notin x)$$
+    $$\exists x \forall y (y \notin x).$$
 
     By Extensionality, this set is unique. It is called the "null set" or "empty set" and is denoted "$\emptyset$".
     """)
@@ -164,13 +164,48 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Ordered Pairs
+
+    Given two sets $a$ and $b$, say that their "ordered pair" is the set:
+
+    $$\{\{a\},\{a,b\}\}$$
+
+    and we refer to it using the notation $(a, b)$, and we say that $a$ and $b$ are the "coordinates"..
+
+    By extensionality, two ordered pairs are equal iff their corresponding coordinates are equal:
+
+    $$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Functions
+
+    A set $f$ is a function iff:
+
+    - Every element of $f$ is an ordered pair:
+      $$\forallin{x}{f}\, \exists a\, \exists b\, [x = (a, b)]$$
+    - Each first coordinate has at most one partner:
+      $$\forall a\, \forall b\, \forall c\; [((a, b) \in f \land (a, c) \in f) \rightarrow b = c]$$
+
+    If $f$ is a function and $(a, b) \in f$, we write $f(a) = b$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Axiom of Power Set
 
-    For any set $x$, there exists a unique set $y$ containing precisely all the subsets of $x$:
+    For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
 
-    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x)$$
+    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
 
-    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$.
+    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
     """)
     return
 
@@ -182,7 +217,7 @@ def _(mo):
 
     For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
 
-    $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \exists z\in X (y\in z)]$$
+    $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \existsin z X (y\in z)].$$
 
     By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
     """)
@@ -194,11 +229,11 @@ def _(mo):
     mo.md(r"""
     ### Union Operator
 
-    The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by the axiom of pairng):
+    The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by the axiom of pairing):
 
     $$x \cup y := \bigcup \{x, y\}.$$
 
-    Since the paring set is unordered, this operation is commutative and we have
+    Since the pairing set is unordered, this operation is commutative and we have
 
     $$x \cup y = y \cup x.$$
     """)
@@ -212,11 +247,11 @@ def _(mo):
 
     For every formula $\varphi(x, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
 
-    For any sets $A, p_1, \dots, p_n$, there exists a set $B$—distinct from $(x, A, p_1, \dots, p_n)$, so $B$ is not free in $\varphi$—whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$.:
+    For any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $x, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$:
 
     $$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B \leftrightarrow (x \in A \land \varphi)].$$
 
-    In other words, every property definable by a formula carves out a subset of any given set. This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$, so we make an axiom for every such $\varphi$.
+    In other words, every property definable by a formula carves out a subset of any given set. This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$, so we make an axiom for every $\varphi$.
     """)
     return
 
@@ -224,9 +259,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Set-Builder Notation
+    ### Separation Set-Builder Notation
 
-    When referencing sets, we often use curly braces as shorthand for any set $B$ whose existence is guaranteed by the axiom schema of separation:
+    We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of separation:
 
     $$\{x \in A: \varphi\}.$$
 
@@ -240,13 +275,22 @@ def _(mo):
     mo.md(r"""
     ### Intersection Operator
 
-    The intersection operator is denoted $\cap$. When placed between two sets, it references the set which contains all elements contained in both sets:
+    The intersection operator is denoted $\cap$. When placed between two sets, such as:
 
-    $$A \cap B = \{x \in A: x \in B\}.$$
+    $$A \cap B,$$
 
-    Since this separation treats $A$ and $B$ symetrically, we have
+    it acts as a shorthand for $\{x \in A: x \in B\}$. Since we are treating $A$ and $B$ symmetrically here, intersection is commutative[^intersection-commutativity]:
 
     $$A \cap B = B \cap A.$$
+
+    [^intersection-commutativity]:
+        $$\begin{align*}
+        C = A \cap B &\leftrightarrow C = \{x \in A: x \in B\} \\
+        &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in A \land x \in B] \\
+        &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in B \land x \in A] \\
+        &\leftrightarrow C = \{x \in B: x \in A\} \\
+        &\leftrightarrow C = B \cap A \\
+        \end{align*}$$
     """)
     return
 
@@ -258,11 +302,103 @@ def _(mo):
 
     For every formula $\varphi(x, y, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
 
-    For any sets $A, p_1, \dots, p_n$, if for every $x \in A$ there is exactly one $y$ satisfying $\varphi$, then there exists a set $B$—distinct from $(x, y, A, p_1, \dots, p_n)$, so $B$ is not free in $\varphi$—whose elements are exactly those $y$ such that $\varphi$ holds for some $x \in A$:
+    For any sets $A, p_1, \dots, p_n$, if for every $x \in A$ there is exactly one $y$ satisfying $\varphi$, then there exists a set $B$ distinct from $x, y, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those $y$ such that $\varphi$ holds for some $x \in A$:
 
     $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forallin x A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \existsin x A\, \varphi)].$$
 
-    In other words, if a formula $\varphi$ is functional on a set $A$ (that is, it assigns to each $x \in A$ exactly one $y$), then the collection of all outputs is also a set (formally, $\varphi$ is not a function yet, since it is not a set of ordered pairs). Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
+    In other words, if a formula $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all outputs is also a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Replacement Set-Builder Notation
+
+    Suppose $\varphi$ assigns to each $x \in A$ exactly one $y$. We use the following notation to refer to the set whose existence is guaranteed by the axiom schema of replacement:
+
+    $$\{y : \existsin x A\, \varphi\},$$
+
+    which is read as "the set of all $y$ such that $\varphi$ holds for some $x \in A$." By extensionality, this set is unique. We only use this notation when $\varphi$ is functional on $A$, since otherwise Replacement does not guarantee that such a set exists.
+
+    ### Combining Set-Builder Notations
+
+    Note that while Separation set-builder notation ranges over $A$ and filters elements out, Replacement set-builder notation ranges over $A$ and transforms each element. However, we can combine the two into a single notation. Suppose $\psi$ is a formula and $\varphi$ is functional on $\{x \in A : \psi\}$. We use the notation
+
+    $$\{y : \existsin x A\, (\psi \land \varphi)\},$$
+
+    which is interpreted as
+
+    $$\{y : \existsin x {\{x \in A : \psi\}}\, \varphi\}.$$[^combined-set-builder]
+
+    Note that $\varphi$ need only be functional on the filtered subset $\{x \in A : \psi\}$, not on all of $A$.
+
+    [^combined-set-builder]:
+        $$\begin{align*}
+        B = \{y : \existsin x {\{x \in A : \psi\}}\, \varphi\} &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, (x \in \{x \in A : \psi\} \land \varphi)] \\
+        &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, ((x \in A \land \psi) \land \varphi)] \\
+        &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, (x \in A \land (\psi \land \varphi))] \\
+        &\leftrightarrow B = \{y : \existsin x A\, (\psi \land \varphi)\} \\
+        \end{align*}$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Replacement Set-Builder Notation
+
+    Similarly to our Separation set-builder notation, we often refer to a set whose existence is guaranteed by the Axiom Schema of Replacement as:
+
+    $$\{F(x): x \in A\},$$
+
+    where $F(x)$ is interpereted as "the unique $y$ such that "
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Replacement Set-Builder Notation
+
+    Replacement also gives a set-builder notation. Suppose $\varphi(x, y)$ is functional on $A$, so that for every $x \in A$ there is exactly one $y$ with $\varphi(x, y)$. It is common to write this unique $y$ as a term $F(x)$, where $F(x)$ is shorthand for "the unique $y$ such that $\varphi(x, y)$." The set $B$ guaranteed by Replacement is then referred to with the notation
+
+    $$\{F(x) : x \in A\}.$$
+
+    Unwinding the shorthand, this is the set $B$ satisfying
+
+    $$y \in \{F(x) : x \in A\} \leftrightarrow \exists x \in A\, \varphi(x, y),$$
+
+    or equivalently, $y \in B$ iff $y = F(x)$ for some $x \in A$. By Extensionality, this set is unique.
+
+    Note the difference in form between the two notations. In $\{x \in A : \varphi\}$ the variable ranges over $A$ and the formula *filters* the elements, so the result is a subset of $A$. In $\{F(x) : x \in A\}$ the variable ranges over $A$ and the formula *transforms* each element, so the result generally contains new objects that need not be elements of $A$ at all.
+
+    #### Examples
+
+    Given a set $A$, the set of singletons of its elements is
+
+    $$\{\{x\} : x \in A\},$$
+
+    and if $A$ is a set of sets, the set of all unions of pairs with a fixed set $S$ is
+
+    $$\{x \cup S : x \in A\}.$$
+
+    #### Combining Both Set-Builder Notations
+
+    The two notations are often combined to apply a transformation to only some elements of $A$. Writing $\{F(x) : x \in A \land \psi(x)\}$ means
+
+    $$\{F(x) : x \in \{x \in A : \psi(x)\}\},$$
+
+    where Separation first produces the subset $\{x \in A : \psi(x)\}$ and Replacement then maps over it. For example, if $A$ is a set of sets,
+
+    $$\{\bigcup x : x \in A \land x \neq \varnothing\}$$
+
+    collects the unions of the nonempty members of $A$.
+
+    Note: Replacement is strictly stronger than the transformation notation might suggest. Because $F(x)$ can be any definable operation, the image of a set under any definable function is guaranteed to be a set, even when the outputs have much higher rank than the inputs. Separation alone cannot provide this.
     """)
     return
 
@@ -282,7 +418,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Successor Operator
+    ### Successor
 
     $x \cup \{x\}$ is called the successor of $x$, and is often denoted $S(x)$, or $x^+$.
     """)
@@ -298,10 +434,10 @@ def _(mo):
 
     $$\forall A\,[\exists x\,(x \in A) \rightarrow \existsin x A\, \neg\exists z\,(z \in x \land z \in A)].$$
 
-    Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. Two consequences:
+    Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. This has two consequences:
 
-    No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
-    There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
+    1. No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
+    2. There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
     """)
     return
 

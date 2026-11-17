@@ -21,7 +21,7 @@ app = marimo.App(
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
-    subtitle: "The Basis of Everything"
+    subtitle: "To Infinity and Beyond"
     abbreviations:
       iff: if and only if
       diff: null
@@ -84,9 +84,34 @@ def display_format(dedent, mo, plt, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Numbers
+    When most people think of math, they think of numbers. Now we start building them.
+    """)
+    return
 
-    When most people think of math, they think of numbers. We finally have the tools required to build numbers.
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Functions
+
+    A set $f$ is a function iff:
+
+    - Every element of $f$ is an ordered pair:
+      $$\forallin{x}{f}\, \exists a\, \exists b\, [x = (a, b)]$$
+    - For each $a$, there is at most one $b$ such that $(a, b)$ is in $f$:
+      $$\forall a\, [\exists b\, \existsin x f [x=(a, b)] \land \exists c\, \existsin x f [x=(a, c)] \rightarrow b = c]$$
+
+    We use the notation $f(a) = b$ as a shorthand for $(a, b) \in f$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Successor Function
+
+    The
     """)
     return
 
@@ -101,7 +126,8 @@ def _(mo):
     $$\begin{align*}
     0 &= \emptyset, \\
     1 &= \{0\} = \{\emptyset\} \\
-    2 &= \{0,1\} = \{\emptyset, \{\emptyset\}\} \\
+    2 &= \{0, 1\} = \{\emptyset, \{\emptyset\}\} \\
+    3 &= \{0, 1, 2\} = \{\emptyset, \{\emptyset\}\} \\
     &\ \ \vdots
     \end{align*}$$
 
@@ -118,22 +144,6 @@ def _(mo):
     ### Integers
 
     An integer is a whole number that can be positive, negative, or zero. To build the integers, we must first define ordered pairs and the cartesian product.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    #### Ordered Pairs
-
-    An ordered pair $(a, b)$ is defined as:
-
-    $$\{\{a\},\{a,b\}\}.$$
-
-    By Extensionality, this gives us
-
-    $$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
     """)
     return
 

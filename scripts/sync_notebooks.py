@@ -209,7 +209,7 @@ def postprocess_file(export_path: Path):
     updated = rewrite_public_paths(updated)
     updated = remove_empty_comments(updated)
     updated = comment_out_marimo_version(updated)
-    # updated = set_eval_false(updated) #NOTE - used in dev for faster build times. to be commented out in production
+    updated = set_eval_false(updated) #NOTE - used in dev for faster build times. to be commented out in production
 
     content_path = content_path_for(export_path)
     content_path.parent.mkdir(parents=True, exist_ok=True)

@@ -2,7 +2,7 @@
 title: Numbers and Probabilities
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
-subtitle: "The Basis of Everything"
+subtitle: "To Infinity and Beyond"
 abbreviations:
   iff: if and only if
   diff: null
@@ -71,9 +71,22 @@ def graphic(x):
     )
 ```
 
-## Numbers
+When most people think of math, they think of numbers. Now we start building them.
+  
+## Functions
 
-When most people think of math, they think of numbers. We finally have the tools required to build numbers.
+A set $f$ is a function iff:
+
+- Every element of $f$ is an ordered pair:
+  $$\forallin{x}{f}\, \exists a\, \exists b\, [x = (a, b)]$$
+- For each $a$, there is at most one $b$ such that $(a, b)$ is in $f$:
+  $$\forall a\, [\exists b\, \existsin x f [x=(a, b)] \land \exists c\, \existsin x f [x=(a, c)] \rightarrow b = c]$$
+
+We use the notation $f(a) = b$ as a shorthand for $(a, b) \in f$.
+  
+## Successor Function
+
+The
   
 ### Natural Numbers
 
@@ -82,7 +95,8 @@ Natural numbers are the basic numbers used for counting and ordering things in e
 $$\begin{align*}
 0 &= \emptyset, \\
 1 &= \{0\} = \{\emptyset\} \\
-2 &= \{0,1\} = \{\emptyset, \{\emptyset\}\} \\
+2 &= \{0, 1\} = \{\emptyset, \{\emptyset\}\} \\
+3 &= \{0, 1, 2\} = \{\emptyset, \{\emptyset\}\} \\
 &\ \ \vdots
 \end{align*}$$
 
@@ -93,16 +107,6 @@ since each of these is the successor of the previous, the Axiom of Infinity guar
 ### Integers
 
 An integer is a whole number that can be positive, negative, or zero. To build the integers, we must first define ordered pairs and the cartesian product.
-  
-#### Ordered Pairs
-
-An ordered pair $(a, b)$ is defined as:
-
-$$\{\{a\},\{a,b\}\}.$$
-
-By Extensionality, this gives us
-
-$$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
   
 #### Eqivalence Operator
 
