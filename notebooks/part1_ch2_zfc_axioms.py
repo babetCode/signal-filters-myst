@@ -81,28 +81,13 @@ def display_format(dedent, mo, plt, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. There are many equivalent ways to formulate the ZFC axioms. Here, we will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+    The goal of this chapter is to define set theory and the necessary tools for defining probability spaces (which we will then do in the next chapter).
+
+    Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. Here, we will build the axioms of Zermelo-Frankel set theory, along with the axiom of choice.
+
+    There are many equivalent ways to formulate the ZFC axioms. We will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
 
     [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    :::{div}
-    :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
-
-    ## Definition - Axiom
-    :::
-
-    /// note | 📖 **Definition**
-        attrs: {class: no-icon}
-    <u>**Axiom**</u>
-
-    A {term}`sentence` that is a starting point in a mathematical structure, which can be used in a proof without justification.
-    ///
     """)
     return
 
@@ -142,7 +127,7 @@ def _(mo):
 
     $$\forall x \, \forall y \, \exists z \, \forall w \, (w \in z \leftrightarrow w = x \lor w = y).$$
 
-    By extensionality, this set $z$ is unique and may be referred to as $\{x, y\}$.
+    By extensionality, this set $z$ is unique and may be referred to as the pairing set $\{x, y\}$.
     """)
     return
 
@@ -166,11 +151,11 @@ def _(mo):
     mo.md(r"""
     ### Ordered Pairs
 
-    Given two sets $a$ and $b$, say that their "ordered pair" is the set:
+    Given two sets $a$ and $b$, the axiom of pairing guarantees the existence of the singleton $\{a\}$ and the pairing set $\{a, b\}$. Paring again guarantees the existence of $\{\{a\},\{a,b\}\}$. We call this the "ordered pair" of $a$ and $b$ and use the shorthand
 
-    $$\{\{a\},\{a,b\}\}$$
+    $$(a, b) := \{\{a\},\{a,b\}\},$$
 
-    and we refer to it using the notation $(a, b)$, and we say that $a$ and $b$ are the "coordinates"..
+    where $a$ and $b$ are called the "coordinates".
 
     By extensionality, two ordered pairs are equal iff their corresponding coordinates are equal:
 
@@ -187,11 +172,11 @@ def _(mo):
     A set $f$ is a function iff:
 
     - Every element of $f$ is an ordered pair:
-      $$\forallin{x}{f}\, \exists a\, \exists b\, [x = (a, b)]$$
+      $$\forallin x f \, \exists a\, \exists b\, [x = (a, b)]$$
     - Each first coordinate has at most one partner:
-      $$\forall a\, \forall b\, \forall c\; [((a, b) \in f \land (a, c) \in f) \rightarrow b = c]$$
+      $$\forall a\, \forall b\, \forall c\; ([(a, b) \in f \land (a, c) \in f] \rightarrow b = c)$$
 
-    If $f$ is a function and $(a, b) \in f$, we write $f(a) = b$.
+    If $f$ is a function and $(a, b) \in f$, then we write $f(a) = b$.
     """)
     return
 
