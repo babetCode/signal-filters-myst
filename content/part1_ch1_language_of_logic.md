@@ -35,45 +35,23 @@ pyproject: |-
 :include: false
 
 import marimo as mo
-import numpy as np
-import pandas as pd
-import matplotlib
-import schemdraw
-from schemdraw import flow
 from textwrap import dedent
-import matplotlib.pyplot as plt
 ```
 
 ```{marimo} python
 :name: display_format
 :include: false
 
-plt.style.use('default')
-schemdraw.use("svg")
 mo.latex(dedent(
-    r"""
-    \newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
+    r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
     \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
     \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
-    \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
-    """
+    \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}"""
 ))
-def graphic(x):
-    return mo.Html(
-        dedent(f'''\
-        <style>
-            .dark .graphic {{ 
-                filter: invert(1) hue-rotate(180deg); 
-            }}
-        </style>
-        <div class="graphic">
-            {mo.as_html(x)}
-        </div>
-        ''')
-    )
+mo.output.clear()
 ```
 
-The goal of this chapter is to develop the language necessary for defining Set Theory (which we will then define in the next chapter). Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
+The goal of this chapter is to develop the language necessary for defining Set Theory (which we define in the next chapter). Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
 - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain English, and not rigorously defined. While we try our best to be articulate and specific, metalanguage is not formal.
 - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpreted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
 - **Semantics:** This is the list of rules and conventions which dictate how the symbols (or strings of symbols) in our syntax are interpreted. For example the convention in our Introduction was to interpret "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
@@ -106,6 +84,8 @@ A *formula* is a finite string of the symbols above, built according to the foll
 5. **Closure:** Nothing else is a formula.
 
 For example, $\exists x\,(x \in y \land \neg\, x = y)$ is a formula. It is built in stages: first the atomic formulas $x \in y$ and $x = y$, then $\neg\, x = y$, then the conjunction $(x \in y \land \neg\, x = y)$, and finally the quantified formula.
+
+*Note:* Besides formulas, logic also has *terms*: strings of symbols used for naming objects rather than making claims. In general they are built from variables together with any constant and function symbols the language has. Our language has neither constant nor function symbols, so for now the only terms are variables. In the next chapter we add *defined* terms like $\emptyset$ and $\{x, y\}$ as shorthand.
   
 ### Free and Bound Variables
 
@@ -129,7 +109,7 @@ to indicate that the free variables of $\varphi$ are among $p_1,\ldots,p_n$. We 
   
 ### Sentences
 
-A *sentence* is a formula with no free variables. Equivalently, every occurrence of every variable in it is bound by a quantifier. Once we have a semmantic interperetation of sentences, they will become important for defining our mathematical structure.
+A *sentence* is a formula with no free variables. Equivalently, every occurrence of every variable in it is bound by a quantifier. Once we have a semmantic interperetation of sentences, in the next chapter, they become important for defining our mathematical structure.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
@@ -182,7 +162,7 @@ To say what a formula means, we must say what the variables stand for and what t
 
 - A collection of objects, called the *domain of discourse*, which the variables stand for.
 - A specification of which objects in the domain are members of which other objects.
-In other words, a structure is an interpretation of the symbols. Since we're building set theory (so that we can formally define probalities) the only objects we will talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning ordinary set membership.
+In other words, a structure is an interpretation of the symbols. Since we're building set theory (so that we can formally define probalities) the only objects we talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning ordinary set membership.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
@@ -221,11 +201,13 @@ For any fixed {term}`mathematical structure <structure>` a structure, if we supp
 
 Only the sets assigned to the free variables of a formula affect whether it is true. In particular, a {term}`sentence` needs no assignment at all: it is simply true or false in a given structure.
   
-#### Truth Tables
+### Truth Tables
 
 The clauses for $\neg$ and $\land$ depend only on whether the parts are true or false, so they can be displayed as truth tables. Writing $\mathbf{T}$ for "true" and $\mathbf{F}$ for "false":
 
-**Negation:** $\neg\varphi$ has the opposite truth value from $\varphi$.
+#### Negation
+
+$\neg\varphi$ has the opposite truth value from $\varphi$.
 
 $$\begin{array}{r | c}
 \neg & \\
@@ -234,7 +216,9 @@ $$\begin{array}{r | c}
 \mathbf{F} & \text{T} \\
 \end{array}$$
 
-**Conjunction:** $(\varphi \land \psi)$ is true iff $\varphi$ and $\psi$ are both true.
+#### Conjunction
+
+$(\varphi \land \psi)$ is true iff $\varphi$ and $\psi$ are both true.
 
 $$\begin{array}{r | cc}
 \land & \mathbf{T} & \mathbf{F} \\
@@ -243,7 +227,7 @@ $$\begin{array}{r | cc}
 \mathbf{F} & \text{F} & \text{F} \\
 \end{array}$$
   
-### Derived Connectives and $\forall$
+### Derived Symbols
 
 The abbreviations introduced in the Syntax section get their meanings from the clauses above. We work them out one at a time.
   
@@ -260,7 +244,7 @@ $$\begin{array}{r | cc}
 
 [^de-morgan]: Similarly, had we taken $\lor$ as primitive, then $\land$ could be defined as an abbreviation, where $(\varphi \land \psi)$ would be shorthand for $\neg(\neg\varphi \lor \neg\psi)$. This ability to express conjunction and disjunction in terms of each other using negation is captured by [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
   
-### Conditional
+#### Conditional
 
 $(\varphi \rightarrow \psi)$ abbreviates $(\neg\varphi \lor \psi)$. This is false iff $\neg\varphi$ and $\psi$ are both false, which happens iff $\varphi$ is true and $\psi$ is false. The conditional is read "implies", or "if ... then ...".
 
@@ -288,7 +272,7 @@ $\forall x\,\varphi$ abbreviates $\neg\exists x\,\neg\varphi$. This is true iff 
   
 ### Sentences and Axioms
 
-While a formula with free variables doesn't have a truth value until we assign values to its free variables, a sentence is simply true or false in a given structure. We take certain sentences as starting points and agree to treat them as true of the sets we are talking about. We call these starting point sentences **axioms**. Everything else we prove will follow from them.
+While a formula with free variables doesn't have a truth value until we assign values to its free variables, a sentence is simply true or false in a given structure. We take certain sentences as starting points and agree to treat them as true of the sets we are talking about. We call these starting point sentences **axioms**. Everything else we prove follows from them.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
@@ -297,4 +281,4 @@ Axiom
 :::
 ::::
 
-We now have the language required to describe set theory. In the next chapter, we will build the Zermelo-Frankel axioms of set theory and see some of their implications.
+We now have the language required to describe set theory. In the next chapter, we build the Zermelo-Frankel axioms of set theory and see some of their implications.

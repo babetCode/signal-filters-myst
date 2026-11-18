@@ -60,21 +60,6 @@ Definition
 [^self-referential-ideas]: It's always quite beautiful when a self-referential idea can remain nevertheless usesful, rather than collapsing under the weight of its own circular reasoning.
   
 In other words, if you have a set of requirements which are necessary and sufficient[^iff] to meet the category of *any* term, then you have a definition of that term (the set of requirements for the term "definition" has only one element, as do many other definitions) *and* any definition of any term must be a set of requirements which are necessary and sufficient for membership of that term's category.
-
-[^iff]: The phrase "necessary and sufficient" means the same thing as "if and only if":
-
-    | English phrase | Logical meaning |
-    |:------:|:----------------------------:|
-    | $A$ if $B$ | $B \rightarrow A$ |
-    | $A$ only if $B$ | $\neg B \rightarrow \neg A$ |
-    | $A$ necessary for $B$ | $\neg A \rightarrow \neg B$ |
-    | $A$ sufficient for $B$ | $A \rightarrow B$ |
-
-    So by [contrapositive](https://en.wikipedia.org/wiki/Contraposition) equivalence:
-    - "$A$ if $B$" is equivalent to "$A$ necessary for $B$".
-    - "$A$ only if $B$" is equivalent to "$A$ sufficient for $B$".
-
-    Note: It is important to remember that "if $A$ then $B$" means the same thing as "$B$ if $A$", and *not* the same as "$A$ if $B$". This is because in english the word "if" applies to whatever is to the right of it, so we flip the order of the variables in the sentence to preserve this relationship.
   
 In my pursuit of a middle ground between the accessible writing of introductory blog posts and the academically dense writing of engineering textbooks, I've come to the following conclusion: all rigor in my writing must be in the form of precisely defined language. Outside of this, the only goal is to be maximally informative to as many readers as possible.
 

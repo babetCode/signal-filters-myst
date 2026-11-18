@@ -9,11 +9,6 @@ abbreviations:
   ZFC: Zermelo-Frankel set theory with Axiom of Choice
 numbering:
   equations: false
-math:
-  '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-  '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-  '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-  '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
 ---
 
 ```{marimo-config}
@@ -35,35 +30,20 @@ pyproject: |-
 :include: false
 
 import marimo as mo
-import numpy as np
-import pandas as pd
-import matplotlib
+from textwrap import dedent
 import schemdraw
 from schemdraw import flow
-from textwrap import dedent
-import matplotlib.pyplot as plt
 ```
 
 ```{marimo} python
 :name: display_format
 :include: false
 
-plt.style.use('default')
 schemdraw.use("svg")
-mo.latex(r"""
-\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
-\newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
-\newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
-\newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
-""")
+
 def graphic(x):
     return mo.Html(
         dedent(f'''\
-        <style>
-            .dark .graphic {{ 
-                filter: invert(1) hue-rotate(180deg); 
-            }}
-        </style>
         <div class="graphic">
             {mo.as_html(x)}
         </div>

@@ -56,14 +56,7 @@ def imports():
 @app.cell
 def display_format(dedent, mo, plt, schemdraw):
     # jb: include=false
-    plt.style.use('default')
-    schemdraw.use("svg")
-    mo.latex(r"""
-    \newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
-    \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
-    \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
-    \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
-    """)
+
     def graphic(x):
         return mo.Html(
             dedent(f'''\
@@ -78,6 +71,15 @@ def display_format(dedent, mo, plt, schemdraw):
             ''')
         )
 
+    plt.style.use('default')
+    schemdraw.use("svg")
+    mo.latex(dedent(
+        r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
+        \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
+        \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
+        \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}"""
+    ))
+    mo.output.clear()
     return
 
 

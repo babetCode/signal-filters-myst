@@ -160,6 +160,21 @@ def _(mo):
     7. **Closure:** Nothing else is a formula.
 
     Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
+    
+    [^iff]: The phrase "necessary and sufficient" means the same thing as "if and only if":
+
+    | English phrase | Logical meaning |
+    |:------:|:----------------------------:|
+    | $A$ if $B$ | $B \rightarrow A$ |
+    | $A$ only if $B$ | $\neg B \rightarrow \neg A$ |
+    | $A$ necessary for $B$ | $\neg A \rightarrow \neg B$ |
+    | $A$ sufficient for $B$ | $A \rightarrow B$ |
+
+    So by [contrapositive](https://en.wikipedia.org/wiki/Contraposition) equivalence:
+    - "$A$ if $B$" is equivalent to "$A$ necessary for $B$".
+    - "$A$ only if $B$" is equivalent to "$A$ sufficient for $B$".
+
+    Note: It is important to remember that "if $A$ then $B$" means the same thing as "$B$ if $A$", and *not* the same as "$A$ if $B$". This is because in english the word "if" applies to whatever is to the right of it, so we flip the order of the variables in the sentence to preserve this relationship.
     """)
     return
 

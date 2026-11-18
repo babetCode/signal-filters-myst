@@ -35,49 +35,80 @@ pyproject: |-
 :include: false
 
 import marimo as mo
-import numpy as np
-import pandas as pd
-import matplotlib
-import schemdraw
-from schemdraw import flow
 from textwrap import dedent
-import matplotlib.pyplot as plt
 ```
 
 ```{marimo} python
 :name: display_format
 :include: false
 
-plt.style.use('default')
-schemdraw.use("svg")
-mo.latex(r"""
-\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
-\newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
-\newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
-\newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}
-""")
-def graphic(x):
-    return mo.Html(
-        dedent(f'''\
-        <style>
-            .dark .graphic {{ 
-                filter: invert(1) hue-rotate(180deg); 
-            }}
-        </style>
-        <div class="graphic">
-            {mo.as_html(x)}
-        </div>
-        ''')
-    )
+mo.latex(dedent(
+    r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
+    \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
+    \newcommand{\existssubseteq}[2]{\exists #1 \!\!\subseteq\!\! #2\,}
+    \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}"""
+))
+mo.output.clear()
 ```
 
-The goal of this chapter is to define set theory and the necessary tools for defining probability spaces (which we will then do in the next chapter).
+The goal of this chapter is to define set theory and the necessary tools for defining probability spaces (which we define in the next chapter).
 
-Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. Here, we will build the axioms of Zermelo-Frankel set theory, along with the axiom of choice.
+Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. Set theory rests on axioms. We use the Zermelo-Frankel axioms along with the axiom of choice, by convention.
 
-There are many equivalent ways to formulate the ZFC axioms. We will include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+There are many equivalent ways to formulate the ZFC axioms. We include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
 
 [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
+  
+## Defined Terms
+
+In our formal language, the only way to refer to a set is with a variable. However, we are about to write things like $\emptyset \in I$ and $x \cup \{x\}$, which are not formulas as defined in the previous chapter. This section explains why such notation is legitimate shorthand.
+
+A *term* is notation that names a set (as opposed to a formula, which makes a claim that is true or false). So far the only terms are variables. We add new terms one *operation* at a time, each justified by a proof that the operation always produces exactly one set.
+
+### Operations
+
+Let $\delta(x_1, \dots, x_n, y)$ be a formula. If we have proven
+
+$$\forall x_1 \cdots \forall x_n\, \exists! y\, \delta(x_1, \dots, x_n, y),$$
+
+then we may introduce a new notation $F(x_1, \dots, x_n)$, called an *operation*, which stands for "the unique $y$ such that $\delta(x_1, \dots, x_n, y)$." We call $\delta$ the *defining formula* of $F$. When $n = 0$, this is simply a name for one particular set.
+
+Each axiom below that asserts the existence of a set introduces an operation this way, with Extensionality supplying uniqueness: $\emptyset$ (no arguments), $\{x, y\}$, $\mathcal{P}(x)$, $\bigcup X$, and $\{x \in A: \varphi\}$ (whose arguments are $A$ and the other free variables of $\varphi$). Infinity and Choice also assert existence, but not of a unique set, so they introduce no operations.
+
+### Terms and Unpacking
+
+*Terms* are built by the following recursive rules:
+
+1. **Variable:** Every variable is a term.
+2. **Operation:** If $F$ is an operation with $n$ arguments and $t_1, \dots, t_n$ are terms, then $F(t_1, \dots, t_n)$ is a term.
+3. **Closure:** Nothing else is a term.
+
+For example, $x \cup \{x\}$ and $\mathcal{P}(\{x, y\})$ are terms.
+
+::::{admonition icon=false} 📖 **Definition**
+:::{glossary}
+Term
+: A variable, or an operation applied to terms. Terms name sets, whereas formulas make claims about them.
+:::
+::::
+
+We allow terms on either side of $\in$ and $=$, but a string like $\emptyset \in I$ is then not literally a formula of the formal language. It is shorthand for one, obtained by *unpacking*: if an atomic formula $\alpha$ contains $F(v_1, \dots, v_n)$ where each $v_i$ is a variable, then $\alpha$ abbreviates
+
+$$\exists z\,\big(\delta_F(v_1, \dots, v_n, z) \land \alpha'\big),$$
+
+where $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ with that occurrence of $F(v_1, \dots, v_n)$ replaced by $z$ (renaming bound variables of $\delta_F$ if necessary to avoid clashes). Repeating this, innermost operation first, removes every operation. For example, $\emptyset \in I$ abbreviates $\exists z\,(\forall w\,(w \notin z) \land z \in I)$. When $\alpha$ is $y = F(v_1, \dots, v_n)$ for a variable $y$, the result is equivalent to the simpler $\delta_F(v_1, \dots, v_n, y)$, and we use that instead. Because unique existence has been proven, it would make no difference to use $\forall z\,(\delta_F \rightarrow \alpha')$ in place of the $\exists$ form. So, as with our other abbreviations, anything written with terms can be rewritten without them[^definitional-extension].
+
+**Fact.** Let $t$ be a term whose variables are among $x_1, \dots, x_n$, and let $y$ be a variable not occurring in $t$. Then $\forall x_1 \cdots \forall x_n\, \exists! y\, (y = t)$. In words, a term names exactly one set, whatever sets its variables stand for.
+
+*Proof.* By induction on the construction of $t$. A variable names the set assigned to it. If $t$ is $F(t_1, \dots, t_k)$, then by induction each $t_i$ names exactly one set, and since we proved $\forall x_1 \cdots \forall x_k\, \exists! y\, \delta_F(x_1, \dots, x_k, y)$, $F$ then names exactly one set. $\square$
+
+The Fact is what justifies using $:=$ for sets. If $t$ is a term with variables among $x_1, \dots, x_n$, then $G(x_1, \dots, x_n) := t$ introduces an operation with defining formula $y = t$, and no further proof is needed. This is how $x \cup y := \bigcup \{x, y\}$ and $(a, b) := \{\{a\}, \{a, b\}\}$ work.
+
+[^definitional-extension]: In logic this device is called an *extension by definitions*. It is *conservative*: anything expressible without the new notation that can be proven with it can also be proven without it. So the notation adds convenience but no new content.
+
+### Provisos
+
+Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$. The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, the Fact above holds only at values of the variables where the provisos hold.
   
 ## Axiom of Extensionality
 
@@ -207,77 +238,44 @@ In other words, if a formula $\varphi$ assigns to each $x \in A$ exactly one $y$
   
 ### Replacement Set-Builder Notation
 
-Suppose $\varphi$ assigns to each $x \in A$ exactly one $y$. We use the following notation to refer to the set whose existence is guaranteed by the axiom schema of replacement:
+We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of replacement:
 
-$$\{y : \existsin x A\, \varphi\},$$
+$$\{y: \existsin x A\, \varphi\}.$$
 
-which is read as "the set of all $y$ such that $\varphi$ holds for some $x \in A$." By extensionality, this set is unique. We only use this notation when $\varphi$ is functional on $A$, since otherwise Replacement does not guarantee that such a set exists.
+This is only meaningful when the hypothesis of the schema holds, namely $\forallin x A\, \exists! y\, \varphi$. By extensionality, this set is unique.
 
+Where Separation notation selects elements *of* $A$, this notation collects *outputs*: $y$ is in the set iff $\varphi$ relates it to some $x \in A$. The elements of the resulting set need not be elements of $A$, and different $x$'s may share the same $y$, so the new set can be smaller than $A$.
+
+Most often, $\varphi$ simply says that $y = t$ for some expression $t$ built from $x$ using notations we have already introduced, such as $\{x\}$, $(x, c)$, or $x \cup \{x\}$. We then write
+
+$$\{t: x \in A\} := \{y: \existsin x A\, (y = t)\},$$
+
+where $y$ is a variable that does not occur in $t$. Because each of these expressions exists and is unique for every $x$, the hypothesis $\forallin x A\, \exists! y\, (y = t)$ holds automatically.
+
+For example, if $A = \{\emptyset, \{\emptyset\}\}$, then
+
+$$\{\{x\}: x \in A\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}.$$
+  
 ### Combining Set-Builder Notations
 
-Note that while Separation set-builder notation ranges over $A$ and filters elements out, Replacement set-builder notation ranges over $A$ and transforms each element. However, we can combine the two into a single notation. Suppose $\psi$ is a formula and $\varphi$ is functional on $\{x \in A : \psi\}$. We use the notation
+Often we want to transform only *some* of the elements of a set. We cannot simply add a filter to $\varphi$, because Replacement requires that *every* $x \in A$ has an output. Instead, we first use Separation to select the elements we want, and then use Replacement on the result. For a formula $\psi$, we write
 
-$$\{y : \existsin x A\, (\psi \land \varphi)\},$$
+$$\{y: \existsin x A\, (\psi \land \varphi)\} := \{y: \existsin x {A'}\, \varphi\}, \quad \text{where } A' = \{x \in A: \psi\}.$$
 
-which is interpreted as
+The hypothesis of Replacement for $A'$ is equivalent to $\forallin x A\, (\psi \rightarrow \exists! y\, \varphi)$: only the $x$'s satisfying $\psi$ need an output. Unpacking the definitions, $y$ is in this set iff there is some $x \in A$ such that both $\psi$ and $\varphi$ hold.
 
-$$\{y : \existsin x {\{x \in A : \psi\}}\, \varphi\}.$$[^combined-set-builder]
+As before, when $\varphi$ is $y = t$ for some expression $t$ built from $x$, we abbreviate
 
-Note that $\varphi$ need only be functional on the filtered subset $\{x \in A : \psi\}$, not on all of $A$.
+$$\{t: x \in A \land \psi\} := \{y: \existsin x A\, (\psi \land y = t)\}.$$
 
-[^combined-set-builder]:
-    $$\begin{align*}
-    B = \{y : \existsin x {\{x \in A : \psi\}}\, \varphi\} &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, (x \in \{x \in A : \psi\} \land \varphi)] \\
-    &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, ((x \in A \land \psi) \land \varphi)] \\
-    &\leftrightarrow \forall y\, [y \in B \leftrightarrow \exists x\, (x \in A \land (\psi \land \varphi))] \\
-    &\leftrightarrow B = \{y : \existsin x A\, (\psi \land \varphi)\} \\
-    \end{align*}$$
-  
-### Replacement Set-Builder Notation
+This generalizes both earlier notations:
 
-Similarly to our Separation set-builder notation, we often refer to a set whose existence is guaranteed by the Axiom Schema of Replacement as:
+- If $t$ is $x$ itself, we get $\{x: x \in A \land \psi\}$, which is just $\{x \in A: \psi\}$ from Separation.
+- If $\psi$ is trivially true (such as $x = x$), then $A' = A$ by extensionality, and we recover $\{t: x \in A\}$ from Replacement.
 
-$$\{F(x): x \in A\},$$
+For example, let $A = \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}$. Separation first gives $A' = \{x \in A: \neg(x = \emptyset)\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}$, and then Replacement wraps each remaining element in braces:
 
-where $F(x)$ is interpereted as "the unique $y$ such that "
-  
-### Replacement Set-Builder Notation
-
-Replacement also gives a set-builder notation. Suppose $\varphi(x, y)$ is functional on $A$, so that for every $x \in A$ there is exactly one $y$ with $\varphi(x, y)$. It is common to write this unique $y$ as a term $F(x)$, where $F(x)$ is shorthand for "the unique $y$ such that $\varphi(x, y)$." The set $B$ guaranteed by Replacement is then referred to with the notation
-
-$$\{F(x) : x \in A\}.$$
-
-Unwinding the shorthand, this is the set $B$ satisfying
-
-$$y \in \{F(x) : x \in A\} \leftrightarrow \exists x \in A\, \varphi(x, y),$$
-
-or equivalently, $y \in B$ iff $y = F(x)$ for some $x \in A$. By Extensionality, this set is unique.
-
-Note the difference in form between the two notations. In $\{x \in A : \varphi\}$ the variable ranges over $A$ and the formula *filters* the elements, so the result is a subset of $A$. In $\{F(x) : x \in A\}$ the variable ranges over $A$ and the formula *transforms* each element, so the result generally contains new objects that need not be elements of $A$ at all.
-
-#### Examples
-
-Given a set $A$, the set of singletons of its elements is
-
-$$\{\{x\} : x \in A\},$$
-
-and if $A$ is a set of sets, the set of all unions of pairs with a fixed set $S$ is
-
-$$\{x \cup S : x \in A\}.$$
-
-#### Combining Both Set-Builder Notations
-
-The two notations are often combined to apply a transformation to only some elements of $A$. Writing $\{F(x) : x \in A \land \psi(x)\}$ means
-
-$$\{F(x) : x \in \{x \in A : \psi(x)\}\},$$
-
-where Separation first produces the subset $\{x \in A : \psi(x)\}$ and Replacement then maps over it. For example, if $A$ is a set of sets,
-
-$$\{\bigcup x : x \in A \land x \neq \varnothing\}$$
-
-collects the unions of the nonempty members of $A$.
-
-Note: Replacement is strictly stronger than the transformation notation might suggest. Because $F(x)$ can be any definable operation, the image of a set under any definable function is guaranteed to be a set, even when the outputs have much higher rank than the inputs. Separation alone cannot provide this.
+$$\{\{x\}: x \in A \land \neg(x = \emptyset)\} = \{\{\{\emptyset\}\}, \{\{\{\emptyset\}\}\}\}.$$
   
 ## Axiom of Infinity
 
