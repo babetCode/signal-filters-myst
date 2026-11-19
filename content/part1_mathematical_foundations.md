@@ -1,5 +1,5 @@
 ---
-title: Mathematical Foundations
+title: 'Part 1: Mathematical Foundations'
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "From Primitives to Probabilities"

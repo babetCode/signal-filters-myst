@@ -12,7 +12,7 @@ import marimo
 
 __generated_with = "0.25.1"
 app = marimo.App(
-    app_title="Mathematical Foundations",
+    app_title="Part 1: Mathematical Foundations",
     css_file="notebook-styles.css",
 )
 

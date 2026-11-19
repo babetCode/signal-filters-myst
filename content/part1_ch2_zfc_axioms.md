@@ -91,7 +91,7 @@ Term
 : A variable, or an operation applied to terms. Terms name sets, whereas formulas make claims about them.
 :::
 ::::
-
+  
 We allow terms on either side of $\in$ and $=$, but a string like $\emptyset \in I$ is then not literally a formula of the formal language. It is shorthand for one, obtained by *unpacking*: if an atomic formula $\alpha$ contains $F(v_1, \dots, v_n)$ where each $v_i$ is a variable, then $\alpha$ abbreviates
 
 $$\exists z\,\big(\delta_F(v_1, \dots, v_n, z) \land \alpha'\big),$$
@@ -105,7 +105,7 @@ where $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ wit
 The Fact is what justifies using $:=$ for sets. If $t$ is a term with variables among $x_1, \dots, x_n$, then $G(x_1, \dots, x_n) := t$ introduces an operation with defining formula $y = t$, and no further proof is needed. This is how $x \cup y := \bigcup \{x, y\}$ and $(a, b) := \{\{a\}, \{a, b\}\}$ work.
 
 [^definitional-extension]: In logic this device is called an *extension by definitions*. It is *conservative*: anything expressible without the new notation that can be proven with it can also be proven without it. So the notation adds convenience but no new content.
-
+  
 ### Provisos
 
 Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$. The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, the Fact above holds only at values of the variables where the provisos hold.

@@ -213,7 +213,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Definition - Signal
+    ### Signals
     :::
 
     /// note | 📖 **Definition**
@@ -240,7 +240,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Definition - Noise
+    ### Noise
     :::
 
     /// note | 📖 **Definition**
@@ -267,7 +267,7 @@ def _(mo):
     :::{div}
     :class: h-0 overflow-hidden opacity-0 m-0 p-0 pointer-events-none
 
-    ### Definition - Filter
+    ### Filters
     :::
 
     /// note | 📖 **Definition**
@@ -283,7 +283,47 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The diagram below shows the setup for our example so far, where each arrow is annotated with the result/output of the prior box:
+    In general, when being used to estimate a real world value, a filter will recieve a set of digital measurements and output an estimate:
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    <img src="public/intro_filter_diagram.svg" class="graphic" alt="Filter Diagram" />
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def make_filter_diagram(IMAGES_DIR, flow, schemdraw):
+    # jb: include=false
+    with schemdraw.Drawing(show=False) as _d:
+        _d.config(fontsize=12)
+
+        flow.Start().label("Real-world value\nwe want to know").drop("S")
+        flow.Arrow().down(1)
+        flow.RoundBox().label(
+            "Measurement device"
+        )
+        flow.Arrow().down(1)
+        flow.RoundBox().label("Sequence of digital\nmeasurements").drop("E")
+        flow.Line().right(1)
+        flow.Line().up(4)
+        flow.Arrow().right(1.5)
+        flow.RoundBox().label("Filter removes noise\nfrom the measurements").drop("S")
+        flow.Arrow().down(1)
+        flow.Terminal().label("Estimate of the real-world value")
+
+    _d.save(IMAGES_DIR / "intro_filter_diagram.svg")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    For our particular example of a scale measuring weight, this sequence looks like the following (where each arrow is annotated with the result/output of the prior box):
     """)
     return
 
@@ -1093,6 +1133,10 @@ def make_alpha_beta_weight_measurements_fig(
 def _(mo):
     mo.md(r"""
     ## Summary
+
+    Our goal when designing a signal filter is to algorithmically remove noise from a measurement signal. This is usually done by combining our knowlege and measurements in a way that increases the probability that the noise cancels out. One of the most common ways to do this is to recursively update our estimate using a weighted combination of our prior prediction and our measurement, which can be expressed in the form:
+
+    $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
     """)
     return
 
@@ -1100,53 +1144,40 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In this section, we saw how to use the EMA equation
+    ## What's Next
 
-    $$\hat{x}_k = \hat{x}_{k-1} + \alpha (z_k - \hat{x}_{k-1})$$
+    Because our motivation for doing this is the fact that both $\hat x_k^-$ and $z_k$ are noisy values, a natural question becomes:
 
-    to estimate your weight with the assumption that your true weight does not change between measurements. In other words, in a perfect world with no noise, all of our measurements and estimates are equal (since they all equal your true weight). This assumption lets us use $\alpha$ to choose an $\hat x_k$ bewteen $\hat x_{k-1}$ and $z_k$, because without noise, these values *should* both equal $x_k$ (where the lack of hat denotes the true value at the time of the $k$-th measuremnt). Therefore, by combining the two, we increase the probability that the noise "cancels itself out", leaving us with a better estimate $\hat x_k$.
+    >"Given some amounts of noise in our prior ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?"
 
-    However, we've barely scatched the surface of signal filtering. In the coming sections, we will discuss:
+    Part 1 is dedicated to answering this question. Since modeling noise relies on probabilities, probabilities are built on set theory, and set theory is built on logic, we will introduce these topics along the way.
 
-    - Using $\alpha$ along with a second variable $\beta$ to estimate a value that is changing
-    - Using Bayesian updates to filter
-    - Estimating a real-world value represented by multiple variables
-    - System dynamics and signal classifications
+    Once I've finished writing part 1 and we know the optimal $\alpha$ for some given levels of noise in $\hat x_k^-$ and $z_k$, then we can proceed to answering the following questions:
 
-    Throughout all these topics, the general framework of real world value, noisy measurement, filter, and estimate will remain the same.
+    > How do we determine the levels of noise in $\hat x_k^-$ and $z_k$?
+
+    (Spoiler: $z_k$ will be pretty simple but $\hat x_k^-$ will take a bit more work.)
+
+    > What is the best way to calculate $\hat x_k^-$?
+
+    (There are endless ways to do this. We will not cover them all.)
+
+    > What if my sensor doesn't measure the real-world value I want to know?
+
+    (Time for measurement functions!)
+
+    > What if my real-world value can't be represented as a scalar?
+
+    (Time for state vectors!)
+
+    > What if I expect my real-world value to change in super weird, non-linear ways?
+
+    (Linear approximation techniques)
+
+    > What if I need to avoid singularities in my state space representation?
+
+    (Quaternion time!)
     """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    <img src="public/intro_filter_diagram.svg" class="graphic" alt="Filter Diagram" />
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def make_filter_diagram(IMAGES_DIR, flow, schemdraw):
-    # jb: include=false
-    with schemdraw.Drawing(show=False) as _d:
-        _d.config(fontsize=12)
-
-        flow.Start().label("Real-world value\nwe want to know").drop("S")
-        flow.Arrow().down(1)
-        flow.RoundBox().label(
-            "Measurement device"
-        )
-        flow.Arrow().down(1)
-        flow.RoundBox().label("Sequence of digital\nmeasurements").drop("E")
-        flow.Line().right(1)
-        flow.Line().up(4)
-        flow.Arrow().right(1.5)
-        flow.RoundBox().label("Filter removes noise\nfrom the measurements").drop("S")
-        flow.Arrow().down(1)
-        flow.Terminal().label("Estimate of the real-world value")
-
-    _d.save(IMAGES_DIR / "intro_filter_diagram.svg")
     return
 
 
