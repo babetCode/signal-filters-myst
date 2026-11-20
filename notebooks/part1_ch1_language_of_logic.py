@@ -60,7 +60,9 @@ def display_format(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The goal of this chapter is to develop the language necessary for defining Set Theory (which we define in the next chapter). Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
+    The goal of this chapter is to develop the language necessary for defining Set Theory (the subject of the next chapter).
+
+    Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
     - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain English, and not rigorously defined. While we try our best to be articulate and specific, metalanguage is not formal.
     - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpreted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
     - **Semantics:** This is the list of rules and conventions which dictate how the symbols (or strings of symbols) in our syntax are interpreted. For example the convention in our Introduction was to interpret "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
@@ -102,7 +104,7 @@ def _(mo):
     mo.md(r"""
     ### Formulas
 
-    A *formula* is a finite string of the symbols above, built according to the following recursive rules. (The letters $\varphi$ and $\psi$ are metalanguage placeholders for arbitrary formulas, and $u$, $v$, and $x$ are metalanguage placeholders for arbitrary variables. They are not themselves symbols of the formal language.)
+    A *formula* is a finite string of the symbols above, built according to the following recursive rules. (Here, the letters $\varphi$ and $\psi$ are placeholders for arbitrary formulas, and $u$, $v$, and $x$ are placeholders for arbitrary variables. They are not themselves symbols of the formal language.)
 
     1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas.
     2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.
@@ -225,7 +227,7 @@ def _(mo):
 
     - A collection of objects, called the *domain of discourse*, which the variables stand for.
     - A specification of which objects in the domain are members of which other objects.
-    In other words, a structure is an interpretation of the symbols. Since we're building set theory (so that we can formally define probalities) the only objects we talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning ordinary set membership.
+    In other words, a structure is an interpretation of the symbols. Since we're building set theory (because set theory is the conventional way to define probabilities) the only objects we talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning set membership.
 
     /// note | 📖 **Definition**
         attrs: {class: no-icon}

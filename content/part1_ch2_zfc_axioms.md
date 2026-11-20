@@ -17,6 +17,7 @@ math:
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -30,6 +31,7 @@ pyproject: |-
 ```
 
 ```{marimo} python
+:hide-code: true
 :name: imports
 :include: false
 
@@ -38,6 +40,7 @@ from textwrap import dedent
 ```
 
 ```{marimo} python
+:hide-code: true
 :name: display_format
 :include: false
 
@@ -50,31 +53,55 @@ mo.latex(dedent(
 mo.output.clear()
 ```
 
-The goal of this chapter is to define set theory and the necessary tools for defining probability spaces (which we define in the next chapter).
+The goal of this chapter is to define the axioms of set theory and and the notational shorthands they permit (which well be neccesary for defining probability spaces in the next chapter).
 
 Set theory is a foundation for nearly all of mathematics, including number theory, functions, topology, algebra, and probability[^other-math-foundations]. Set theory rests on axioms. We use the Zermelo-Frankel axioms along with the axiom of choice, by convention.
 
-There are many equivalent ways to formulate the ZFC axioms. We include all 10 for the purpose of explanation. However, the Axiom of the Null Set is often omitted since it is easily proven by applying the Axiom Schema of Separation to filter out elements which are equal to themselves. Additionally, the Axiom Schema of Separation is sometimes omitted since it can be proven using the Axiom Schema of Replacement.
+There are many equivalent ways to formulate the ZFC {term}`axioms <axiom>`. We include all 10 for the purpose of explanation. However, the axiom of the null det is often omitted since it is easily proven by applying the axiom schema of separation to filter out elements which are equal to themselves. Additionally, the axiom schema of separation is sometimes omitted since it can be proven using the axiom schema of replacement.
 
 [^other-math-foundations]: This is because almost every mathematical object can be defined inside set theory, and almost every theorem can be derived from its axioms. However, alternative foundational theories also exist, such as [Category Theory](https://en.wikipedia.org/wiki/Category_theory), which is common in geometry, and [Type Theory](https://en.wikipedia.org/wiki/Type_theory), which is used in theoretical computer science, as well as the theorem prover programming languages [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
   
-## Defined Terms
+## Axiom of Extensionality
 
-In our formal language, the only way to refer to a set is with a variable. However, we are about to write things like $\emptyset \in I$ and $x \cup \{x\}$, which are not formulas as defined in the previous chapter. This section explains why such notation is legitimate shorthand.
+If two sets contain the exact same members, then they are equal:
+
+$$\forall x\forall y\,[\forall z\,(z\in x\leftrightarrow z\in y)\rightarrow x=y].$$
+
+This axiom supplies uniqueness: if we can show that all sets satisfying some property contain exactly the same members, then by extensionality we know there exists a unique set which satisfies the property.
+  
+## Axiom of the Null Set
+
+There exists a set $x$ such that for all $y$, $y$ is not an element of $x$:
+
+$$\exists x \forall y (y \notin x).$$
+
+By extensionality, there exists a unique $x$ which satisfies this. We call that set the "null set", "empty set", or just use the symbol "$\emptyset$". This is our first example of a *defined term*.
+  
+### Defined Terms
+
+In our formal language, the only way to refer to a set is with a variable. However, we are about to write things like $\emptyset \in I$, which are not formulas as defined in the previous chapter. Therefore, we must explain why such notation is legitimate shorthand.
 
 A *term* is notation that names a set (as opposed to a formula, which makes a claim that is true or false). So far the only terms are variables. We add new terms one *operation* at a time, each justified by a proof that the operation always produces exactly one set.
-
-### Operations
+  
+#### Operations
 
 Let $\delta(x_1, \dots, x_n, y)$ be a formula. If we have proven
 
 $$\forall x_1 \cdots \forall x_n\, \exists! y\, \delta(x_1, \dots, x_n, y),$$
 
-then we may introduce a new notation $F(x_1, \dots, x_n)$, called an *operation*, which stands for "the unique $y$ such that $\delta(x_1, \dots, x_n, y)$." We call $\delta$ the *defining formula* of $F$. When $n = 0$, this is simply a name for one particular set.
+then we may introduce a new notation $F(x_1, \dots, x_n)$, called an *operation*, which stands for "the unique $y$ such that $\delta(x_1, \dots, x_n, y)$." We call $\delta$ the *defining formula* of $F$. When $n = 0$ (such as with $\emptyset$), this is simply a name for one particular set.
 
-Each axiom below that asserts the existence of a set introduces an operation this way, with Extensionality supplying uniqueness: $\emptyset$ (no arguments), $\{x, y\}$, $\mathcal{P}(x)$, $\bigcup X$, and $\{x \in A: \varphi\}$ (whose arguments are $A$ and the other free variables of $\varphi$). Infinity and Choice also assert existence, but not of a unique set, so they introduce no operations.
+Just as the axiom of the null set introduces $\emptyset$, each axiom below that asserts the existence of a set introduces its own operation (with extensionality supplying uniqueness of the asserted set):
 
-### Terms and Unpacking
+- Pairing introduces $\{x, y\}$ and $\{x\}$.
+- Power introduces $\mathcal{P}(x)$.
+- Union introduces $\bigcup X$.
+- Separation introduces $\{x \in A: \varphi\}$.
+- Replacement introduces $\{y: \existsin x A\, \varphi\}$.
+
+*Note:* Infinity and choice also assert the existence of sets, but not of a unique set, so they introduce no operations.
+  
+#### Terms and Unpacking
 
 *Terms* are built by the following recursive rules:
 
@@ -82,12 +109,12 @@ Each axiom below that asserts the existence of a set introduces an operation thi
 2. **Operation:** If $F$ is an operation with $n$ arguments and $t_1, \dots, t_n$ are terms, then $F(t_1, \dots, t_n)$ is a term.
 3. **Closure:** Nothing else is a term.
 
-For example, $x \cup \{x\}$ and $\mathcal{P}(\{x, y\})$ are terms.
+Since every variable term represents a set, and every operation term is a shorthand for the unique set which satisfies its defining formula, then every term names a single set. This fact is what justifies using $:=$ for sets.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Term
-: A variable, or an operation applied to terms. Terms name sets, whereas formulas make claims about them.
+: A variable or an operation applied to a term, which represents a set.
 :::
 ::::
   
@@ -97,31 +124,11 @@ $$\exists z\,\big(\delta_F(v_1, \dots, v_n, z) \land \alpha'\big),$$
 
 where $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ with that occurrence of $F(v_1, \dots, v_n)$ replaced by $z$ (renaming bound variables of $\delta_F$ if necessary to avoid clashes). Repeating this, innermost operation first, removes every operation. For example, $\emptyset \in I$ abbreviates $\exists z\,(\forall w\,(w \notin z) \land z \in I)$. When $\alpha$ is $y = F(v_1, \dots, v_n)$ for a variable $y$, the result is equivalent to the simpler $\delta_F(v_1, \dots, v_n, y)$, and we use that instead. Because unique existence has been proven, it would make no difference to use $\forall z\,(\delta_F \rightarrow \alpha')$ in place of the $\exists$ form. So, as with our other abbreviations, anything written with terms can be rewritten without them[^definitional-extension].
 
-**Fact.** Let $t$ be a term whose variables are among $x_1, \dots, x_n$, and let $y$ be a variable not occurring in $t$. Then $\forall x_1 \cdots \forall x_n\, \exists! y\, (y = t)$. In words, a term names exactly one set, whatever sets its variables stand for.
-
-*Proof.* By induction on the construction of $t$. A variable names the set assigned to it. If $t$ is $F(t_1, \dots, t_k)$, then by induction each $t_i$ names exactly one set, and since we proved $\forall x_1 \cdots \forall x_k\, \exists! y\, \delta_F(x_1, \dots, x_k, y)$, $F$ then names exactly one set. $\square$
-
-The Fact is what justifies using $:=$ for sets. If $t$ is a term with variables among $x_1, \dots, x_n$, then $G(x_1, \dots, x_n) := t$ introduces an operation with defining formula $y = t$, and no further proof is needed. This is how $x \cup y := \bigcup \{x, y\}$ and $(a, b) := \{\{a\}, \{a, b\}\}$ work.
-
 [^definitional-extension]: In logic this device is called an *extension by definitions*. It is *conservative*: anything expressible without the new notation that can be proven with it can also be proven without it. So the notation adds convenience but no new content.
   
-### Provisos
+#### Provisos
 
 Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$. The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, the Fact above holds only at values of the variables where the provisos hold.
-  
-## Axiom of Extensionality
-
-Two sets are equal iff they contain the exact same members:
-
-$$\forall x\forall y\,[\forall z\,(z\in x\leftrightarrow z\in y)\rightarrow x=y].$$
-  
-## Axiom of the Null Set
-
-There exists a set $x$ such that for all $y$, $y$ is not an element of $x$:
-
-$$\exists x \forall y (y \notin x).$$
-
-By Extensionality, this set is unique. It is called the "null set" or "empty set" and is denoted "$\emptyset$".
   
 ## Axiom of Pairing
 
@@ -162,14 +169,6 @@ A set $f$ is a function iff:
 
 If $f$ is a function and $(a, b) \in f$, then we write $f(a) = b$.
   
-## Axiom of Power Set
-
-For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
-
-$$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
-
-This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
-  
 ## Axiom of Union
 
 For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
@@ -180,7 +179,7 @@ By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bi
   
 ### Union Operator
 
-The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by the axiom of pairing):
+The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by pairing):
 
 $$x \cup y := \bigcup \{x, y\}.$$
 
@@ -224,6 +223,10 @@ $$A \cap B = B \cap A.$$
     &\leftrightarrow C = \{x \in B: x \in A\} \\
     &\leftrightarrow C = B \cap A \\
     \end{align*}$$
+  
+Additionally, we can take the intersection of a set of sets. Similar to the union, if a set $A$ contains $a_1, a_2, \ldots, a_n$, then we have:
+
+$$\bigcap A := \{x \in a_1: x \in a_2 \land \cdots \land x \in a_n\}.$$
   
 ## Axiom Schema of Replacement
 
@@ -278,13 +281,25 @@ $$\{\{x\}: x \in A \land \neg(x = \emptyset)\} = \{\{\{\emptyset\}\}, \{\{\{\emp
   
 ## Axiom of Infinity
 
-At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is its successor $x \cup \{x\}$:
+At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
 
 $$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
-  
-### Successor
 
-$x \cup \{x\}$ is called the successor of $x$, and is often denoted $S(x)$, or $x^+$.
+We call a set $I$ *inductive* if it satisfies $[\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)]$. The axiom of infinity guarantees that at least one such set exists.
+  
+### Natural Numbers
+
+Let $J$ be an inductive set. We define the natural numbers as:
+
+$$\mathbb N := \{x \in J: \forall I([\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)] \rightarrow x \in I)\}$$
+  
+## Axiom of Power Set
+
+For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
+
+$$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
+
+This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
   
 ## Axiom of Regularity
 

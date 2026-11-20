@@ -17,6 +17,7 @@ math:
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -50,7 +51,9 @@ mo.latex(dedent(
 mo.output.clear()
 ```
 
-The goal of this chapter is to develop the language necessary for defining Set Theory (which we define in the next chapter). Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
+The goal of this chapter is to develop the language necessary for defining Set Theory (the subject of the next chapter).
+
+Developing precise language is vital for communicating a precise understanding of any topic, but this is especially true of mathematics. As we introduce this language, it is important to keep in mind the three different layers of formal language:
 - **Metalanguage:** This is plain language we use to talk *about* the formal mathematical language we are developing.  For example, most of the writing between the lines of math in this book is plain English, and not rigorously defined. While we try our best to be articulate and specific, metalanguage is not formal.
 - **Syntax:** This refers to the raw symbols (or strings of symbols) we use in our formal mathematical language, *before* any meaning is interpreted. So far in this book, our syntax has consisted of the roman alphabet, greek alphabet, numbers, algebraic symbols, and some combinations of letters with symbols (such as "$\hat x _k^-$"). However, we are about to introduce some new symbols.
 - **Semantics:** This is the list of rules and conventions which dictate how the symbols (or strings of symbols) in our syntax are interpreted. For example the convention in our Introduction was to interpret "$\hat x _k^-$" as "the prediction at time $k$ prior to the measurement at time $k$".
@@ -161,7 +164,7 @@ To say what a formula means, we must say what the variables stand for and what t
 
 - A collection of objects, called the *domain of discourse*, which the variables stand for.
 - A specification of which objects in the domain are members of which other objects.
-In other words, a structure is an interpretation of the symbols. Since we're building set theory (so that we can formally define probalities) the only objects we talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning ordinary set membership.
+In other words, a structure is an interpretation of the symbols. Since we're building set theory (because set theory is the conventional way to define probabilities) the only objects we talk about are sets, so every variable stands for a set. Our intended structure is the collection of all sets, with $\in$ meaning set membership.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
