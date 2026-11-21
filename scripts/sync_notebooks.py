@@ -4,10 +4,13 @@ for use with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-m
 """
 
 import argparse
+import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
+import time
 
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
@@ -67,6 +70,66 @@ NO_ICON_ADMONITION_PATTERN = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
+
+def spawn(cmd, **kwargs) -> subprocess.Popen:
+    """Start a subprocess. On Mac/Linux, put it in its own process group so the
+    whole tree (uv -> node -> server) can be killed together later."""
+    if sys.platform != "win32":
+        kwargs.setdefault("start_new_session", True)
+    return subprocess.Popen(cmd, **kwargs)
+
+
+def kill_tree(proc: subprocess.Popen) -> None:
+    """Kill a process and everything it started."""
+    if sys.platform == "win32":
+        if proc.poll() is None:
+            # /T = include child processes, /F = force
+            subprocess.run(
+                ["taskkill", "/PID", str(proc.pid), "/T", "/F"],
+                capture_output=True,
+            )
+        return
+
+    # Mac/Linux: start_new_session=True made the process its own group leader,
+    # so the group ID equals its PID.
+    pgid = proc.pid
+    try:
+        os.killpg(pgid, signal.SIGTERM)  # polite request first
+    except ProcessLookupError:
+        return
+    try:
+        proc.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        os.killpg(pgid, signal.SIGKILL)  # force anything still alive
+    except ProcessLookupError:
+        pass
+
+
+def replace_with_retry(src: Path, dst: Path, attempts: int = 5) -> None:
+    """os.replace, but retry briefly if Windows has the destination file locked."""
+    for i in range(attempts):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if i == attempts - 1:
+                raise
+            time.sleep(0.05 * (i + 1))
+
+
+def write_if_changed(path: Path, text: str) -> None:
+    """Write text to path only if it differs from what's there, and do it
+    atomically so the dev server never sees a half-written file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and path.read_text(encoding="utf-8") == text:
+        return
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    replace_with_retry(tmp, path)
+
+
 def iter_notebooks():
     """Yield all notebook .py files under NOTEBOOKS_DIR, skipping ignored dirs,
     paired with the path marimo should export raw markdown to."""
@@ -77,9 +140,11 @@ def iter_notebooks():
             export_path = (EXPORT_DIR / rel_path).with_suffix(".md")
             yield py_file, export_path
 
+
 def content_path_for(export_path: Path) -> Path:
     rel_path = export_path.relative_to(EXPORT_DIR)
     return CONTENT_DIR / rel_path
+
 
 def apply_jb_options(content: str, source: str = "") -> str:
     """Find `{marimo}` cells with a `# jb: key=value ...` comment, turn that
@@ -107,6 +172,7 @@ def apply_jb_options(content: str, source: str = "") -> str:
 
     return MARIMO_FENCE_PATTERN.sub(replace, content)
 
+
 def apply_jb_frontmatter(content: str, source: str = "") -> str:
     """Merge the first `<!-- jb-frontmatter ... -->` comment's contents into
     the file's YAML frontmatter, and strip the comment from the body."""
@@ -129,6 +195,7 @@ def apply_jb_frontmatter(content: str, source: str = "") -> str:
 
     return f"---\n{extra_yaml}\n---\n\n{stripped.lstrip()}"
 
+
 def comment_out_marimo_version(content: str) -> str:
     """Comment out the `marimo-version:` line marimo adds to frontmatter by
     default, so it's preserved for reference without being read as a page's
@@ -143,6 +210,7 @@ def comment_out_marimo_version(content: str) -> str:
         for line in yaml_text.splitlines()
     ]
     return f"---\n{chr(10).join(yaml_lines)}\n---\n{rest}"
+
 
 def apply_glossary_admonitions(content: str) -> str:
     """Convert `/// note` glossary blocks into MyST admonition + glossary
@@ -169,6 +237,7 @@ def apply_glossary_admonitions(content: str) -> str:
 
     return GLOSSARY_ADMONITION_PATTERN.sub(replace, content)
 
+
 def apply_no_icon_admonitions(content: str) -> str:
     """Convert `/// <type> | Title` blocks with `attrs: {class: no-icon}` into
     MyST `:::{<type> icon=false} Title` admonitions."""
@@ -183,16 +252,20 @@ def apply_no_icon_admonitions(content: str) -> str:
 
     return NO_ICON_ADMONITION_PATTERN.sub(replace, content)
 
+
 def rewrite_public_paths(content: str) -> str:
     """Point `src="public/..."` asset references at the notebooks' public dir."""
     return content.replace('src="public/', 'src="../notebooks/public/')
+
 
 def remove_empty_comments(content: str) -> str:
     """Remove empty <!----> HTML comments."""
     return content.replace('<!---->', '  ')
 
+
 def set_eval_false(content: str) -> str:
     return content.replace("```{marimo-config}\n", "```{marimo-config}\n:eval: false\n")
+
 
 def postprocess_file(export_path: Path):
     """Read marimo's raw export from EXPORT_DIR, apply jb transforms, and
@@ -209,11 +282,10 @@ def postprocess_file(export_path: Path):
     updated = rewrite_public_paths(updated)
     updated = remove_empty_comments(updated)
     updated = comment_out_marimo_version(updated)
-    # updated = set_eval_false(updated) #NOTE - used in dev for faster build times. to be commented out in production
+    updated = set_eval_false(updated) #NOTE - used in dev for faster build times. to be commented out in production
 
-    content_path = content_path_for(export_path)
-    content_path.parent.mkdir(parents=True, exist_ok=True)
-    content_path.write_text(updated, encoding="utf-8")
+    write_if_changed(content_path_for(export_path), updated)
+
 
 def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
     export_path.parent.mkdir(parents=True, exist_ok=True)
@@ -254,9 +326,11 @@ def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
         )
         return None
 
+
 def export_all():
     for file, export_path in iter_notebooks():
         run_marimo_export(file, export_path)
+
 
 def start_watcher(notebook_path: Path, export_path: Path) -> subprocess.Popen:
     export_path.parent.mkdir(parents=True, exist_ok=True)
@@ -267,7 +341,8 @@ def start_watcher(notebook_path: Path, export_path: Path) -> subprocess.Popen:
         "--flavor", "mystmd",
         "--watch",
     ]
-    return subprocess.Popen(cmd)
+    return spawn(cmd)
+
 
 class JbOptionsHandler(PatternMatchingEventHandler):
     """Watches EXPORT_DIR for writes from marimo's own --watch processes and
@@ -282,36 +357,40 @@ class JbOptionsHandler(PatternMatchingEventHandler):
     def on_modified(self, event):
         postprocess_file(Path(event.src_path))
 
+
 def serve(port: str, server_port: str):
     export_all()
 
-    watchers = [start_watcher(nb, export_path) for nb, export_path in iter_notebooks()]
-    print(f"[marimo-sync] Watching {len(watchers)} notebook(s) with marimo --watch...")
-
-    jb_observer = Observer()
-    jb_observer.schedule(JbOptionsHandler(), str(EXPORT_DIR), recursive=True)
-    jb_observer.start()
-
-    jb_cmd = [
-        "uv", "run", "jupyter-book", "start",
-        "--port", port,
-        "--server-port", server_port,
-    ]
-    print("[marimo-sync] Launching Jupyter Book dev server...")
-    jb_proc = subprocess.Popen(jb_cmd, cwd=CONTENT_DIR)
-
+    watchers: list[subprocess.Popen] = []
+    jb_proc = None
+    jb_observer = None
     try:
+        for nb, export_path in iter_notebooks():
+            watchers.append(start_watcher(nb, export_path))
+        print(f"[marimo-sync] Watching {len(watchers)} notebook(s) with marimo --watch...")
+
+        jb_observer = Observer()
+        jb_observer.schedule(JbOptionsHandler(), str(EXPORT_DIR), recursive=True)
+        jb_observer.start()
+
+        jb_cmd = [
+            "uv", "run", "jupyter-book", "start",
+            "--port", port,
+            "--server-port", server_port,
+        ]
+        print("[marimo-sync] Launching Jupyter Book dev server...")
+        jb_proc = spawn(jb_cmd, cwd=CONTENT_DIR)
         jb_proc.wait()
     except KeyboardInterrupt:
         print("\n[marimo-sync] Shutting down...")
     finally:
-        jb_observer.stop()
-        jb_observer.join()
-        if jb_proc.poll() is None:
-            jb_proc.terminate()
-        for proc in watchers:
-            if proc.poll() is None:
-                proc.terminate()
+        if jb_observer is not None:
+            jb_observer.stop()
+            jb_observer.join()
+        for proc in [jb_proc, *watchers]:
+            if proc is not None:
+                kill_tree(proc)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -324,6 +403,7 @@ def main():
         serve(args.port, args.server_port)
     else:
         export_all()
+
 
 if __name__=="__main__":
     main()
