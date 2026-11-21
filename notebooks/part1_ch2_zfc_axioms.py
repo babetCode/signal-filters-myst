@@ -226,11 +226,13 @@ def _(mo):
 
     $$(a, b) := \{\{a\},\{a,b\}\},$$
 
-    where $a$ and $b$ are called the "coordinates".
+    where $a$ and $b$ are called the "coordinates"[^kuratowski].
 
     By extensionality, two ordered pairs are equal iff their corresponding coordinates are equal:
 
     $$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
+
+    [^kuratowski]: Where are many functional ways to define ordered pairs, this it the convetion (called the Kuratowski construction).
     """)
     return
 
@@ -419,13 +421,43 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Axiom of Power Set
+
+    For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
+
+    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
+
+    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Cartesian Product
+
+    For sets $X$ and $Y$, we want to define $X \times Y$ as the set of all ordered pairs $(a, b)$ such that $a \in X \land B \in Y$. To show this is a set, we need a set big enough to contain all such pairs and then use separation to select those we want.
+
+    - If both $a$ and $b$ are in $X \cup Y$, then $\{a\}$ and $\{a, b\}$ are subsets of $X \cup Y$, so they belong to $\mathcal P(X \cup Y)$.
+
+    - Therefore, $\{\{a\}, \{a, b\}\}$ is a subset of $\mathcal P(\mathcal P(X \cup Y))$.
+
+    So we define:
+
+    $$X \times Y := \{z \in \mathcal P(\mathcal P(X \cup Y)): \existsin a X \existsin b Y z = (a, b)\}.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Axiom of Infinity
 
     At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
 
     $$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
-
-    We call a set $I$ *inductive* if it satisfies the formula $[\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)]$. The axiom of infinity guarantees that at least one such set exists.
     """)
     return
 
@@ -435,13 +467,35 @@ def _(mo):
     mo.md(r"""
     ### Natural Numbers
 
-    For convenience, we introduce the notation:
+    We call $x \cup \{x\}$ the *successor* of $x$, and we use the notation:
 
-    $$\text{inductive}(I) := \emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I).$$
+    $$\text{succ}(x) := x \cup \{x\}.$$
+
+    We call a set $I$ *inductive* if it satisfies the formula
+
+    $$\emptyset \in I \land \forall x\, (x \in I \rightarrow \text{succ}(I) \in I).$$
+
+    The axiom of infinity guarantees that at least one such set exists.
+
+    For convenience, we use the notation:
+
+    $$\text{inductive}(I) := \emptyset \in I \land \forall x\, (x \in I \rightarrow \text{succ}(x) \in I).$$
 
     Let $J$ be an inductive set (so that it satisfies $\text{inductive}(J)$). We define the natural numbers as:
 
     $$\mathbb N := \{x \in J: \forall I(\text{inductive}(I) \rightarrow x \in I)\}.$$
+
+    This guarantees that $\mathbb N$ contains exactly:
+
+    $$\begin{align*}
+    0 &:= \emptyset \\
+    1 &:= \{\emptyset\} \\
+    2 &:= \{\emptyset, \{\emptyset\}\} \\
+    3 &:= \{\emptyset, \{\emptyset\}, \{\emptyset, \{\emptyset\}\}\} \\
+    &\ \ \ \vdots
+    \end{align*}$$
+
+    Where each successive number is obtained by the successor operation and is defined as the set containing all smaller numbers.
     """)
     return
 
@@ -449,13 +503,38 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Axiom of Power Set
+    ### Peano Arithmetic
 
-    For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
+    From here, we can recover the axioms of Peano Arithmetic:
 
-    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
+    - Existence of zero and closure under succession:
+      $$0 \in \mathbb N \land x \in \mathbb N \rightarrow \text{succ}(x) \in \mathbb N.$$
+    - Injectivity of succession:
+      $$\text{succ}(x) = \text{succ}(y) \rightarrow x = y.$$
+    - Zero not a successor:
+      $$\neg \exists x \text{succ}(x) = 0.$$
+    - Induction:
+      $$\text{inductive}(x) \rightarrow \mathbb N \subseteq x.$$
+    """)
+    return
 
-    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Integers
+
+    We want to build the set of all integers $\mathbb I$, but so far we don't have a notion of subtraction. To get around this, we use odered pairs $(a, b)$, where, informaly, we think of them as the difference $a - b$ (note that this is soley a conceptual aid for now and doesn't actually mean anything yet, since we haven't defined subtraction). We define the equivalence operation between ordered pairs:
+
+    $$(a, b) \sim (c, d) := a + d = b + c.$$
+
+    We define the notation:
+
+    $$[x] := \{y \in \mathbb N \times \mathbb N : y \sim x\}.$$
+
+    Then, we define:
+
+    $$\mathbb Z := \{[x]: x \in \mathbb N \times \mathbb N\}.$$
     """)
     return
 

@@ -291,13 +291,21 @@ We call a set $I$ *inductive* if it satisfies the formula $[\emptyset \in I \lan
   
 ### Natural Numbers
 
-For convenience, we introduce the notation:
+For convenience, we introduce the notations:
 
-$$\text{inductive}(I) := \emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I).$$
+$$\text{successor}(x) := x \cup \{x\}$$
+
+and
+
+$$\text{inductive}(I) := \emptyset \in I \land \forall x\, (x \in I \rightarrow \text{successor}(x) \in I).$$
 
 Let $J$ be an inductive set (so that it satisfies $\text{inductive}(J)$). We define the natural numbers as:
 
 $$\mathbb N := \{x \in J: \forall I(\text{inductive}(I) \rightarrow x \in I)\}.$$
+
+This guarantees that $\mathbb N$ contains exactly:
+- $\emptyset$. We call this zero, so $0 := \emptyset$.
+- $\{\emptyset\}$
   
 ## Axiom of Power Set
 
