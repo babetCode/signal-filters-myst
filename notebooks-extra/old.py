@@ -160,7 +160,7 @@ def _(mo):
     7. **Closure:** Nothing else is a formula.
 
     Note that since $\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, are abbreviations using $\neg$, $\land$, $\exists$, they are allowed in formulas as well.
-    
+
     [^iff]: The phrase "necessary and sufficient" means the same thing as "if and only if":
 
     | English phrase | Logical meaning |
@@ -175,6 +175,36 @@ def _(mo):
     - "$A$ only if $B$" is equivalent to "$A$ sufficient for $B$".
 
     Note: It is important to remember that "if $A$ then $B$" means the same thing as "$B$ if $A$", and *not* the same as "$A$ if $B$". This is because in english the word "if" applies to whatever is to the right of it, so we flip the order of the variables in the sentence to preserve this relationship.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    all rigor in my writing must be in the form of precisely defined language. To quote Hormozi:
+
+    > Words matter because they affect how we think. How we think affects what we do. And if words have us thinking the wrong way, then we will probably do the wrong stuff. I hate doing the wrong stuff. So to do the right stuff more and the wrong stuff less, it's best we know what words mean and use them.
+    >
+    > – $100M Leads
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Proofs have long been my favorite type of writing. In highschool, I would regularly spend hours on the [AoPS TeXeR](https://artofproblemsolving.com/texer), drafting proofs for my homework problems. It was often a [type 2](https://www.rei.com/blog/climb/fun-scale) experience, but something about the rigor was satisfying. It was like building a puzzle, where the pieces were made of language and the language was precisely defined.
+
+    Here is a favorite definition, both because of its utility, and because of my penchant for self-referential ideas[^self-referential-ideas]:
+
+    /// note | 📖 **Definition**
+        attrs: {class: no-icon}
+    <u>**Definition**</u>
+    (Of a term) a set of requirements which are necessary and sufficient to be in the category labeled by the term.
+    ///
+
+    [^self-referential-ideas]: It's always quite beautiful when a self-referential idea can remain nevertheless usesful, rather than collapsing under the weight of its own circular reasoning.
     """)
     return
 

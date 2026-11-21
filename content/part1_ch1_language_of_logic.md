@@ -77,7 +77,7 @@ Other symbols familiar from logic, such as $\lor$, $\rightarrow$, $\leftrightarr
   
 ### Formulas
 
-A *formula* is a finite string of the symbols above, built according to the following recursive rules. (The letters $\varphi$ and $\psi$ are metalanguage placeholders for arbitrary formulas, and $u$, $v$, and $x$ are metalanguage placeholders for arbitrary variables. They are not themselves symbols of the formal language.)
+A *formula* is a finite string of the symbols above, built according to the following recursive rules. (Here, the letters $\varphi$ and $\psi$ are placeholders for arbitrary formulas, and $u$, $v$, and $x$ are placeholders for arbitrary variables. They are not themselves symbols of the formal language.)
 
 1. **Atomic:** If $u$ and $v$ are variables (not necessarily distinct), then $u \in v$ and $u = v$ are formulas.
 2. **Negation:** If $\varphi$ is a formula, so is $\neg \varphi$.

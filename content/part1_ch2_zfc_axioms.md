@@ -101,6 +101,8 @@ Just as the axiom of the null set introduces $\emptyset$, each axiom below that 
 
 *Note:* Infinity and choice also assert the existence of sets, but not of a unique set, so they introduce no operations.
   
+$\{y: \existsin x A\, \varphi\}$
+  
 #### Terms and Unpacking
 
 *Terms* are built by the following recursive rules:
@@ -128,7 +130,7 @@ where $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ wit
   
 #### Provisos
 
-Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$. The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, the Fact above holds only at values of the variables where the provisos hold.
+Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$ (this is covered in the Axiom of Pairing section). The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, our guarantee that "every term names a single set" only holds at values of the variables where the provisos hold.
   
 ## Axiom of Pairing
 
@@ -285,13 +287,17 @@ At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of
 
 $$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
 
-We call a set $I$ *inductive* if it satisfies $[\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)]$. The axiom of infinity guarantees that at least one such set exists.
+We call a set $I$ *inductive* if it satisfies the formula $[\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)]$. The axiom of infinity guarantees that at least one such set exists.
   
 ### Natural Numbers
 
-Let $J$ be an inductive set. We define the natural numbers as:
+For convenience, we introduce the notation:
 
-$$\mathbb N := \{x \in J: \forall I([\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)] \rightarrow x \in I)\}$$
+$$\text{inductive}(I) := \emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I).$$
+
+Let $J$ be an inductive set (so that it satisfies $\text{inductive}(J)$). We define the natural numbers as:
+
+$$\mathbb N := \{x \in J: \forall I(\text{inductive}(I) \rightarrow x \in I)\}.$$
   
 ## Axiom of Power Set
 

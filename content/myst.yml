@@ -13,7 +13,7 @@ project:
     - file: index.md
     - file: introduction.md
       title: Introduction
-    - file: part1_mathematical_foundations.md
+    - title: "Part 1: Mathematical Foundations"
       children:
       - file: part1_ch1_language_of_logic.md
       - file: part1_ch2_zfc_axioms.md

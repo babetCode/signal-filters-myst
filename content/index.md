@@ -21,13 +21,9 @@ Humans generally have intuition on handling imperfect data: when making hard dec
 
 By combining multiple measurements and knowledge about what's being measured, signal filters can follow a somewhat analogous process to estimate some unknown quantity. To see what this might look like, you can skip ahead to the [Introduction](/ch01-recursive-average) where we walk through some examples.
   
-## Preface
+## Motivation
 
-My goal for this project was to write an intuitive (and mostly rigorous) guide to kalman filtering.
-  
-### Motivation
-
-I was inspired by [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), a fantastic book by Roger Labbe. However, I wanted to do a couple things differently:
+My goal for this project was to write an intuitive (and mostly rigorous) guide to kalman filtering. I was inspired by [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), a fantastic book by Roger Labbe. However, I wanted to do a couple things differently:
 
 1. His book is written as a collection of `.ipynb` files, so to read it you can:
     - Downoad the notebooks from github, set up a conda environment, run a local jupyter server, read the book from the local server (this is the recommended way).[^running-kbfp-locally].
@@ -44,32 +40,51 @@ By using [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-marim
     - Includes a `pyproject.toml` file, so that if you have [uv](https://docs.astral.sh/uv/) installed you can run the book immediately with a single command.
     - Publishes the `.ipynb` files to a [jupyter-book](https://jupyterbook.org/) so that you can read on the web without downloading (not interactive, but I prefer it to the PDF).
   
-### My Approach
+## Guiding Principles
 
-Proofs have long been my favorite type of writing. In highschool, I would regularly spend hours on the [AoPS TeXeR](https://artofproblemsolving.com/texer), drafting proofs for my homework problems. It was often a [type 2](https://www.rei.com/blog/climb/fun-scale) experience, but something about the rigor was satisfying. It was like building a puzzle, where the pieces were made of language and the language was precisely defined.
+In my pursuit of a middle ground between introduction and textbook, I've made the following notes-to-self:
 
-Here is a favorite definition, both because of its utility, and because of my penchant for self-referential ideas[^self-referential-ideas]:
+- I like accessible writing because it's faster to read and can be understood with minimal prerequisite knowlege (so more people can get something out of it).
+- I like textbook writing because it uses well defined language and provides a more complete understanding of material (so those who have the prerequisite knowlege can get the most out of it).
+
+Therefore, my favorite writing (where the most people can get the most out of it) should:
+
+1. Be concise and fast to read
+2. Require minimal prerequiste knowlege
+3. Use well defined language
+4. Provide a complete understanding
+  
+### Concision
+
+- Establish the key concept and its purpose up-front.
+- Then, *only* include other concepts which are necessary for understanding the organizational hierarchy which the key concept is built on.
+- Do so in as few words as possible while still being clear.
+  
+### Prerequisites
+
+- Assume minimal knowlege from the reader; it preferable to build all concepts from the ground up.
+- When a concept is not worth building from the ground-up in the book, link to an external resource that does.
+  
+### Definitions
+
+- Provide precise definitions whenever a word's intended meaning is different or more specific than its colloquial one.
+- Define each word before it is used and only use it with exactly that meaning afterwards.
+- Each definition of a word is a set of requirements which are necessary and sufficient to be in the category labeled by the word:
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Definition
-: (Of a term) a set of requirements which are necessary and sufficient to be in the category labeled by the term.
+: (Of a word or symbol) a set of requirements which are necessary and sufficient to be in the category labeled by the word or symbol.
 :::
 ::::
-
-[^self-referential-ideas]: It's always quite beautiful when a self-referential idea can remain nevertheless usesful, rather than collapsing under the weight of its own circular reasoning.
   
-In other words, if you have a set of requirements which are necessary and sufficient[^iff] to meet the category of *any* term, then you have a definition of that term (the set of requirements for the term "definition" has only one element, as do many other definitions) *and* any definition of any term must be a set of requirements which are necessary and sufficient for membership of that term's category.
-  
-In my pursuit of a middle ground between the accessible writing of introductory blog posts and the academically dense writing of engineering textbooks, I've come to the following conclusion: all rigor in my writing must be in the form of precisely defined language. Outside of this, the only goal is to be maximally informative to as many readers as possible.
+### Understanding
 
-To quote Hormozi:
-
-> Words matter because they affect how we think. How we think affects what we do. And if words have us thinking the wrong way, then we will probably do the wrong stuff. I hate doing the wrong stuff. So to do the right stuff more and the wrong stuff less, it's best we know what words mean and use them.
->
-> – $100M Leads
-  
-In this spirit, I will frequently include definition cards for words (like for "definition" above) whenever I think their technical use contains important specificity often missing from colloquial usage. After establishing definitions, the way to be accessible to the most readers is to be clear about the key points that I'm communicating and to provide a complete path for understanding the organizational hierarchy of concepts these key points are built on.
+- Order concepts by dependency so that nothing is used before it is introduced.
+- When possible, start with a concrete example, then generalize; intuition makes formalism feel motivated rather than arbitrary.
+- Justify steps rather than asserting them. Include a derivation when possible and link to one when it isn't.
+- Make examples interactive, so readers can change an input and see the result.
+- State assumptions and say what happens when they fail; a complete understanding includes knowing where a result stops being true.
   
 :::{tip icon=false} **Tips for reading online**
 As you have likely already figured out if you are reading this on a computer with a cursor, you can hover over terms with a dotted underline to view information about them. The information may be a {term}`definition` or a [Wikipedia](https://en.wikipedia.org/wiki/Wikipedia) preview. If they are blue, you may also click on these terms to navigate to the source link as normal.
