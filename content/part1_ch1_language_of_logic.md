@@ -17,7 +17,6 @@ math:
 ---
 
 ```{marimo-config}
-:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -189,7 +188,7 @@ $$x \in y$$
 
 and expresses that the set $x$ is an element of the set $y$.
 
-While the rest of the symbols used up to this point come from first-order logic and are used in any formal language, the membership symbol is specific to set theory. A "set" is an object in math which can be roughly thought of as "any unordered collection of unique objects." The objects in the collection are called the set's "members" or "elements". However, no precise definition of "set" exists, because sets are a "primitive concept", meaning they are a foundational block on which other concepts are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have an infinite regress of definitions). As such, sets are only described by how the [Set Theory axioms](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) allow them to behave (as covered in the next chapter).
+While the rest of the symbols used up to this point come from first-order logic and are used in any formal language, the membership symbol is specific to set theory. A "set" is an object in math which can be roughly thought of as "any unordered collection of unique objects." The objects in the collection are called the set's "members" or "elements" (these words are interchangable). If $x$ is an element of $y$, we say "$x$ is in $y$", or "$x$ belongs to $y$". No precise definition of "set" exists, because sets are a "primitive concept", meaning they are a foundational block on which other concepts are defined (a [bottom turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down), so to speak, since we cannot have an infinite regress of definitions). As such, sets are only described by how the [Set Theory axioms](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory) allow them to behave (as covered in the next chapter).
   
 ### Truth
 

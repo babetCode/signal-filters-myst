@@ -21,8 +21,10 @@ def frontmatter(mo):
 def imports():
     # jb: include=false
     import marimo as mo
+    import base64
 
-    return (mo,)
+    reveal_btn = mo.ui.run_button(label="Show Email Address")
+    return base64, mo, reveal_btn
 
 
 @app.cell(hide_code=True)
@@ -145,6 +147,28 @@ def _(mo):
     As you have likely already figured out if you are reading this on a computer with a cursor, you can hover over terms with a dotted underline to view information about them. The information may be a {term}`definition` or a [Wikipedia](https://en.wikipedia.org/wiki/Wikipedia) preview. If they are blue, you may also click on these terms to navigate to the source link as normal.
     ///
     """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Feedback
+
+    If you have any questions, comments, or think you've found an error in this book, I'd love to know!
+    """)
+    return
+
+
+@app.cell
+def _(base64, mo, reveal_btn):
+    if reveal_btn.value:
+        _email = base64.b64decode("YWRyaWVuYmFiZXQxQGdtYWlsLmNvbQ==").decode("utf-8")
+        _output = mo.md(f"Contact: [{_email}](mailto:{_email})")
+    else:
+        _output = reveal_btn
+
+    _output
     return
 
 

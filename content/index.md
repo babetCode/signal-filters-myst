@@ -13,6 +13,9 @@ numbering:
 :include: false
 
 import marimo as mo
+import base64
+
+reveal_btn = mo.ui.run_button(label="Show Email Address")
 ```
 
 It's impossible to measure anything in the real world with 100% precision. Whether it's a bathroom scale measuring your weight, a car spedometer measuring wheel rotation, a pacemaker measuring heart beats, or an airplane measuring flight trajectory, there will always be some uncertainty. Signal filters are used to reduce this uncertainty and make better estimates of the true values we are trying to measure.
@@ -89,3 +92,17 @@ Definition
 :::{tip icon=false} **Tips for reading online**
 As you have likely already figured out if you are reading this on a computer with a cursor, you can hover over terms with a dotted underline to view information about them. The information may be a {term}`definition` or a [Wikipedia](https://en.wikipedia.org/wiki/Wikipedia) preview. If they are blue, you may also click on these terms to navigate to the source link as normal.
 :::
+  
+## Feedback
+
+If you have any questions, comments, or think you've found an error in this book, I'd love to know!
+
+```{marimo} python
+if reveal_btn.value:
+    _email = base64.b64decode("YWRyaWVuYmFiZXQxQGdtYWlsLmNvbQ==").decode("utf-8")
+    _output = mo.md(f"Contact: [{_email}](mailto:{_email})")
+else:
+    _output = reveal_btn
+
+_output
+```

@@ -15,7 +15,6 @@ numbering:
 ---
 
 ```{marimo-config}
-:eval: false
 ---
 pyproject: |-
   dependencies = [
