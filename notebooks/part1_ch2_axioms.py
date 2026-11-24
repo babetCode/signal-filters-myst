@@ -11,7 +11,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Set Theory", css_file="notebook-styles.css")
+app = marimo.App(app_title="Axioms", css_file="notebook-styles.css")
 
 
 @app.cell(hide_code=True)

@@ -1,5 +1,5 @@
 ---
-title: Set Theory
+title: Axioms
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Axiomatic Structure"
