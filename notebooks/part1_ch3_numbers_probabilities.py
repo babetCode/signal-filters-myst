@@ -11,10 +11,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(
-    app_title="Numbers and Probabilities",
-    css_file="notebook-styles.css",
-)
+app = marimo.App(app_title="Probabilities", css_file="notebook-styles.css")
 
 
 @app.cell
@@ -86,105 +83,6 @@ def display_format(dedent, mo, plt, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    When most people think of math, they think of numbers. Now we start building them.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Functions
-
-    A set $f$ is a function iff:
-
-    - Every element of $f$ is an ordered pair:
-      $$\forallin{x}{f}\, \exists a\, \exists b\, [x = (a, b)]$$
-    - For each $a$, there is at most one $b$ such that $(a, b)$ is in $f$:
-      $$\forall a\, [\exists b\, \existsin x f [x=(a, b)] \land \exists c\, \existsin x f [x=(a, c)] \rightarrow b = c]$$
-
-    We use the notation $f(a) = b$ as a shorthand for $(a, b) \in f$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Successor Function
-
-    The
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Natural Numbers
-
-    Natural numbers are the basic numbers used for counting and ordering things in everyday life[^zero]. To build them, we first, we define $0 = \emptyset$, then define each number as the set of all smaller numbers:
-
-    $$\begin{align*}
-    0 &= \emptyset, \\
-    1 &= \{0\} = \{\emptyset\} \\
-    2 &= \{0, 1\} = \{\emptyset, \{\emptyset\}\} \\
-    3 &= \{0, 1, 2\} = \{\emptyset, \{\emptyset\}\} \\
-    &\ \ \vdots
-    \end{align*}$$
-
-    since each of these is the successor of the previous, the Axiom of Infinity guarantees the existence of a set containing all these numbers. We call these the natural numbers and denote the set $\mathbb N$.
-
-    [^zero]: While set theory inludes zero in the natural numbers for ease of definition (as we will do here), it should be noted that number theorists often exclude zero from the natural numbers, and specify "whole numbers" when zero is included.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Integers
-
-    An integer is a whole number that can be positive, negative, or zero. To build the integers, we must first define ordered pairs and the cartesian product.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    #### Eqivalence Operator
-
-    The equivalence operator (denoted $\sim$) is a relational operator defined as
-
-    $$(a, b) \sim (c, d) \leftrightarrow a + d = b + c$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    #### Cartesian Product
-
-    For sets $x$ and $y$, define $x \times y$ as
-
-    $$x \times y := \{z \in \mathcal P(\mathcal P(x \cup y)): \exists a \in x \exists b \in y\, [z = (a, b)]\}$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Probabilities
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     In mathematical terms, the notion of probability depends on sigma algebra
     """)
     return
@@ -243,13 +141,11 @@ def _(mo):
     mo.md(r"""
     ### Coin Toss
 
-    Whenever we talk about the probablility of something happening, we are refering to the value of some $P(A)$, where $P$ is a probability function in some probability space $(\Omega, F, P)$, and $A$ is some event in $F$. For example, let's define a probability space for a coin flip that might produce heads or tails:
+    Whenever we talk about the probablility of something happening, we are refering to the value of some $P(A)$, where $P$ is a probability function in some probability space $(\Omega, F, P)$, and $A$ is some event in a $\sigma$-algebra $F$. For example, let's define a probability space for a coin flip that might produce heads or tails:
 
     **Defining $\Omega$:** Since we only have two possible samples (heads or tails), $\Omega$ will only have two elements in this case:
 
     $$\Omega = \{H, T\}.$$
-
-    Note: this is a shorthand for $\exists \Omega\, (x \in \Omega \leftrightarrow x = H \lor x = T)$. More generally, we will sometimes use "$S = \{x_1, \ldots, x_n\}$" as a shorthand for $\exists S\, (y \in S \leftrightarrow y = x_1 \lor \cdots \lor y = x_n)$, or simply "$\{x_1, \ldots, x_n\}$" to refer to that set $S$.
 
     **Defining $F$:** Since $\mathcal P(\Omega) = \{\{H, T\}, \{H\}, \{T\}, \emptyset\}$, we only have a couple options here which are closed under complementation and countable unions:
 
