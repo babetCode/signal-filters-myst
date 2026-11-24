@@ -18,7 +18,7 @@ app = marimo.App(app_title="Axioms", css_file="notebook-styles.css")
 def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
-    subtitle: "Axiomatic Structure"
+    subtitle: "From Sentences to Numbers"
     abbreviations:
       iff: if and only if
       diff: null
@@ -191,7 +191,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Provisos:** Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$ (this is covered in the Axiom of Pairing section). The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, our guarantee that "every term names a single set" only holds at values of the variables where the provisos hold.
+    **Provisos:** Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$ (covered later in this chapter). The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, our guarantee that "every term names a single set" only holds at values of the variables where the provisos hold.
     """)
     return
 
@@ -220,6 +220,203 @@ def _(mo):
     $$\forall x\, \exists z\, \forall w\, (w \in z \leftrightarrow w = x).$$
 
     This set $z$ is called a singleton set because it contains exactly one element, and is denoted $\{x\}$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Union**
+
+    For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
+
+    $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \existsin z X (y\in z)].$$
+
+    By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Roster Notation
+
+    By combining union and pairing, we are guaranteed that given any sets $x_1, \ldots, x_n$, there exists a set containg exactly these sets as members. We refer to this set using "roster notation":
+
+    $$\{x_1, \ldots, x_n\}.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Separation**
+
+    For every formula $\varphi(x, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
+
+    For any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $x, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$:
+
+    $$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B \leftrightarrow (x \in A \land \varphi)].$$
+
+    In other words, every property definable by a formula carves out a subset of any given set. This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$, so we make an axiom for every $\varphi$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Separation Notation
+
+    We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of separation:
+
+    $$\{x \in A: \varphi\}.$$
+
+    By extensionality, this set is unique.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Additionally, we can take the intersection of a set of sets. Similar to the union, if a set $A$ contains $a_1, a_2, \ldots, a_n$, then we have[^intersection]:
+
+    $$\bigcap A := \{x \in a_1: x \in a_2 \land \cdots \land x \in a_n\}.$$
+
+    [^intersection]: Since intersection is commutative, we could equivalently define:
+        $$\bigcap A := a_1 \cup \cdots \cup a_n.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Replacement**
+
+    For every formula $\varphi(x, y, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
+
+    For any sets $A, p_1, \dots, p_n$, if for every $x \in A$ there is exactly one $y$ satisfying $\varphi$, then there exists a set $B$ distinct from $x, y, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those $y$ such that $\varphi$ holds for some $x \in A$:
+
+    $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forallin x A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \existsin x A\, \varphi)].$$
+
+    In other words, if a formula $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all outputs is also a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Replacement Notation
+
+    We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of replacement:
+
+    $$\{y: \existsin x A\, \varphi\}.$$
+
+    This is only meaningful when the hypothesis of the schema holds, namely $\forallin x A\, \exists! y\, \varphi$. By extensionality, this set is unique.
+
+    Where Separation notation selects elements *of* $A$, this notation collects *outputs*: $y$ is in the set iff $\varphi$ relates it to some $x \in A$. The elements of the resulting set need not be elements of $A$, and different $x$'s may share the same $y$, so the new set can be smaller than $A$.
+
+    Most often, $\varphi$ simply says that $y = t$ for some expression $t$ built from $x$ using notations we have already introduced, such as $\{x\}$, $(x, c)$, or $x \cup \{x\}$. We then write
+
+    $$\{t: x \in A\} := \{y: \existsin x A\, (y = t)\},$$
+
+    where $y$ is a variable that does not occur in $t$. Because each of these expressions exists and is unique for every $x$, the hypothesis $\forallin x A\, \exists! y\, (y = t)$ holds automatically.
+
+    For example, if $A = \{\emptyset, \{\emptyset\}\}$, then
+
+    $$\{\{x\}: x \in A\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Set-Builder Notation
+
+    Often we want to transform only *some* of the elements of a set. We cannot simply add a filter to $\varphi$, because Replacement requires that *every* $x \in A$ has an output. Instead, we first use Separation to select the elements we want, and then use Replacement on the result. For a formula $\psi$, we write
+
+    $$\{y: \existsin x A\, (\psi \land \varphi)\} := \{y: \existsin x {A'}\, \varphi\}, \quad \text{where } A' = \{x \in A: \psi\}.$$
+
+    The hypothesis of Replacement for $A'$ is equivalent to $\forallin x A\, (\psi \rightarrow \exists! y\, \varphi)$: only the $x$'s satisfying $\psi$ need an output. Unpacking the definitions, $y$ is in this set iff there is some $x \in A$ such that both $\psi$ and $\varphi$ hold.
+
+    As before, when $\varphi$ is $y = t$ for some expression $t$ built from $x$, we abbreviate
+
+    $$\{t: x \in A \land \psi\} := \{y: \existsin x A\, (\psi \land y = t)\}.$$
+
+    This generalizes both earlier notations:
+
+    - If $t$ is $x$ itself, we get $\{x: x \in A \land \psi\}$, which is just $\{x \in A: \psi\}$ from Separation.
+    - If $\psi$ is trivially true (such as $x = x$), then $A' = A$ by extensionality, and we recover $\{t: x \in A\}$ from Replacement.
+
+    For example, let $A = \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}$. Separation first gives $A' = \{x \in A: \neg(x = \emptyset)\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}$, and then Replacement wraps each remaining element in braces:
+
+    $$\{\{x\}: x \in A \land \neg(x = \emptyset)\} = \{\{\{\emptyset\}\}, \{\{\{\emptyset\}\}\}\}.$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Power Set**
+
+    For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
+
+    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
+
+    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Infinity**
+
+    At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
+
+    $$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Regularity**
+
+    Every nonempty set $A$ has a member $x$ that shares no members with $A$:
+
+    $$\forall A\,[\exists x\,(x \in A) \rightarrow \existsin x A\, \neg\exists z\,(z \in x \land z \in A)].$$
+
+    Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. This has two consequences:
+
+    1. No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
+    2. There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Axiom of **Choice**
+
+    For any set $X$ whose members are nonempty, pairwise disjoint sets, there exists a set $C$ that contains exactly one element from each member of $X$:
+
+    $$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A \in X\,\forall B \in X\,(\neg(A = B) \rightarrow \neg\exists z\,(z \in A \land z \in B))\big) \rightarrow \exists C\,\forall A \in X\,\exists! z\,(z \in A \land z \in C)\big].$$
+
+    The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
+
+    Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.
     """)
     return
 
@@ -264,20 +461,6 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Axiom of **Union**
-
-    For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
-
-    $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \existsin z X (y\in z)].$$
-
-    By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     ### Union Operator
 
     The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by pairing):
@@ -287,36 +470,6 @@ def _(mo):
     Since the pairing set is unordered, this operation is commutative and we have
 
     $$x \cup y = y \cup x.$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Separation**
-
-    For every formula $\varphi(x, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
-
-    For any sets $A, p_1, \dots, p_n$, there exists a set $B$ distinct from $x, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those elements $x$ of $A$ that satisfy $\varphi$:
-
-    $$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B \leftrightarrow (x \in A \land \varphi)].$$
-
-    In other words, every property definable by a formula carves out a subset of any given set. This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$, so we make an axiom for every $\varphi$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Separation Set-Builder
-
-    We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of separation:
-
-    $$\{x \in A: \varphi\}.$$
-
-    By extensionality, this set is unique.
     """)
     return
 
@@ -342,102 +495,6 @@ def _(mo):
         &\leftrightarrow C = \{x \in B: x \in A\} \\
         &\leftrightarrow C = B \cap A \\
         \end{align*}$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Additionally, we can take the intersection of a set of sets. Similar to the union, if a set $A$ contains $a_1, a_2, \ldots, a_n$, then we have[^intersection]:
-
-    $$\bigcap A := \{x \in a_1: x \in a_2 \land \cdots \land x \in a_n\}.$$
-
-    [^intersection]: Since intersection is commutative, we could equivalently define:
-        $$\bigcap A := a_1 \cup \cdots \cup a_n.$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Replacement**
-
-    For every formula $\varphi(x, y, A, p_1, \dots, p_n)$ where $A, p_1, \dots, p_n$ are sets, the following is an axiom:
-
-    For any sets $A, p_1, \dots, p_n$, if for every $x \in A$ there is exactly one $y$ satisfying $\varphi$, then there exists a set $B$ distinct from $x, y, A, p_1, \dots, p_n$ (so $B$ is not free in $\varphi$) whose elements are exactly those $y$ such that $\varphi$ holds for some $x \in A$:
-
-    $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forallin x A\, \exists! y\, \varphi \rightarrow \exists B\, \forall y\, (y \in B \leftrightarrow \existsin x A\, \varphi)].$$
-
-    In other words, if a formula $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all outputs is also a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Replacement Set-Builder
-
-    We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of replacement:
-
-    $$\{y: \existsin x A\, \varphi\}.$$
-
-    This is only meaningful when the hypothesis of the schema holds, namely $\forallin x A\, \exists! y\, \varphi$. By extensionality, this set is unique.
-
-    Where Separation notation selects elements *of* $A$, this notation collects *outputs*: $y$ is in the set iff $\varphi$ relates it to some $x \in A$. The elements of the resulting set need not be elements of $A$, and different $x$'s may share the same $y$, so the new set can be smaller than $A$.
-
-    Most often, $\varphi$ simply says that $y = t$ for some expression $t$ built from $x$ using notations we have already introduced, such as $\{x\}$, $(x, c)$, or $x \cup \{x\}$. We then write
-
-    $$\{t: x \in A\} := \{y: \existsin x A\, (y = t)\},$$
-
-    where $y$ is a variable that does not occur in $t$. Because each of these expressions exists and is unique for every $x$, the hypothesis $\forallin x A\, \exists! y\, (y = t)$ holds automatically.
-
-    For example, if $A = \{\emptyset, \{\emptyset\}\}$, then
-
-    $$\{\{x\}: x \in A\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}.$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Combined Set-Builder
-
-    Often we want to transform only *some* of the elements of a set. We cannot simply add a filter to $\varphi$, because Replacement requires that *every* $x \in A$ has an output. Instead, we first use Separation to select the elements we want, and then use Replacement on the result. For a formula $\psi$, we write
-
-    $$\{y: \existsin x A\, (\psi \land \varphi)\} := \{y: \existsin x {A'}\, \varphi\}, \quad \text{where } A' = \{x \in A: \psi\}.$$
-
-    The hypothesis of Replacement for $A'$ is equivalent to $\forallin x A\, (\psi \rightarrow \exists! y\, \varphi)$: only the $x$'s satisfying $\psi$ need an output. Unpacking the definitions, $y$ is in this set iff there is some $x \in A$ such that both $\psi$ and $\varphi$ hold.
-
-    As before, when $\varphi$ is $y = t$ for some expression $t$ built from $x$, we abbreviate
-
-    $$\{t: x \in A \land \psi\} := \{y: \existsin x A\, (\psi \land y = t)\}.$$
-
-    This generalizes both earlier notations:
-
-    - If $t$ is $x$ itself, we get $\{x: x \in A \land \psi\}$, which is just $\{x \in A: \psi\}$ from Separation.
-    - If $\psi$ is trivially true (such as $x = x$), then $A' = A$ by extensionality, and we recover $\{t: x \in A\}$ from Replacement.
-
-    For example, let $A = \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}\}$. Separation first gives $A' = \{x \in A: \neg(x = \emptyset)\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}$, and then Replacement wraps each remaining element in braces:
-
-    $$\{\{x\}: x \in A \land \neg(x = \emptyset)\} = \{\{\{\emptyset\}\}, \{\{\{\emptyset\}\}\}\}.$$
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Power Set**
-
-    For any set $x$, there exists a set $y$ containing precisely all the subsets of $x$:
-
-    $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
-
-    This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
     """)
     return
 
@@ -473,18 +530,6 @@ def _(mo):
     $$Y^X := \{f \in \mathcal P(X \times Y): f \text{ is a function} \land \forallin a X\, \exists b\, ((a, b) \in f)\}.$$
 
     For a function $f: X \times X \to Y$ we write $f(a, b)$ for $f((a, b))$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Infinity**
-
-    At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
-
-    $$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
     """)
     return
 
@@ -793,39 +838,6 @@ def _(mo):
     [^cauchy]: The other standard construction takes equivalence classes of Cauchy sequences $\mathbb N \to \mathbb Q$ under the relation "the difference tends to $0$". It uses the quotient lemma again, and it generalizes to completing arbitrary metric spaces. Dedekind cuts need no functions or sequences and make order and suprema immediate.
 
     [^rudin]: See Rudin, *Principles of Mathematical Analysis*, Chapter 1 (Appendix), or Enderton, *Elements of Set Theory*, Chapter 5.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Regularity**
-
-    Every nonempty set $A$ has a member $x$ that shares no members with $A$:
-
-    $$\forall A\,[\exists x\,(x \in A) \rightarrow \existsin x A\, \neg\exists z\,(z \in x \land z \in A)].$$
-
-    Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. This has two consequences:
-
-    1. No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
-    2. There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Axiom of **Choice**
-
-    For any set $X$ whose members are nonempty, pairwise disjoint sets, there exists a set $C$ that contains exactly one element from each member of $X$:
-
-    $$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A \in X\,\forall B \in X\,(\neg(A = B) \rightarrow \neg\exists z\,(z \in A \land z \in B))\big) \rightarrow \exists C\,\forall A \in X\,\exists! z\,(z \in A \land z \in C)\big].$$
-
-    The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
-
-    Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.
     """)
     return
 

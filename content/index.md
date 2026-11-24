@@ -97,12 +97,4 @@ As you have likely already figured out if you are reading this on a computer wit
 
 If you have any questions, comments, or think you've found an error in this book, I'd love to know!
 
-```{marimo} python
-if reveal_btn.value:
-    _email = base64.b64decode("YWRyaWVuYmFiZXQxQGdtYWlsLmNvbQ==").decode("utf-8")
-    _output = mo.md(f"Contact: [{_email}](mailto:{_email})")
-else:
-    _output = reveal_btn
-
-_output
-```
+[adrienbabet1@gmail.com](mailto:adrienbabet1@gmail.com)

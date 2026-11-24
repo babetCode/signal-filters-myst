@@ -24,7 +24,7 @@ def imports():
     import base64
 
     reveal_btn = mo.ui.run_button(label="Show Email Address")
-    return base64, mo, reveal_btn
+    return (mo,)
 
 
 @app.cell(hide_code=True)
@@ -156,19 +156,9 @@ def _(mo):
     ## Feedback
 
     If you have any questions, comments, or think you've found an error in this book, I'd love to know!
+
+    [adrienbabet1@gmail.com](mailto:adrienbabet1@gmail.com)
     """)
-    return
-
-
-@app.cell
-def _(base64, mo, reveal_btn):
-    if reveal_btn.value:
-        _email = base64.b64decode("YWRyaWVuYmFiZXQxQGdtYWlsLmNvbQ==").decode("utf-8")
-        _output = mo.md(f"Contact: [{_email}](mailto:{_email})")
-    else:
-        _output = reveal_btn
-
-    _output
     return
 
 

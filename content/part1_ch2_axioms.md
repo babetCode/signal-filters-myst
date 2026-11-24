@@ -2,7 +2,7 @@
 title: Axioms
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
-subtitle: "Axiomatic Structure"
+subtitle: "From Sentences to Numbers"
 abbreviations:
   iff: if and only if
   diff: null
@@ -17,6 +17,7 @@ math:
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [
@@ -149,7 +150,7 @@ where $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ wit
 
 [^definitional-extension]: In logic this device is called an *extension by definitions*. It is *conservative*: anything expressible without the new notation that can be proven with it can also be proven without it. So the notation adds convenience but no new content.
   
-**Provisos:** Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$ (this is covered in the Axiom of Pairing section). The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, our guarantee that "every term names a single set" only holds at values of the variables where the provisos hold.
+**Provisos:** Some notation names a set only under a condition. Function application is the main example: $f(a)$ names a set only when $f$ is a function and $a$ is a first coordinate of some element of $f$ (covered later in this chapter). The Replacement set-builder notation below is another, where the condition is the hypothesis of the schema. For such notation we give a *proviso* $D(x_1, \dots, x_n)$ and prove only $\forall x_1 \cdots \forall x_n\,(D \rightarrow \exists! y\, \delta)$. Unpacking then adds $D$ as an extra conjunct (so every atomic formula still unpacks to an honest formula), and we follow the convention of using the notation only where its proviso is known to hold. For terms using such notation, our guarantee that "every term names a single set" only holds at values of the variables where the provisos hold.
   
 ## Axiom of **Pairing**
 
@@ -167,31 +168,6 @@ $$\forall x\, \exists z\, \forall w\, (w \in z \leftrightarrow w = x).$$
 
 This set $z$ is called a singleton set because it contains exactly one element, and is denoted $\{x\}$.
   
-### Ordered Pairs
-
-Given two sets $a$ and $b$, the axiom of pairing guarantees the existence of the singleton $\{a\}$ and the pairing set $\{a, b\}$. Paring again guarantees the existence of $\{\{a\},\{a,b\}\}$. We call this the "ordered pair" of $a$ and $b$ and use the shorthand
-
-$$(a, b) := \{\{a\},\{a,b\}\},$$
-
-where $a$ and $b$ are called the "coordinates"[^kuratowski].
-
-By extensionality, two ordered pairs are equal iff their corresponding coordinates are equal:
-
-$$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
-
-[^kuratowski]: There are many ways to define ordered pairs, but we use this one by convetion (called the Kuratowski construction).
-  
-### Functions
-
-A set $f$ is a function iff:
-
-- Every element of $f$ is an ordered pair:
-  $$\forallin x f \, \exists a\, \exists b\, [x = (a, b)]$$
-- Each first coordinate has at most one partner:
-  $$\forall a\, \forall b\, \forall c\; ([(a, b) \in f \land (a, c) \in f] \rightarrow b = c)$$
-
-If $f$ is a function and $(a, b) \in f$, then we write $f(a) = b$.
-  
 ## Axiom of **Union**
 
 For any set of sets $X$, there exists a set $U$ whose elements are precisely the elements that belong to at least one of the sets contained in $X$:
@@ -200,15 +176,11 @@ $$\forall X\,\exists U\,\forall y\, [y\in U\leftrightarrow \existsin z X (y\in z
 
 By Extensionality, this union set $U$ is unique. It is sometimes denoted as $\bigcup X$ or $\bigcup_{w \in X} w$.
   
-### Union Operator
+### Roster Notation
 
-The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by pairing):
+By combining union and pairing, we are guaranteed that given any sets $x_1, \ldots, x_n$, there exists a set containg exactly these sets as members. We refer to this set using "roster notation":
 
-$$x \cup y := \bigcup \{x, y\}.$$
-
-Since the pairing set is unordered, this operation is commutative and we have
-
-$$x \cup y = y \cup x.$$
+$$\{x_1, \ldots, x_n\}.$$
   
 ## Axiom of **Separation**
 
@@ -220,32 +192,13 @@ $$\forall p_1 \cdots \forall p_n\, \forall A\, \exists B\, \forall x\, [x \in B 
 
 In other words, every property definable by a formula carves out a subset of any given set. This is called an axiom schema, rather than a single axiom, because we want Separation to hold for all formulas $\varphi$, so we make an axiom for every $\varphi$.
   
-### Separation Set-Builder
+### Separation Notation
 
 We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of separation:
 
 $$\{x \in A: \varphi\}.$$
 
 By extensionality, this set is unique.
-  
-### Intersection Operator
-
-The intersection operator is denoted $\cap$. When placed between two sets, such as:
-
-$$A \cap B,$$
-
-it acts as a shorthand for $\{x \in A: x \in B\}$. Since we are treating $A$ and $B$ symmetrically here, intersection is commutative[^intersection-commutativity]:
-
-$$A \cap B = B \cap A.$$
-
-[^intersection-commutativity]:
-    $$\begin{align*}
-    C = A \cap B &\leftrightarrow C = \{x \in A: x \in B\} \\
-    &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in A \land x \in B] \\
-    &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in B \land x \in A] \\
-    &\leftrightarrow C = \{x \in B: x \in A\} \\
-    &\leftrightarrow C = B \cap A \\
-    \end{align*}$$
   
 Additionally, we can take the intersection of a set of sets. Similar to the union, if a set $A$ contains $a_1, a_2, \ldots, a_n$, then we have[^intersection]:
 
@@ -264,7 +217,7 @@ $$\forall p_1 \cdots \forall p_n\, \forall A\,[\forallin x A\, \exists! y\, \var
 
 In other words, if a formula $\varphi$ assigns to each $x \in A$ exactly one $y$, then the collection of all outputs is also a set. Like Separation, this is a schema because we want it to hold for every formula $\varphi$.
   
-### Replacement Set-Builder
+### Replacement Notation
 
 We use the following notation to refer to a set whose existence is guaranteed by the axiom schema of replacement:
 
@@ -284,7 +237,7 @@ For example, if $A = \{\emptyset, \{\emptyset\}\}$, then
 
 $$\{\{x\}: x \in A\} = \{\{\emptyset\}, \{\{\emptyset\}\}\}.$$
   
-### Combined Set-Builder
+### Set-Builder Notation
 
 Often we want to transform only *some* of the elements of a set. We cannot simply add a filter to $\varphi$, because Replacement requires that *every* $x \in A$ has an output. Instead, we first use Separation to select the elements we want, and then use Replacement on the result. For a formula $\psi$, we write
 
@@ -313,6 +266,87 @@ $$\forall x\,\exists y\,\forall z\, (z\in y \leftrightarrow z \subseteq x).$$
 
 This set $y$ is known as the power set of $x$ and is denoted $\mathcal{P}(x)$. By Extensionality, it is unique.
   
+## Axiom of **Infinity**
+
+At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
+
+$$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
+  
+## Axiom of **Regularity**
+
+Every nonempty set $A$ has a member $x$ that shares no members with $A$:
+
+$$\forall A\,[\exists x\,(x \in A) \rightarrow \existsin x A\, \neg\exists z\,(z \in x \land z \in A)].$$
+
+Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. This has two consequences:
+
+1. No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
+2. There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
+  
+## Axiom of **Choice**
+
+For any set $X$ whose members are nonempty, pairwise disjoint sets, there exists a set $C$ that contains exactly one element from each member of $X$:
+
+$$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A \in X\,\forall B \in X\,(\neg(A = B) \rightarrow \neg\exists z\,(z \in A \land z \in B))\big) \rightarrow \exists C\,\forall A \in X\,\exists! z\,(z \in A \land z \in C)\big].$$
+
+The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
+
+Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.
+  
+### Ordered Pairs
+
+Given two sets $a$ and $b$, the axiom of pairing guarantees the existence of the singleton $\{a\}$ and the pairing set $\{a, b\}$. Paring again guarantees the existence of $\{\{a\},\{a,b\}\}$. We call this the "ordered pair" of $a$ and $b$ and use the shorthand
+
+$$(a, b) := \{\{a\},\{a,b\}\},$$
+
+where $a$ and $b$ are called the "coordinates"[^kuratowski].
+
+By extensionality, two ordered pairs are equal iff their corresponding coordinates are equal:
+
+$$(a, b) = (c, d) \leftrightarrow a = c \land b = d.$$
+
+[^kuratowski]: There are many ways to define ordered pairs, but we use this one by convetion (called the Kuratowski construction).
+  
+### Functions
+
+A set $f$ is a function iff:
+
+- Every element of $f$ is an ordered pair:
+  $$\forallin x f \, \exists a\, \exists b\, [x = (a, b)]$$
+- Each first coordinate has at most one partner:
+  $$\forall a\, \forall b\, \forall c\; ([(a, b) \in f \land (a, c) \in f] \rightarrow b = c)$$
+
+If $f$ is a function and $(a, b) \in f$, then we write $f(a) = b$.
+  
+### Union Operator
+
+The union operator is denoted $\cup$. When placed between two sets $x$ and $y$, it is a shorthand to reference the union of the set containing $x$ and $y$ (whose existence is guaranteed by pairing):
+
+$$x \cup y := \bigcup \{x, y\}.$$
+
+Since the pairing set is unordered, this operation is commutative and we have
+
+$$x \cup y = y \cup x.$$
+  
+### Intersection Operator
+
+The intersection operator is denoted $\cap$. When placed between two sets, such as:
+
+$$A \cap B,$$
+
+it acts as a shorthand for $\{x \in A: x \in B\}$. Since we are treating $A$ and $B$ symmetrically here, intersection is commutative[^intersection-commutativity]:
+
+$$A \cap B = B \cap A.$$
+
+[^intersection-commutativity]:
+    $$\begin{align*}
+    C = A \cap B &\leftrightarrow C = \{x \in A: x \in B\} \\
+    &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in A \land x \in B] \\
+    &\leftrightarrow \forall x\, [x \in C \leftrightarrow x \in B \land x \in A] \\
+    &\leftrightarrow C = \{x \in B: x \in A\} \\
+    &\leftrightarrow C = B \cap A \\
+    \end{align*}$$
+  
 ### Cartesian Product
 
 For sets $X$ and $Y$, we want to define $X \times Y$ as the set of all ordered pairs $(a, b)$ such that $a \in X \land B \in Y$. To show this is a set, we need a set big enough to contain all such pairs and then use separation to select those we want.
@@ -334,12 +368,6 @@ We say $f$ is a *function from $X$ to $Y$*, written $f: X \to Y$, if $f$ is a fu
 $$Y^X := \{f \in \mathcal P(X \times Y): f \text{ is a function} \land \forallin a X\, \exists b\, ((a, b) \in f)\}.$$
 
 For a function $f: X \times X \to Y$ we write $f(a, b)$ for $f((a, b))$.
-  
-## Axiom of **Infinity**
-
-At least one infinite set $I$ exists. The empty set $\emptyset$ is an element of $I$, and whenever a set $x$ is an element of $I$, so is $x \cup \{x\}$:
-
-$$\exists I\, [\emptyset \in I \land \forall x\, (x \in I \rightarrow x \cup \{x\} \in I)].$$
   
 ### Natural Numbers
 
@@ -612,24 +640,3 @@ $$\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q \subseteq \mathbb R.$$
 [^cauchy]: The other standard construction takes equivalence classes of Cauchy sequences $\mathbb N \to \mathbb Q$ under the relation "the difference tends to $0$". It uses the quotient lemma again, and it generalizes to completing arbitrary metric spaces. Dedekind cuts need no functions or sequences and make order and suprema immediate.
 
 [^rudin]: See Rudin, *Principles of Mathematical Analysis*, Chapter 1 (Appendix), or Enderton, *Elements of Set Theory*, Chapter 5.
-  
-## Axiom of **Regularity**
-
-Every nonempty set $A$ has a member $x$ that shares no members with $A$:
-
-$$\forall A\,[\exists x\,(x \in A) \rightarrow \existsin x A\, \neg\exists z\,(z \in x \land z \in A)].$$
-
-Using the abbreviations above, the last part says $x \cap A = \emptyset$. This is also called the Axiom of Foundation. It rules out sets that are “circular” in their membership. This has two consequences:
-
-1. No set is a member of itself. If $A \in A$, then the singleton $\{A\}$ is nonempty, so by Regularity it has a member disjoint from it. The only member is $A$, so $A \cap \{A\} = \emptyset$. But $A \in A$ and $A \in \{A\}$, so $A$ is in both, a contradiction.
-2. There are no infinite descending chains $\cdots \in x_3 \in x_2 \in x_1 \in x_0$.
-  
-## Axiom of **Choice**
-
-For any set $X$ whose members are nonempty, pairwise disjoint sets, there exists a set $C$ that contains exactly one element from each member of $X$:
-
-$$\forall X\,\big[\big(\forall A \in X\,\exists y\,(y \in A) \;\land\; \forall A \in X\,\forall B \in X\,(\neg(A = B) \rightarrow \neg\exists z\,(z \in A \land z \in B))\big) \rightarrow \exists C\,\forall A \in X\,\exists! z\,(z \in A \land z \in C)\big].$$
-
-The set $C$ is called a choice set or selector for $X$. Unlike the other axioms, Choice asserts that a set exists without giving any rule for constructing it. Informally, it lets us make infinitely many arbitrary selections at once. It is equivalent to several other well-known statements, such as the Well-Ordering Theorem, Zorn’s Lemma, and “every product of nonempty sets is nonempty.”
-
-Note: The version above (disjoint sets) is one of many equivalent formulations. Another common one says that for every collection of nonempty sets there exists a function that picks an element from each. Once we define functions in terms of sets, this is easy to state, but the disjoint-sets form can be written directly in the language of $\in$ and $=$.

@@ -17,6 +17,7 @@ math:
 ---
 
 ```{marimo-config}
+:eval: false
 ---
 pyproject: |-
   dependencies = [

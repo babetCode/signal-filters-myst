@@ -16,7 +16,7 @@ project:
     - title: "Part 1: Mathematical Foundations"
       children:
       - file: part1_ch1_language_of_logic.md
-      - file: part1_ch2_zfc_axioms.md
+      - file: part1_ch2_axioms.md
       - file: part1_ch3_numbers_probabilities.md
     - file: glossary-terms.md
 site:
