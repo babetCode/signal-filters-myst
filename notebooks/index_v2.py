@@ -155,7 +155,7 @@ def _(mo):
     | Part | Chapters | Question it answers |
     |---|---|---|
     | Part 1: Choosing α | [1](ch1_language_of_logic_v2.md)–[8](ch8_bayesian_view_v2.md) | Given how noisy a prediction and a measurement are, how much weight should each get? |
-    | Part 2: The Scalar Kalman Filter | [9](ch9_noise_levels_v2.md)–[11](ch11_measurement_functions_v2.md) | How noisy are the prediction and the measurement, how should we predict, and what if the sensor measures something other than what we want to know? |
+    | Part 2: The Scalar Kalman Filter | [9](/ch9_noise_levels_v2.md)–[11](ch11_measurement_functions_v2) | How noisy are the prediction and the measurement, how should we predict, and what if the sensor measures something other than what we want to know? |
     | Part 3: State Vectors | [12](ch12_vectors_matrices_covariance_v2.md)–[14](ch14_kalman_filters_in_practice_v2.md) | What if what we want to know can't be represented by a single number? |
     | Part 4: Nonlinearity | [15](ch15_extended_kalman_filter_v2.md)–[16](ch16_unscented_kalman_filter_v2.md) | What if it changes, or is measured, in nonlinear ways? |
     | Part 5: Orientation | [17](ch17_rotations_v2.md)–[19](ch19_ahrs_v2.md) | How do we represent and estimate which way something is pointing, without singularities? |

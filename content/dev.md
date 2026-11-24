@@ -30,7 +30,7 @@ The directive syntax in .md files is:
 
 The options are:
 
-|Option | Type | Default | Behavior | Template Option |
+|Option | Type | Default | Behavior | `sync_notebooks` Comment Option |
 |-------|------|---------|----------|-----------------------|
 | `:eval:` | boolean | `true` | Execute the cell during the build | Yes|
 | `:echo:` | boolean | `false` | Render source as static code | Yes|
