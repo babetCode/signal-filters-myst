@@ -22,8 +22,10 @@ src/jupyter_book_marimo/assets/*
 
 # marimo cache
 __marimo__/
-
 .marimo-export/
 
 # images
 notebooks/public/
+
+# processed notebooks
+content/nb/
