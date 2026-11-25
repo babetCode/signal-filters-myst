@@ -68,7 +68,8 @@ def display_settings(dedent, mo, plt, schemdraw):
 @app.cell
 def data(Path, np):
     # jb: include=false
-    IMAGES_DIR = Path(__file__).parent / "public"
+    IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
     # Bathroom scale: constant true weight, HX711 at 10 SPS, 3 s of data, sigma = 1 lb
     true_weight = 155.0  # lb

@@ -50,7 +50,8 @@ def imports():
 def display_settings(Path, dedent, mo, np, plt):
     # jb: include=false
     plt.style.use("default")
-    IMAGES_DIR = Path(__file__).parent / "public"
+    IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
     def graphic(x):
         return mo.Html(dedent(f'''\

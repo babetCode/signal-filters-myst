@@ -86,7 +86,8 @@ def helpers(np):
 @app.cell
 def data(Path, np):
     # jb: include=false
-    IMAGES_DIR = Path(__file__).parent / "public"
+    IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
     # Bathroom scale, the Introduction's 30 readings (seed 1)
     scale_x = 155.0

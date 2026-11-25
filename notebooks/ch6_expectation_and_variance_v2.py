@@ -62,7 +62,8 @@ def display_settings(dedent, mo, plt):
 @app.cell
 def _(Path):
     # jb: include=false
-    IMAGES_DIR = Path(__file__).parent / "public"
+    IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     return (IMAGES_DIR,)
 
 
