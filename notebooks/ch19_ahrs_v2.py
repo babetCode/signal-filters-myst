@@ -9,7 +9,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Attitude and Heading Reference Systems", css_file="notebook-styles.css")
+app = marimo.App(app_title="19. Attitude and Heading Reference Systems", css_file="notebook-styles.css")
 
 
 @app.cell

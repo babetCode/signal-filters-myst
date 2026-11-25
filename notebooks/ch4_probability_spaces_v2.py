@@ -10,7 +10,7 @@ import marimo
 
 __generated_with = "0.25.1"
 app = marimo.App(
-    app_title="Probability Spaces",
+    app_title="4. Probability Spaces",
     css_file="notebook-styles.css",
 )
 

@@ -1,5 +1,5 @@
 ---
-title: Language of Logic
+title: 1. Language of Logic
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "From Statements to Proofs"

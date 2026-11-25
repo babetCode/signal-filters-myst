@@ -1,5 +1,5 @@
 ---
-title: Expectation and Variance
+title: 6. Expectation and Variance
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Why Averaging Works"
@@ -53,7 +53,8 @@ def graphic(x):
 
 ```{marimo} python
 :include: false
-IMAGES_DIR = Path(__file__).parent / "public"
+IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 ```
 
 :::{seealso icon=false} 🔗 **Prerequisites**

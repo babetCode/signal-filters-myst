@@ -7,7 +7,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Language of Logic", css_file="notebook-styles.css")
+app = marimo.App(app_title="1. Language of Logic", css_file="notebook-styles.css")
 
 
 @app.cell

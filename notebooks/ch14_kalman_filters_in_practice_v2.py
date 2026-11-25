@@ -10,7 +10,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Kalman Filters in Practice", css_file="notebook-styles.css")
+app = marimo.App(app_title="14. Kalman Filters in Practice", css_file="notebook-styles.css")
 
 
 @app.cell

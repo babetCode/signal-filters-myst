@@ -1,5 +1,5 @@
 ---
-title: The Bayesian View
+title: 8. The Bayesian View
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Priors, Likelihoods, and Posteriors"

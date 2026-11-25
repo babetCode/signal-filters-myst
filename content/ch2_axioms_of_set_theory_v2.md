@@ -1,5 +1,5 @@
 ---
-title: Axioms of Set Theory
+title: 2. Axioms of Set Theory
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "From Axioms to Natural Numbers"

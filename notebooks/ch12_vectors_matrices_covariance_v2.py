@@ -9,7 +9,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Vectors, Matrices, and Covariance", css_file="notebook-styles.css")
+app = marimo.App(app_title="12. Vectors, Matrices, and Covariance", css_file="notebook-styles.css")
 
 
 @app.cell

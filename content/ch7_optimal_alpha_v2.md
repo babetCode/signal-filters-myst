@@ -1,5 +1,5 @@
 ---
-title: "The Optimal \u03B1"
+title: "7. The Optimal \u03B1"
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Combining Two Noisy Estimates"

@@ -9,7 +9,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Axioms of Set Theory", css_file="notebook-styles.css")
+app = marimo.App(app_title="2. Axioms of Set Theory", css_file="notebook-styles.css")
 
 
 @app.cell

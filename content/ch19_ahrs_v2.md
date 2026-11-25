@@ -1,5 +1,5 @@
 ---
-title: Attitude and Heading Reference Systems
+title: 19. Attitude and Heading Reference Systems
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Fusing Gyroscopes, Accelerometers, and Magnetometers"
@@ -41,7 +41,8 @@ from pathlib import Path
 :include: false
 
 plt.style.use("default")
-IMAGES_DIR = Path(__file__).parent / "public"
+IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 def graphic(x):
     return mo.Html(dedent(f'''\

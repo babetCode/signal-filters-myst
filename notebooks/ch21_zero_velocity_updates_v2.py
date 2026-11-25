@@ -9,7 +9,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="Zero-Velocity Updates", css_file="notebook-styles.css")
+app = marimo.App(app_title="21. Zero-Velocity Updates", css_file="notebook-styles.css")
 
 
 @app.cell

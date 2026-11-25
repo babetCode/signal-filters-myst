@@ -1,5 +1,5 @@
 ---
-title: Sets for Probability
+title: 3. Sets for Probability
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Complements, Preimages, and Infinity"

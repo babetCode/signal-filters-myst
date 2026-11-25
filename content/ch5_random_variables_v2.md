@@ -1,5 +1,5 @@
 ---
-title: Random Variables
+title: 5. Random Variables
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "From Outcomes to Numbers"
@@ -52,7 +52,8 @@ def graphic(x):
 
 ```{marimo} python
 :include: false
-IMAGES_DIR = Path(__file__).parent / "public"
+IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 ```
 
 :::{seealso icon=false} 🔗 **Prerequisites**

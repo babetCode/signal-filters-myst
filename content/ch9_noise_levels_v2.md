@@ -1,5 +1,5 @@
 ---
-title: Noise Levels
+title: 9. Noise Levels
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "The Scalar Kalman Filter"
@@ -78,7 +78,8 @@ def nis_interval(N, rng_seed=12, level=0.95):
 :name: data
 :include: false
 
-IMAGES_DIR = Path(__file__).parent / "public"
+IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 # Bathroom scale, the Introduction's 30 readings (seed 1)
 scale_x = 155.0

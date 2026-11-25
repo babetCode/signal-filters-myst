@@ -1,5 +1,5 @@
 ---
-title: Zero-Velocity Updates
+title: 21. Zero-Velocity Updates
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Gait Analysis with a Foot-Mounted IMU"
@@ -44,7 +44,8 @@ from pathlib import Path
 :include: false
 
 plt.style.use("default")
-IMAGES_DIR = Path(__file__).parent / "public"
+IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 def graphic(x):
     return mo.Html(dedent(f'''\

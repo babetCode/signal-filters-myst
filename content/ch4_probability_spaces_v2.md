@@ -1,5 +1,5 @@
 ---
-title: Probability Spaces
+title: 4. Probability Spaces
 # marimo-version: 0.25.1
 # css_file: notebook-styles.css
 subtitle: "Measuring Uncertainty"
@@ -117,12 +117,12 @@ A statement about the result of the experiment corresponds to the set of outcome
 
 Which subsets of $\Omega$ should be given probabilities? For a die, all of them. For the scale noise, this chapter shows that we *cannot* sensibly give a probability to every subset of $\mathbb R$. So a model must specify its collection of events, and that collection must be closed under the operations in the table.
   
-## σ-Algebras
+## Sigma-Algebras
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Sigma-algebra
-: A σ-algebra on a set $\Omega$ is a set $\mathcal F \subseteq \mathcal P(\Omega)$ such that:
+: A $\sigma$-algebra on a set $\Omega$ is a set $\mathcal F \subseteq \mathcal P(\Omega)$ such that:
 
   1. $\Omega \in \mathcal F$;
   2. if $A \in \mathcal F$, then $A^c \in \mathcal F$ (complement relative to $\Omega$);
@@ -130,19 +130,19 @@ Sigma-algebra
 :::
 ::::
 
-The σ ("sigma", for *sum*) refers to the countable unions in condition 3. The pair $(\Omega, \mathcal F)$ is called a *measurable space*.
+The $\sigma$ ("sigma", for *sum*) refers to the countable unions in condition 3. The pair $(\Omega, \mathcal F)$ is called a *measurable space*.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Event
-: Given a {term}`sample space` $\Omega$ and a {term}`σ-algebra <sigma-algebra>` $\mathcal F$ on $\Omega$, an event is an element of $\mathcal F$.
+: Given a {term}`sample space` $\Omega$ and a {term}`$\sigma$-algebra <sigma-algebra>` $\mathcal F$ on $\Omega$, an event is an element of $\mathcal F$.
 :::
 ::::
 
 So every event is a set of outcomes, but a set of outcomes is an event only if it belongs to the chosen $\mathcal F$. The definition asks only for $\Omega$, complements, and countable unions; everything else in the table above follows.
 
 :::{important icon=false} 📐 **Lemma (Closure Properties)**
-Let $\mathcal F$ be a σ-algebra on $\Omega$. Then:
+Let $\mathcal F$ be a $\sigma$-algebra on $\Omega$. Then:
 
 1. $\emptyset \in \mathcal F$;
 2. if $A_1, \ldots, A_n \in \mathcal F$ with $n \ge 1$, then $\bigcup_{k=1}^n A_k \in \mathcal F$ and $\bigcap_{k=1}^n A_k \in \mathcal F$;
@@ -159,47 +159,47 @@ Let $\mathcal F$ be a σ-algebra on $\Omega$. Then:
 
 **Examples.**
 
-1. The power set $\mathcal P(\Omega)$ is a σ-algebra on $\Omega$, the largest one: all three conditions concern subsets of $\Omega$, and $\mathcal P(\Omega)$ contains them all.
-2. $\{\emptyset, \Omega\}$ is a σ-algebra, the smallest one, since every σ-algebra contains $\Omega$ and $\emptyset$.
-3. *A finite example.* For a die, $\mathcal F = \{\emptyset, \{1, 3, 5\}, \{2, 4, 6\}, \Omega\}$ is a σ-algebra. It contains $\Omega$, and the complement of each member is a member. For a sequence of members, the union is $\Omega$ if $\Omega$ occurs or both $\{1, 3, 5\}$ and $\{2, 4, 6\}$ occur; otherwise it is $\{1, 3, 5\}$ or $\{2, 4, 6\}$ if that set occurs; and otherwise every member of the sequence is $\emptyset$ and so is the union.
+1. The power set $\mathcal P(\Omega)$ is a $\sigma$-algebra on $\Omega$, the largest one: all three conditions concern subsets of $\Omega$, and $\mathcal P(\Omega)$ contains them all.
+2. $\{\emptyset, \Omega\}$ is a $\sigma$-algebra, the smallest one, since every $\sigma$-algebra contains $\Omega$ and $\emptyset$.
+3. *A finite example.* For a die, $\mathcal F = \{\emptyset, \{1, 3, 5\}, \{2, 4, 6\}, \Omega\}$ is a $\sigma$-algebra. It contains $\Omega$, and the complement of each member is a member. For a sequence of members, the union is $\Omega$ if $\Omega$ occurs or both $\{1, 3, 5\}$ and $\{2, 4, 6\}$ occur; otherwise it is $\{1, 3, 5\}$ or $\{2, 4, 6\}$ if that set occurs; and otherwise every member of the sequence is $\emptyset$ and so is the union.
 
 The third example describes **partial information**. If you are told only whether the die shows an even number, you can decide every event in $\mathcal F$ (did "odd" happen?) but not, say, $\{6\}$. In filtering, the information available at a given time is described in exactly this way.
   
-### Generated σ-Algebras
+### Generated Sigma-Algebras
 
-We rarely list a σ-algebra member by member. Instead we name a few sets that must be events and take the smallest σ-algebra containing them. That this exists rests on the following lemma.
+We rarely list a $\sigma$-algebra member by member. Instead we name a few sets that must be events and take the smallest $\sigma$-algebra containing them. That this exists rests on the following lemma.
 
-:::{important icon=false} 📐 **Lemma (Intersections of σ-Algebras)**
-If $\mathfrak S$ is a nonempty set of σ-algebras on $\Omega$, then $\bigcap \mathfrak S$ is a σ-algebra on $\Omega$.
+:::{important icon=false} 📐 **Lemma (Intersections of $\sigma$-Algebras)**
+If $\mathfrak S$ is a nonempty set of $\sigma$-algebras on $\Omega$, then $\bigcap \mathfrak S$ is a $\sigma$-algebra on $\Omega$.
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
 Every member of $\bigcap \mathfrak S$ belongs to some $\mathcal F \in \mathfrak S$ and is therefore a subset of $\Omega$, so $\bigcap \mathfrak S \subseteq \mathcal P(\Omega)$. Each condition holds in every $\mathcal F \in \mathfrak S$, hence in the intersection: $\Omega \in \mathcal F$ for every $\mathcal F$; if $A$ lies in every $\mathcal F$, so does $A^c$; and if every $A_n$ lies in every $\mathcal F$, so does $\bigcup_n A_n$. $\blacksquare$
 :::
 
-Unions do not work: on $\Omega = \{1, 2, 3\}$, both $\{\emptyset, \{1\}, \{2, 3\}, \Omega\}$ and $\{\emptyset, \{2\}, \{1, 3\}, \Omega\}$ are σ-algebras, but their union contains $\{1\}$ and $\{2\}$ and not $\{1, 2\}$.
+Unions do not work: on $\Omega = \{1, 2, 3\}$, both $\{\emptyset, \{1\}, \{2, 3\}, \Omega\}$ and $\{\emptyset, \{2\}, \{1, 3\}, \Omega\}$ are $\sigma$-algebras, but their union contains $\{1\}$ and $\{2\}$ and not $\{1, 2\}$.
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Generated sigma-algebra
-: For a set $\Omega$ and a set $\mathcal G \subseteq \mathcal P(\Omega)$, the σ-algebra generated by $\mathcal G$ is
-  $$\sigma(\mathcal G) := \bigcap \{\mathcal F \in \mathcal P(\mathcal P(\Omega)) : \mathcal F \text{ is a σ-algebra on } \Omega \text{ and } \mathcal G \subseteq \mathcal F\}.$$
+: For a set $\Omega$ and a set $\mathcal G \subseteq \mathcal P(\Omega)$, the $\sigma$-algebra generated by $\mathcal G$ is
+  $$\sigma(\mathcal G) := \bigcap \{\mathcal F \in \mathcal P(\mathcal P(\Omega)) : \mathcal F \text{ is a }\sigma\text{-algebra on } \Omega \text{ and } \mathcal G \subseteq \mathcal F\}.$$
 :::
 ::::
 
-:::{important icon=false} 📐 **Theorem (The Generated σ-Algebra Is the Smallest)**
-$\sigma(\mathcal G)$ is a σ-algebra on $\Omega$, it contains $\mathcal G$, and $\sigma(\mathcal G) \subseteq \mathcal F$ for every σ-algebra $\mathcal F$ on $\Omega$ with $\mathcal G \subseteq \mathcal F$.
+:::{important icon=false} 📐 **Theorem (The Generated $\sigma$-Algebra Is the Smallest)**
+$\sigma(\mathcal G)$ is a $\sigma$-algebra on $\Omega$, it contains $\mathcal G$, and $\sigma(\mathcal G) \subseteq \mathcal F$ for every $\sigma$-algebra $\mathcal F$ on $\Omega$ with $\mathcal G \subseteq \mathcal F$.
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
-Let $\mathfrak S$ be the set of σ-algebras on $\Omega$ that contain $\mathcal G$; it is a set by Separation. It is nonempty because $\mathcal P(\Omega) \in \mathfrak S$, so $\sigma(\mathcal G) = \bigcap \mathfrak S$ is defined (this is Chapter 2's proviso for $\bigcap$) and is a σ-algebra by the lemma. Each $G \in \mathcal G$ lies in every member of $\mathfrak S$, hence in $\bigcap \mathfrak S$. If $\mathcal F$ is a σ-algebra containing $\mathcal G$, then $\mathcal F \in \mathfrak S$, so $\bigcap \mathfrak S \subseteq \mathcal F$. $\blacksquare$
+Let $\mathfrak S$ be the set of $\sigma$-algebras on $\Omega$ that contain $\mathcal G$; it is a set by Separation. It is nonempty because $\mathcal P(\Omega) \in \mathfrak S$, so $\sigma(\mathcal G) = \bigcap \mathfrak S$ is defined (this is Chapter 2's proviso for $\bigcap$) and is a $\sigma$-algebra by the lemma. Each $G \in \mathcal G$ lies in every member of $\mathfrak S$, hence in $\bigcap \mathfrak S$. If $\mathcal F$ is a $\sigma$-algebra containing $\mathcal G$, then $\mathcal F \in \mathfrak S$, so $\bigcap \mathfrak S \subseteq \mathcal F$. $\blacksquare$
 :::
 
-The theorem gives a standard proof technique, sometimes called the **good-sets principle**: to show that every set in $\sigma(\mathcal G)$ has some property, show that the sets with the property form a σ-algebra containing $\mathcal G$. By the theorem, that σ-algebra contains $\sigma(\mathcal G)$.
+The theorem gives a standard proof technique, sometimes called the **good-sets principle**: to show that every set in $\sigma(\mathcal G)$ has some property, show that the sets with the property form a $\sigma$-algebra containing $\mathcal G$. By the theorem, that $\sigma$-algebra contains $\sigma(\mathcal G)$.
 
-**Example.** For a die and $\mathcal G = \{\{6\}\}$, we get $\sigma(\mathcal G) = \{\emptyset, \{6\}, \{1, 2, 3, 4, 5\}, \Omega\}$. This collection is a σ-algebra (as for the parity example) and contains $\{6\}$, and every σ-algebra containing $\{6\}$ contains its complement, $\emptyset$, and $\Omega$.
+**Example.** For a die and $\mathcal G = \{\{6\}\}$, we get $\sigma(\mathcal G) = \{\emptyset, \{6\}, \{1, 2, 3, 4, 5\}, \Omega\}$. This collection is a $\sigma$-algebra (as for the parity example) and contains $\{6\}$, and every $\sigma$-algebra containing $\{6\}$ contains its complement, $\emptyset$, and $\Omega$.
 
-When $\Omega$ is countable and only finitely many generators are given, the generated σ-algebra can be described completely. Call two outcomes *indistinguishable by* $G_1, \ldots, G_m$ if each $G_i$ contains both or neither of them, and call the set of outcomes indistinguishable from $\omega$ the *atom* of $\omega$.
+When $\Omega$ is countable and only finitely many generators are given, the generated $\sigma$-algebra can be described completely. Call two outcomes *indistinguishable by* $G_1, \ldots, G_m$ if each $G_i$ contains both or neither of them, and call the set of outcomes indistinguishable from $\omega$ the *atom* of $\omega$.
 
 :::{important icon=false} 📐 **Theorem (Atoms)**
 Let $\Omega$ be countable and $G_1, \ldots, G_m \subseteq \Omega$. The atoms form a {term}`partition` $\mathcal A$ of $\Omega$, and $\sigma(\{G_1, \ldots, G_m\})$ consists exactly of the unions $\bigcup \mathcal S$ of sets of atoms $\mathcal S \subseteq \mathcal A$.
@@ -210,7 +210,7 @@ Write $\mathcal G := \{G_1, \ldots, G_m\}$ and let $a(\omega)$ be the atom of $\
 
 *The atoms partition $\Omega$.* Indistinguishability is reflexive, symmetric, and transitive, because it says that $\omega$ and $\omega'$ have the same membership in every $G_i$. So $\omega \in a(\omega)$, and if $\omega'' \in a(\omega) \cap a(\omega')$, then $\omega$ and $\omega'$ are indistinguishable and $a(\omega) = a(\omega')$. Hence atoms are nonempty, cover $\Omega$, and distinct atoms are disjoint.
 
-*Unions of atoms form a σ-algebra containing $\mathcal G$.* Let $\mathcal U := \{\bigcup \mathcal S : \mathcal S \subseteq \mathcal A\}$. It contains $\Omega = \bigcup \mathcal A$. Since every outcome lies in exactly one atom, $(\bigcup \mathcal S)^c = \bigcup (\mathcal A \setminus \mathcal S)$. A union of unions of atoms is the union of all the atoms involved. Each $G_i$ is the union of the atoms of its elements, because if $\omega \in G_i$ and $\omega'$ is indistinguishable from $\omega$, then $\omega' \in G_i$. So $\sigma(\mathcal G) \subseteq \mathcal U$.
+*Unions of atoms form a $\sigma$-algebra containing $\mathcal G$.* Let $\mathcal U := \{\bigcup \mathcal S : \mathcal S \subseteq \mathcal A\}$. It contains $\Omega = \bigcup \mathcal A$. Since every outcome lies in exactly one atom, $(\bigcup \mathcal S)^c = \bigcup (\mathcal A \setminus \mathcal S)$. A union of unions of atoms is the union of all the atoms involved. Each $G_i$ is the union of the atoms of its elements, because if $\omega \in G_i$ and $\omega'$ is indistinguishable from $\omega$, then $\omega' \in G_i$. So $\sigma(\mathcal G) \subseteq \mathcal U$.
 
 *Unions of atoms lie in $\sigma(\mathcal G)$.* For each $i$ let $G_i^\omega := G_i$ if $\omega \in G_i$ and $G_i^\omega := G_i^c$ otherwise. Then $a(\omega) = \bigcap_{i=1}^m G_i^\omega$ (or $a(\omega) = \Omega$ if $m = 0$), a finite intersection of members of $\sigma(\mathcal G)$, so $a(\omega) \in \sigma(\mathcal G)$. The set $\mathcal A$ is the image of the countable set $\Omega$ under $\omega \mapsto a(\omega)$, so it is countable, and so is every $\mathcal S \subseteq \mathcal A$ ([Chapter 3](ch3_sets_for_probability_v2.md)). If $\mathcal S \neq \emptyset$, the Listing theorem writes $\mathcal S$ as the set of terms of a sequence, so $\bigcup \mathcal S$ is a countable union of members of $\sigma(\mathcal G)$; and $\bigcup \emptyset = \emptyset \in \sigma(\mathcal G)$. $\blacksquare$
 :::
@@ -280,29 +280,29 @@ _summary = mo.md("Atoms: $" + _atom_text + "$. " + _event_text)
 mo.vstack([sigma_select, graphic(_fig), _summary])
 ```
 
-### The Borel σ-Algebra
+### The Borel Sigma-Algebra
 
 For the scale noise, $\Omega = \mathbb R$, and the events we certainly want are the intervals, such as "the noise lies in $[-0.05, 0.05)$".
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Borel sigma-algebra
-: The Borel σ-algebra on $\mathbb R$ is $\mathcal B(\mathbb R) := \sigma(\mathcal I)$, the {term}`σ-algebra generated by <generated sigma-algebra>` the set $\mathcal I$ of all {term}`intervals <interval>`. Its elements are called *Borel sets*. For a Borel set $\Omega_0 \subseteq \mathbb R$, the Borel σ-algebra on $\Omega_0$ is $\mathcal B(\Omega_0) := \{B \in \mathcal B(\mathbb R) : B \subseteq \Omega_0\}$.
+: The Borel $\sigma$-algebra on $\mathbb R$ is $\mathcal B(\mathbb R) := \sigma(\mathcal I)$, the {term}`$\sigma$-algebra generated by <generated sigma-algebra>` the set $\mathcal I$ of all {term}`intervals <interval>`. Its elements are called *Borel sets*. For a Borel set $\Omega_0 \subseteq \mathbb R$, the Borel $\sigma$-algebra on $\Omega_0$ is $\mathcal B(\Omega_0) := \{B \in \mathcal B(\mathbb R) : B \subseteq \Omega_0\}$.
 :::
 ::::
 
-The same σ-algebra is generated by the open subsets of $\mathbb R$, which is how many books define it ([Borel set](https://en.wikipedia.org/wiki/Borel_set)), and [Chapter 5](ch5_random_variables_v2.md) shows that the rays $(-\infty, b]$ alone already generate it.
+The same $\sigma$-algebra is generated by the open subsets of $\mathbb R$, which is how many books define it ([Borel set](https://en.wikipedia.org/wiki/Borel_set)), and [Chapter 5](ch5_random_variables_v2.md) shows that the rays $(-\infty, b]$ alone already generate it.
 
 :::{important icon=false} 📐 **Lemma (Borel Sets)**
 1. Every interval, every singleton $\{x\}$, and every countable subset of $\mathbb R$ is a Borel set. In particular $\mathbb N$, $\mathbb Z$, $\mathbb Q$, and $\mathbb R \setminus \mathbb Q$ are Borel sets.
-2. If $\Omega_0$ is a Borel set, then $\mathcal B(\Omega_0)$ is a σ-algebra on $\Omega_0$ containing every interval $I \subseteq \Omega_0$.
+2. If $\Omega_0$ is a Borel set, then $\mathcal B(\Omega_0)$ is a $\sigma$-algebra on $\Omega_0$ containing every interval $I \subseteq \Omega_0$.
 3. If $B$ is a Borel set and $t \in \mathbb R$, then $B + t := \{b + t : b \in B\}$ is a Borel set.
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
-1. Intervals lie in $\mathcal I \subseteq \mathcal B(\mathbb R)$, and $\{x\} = [x, x]$. A nonempty countable set $C$ is $\{c_n : n \in \mathbb N^+\}$ for some sequence (Listing theorem, [Chapter 3](ch3_sets_for_probability_v2.md)), so $C = \bigcup_{n=1}^\infty \{c_n\}$ is a countable union of Borel sets; and $\emptyset$ is in every σ-algebra. $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ are countable, and $\mathbb R \setminus \mathbb Q$ is a complement.
+1. Intervals lie in $\mathcal I \subseteq \mathcal B(\mathbb R)$, and $\{x\} = [x, x]$. A nonempty countable set $C$ is $\{c_n : n \in \mathbb N^+\}$ for some sequence (Listing theorem, [Chapter 3](ch3_sets_for_probability_v2.md)), so $C = \bigcup_{n=1}^\infty \{c_n\}$ is a countable union of Borel sets; and $\emptyset$ is in every $\sigma$-algebra. $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ are countable, and $\mathbb R \setminus \mathbb Q$ is a complement.
 2. $\Omega_0 \in \mathcal B(\Omega_0)$. If $B \in \mathcal B(\Omega_0)$, then $\Omega_0 \setminus B = \Omega_0 \cap (\mathbb R \setminus B)$ is a Borel set by the Closure Properties lemma, and it is a subset of $\Omega_0$. A countable union of members of $\mathcal B(\Omega_0)$ is a Borel subset of $\Omega_0$. Intervals contained in $\Omega_0$ are Borel sets by part 1.
-3. We use the good-sets principle. Let $\mathcal A := \{B \subseteq \mathbb R : B + t \in \mathcal B(\mathbb R)\}$. Because $x \mapsto x + t$ is a bijection of $\mathbb R$ with inverse $x \mapsto x - t$, we have $\mathbb R + t = \mathbb R$, $(\mathbb R \setminus B) + t = \mathbb R \setminus (B + t)$, and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. So $\mathcal A$ is a σ-algebra. Translating an interval gives an interval of the same form, for example $[a, b] + t = [a + t, b + t]$, so $\mathcal I \subseteq \mathcal A$. Hence $\mathcal B(\mathbb R) = \sigma(\mathcal I) \subseteq \mathcal A$. $\blacksquare$
+3. We use the good-sets principle. Let $\mathcal A := \{B \subseteq \mathbb R : B + t \in \mathcal B(\mathbb R)\}$. Because $x \mapsto x + t$ is a bijection of $\mathbb R$ with inverse $x \mapsto x - t$, we have $\mathbb R + t = \mathbb R$, $(\mathbb R \setminus B) + t = \mathbb R \setminus (B + t)$, and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. So $\mathcal A$ is a $\sigma$-algebra. Translating an interval gives an interval of the same form, for example $[a, b] + t = [a + t, b + t]$, so $\mathcal I \subseteq \mathcal A$. Hence $\mathcal B(\mathbb R) = \sigma(\mathcal I) \subseteq \mathcal A$. $\blacksquare$
 :::
 
 Not every subset of $\mathbb R$ is a Borel set; we meet one below. But every set you are likely to write down is, so restricting events to Borel sets costs nothing in practice.
@@ -314,7 +314,7 @@ Kolmogorov proposed the following axioms in 1933, and they are the foundation of
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Probability measure
-: Let $\mathcal F$ be a {term}`σ-algebra <sigma-algebra>` on a set $\Omega$. A probability measure on $(\Omega, \mathcal F)$ is a function $\mathbb P : \mathcal F \to \mathbb R$ satisfying *Kolmogorov's axioms*:
+: Let $\mathcal F$ be a {term}`$\sigma$-algebra <sigma-algebra>` on a set $\Omega$. A probability measure on $(\Omega, \mathcal F)$ is a function $\mathbb P : \mathcal F \to \mathbb R$ satisfying *Kolmogorov's axioms*:
 
   1. *(nonnegativity)* $\mathbb P(A) \ge 0$ for every $A \in \mathcal F$;
   2. *(normalization)* $\mathbb P(\Omega) = 1$;
@@ -325,7 +325,7 @@ Probability measure
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}
 Probability space
-: A triple $(\Omega, \mathcal F, \mathbb P)$ in which $\Omega$ is a {term}`sample space`, $\mathcal F$ is a {term}`σ-algebra <sigma-algebra>` on $\Omega$, and $\mathbb P$ is a {term}`probability measure` on $(\Omega, \mathcal F)$. We read $\mathbb P(A)$ as "the probability of $A$".
+: A triple $(\Omega, \mathcal F, \mathbb P)$ in which $\Omega$ is a {term}`sample space`, $\mathcal F$ is a {term}`$\sigma$-algebra <sigma-algebra>` on $\Omega$, and $\mathbb P$ is a {term}`probability measure` on $(\Omega, \mathcal F)$. We read $\mathbb P(A)$ as "the probability of $A$".
 :::
 ::::
 
@@ -363,7 +363,7 @@ Conversely, every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\O
 Now let $\Omega := \mathbb Q \cap [0, 1]$. It is countable, as a subset of $\mathbb Q$, and infinite, since it contains the distinct numbers $1, \tfrac12, \tfrac13, \ldots$; so it is countably infinite ([Chapter 3](ch3_sets_for_probability_v2.md)). Can we choose a rational number in $[0, 1]$ with every rational equally likely?
 
 :::{important icon=false} 📐 **Theorem (No Uniform Probability on a Countably Infinite Set)**
-Let $\Omega$ be countably infinite and $\mathcal F$ a σ-algebra on $\Omega$ that contains every singleton. No probability measure on $(\Omega, \mathcal F)$ gives all singletons the same probability.
+Let $\Omega$ be countably infinite and $\mathcal F$ a $\sigma$-algebra on $\Omega$ that contains every singleton. No probability measure on $(\Omega, \mathcal F)$ gives all singletons the same probability.
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
@@ -474,7 +474,7 @@ For a die, every subset of $\Omega$ is an event. For a number chosen "uniformly 
 
 **Rotations of $[0, 1)$.** For $x, r \in [0, 1)$ let
 $$x \oplus r := \begin{cases} x + r & \text{if } x + r < 1, \\ x + r - 1 & \text{if } x + r \ge 1, \end{cases}$$
-so that $x \oplus r \in [0, 1)$. If we bend $[0, 1)$ into a circle of circumference $1$, then $\oplus\, r$ rotates the circle by $r$. For $A \subseteq [0, 1)$ let $A \oplus r := \{a \oplus r : a \in A\}$. For instance, $[0.5, 0.9) \oplus 0.3 = [0.8, 1) \cup [0, 0.2)$, still of total length $0.4$. Given a σ-algebra $\mathcal F$ on $[0, 1)$, a probability measure $\mu$ on $([0, 1), \mathcal F)$ is *rotation invariant* if $A \oplus r \in \mathcal F$ and $\mu(A \oplus r) = \mu(A)$ for every $A \in \mathcal F$ and every rational $r \in [0, 1)$.
+so that $x \oplus r \in [0, 1)$. If we bend $[0, 1)$ into a circle of circumference $1$, then $\oplus\, r$ rotates the circle by $r$. For $A \subseteq [0, 1)$ let $A \oplus r := \{a \oplus r : a \in A\}$. For instance, $[0.5, 0.9) \oplus 0.3 = [0.8, 1) \cup [0, 0.2)$, still of total length $0.4$. Given a $\sigma$-algebra $\mathcal F$ on $[0, 1)$, a probability measure $\mu$ on $([0, 1), \mathcal F)$ is *rotation invariant* if $A \oplus r \in \mathcal F$ and $\mu(A \oplus r) = \mu(A)$ for every $A \in \mathcal F$ and every rational $r \in [0, 1)$.
 
 **Vitali sets.** For $x \in [0, 1)$ let $E_x := \{y \in [0, 1) : y - x \in \mathbb Q\}$, the numbers in $[0, 1)$ that differ from $x$ by a rational number.
 
@@ -489,7 +489,7 @@ The set exists by Replacement. Since $x - x = 0 \in \mathbb Q$, we have $x \in E
 The sets $E_x$ are nonempty and pairwise disjoint, so the Axiom of Choice ([Chapter 2](ch2_axioms_of_set_theory_v2.md)) gives a set $C$ containing exactly one element of each $E_x$. Then $V := C \cap [0, 1)$ contains exactly one element of each $E_x$ and nothing else. Any such set is called a *Vitali set*, after Giuseppe Vitali, who introduced it in 1905 ([Vitali set](https://en.wikipedia.org/wiki/Vitali_set)). Choice asserts that $V$ exists but gives no rule for which element of each $E_x$ to take.
 
 :::{important icon=false} 📐 **Theorem (Vitali)**
-Let $\mathcal F$ be a σ-algebra on $[0, 1)$ and $\mu$ a rotation-invariant probability measure on $([0, 1), \mathcal F)$. Then no Vitali set belongs to $\mathcal F$. In particular, there is no rotation-invariant probability measure on $([0, 1), \mathcal P([0, 1)))$.
+Let $\mathcal F$ be a $\sigma$-algebra on $[0, 1)$ and $\mu$ a rotation-invariant probability measure on $([0, 1), \mathcal F)$. Then no Vitali set belongs to $\mathcal F$. In particular, there is no rotation-invariant probability measure on $([0, 1), \mathcal P([0, 1)))$.
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
@@ -516,7 +516,7 @@ Each hypothesis is needed; dropping any one removes the contradiction.
 :::
 
 :::{attention icon=false} 🗝️ **Key Idea**
-We cannot have all three of: every subset of $[0, 1)$ is an event, countable additivity, and rotation invariance. Probability theory keeps countable additivity and rotation invariance and gives up the first: the events form a σ-algebra smaller than $\mathcal P(\Omega)$.
+We cannot have all three of: every subset of $[0, 1)$ is an event, countable additivity, and rotation invariance. Probability theory keeps countable additivity and rotation invariance and gives up the first: the events form a $\sigma$-algebra smaller than $\mathcal P(\Omega)$.
 :::
   
 ## Lebesgue Measure
@@ -528,7 +528,7 @@ There is exactly one measure $\lambda$ on $(\mathbb R, \mathcal B(\mathbb R))$ w
 :::
 
 :::{admonition icon=false} ✍️ **Proof**
-Existence and uniqueness are not proven here. Carathéodory's extension theorem extends the length of intervals to a measure on a σ-algebra that contains $\mathcal B(\mathbb R)$. Its uniqueness statement, which applies because $\mathbb R$ is a countable union of intervals $[-n, n]$ of finite length, shows that no other measure on $\mathcal B(\mathbb R)$ gives every interval $[a, b]$ the length $b - a$ ([Lebesgue measure](https://en.wikipedia.org/wiki/Lebesgue_measure); [Carathéodory's extension theorem](https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_extension_theorem)).
+Existence and uniqueness are not proven here. Carathéodory's extension theorem extends the length of intervals to a measure on a $\sigma$-algebra that contains $\mathcal B(\mathbb R)$. Its uniqueness statement, which applies because $\mathbb R$ is a countable union of intervals $[-n, n]$ of finite length, shows that no other measure on $\mathcal B(\mathbb R)$ gives every interval $[a, b]$ the length $b - a$ ([Lebesgue measure](https://en.wikipedia.org/wiki/Lebesgue_measure); [Carathéodory's extension theorem](https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_extension_theorem)).
 
 Translation invariance follows from uniqueness. Fix $t$ and let $\mu(B) := \lambda(B + t)$ for $B \in \mathcal B(\mathbb R)$, which is defined by the Borel Sets lemma. Then $\mu(\emptyset) = 0$, and $\mu$ is countably additive because translating pairwise disjoint sets gives pairwise disjoint sets and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. Also $\mu([a, b]) = \lambda([a + t, b + t]) = b - a$. By uniqueness, $\mu = \lambda$. $\blacksquare$
 :::
@@ -764,8 +764,8 @@ mo.vstack([mo.hstack([freq_event, freq_n], justify="start"), graphic(_fig), _sum
 
 ## Summary
 
-- A **probability space** $(\Omega, \mathcal F, \mathbb P)$ consists of a **sample space** $\Omega$ of **outcomes**, a **σ-algebra** $\mathcal F$ of **events** (it contains $\Omega$ and is closed under complements and countable unions), and a **probability measure** $\mathbb P$ satisfying Kolmogorov's axioms: nonnegativity, $\mathbb P(\Omega) = 1$, and countable additivity.
-- The **generated σ-algebra** $\sigma(\mathcal G)$ is the smallest σ-algebra containing $\mathcal G$. The **Borel σ-algebra** $\mathcal B(\mathbb R)$ is generated by the intervals and contains every interval and every countable set.
+- A **probability space** $(\Omega, \mathcal F, \mathbb P)$ consists of a **sample space** $\Omega$ of **outcomes**, a **$\sigma$-algebra** $\mathcal F$ of **events** (it contains $\Omega$ and is closed under complements and countable unions), and a **probability measure** $\mathbb P$ satisfying Kolmogorov's axioms: nonnegativity, $\mathbb P(\Omega) = 1$, and countable additivity.
+- The **generated $\sigma$-algebra** $\sigma(\mathcal G)$ is the smallest $\sigma$-algebra containing $\mathcal G$. The **Borel $\sigma$-algebra** $\mathcal B(\mathbb R)$ is generated by the intervals and contains every interval and every countable set.
 - The axioms imply $\mathbb P(\emptyset) = 0$, finite additivity, the complement rule, monotonicity, inclusion–exclusion for two events, the union bound, and continuity from below and above.
 - Discrete probability spaces put masses $p_n$ on countably many outcomes. No probability treats all elements of a countably infinite set equally.
 - Using the Axiom of Choice, the Vitali set shows that no rotation-invariant probability is defined on all subsets of $[0, 1)$. Lebesgue measure $\lambda$, which gives every interval its length, exists on the Borel sets. For a uniformly random number in $[0, 1]$, every single point and every countable set has probability $0$, so statements can hold **almost surely** without holding surely.
