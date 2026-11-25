@@ -24,6 +24,9 @@ CONTENT_DIR = PROJECT_ROOT / "content"        # postprocessed output served by J
 # (e.g. marimo's own session/layout state).
 IGNORED_DIRS = {"__marimo__", "__pycache__"}
 
+# Set by --no-eval: skip cell evaluation for faster dev builds.
+disable_eval = False
+
 # jupyter-book-marimo directive options with no marimo-native equivalent.
 # --flavor mystmd already handles everything else (name, column, hide-code,
 # disabled) directly from marimo cell kwargs. Set these per-cell via a
@@ -282,7 +285,8 @@ def postprocess_file(export_path: Path):
     updated = rewrite_public_paths(updated)
     updated = remove_empty_comments(updated)
     updated = comment_out_marimo_version(updated)
-    # updated = set_eval_false(updated) #NOTE - used in dev for faster build times. to be commented out in production
+    if disable_eval:
+        updated = set_eval_false(updated)
 
     write_if_changed(content_path_for(export_path), updated)
 
@@ -393,11 +397,15 @@ def serve(port: str, server_port: str):
 
 
 def main():
+    global disable_eval
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("--serve", action="store_true", help="Start watchers and dev server")
     parser.add_argument("--port", default="3102")
     parser.add_argument("--server-port", default="4102")
+    parser.add_argument("--no-eval", action="store_true", help="Disable cell evaluation for faster builds")
     args = parser.parse_args()
+    disable_eval = args.no_eval
 
     if args.serve:
         serve(args.port, args.server_port)
