@@ -332,9 +332,9 @@ def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
         return None
 
 
-def export_all():
-    for file, export_path in iter_notebooks():
-        run_marimo_export(file, export_path)
+def export_all() -> bool:
+    results = [run_marimo_export(file, path) for file, path in iter_notebooks()]
+    return all(results)
 
 
 def start_watcher(notebook_path: Path, export_path: Path) -> subprocess.Popen:
@@ -410,8 +410,9 @@ def main():
 
     if args.serve:
         serve(args.port, args.server_port)
-    else:
-        export_all()
+        
+    elif not export_all():
+        sys.exit(1)
 
 
 if __name__=="__main__":
