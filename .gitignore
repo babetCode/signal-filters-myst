@@ -24,3 +24,6 @@ src/jupyter_book_marimo/assets/*
 __marimo__/
 
 .marimo-export/
+
+# images
+notebooks/public/
