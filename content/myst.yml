@@ -8,48 +8,48 @@ project:
     - type: executable
       path: ../.venv/bin/jupyter-book-marimo # on Windows, see scripts/link_plugin.py
   toc:
-    - file: index_v2.md
-    - file: introduction_v2.md
+    - file: nb/index_v2.md
+    - file: nb/introduction_v2.md
       title: Introduction
     - title: "Part 1: Choosing Alpha"
       children:
-      - file: ch1_language_of_logic_v2.md
-      - file: ch2_axioms_of_set_theory_v2.md
-      - file: ch3_sets_for_probability_v2.md
-      - file: ch4_probability_spaces_v2.md
-      - file: ch5_random_variables_v2.md
-      - file: ch6_expectation_and_variance_v2.md
-      - file: ch7_optimal_alpha_v2.md
-      - file: ch8_bayesian_view_v2.md
+      - file: nb/ch1_language_of_logic_v2.md
+      - file: nb/ch2_axioms_of_set_theory_v2.md
+      - file: nb/ch3_sets_for_probability_v2.md
+      - file: nb/ch4_probability_spaces_v2.md
+      - file: nb/ch5_random_variables_v2.md
+      - file: nb/ch6_expectation_and_variance_v2.md
+      - file: nb/ch7_optimal_alpha_v2.md
+      - file: nb/ch8_bayesian_view_v2.md
     - title: "Part 2: The Scalar Kalman Filter"
       children:
-        - file: ch9_noise_levels_v2.md
-        - file: ch10_process_models_v2.md
-        - file: ch11_measurement_functions_v2.md
+        - file: nb/ch9_noise_levels_v2.md
+        - file: nb/ch10_process_models_v2.md
+        - file: nb/ch11_measurement_functions_v2.md
     - title: "Part 3: State Vectors"
       children:
-        - file: ch12_vectors_matrices_covariance_v2.md
-        - file: ch13_kalman_filter_v2.md
-        - file: ch14_kalman_filters_in_practice_v2.md
+        - file: nb/ch12_vectors_matrices_covariance_v2.md
+        - file: nb/ch13_kalman_filter_v2.md
+        - file: nb/ch14_kalman_filters_in_practice_v2.md
     - title: "Part 4: Nonlinearity"
       children:
-        - file: ch15_extended_kalman_filter_v2.md
-        - file: ch16_unscented_kalman_filter_v2.md
+        - file: nb/ch15_extended_kalman_filter_v2.md
+        - file: nb/ch16_unscented_kalman_filter_v2.md
     - title: "Part 5: Orientation"
       children:
-        - file: ch17_rotations_v2.md
-        - file: ch18_quaternions_v2.md
-        - file: ch19_ahrs_v2.md
+        - file: nb/ch17_rotations_v2.md
+        - file: nb/ch18_quaternions_v2.md
+        - file: nb/ch19_ahrs_v2.md
     - title: "Part 6: Inertial Navigation for Gait"
       children:
-        - file: ch20_strapdown_inertial_navigation_v2.md
-        - file: ch21_zero_velocity_updates_v2.md
+        - file: nb/ch20_strapdown_inertial_navigation_v2.md
+        - file: nb/ch21_zero_velocity_updates_v2.md
     - title: "Appendices"
       children:
-        - file: appendix_a_formal_logic_v2.md
-        - file: appendix_b_number_systems_v2.md
-        - file: appendix_c_calculus_v2.md
-        - file: appendix_d_linear_algebra_v2.md
+        - file: nb/appendix_a_formal_logic_v2.md
+        - file: nb/appendix_b_number_systems_v2.md
+        - file: nb/appendix_c_calculus_v2.md
+        - file: nb/appendix_d_linear_algebra_v2.md
     - file: glossary-terms.md
 site:
   template: book-theme

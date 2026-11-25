@@ -246,7 +246,7 @@ Write $F := F_X$. All facts about $\mathbb P$ used here are from [Chapter 4](ch4
 
 In the coin example, $F_X$ is a staircase: $0$ for $x < 0$, $\tfrac14$ on $[0, 1)$, $\tfrac34$ on $[1, 2)$, and $1$ on $[2, \infty)$. It jumps by $\tfrac14, \tfrac12, \tfrac14$ at $0, 1, 2$, exactly the probabilities of those values, and at each jump it takes the upper value (right-continuity). The figure also shows the CDF of the standard normal distribution, defined below, which has no jumps at all.
   
-<img src="../notebooks/public/ch5_cdf_examples_v2.svg" class="graphic" alt="Left: the staircase CDF of the number of heads in two fair coin tosses, with jumps of 1/4, 1/2, 1/4 at 0, 1, 2. Right: the smooth S-shaped CDF of the standard normal distribution together with its bell-shaped density." />
+<img src="../../notebooks/public/ch5_cdf_examples_v2.svg" class="graphic" alt="Left: the staircase CDF of the number of heads in two fair coin tosses, with jumps of 1/4, 1/2, 1/4 at 0, 1, 2. Right: the smooth S-shaped CDF of the standard normal distribution together with its bell-shaped density." />
 
 ```{marimo} python
 :include: false
@@ -806,7 +806,7 @@ A random signal is a stochastic process. The signal we actually record is one of
 
 The scale readings form the process $(Z_k)_{k = 1}^{30}$, one random variable per sample at 10 samples/s. The figure shows five of its sample paths. The highlighted one is the Introduction's data; the others are what the scale might equally well have shown. A filter must work well for *all* of them, which is why we analyze filters through the distributions of the random variables $Z_k$, not through one recorded signal.
   
-<img src="../notebooks/public/ch5_sample_paths_v2.svg" class="graphic" alt="Five sample paths of 30 simulated scale readings around a true weight of 155 lb. One path, the Introduction's data, is highlighted; the other four wander differently around the same black line at 155 lb." />
+<img src="../../notebooks/public/ch5_sample_paths_v2.svg" class="graphic" alt="Five sample paths of 30 simulated scale readings around a true weight of 155 lb. One path, the Introduction's data, is highlighted; the other four wander differently around the same black line at 155 lb." />
 
 ```{marimo} python
 :include: false

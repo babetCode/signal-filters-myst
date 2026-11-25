@@ -671,7 +671,7 @@ _fig.savefig(IMAGES_DIR / "ch15_ekf_pendulum_v2.svg")
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch15_ekf_pendulum_v2.svg" class="graphic" alt="Three stacked plots over 10 seconds: noisy horizontal-position measurements around the true sinusoid-like curve; the EKF's angle estimate converging onto the true angle within half a second with a narrow two-sigma band; and the angular-velocity estimate doing the same." />
+<img src="../../notebooks/public/ch15_ekf_pendulum_v2.svg" class="graphic" alt="Three stacked plots over 10 seconds: noisy horizontal-position measurements around the true sinusoid-like curve; the EKF's angle estimate converging onto the true angle within half a second with a narrow two-sigma band; and the angular-velocity estimate doing the same." />
 
 ```{marimo} python
 :hide-code: true
@@ -690,7 +690,7 @@ The angle estimate locks on within about half a second. After the first second, 
 
 The EKF's covariance prediction is exactly the linearized propagation of the Gaussian explorer, applied at every step. The figure below shows its effect over many steps. It starts from 3000 states drawn from $\mathcal N\big([1, 0]^\top, \operatorname{diag}(0.45^2, 0.45^2)\big)$, moves each through $f$ for 0.6 s and 1.2 s (with $\mathbf Q = \mathbf 0$ to isolate the effect), and compares their sample mean and 95% {term}`confidence ellipse` (black) with what the same number of EKF predict steps computes (red dotted).
 
-<img src="../notebooks/public/ch15_linearized_cloud_v2.svg" class="graphic" alt="Phase-plane plot of angle versus angular velocity showing three clouds of points at 0, 0.6 and 1.2 seconds. At time zero the sample ellipse and the linearized ellipse coincide. Later the cloud bends into a crescent; the linearized ellipse is shifted and misoriented relative to the sample ellipse." />
+<img src="../../notebooks/public/ch15_linearized_cloud_v2.svg" class="graphic" alt="Phase-plane plot of angle versus angular velocity showing three clouds of points at 0, 0.6 and 1.2 seconds. At time zero the sample ellipse and the linearized ellipse coincide. Later the cloud bends into a crescent; the linearized ellipse is shifted and misoriented relative to the sample ellipse." />
 
 At $t = 0$ the two ellipses coincide. As time passes the cloud bends into a crescent, because the pendulum's period grows with its amplitude, so states with larger swings fall behind. The linearized prediction stays an ellipse, and its center is the image of the mean, $f(\cdots f(\boldsymbol\mu))$, rather than the mean of the image. Measurements usually keep the uncertainty small enough that this does not matter. When they do not, the next section shows what happens.
 
@@ -873,7 +873,7 @@ _fig.savefig(IMAGES_DIR / "ch15_nees_failure_modes_v2.svg")
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch15_nees_failure_modes_v2.svg" class="graphic" alt="Two plots of average NEES over time with a shaded 95% band near 2. Left: with a narrow prior the curve stays in the band; with a wide prior it spikes to about 4.5 in the first half second. Right: with correct Jacobians the curve stays near the band; with small-angle Jacobians it stays well above it." />
+<img src="../../notebooks/public/ch15_nees_failure_modes_v2.svg" class="graphic" alt="Two plots of average NEES over time with a shaded 95% band near 2. Left: with a narrow prior the curve stays in the band; with a wide prior it spikes to about 4.5 in the first half second. Right: with correct Jacobians the curve stays near the band; with small-angle Jacobians it stays well above it." />
 
 ```{marimo} python
 :hide-code: true

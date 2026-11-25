@@ -18,7 +18,8 @@ from watchdog.observers import Observer
 PROJECT_ROOT = Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 EXPORT_DIR = PROJECT_ROOT / ".marimo-export"  # raw `marimo export md` output; not committed
-CONTENT_DIR = PROJECT_ROOT / "content"        # postprocessed output served by Jupyter Book
+CONTENT_DIR = PROJECT_ROOT / "content"        # Jupyter Book project root
+PAGES_DIR = CONTENT_DIR / "nb"                # postprocessed notebook pages
 
 # Directories under notebooks/ that should never be treated as notebook sources
 # (e.g. marimo's own session/layout state).
@@ -146,7 +147,7 @@ def iter_notebooks():
 
 def content_path_for(export_path: Path) -> Path:
     rel_path = export_path.relative_to(EXPORT_DIR)
-    return CONTENT_DIR / rel_path
+    return PAGES_DIR / rel_path
 
 
 def apply_jb_options(content: str, source: str = "") -> str:
@@ -258,7 +259,7 @@ def apply_no_icon_admonitions(content: str) -> str:
 
 def rewrite_public_paths(content: str) -> str:
     """Point `src="public/..."` asset references at the notebooks' public dir."""
-    return content.replace('src="public/', 'src="../notebooks/public/')
+    return content.replace('src="public/', 'src="../../notebooks/public/')
 
 
 def remove_empty_comments(content: str) -> str:
@@ -272,7 +273,7 @@ def set_eval_false(content: str) -> str:
 
 def postprocess_file(export_path: Path):
     """Read marimo's raw export from EXPORT_DIR, apply jb transforms, and
-    write the result to the matching path in CONTENT_DIR."""
+    write the result to the matching path in PAGES_DIR."""
     try:
         content = export_path.read_text(encoding="utf-8")
     except (FileNotFoundError, UnicodeDecodeError):
@@ -350,7 +351,7 @@ def start_watcher(notebook_path: Path, export_path: Path) -> subprocess.Popen:
 
 class JbOptionsHandler(PatternMatchingEventHandler):
     """Watches EXPORT_DIR for writes from marimo's own --watch processes and
-    postprocesses each one into CONTENT_DIR."""
+    postprocesses each one into PAGES_DIR."""
 
     def __init__(self):
         super().__init__(patterns=["*.md"], ignore_directories=True)

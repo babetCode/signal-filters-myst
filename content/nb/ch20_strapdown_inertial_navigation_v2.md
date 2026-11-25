@@ -430,7 +430,7 @@ Swing phase
 
 The interval from a heel strike of one foot to the next heel strike of the *other* foot is called a *step*, so every stride contains two steps. At a comfortable walking speed, stance takes about $60\%$ of the gait cycle and swing about $40\%$. Within stance, foot flat lasts from roughly $10$–$15\%$ to $40$–$50\%$ of the cycle, and during that time the foot, and an IMU strapped to it, is **stationary**: its velocity and angular velocity are both zero. That happens once per stride, about once a second.
   
-<img src="../notebooks/public/ch20_gait_cycle_v2.svg" class="graphic" alt="A timeline of one gait cycle from 0 to 100 percent. Stance phase occupies 0 to 60 percent and swing phase 60 to 100 percent. Events are marked at heel strike (0 percent), foot flat (15 percent), heel off (45 percent), toe off (60 percent), and the next heel strike (100 percent). The interval from foot flat to heel off is shaded and labeled as the stationary period." />
+<img src="../../notebooks/public/ch20_gait_cycle_v2.svg" class="graphic" alt="A timeline of one gait cycle from 0 to 100 percent. Stance phase occupies 0 to 60 percent and swing phase 60 to 100 percent. Events are marked at heel strike (0 percent), foot flat (15 percent), heel off (45 percent), toe off (60 percent), and the next heel strike (100 percent). The interval from foot flat to heel off is shaded and labeled as the stationary period." />
 
 ```{marimo} python
 :hide-code: true
@@ -598,7 +598,7 @@ sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
 
 The figure shows three strides of the simulated foot. During each shaded foot-flat interval, every true signal is constant: zero velocity, zero angular rate, and specific force $[0, 0, g]$. The measured signals (blue) carry the biases and noise. Notice that the large specific forces come from the foot's own acceleration, up to about $2g$, and that the pitch rate peaks at about $6.5$ rad/s ($370^\circ$/s) in mid-swing, as the foot rotates from toe-down to toe-up.
   
-<img src="../notebooks/public/ch20_simulated_imu_v2.svg" class="graphic" alt="Five stacked time plots over three simulated strides: forward position rising in steps, foot height with a 12 cm bump per stride, pitch angle going toe-down then toe-up, the y-axis gyroscope signal, and the x and z accelerometer signals. Foot-flat intervals are shaded; measured signals are noisy blue dots around black true curves." />
+<img src="../../notebooks/public/ch20_simulated_imu_v2.svg" class="graphic" alt="Five stacked time plots over three simulated strides: forward position rising in steps, foot height with a 12 cm bump per stride, pitch angle going toe-down then toe-up, the y-axis gyroscope signal, and the x and z accelerometer signals. Foot-flat intervals are shaded; measured signals are noisy blue dots around black true curves." />
 
 ```{marimo} python
 :hide-code: true
@@ -681,7 +681,7 @@ mo.md(
 )
 ```
 
-<img src="../notebooks/public/ch20_strapdown_validation_v2.svg" class="graphic" alt="Top view of the simulated U-turn walk. The true path (black) goes 14 m East, turns left in a half circle, and returns West about 3.7 m further North. The noise-free strapdown solution at 100 Hz (orange, dashed) lies on top of it." />
+<img src="../../notebooks/public/ch20_strapdown_validation_v2.svg" class="graphic" alt="Top view of the simulated U-turn walk. The true path (black) goes 14 m East, turns left in a half circle, and returns West about 3.7 m further North. The noise-free strapdown solution at 100 Hz (orange, dashed) lies on top of it." />
 
 ```{marimo} python
 :hide-code: true
@@ -916,7 +916,7 @@ dr_err_free = np.linalg.norm(dr_free - sim["p"], axis=1)
 dr_err_reset = np.linalg.norm(dr_reset - sim["p"], axis=1)
 ```
 
-<img src="../notebooks/public/ch20_dead_reckoning_v2.svg" class="graphic" alt="Left: top view of the U-turn walk. The true path (black) and the velocity-reset solution (orange) stay within a few meters of each other, while the free strapdown solution (red) leaves the plot within seconds. Right: position error versus time on a logarithmic scale; the free solution's error grows past 100 meters while the reset solution's error stays at meters." />
+<img src="../../notebooks/public/ch20_dead_reckoning_v2.svg" class="graphic" alt="Left: top view of the U-turn walk. The true path (black) and the velocity-reset solution (orange) stay within a few meters of each other, while the free strapdown solution (red) leaves the plot within seconds. Right: position error versus time on a logarithmic scale; the free solution's error grows past 100 meters while the reset solution's error stays at meters." />
 
 ```{marimo} python
 :hide-code: true

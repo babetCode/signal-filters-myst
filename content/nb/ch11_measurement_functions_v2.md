@@ -425,7 +425,7 @@ So the readings, however many, cannot distinguish a person who is 1 lb heavier o
 
 The remedy is a reading in which the two unknowns enter differently. With the platform **empty**, $x = 0$ and the reading is $z_0 = c + v_0$, which measures the offset alone: a horizontal band in the right panel. Together, the two kinds of reading pin down both unknowns. This is exactly what a scale does when it tares itself at power-on, before you step on.
   
-<img src="../notebooks/public/ch11_two_unknowns_v2.svg" class="graphic" alt="Two panels in the plane of weight (horizontal) and offset in pound-equivalents (vertical). Left: thirty standing readings constrain the pair only to a diagonal band. Right: thirty empty-platform readings add a horizontal band, and the two bands intersect in a small region around the true pair." />
+<img src="../../notebooks/public/ch11_two_unknowns_v2.svg" class="graphic" alt="Two panels in the plane of weight (horizontal) and offset in pound-equivalents (vertical). Left: thirty standing readings constrain the pair only to a diagonal band. Right: thirty empty-platform readings add a horizontal band, and the two bands intersect in a small region around the true pair." />
 
 ```{marimo} python
 :include: false
@@ -471,7 +471,7 @@ This is a measurement function of this chapter's form, with sensitivity $h'(\hat
 
 The slope also tells us how informative a reading is. The figure shows $h(\theta) = \sin\theta$ (with $L = 1$ m) and readings with noise standard deviation $0.05$ m. Near $\theta = 30°$ the curve is steep, and the readings consistent with a given angle ($\pm 2$ standard deviations, shaded) correspond to a narrow range of angles. Near $\theta = 85°$ the curve is nearly flat, and the same reading is consistent with every angle from about $64°$ to $116°$. There the linearized gain is almost $0$, and rightly so: one reading cannot tell the angles apart, the same obstacle as the drifting offset, now caused by a flat slope instead of a second unknown.
   
-<img src="../notebooks/public/ch11_nonlinear_h_v2.svg" class="graphic" alt="The curve sin(theta) for theta from 0 to 120 degrees, with tangent lines at 30 and 85 degrees. Horizontal bands of plus or minus two noise standard deviations around each reading map to a narrow range of angles at 30 degrees and a wide range at 85 degrees." />
+<img src="../../notebooks/public/ch11_nonlinear_h_v2.svg" class="graphic" alt="The curve sin(theta) for theta from 0 to 120 degrees, with tangent lines at 30 and 85 degrees. Horizontal bands of plus or minus two noise standard deviations around each reading map to a narrow range of angles at 30 degrees and a wide range at 85 degrees." />
 
 ```{marimo} python
 :include: false

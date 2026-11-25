@@ -322,7 +322,7 @@ The bias produces an error growing linearly in time; the noise produces a random
 
 [^drift]: Used informally here; defined precisely in [Chapter 20](ch20_strapdown_inertial_navigation_v2.md).
   
-<img src="../notebooks/public/ch19_drift_vs_noise_v2.svg" class="graphic" alt="Pitch angle over 60 seconds. The true pitch oscillates between about plus and minus 30 degrees. The accelerometer pitch follows it with several degrees of noise and wobble. The gyroscope-only pitch follows the shape exactly but drifts steadily upward, about 34 degrees off after one minute." />
+<img src="../../notebooks/public/ch19_drift_vs_noise_v2.svg" class="graphic" alt="Pitch angle over 60 seconds. The true pitch oscillates between about plus and minus 30 degrees. The accelerometer pitch follows it with several degrees of noise and wobble. The gyroscope-only pitch follows the shape exactly but drifts steadily upward, about 34 degrees off after one minute." />
 
 ```{marimo} python
 :name: pitch_simulator

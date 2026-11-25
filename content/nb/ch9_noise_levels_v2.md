@@ -819,7 +819,7 @@ _fig.savefig(IMAGES_DIR / "ch9_nis_mistuning_v2.svg")
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch9_nis_mistuning_v2.svg" class="graphic" alt="Average NIS and actual RMS error of Kalman filters whose Q or R is scaled by factors from 0.01 to 100. The average NIS crosses 1 and the error is smallest at the true values." />
+<img src="../../notebooks/public/ch9_nis_mistuning_v2.svg" class="graphic" alt="Average NIS and actual RMS error of Kalman filters whose Q or R is scaled by factors from 0.01 to 100. The average NIS crosses 1 and the error is smallest at the true values." />
   
 :::{caution icon=false} ⚠️ **Assumptions and Failure Modes**
 - **The $\chi^2$ interval assumes normal noise.** With outliers or other heavy-tailed noise, large NIS values occur more often than $\chi^2_1$ predicts even for a well-tuned filter.

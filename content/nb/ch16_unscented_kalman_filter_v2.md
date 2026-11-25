@@ -274,7 +274,7 @@ Both common parameter choices satisfy the condition: $\kappa = 0$ with $\beta_{\
   
 For general smooth functions and input distributions, [Julier & Uhlmann (2004)](https://doi.org/10.1109/JPROC.2003.823141) show that the unscented transform computes the mean and covariance of $\phi(\mathbf x)$ correctly up to the second-order terms of $\phi$'s Taylor series, whereas linearization is correct only up to the first-order terms ([Wan & van der Merwe (2000)](https://doi.org/10.1109/ASSPCC.2000.882463) make the same comparison). The theorem and corollary make the statement about the mean precise. The figure below demonstrates both statements for $\phi = \sin$ at $\mu = 0.8$, using the exact values $\mathbb E[\sin x] = e^{-\sigma^2/2}\sin\mu$ and $\operatorname{Var}(\sin x) = \tfrac12\big(1 - e^{-2\sigma^2}\cos 2\mu\big) - e^{-\sigma^2}\sin^2\mu$ for $x \sim \mathcal N(\mu, \sigma^2)$, which follow from the normal distribution's characteristic function ([Wikipedia: Normal distribution](https://en.wikipedia.org/wiki/Normal_distribution)). Both axes are logarithmic, so an error proportional to $\sigma^p$ appears as a straight line of slope $p$.
 
-<img src="../notebooks/public/ch16_ut_accuracy_v2.svg" class="graphic" alt="Two log-log plots of absolute error against sigma for the mean and the variance of sin(x). For the mean, linearization's error has slope 2, the small-alpha unscented transform slope 4, and the alpha equals 1, kappa equals 2 unscented transform slope 6. For the variance, linearization and the small-alpha unscented transform both have slope 4, and the alpha equals 1 unscented transform has slope 6." />
+<img src="../../notebooks/public/ch16_ut_accuracy_v2.svg" class="graphic" alt="Two log-log plots of absolute error against sigma for the mean and the variance of sin(x). For the mean, linearization's error has slope 2, the small-alpha unscented transform slope 4, and the alpha equals 1, kappa equals 2 unscented transform slope 6. For the variance, linearization and the small-alpha unscented transform both have slope 4, and the alpha equals 1 unscented transform has slope 6." />
 
 ```{marimo} python
 :name: make_accuracy_fig
@@ -749,7 +749,7 @@ _fig.savefig(IMAGES_DIR / "ch16_ekf_vs_ukf_single_v2.svg")
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch16_ekf_vs_ukf_single_v2.svg" class="graphic" alt="Two stacked plots over 4 seconds. The UKF angle estimate moves from 2 radians down onto the true angle within half a second and then tracks it. The EKF angle estimate climbs past pi and keeps wrapping around, as if the pendulum were spinning." />
+<img src="../../notebooks/public/ch16_ekf_vs_ukf_single_v2.svg" class="graphic" alt="Two stacked plots over 4 seconds. The UKF angle estimate moves from 2 radians down onto the true angle within half a second and then tracks it. The EKF angle estimate climbs past pi and keeps wrapping around, as if the pendulum were spinning." />
 
 ```{marimo} python
 :hide-code: true
@@ -950,7 +950,7 @@ _fig.savefig(IMAGES_DIR / "ch16_particle_filter_v2.svg")
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch16_particle_filter_v2.svg" class="graphic" alt="Left: angle versus time over 3 seconds. The particle cloud starts wide, splits into two groups after the first measurement, and within about half a second collapses onto the true angle, which the particle filter's mean then follows. The EKF and UKF estimates climb past pi and wrap around repeatedly. Right: histograms of the particle angles at four times, with triangles marking the true angle at each time, showing a wide initial distribution, two peaks after the first measurement, and a single narrow peak at the true angle by one second." />
+<img src="../../notebooks/public/ch16_particle_filter_v2.svg" class="graphic" alt="Left: angle versus time over 3 seconds. The particle cloud starts wide, splits into two groups after the first measurement, and within about half a second collapses onto the true angle, which the particle filter's mean then follows. The EKF and UKF estimates climb past pi and wrap around repeatedly. Right: histograms of the particle angles at four times, with triangles marking the true angle at each time, showing a wide initial distribution, two peaks after the first measurement, and a single narrow peak at the true angle by one second." />
 
 ```{marimo} python
 :hide-code: true

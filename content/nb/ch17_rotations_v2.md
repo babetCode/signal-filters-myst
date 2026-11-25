@@ -86,7 +86,7 @@ This book uses two frames from here on:
 
 At *zero attitude* the two frames' axes coincide: the body faces East, level.
   
-<img src="../notebooks/public/ch17_frames_v2.svg" class="graphic" alt="Two 3-D sketches. Left: the body frame x, y, z axes coincide with the dashed East, North, Up navigation axes. Right: the body is yawed 35 degrees, pitched nose-up 20 degrees, and rolled 10 degrees, so its axes point away from East, North, Up." />
+<img src="../../notebooks/public/ch17_frames_v2.svg" class="graphic" alt="Two 3-D sketches. Left: the body frame x, y, z axes coincide with the dashed East, North, Up navigation axes. Right: the body is yawed 35 degrees, pitched nose-up 20 degrees, and rolled 10 degrees, so its axes point away from East, North, Up." />
   
 :::{caution icon=false} ⚠️ **Assumptions and Failure Modes**
 - **The navigation frame is treated as non-rotating.** In reality an ENU frame turns with the Earth at $7.29\times 10^{-5}$ rad/s (about 15°/h). Gyroscopes measure rotation relative to non-rotating space, so we are ignoring a rate roughly 140 times smaller than the gyroscope bias we assume in [Chapter 19](ch19_ahrs_v2.md). Navigation-grade systems cannot ignore it.
@@ -476,7 +476,7 @@ lock_example = (
 )
 ```
 
-<img src="../notebooks/public/ch17_euler_rates_v2.svg" class="graphic" alt="Two stacked plots over 6 seconds. Top: pitch rises linearly to about 87 degrees and falls back, while roll and yaw each jump by about 180 degrees within half a second at t of about 3 seconds. Bottom: the pitch rate stays near 0.5 radians per second, but the roll and yaw rates spike to about 9.5 radians per second at the same moment." />
+<img src="../../notebooks/public/ch17_euler_rates_v2.svg" class="graphic" alt="Two stacked plots over 6 seconds. Top: pitch rises linearly to about 87 degrees and falls back, while roll and yaw each jump by about 180 degrees within half a second at t of about 3 seconds. Bottom: the pitch rate stays near 0.5 radians per second, but the roll and yaw rates spike to about 9.5 radians per second at the same moment." />
 
 In this simulation the body starts with $3^\circ$ of roll and turns at a constant $0.5$ rad/s about its own $y$ axis, so the nose sweeps a circle that passes $3^\circ$ from straight down. Nothing physical happens at $t \approx 3.1$ s; the body keeps turning at the same rate. Yet roll and yaw each swing through about $180^\circ$ in under a second, and their rates spike to almost twenty times the actual rotation rate. A filter that integrated Euler angles would need a tiny time step here, and with a path passing exactly through $\theta = 90^\circ$ no time step is small enough.
 
@@ -585,7 +585,7 @@ Fix a unit vector $\mathbf u$ (the axis) and an angle $\vartheta$. Split any vec
 $$\mathbf v_\parallel := (\mathbf u\cdot\mathbf v)\,\mathbf u,\qquad \mathbf v_\perp := \mathbf v - \mathbf v_\parallel.$$
 Turning $\mathbf v$ about $\mathbf u$ should leave $\mathbf v_\parallel$ alone and turn $\mathbf v_\perp$ by $\vartheta$ within the plane perpendicular to $\mathbf u$. In that plane, $\mathbf u\times\mathbf v_\perp$ is $\mathbf v_\perp$ turned by $+90^\circ$: it is perpendicular to both $\mathbf u$ and $\mathbf v_\perp$, it has the same length as $\mathbf v_\perp$ (because $\mathbf u\perp\mathbf v_\perp$ and $\|\mathbf u\| = 1$), and $(\mathbf u, \mathbf v_\perp, \mathbf u\times\mathbf v_\perp)$ is right-handed. So, exactly as in the plane, turning $\mathbf v_\perp$ by $\vartheta$ gives $\cos\vartheta\,\mathbf v_\perp + \sin\vartheta\,\mathbf u\times\mathbf v_\perp$.
 
-<img src="../notebooks/public/ch17_rodrigues_v2.svg" class="graphic" alt="A 3-D sketch of a vertical axis u, a vector v split into a vertical part along u and a horizontal part perpendicular to u, the vector u cross v-perpendicular at 90 degrees to it, and the rotated vector, whose tip lies on the circle traced around the axis." />
+<img src="../../notebooks/public/ch17_rodrigues_v2.svg" class="graphic" alt="A 3-D sketch of a vertical axis u, a vector v split into a vertical part along u and a horizontal part perpendicular to u, the vector u cross v-perpendicular at 90 degrees to it, and the rotated vector, whose tip lies on the circle traced around the axis." />
 
 ::::{admonition icon=false} 📖 **Definition**
 :::{glossary}

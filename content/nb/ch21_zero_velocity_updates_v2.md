@@ -579,7 +579,7 @@ def nav_attitude_std(run):
     return np.sqrt(np.diagonal(cov, axis1=1, axis2=2))
 ```
 
-<img src="../notebooks/public/ch21_zupt_results_v2.svg" class="graphic" alt="Three panels. Left: top view of the U-turn walk; the zero-velocity-update estimate (orange) follows the true path (black) closely, with a small sideways offset on the return leg. Middle: position error on a logarithmic scale; without updates it grows to hundreds of meters, with updates it stays below about half a meter, inside the filter's two-sigma bound. Right: forward velocity over three strides; the estimate tracks the true bell-shaped velocity and is held at zero during each stance." />
+<img src="../../notebooks/public/ch21_zupt_results_v2.svg" class="graphic" alt="Three panels. Left: top view of the U-turn walk; the zero-velocity-update estimate (orange) follows the true path (black) closely, with a small sideways offset on the return leg. Middle: position error on a logarithmic scale; without updates it grows to hundreds of meters, with updates it stays below about half a meter, inside the filter's two-sigma bound. Right: forward velocity over three strides; the estimate tracks the true bell-shaped velocity and is held at zero during each stance." />
 
 ```{marimo} python
 :hide-code: true
@@ -729,7 +729,7 @@ With $\mathbf b_g = \hat{\mathbf b}_g + \delta\mathbf b_g$, the innovation is $\
 run_zaru = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0, zaru=True)
 ```
 
-<img src="../notebooks/public/ch21_observability_v2.svg" class="graphic" alt="Three panels over the 29-second walk. Left: heading error with two-sigma bands; with zero-velocity updates only it grows to several degrees, with zero angular rate updates added it stays below one degree. Middle: the estimated vertical gyroscope bias; with zero-velocity updates only it creeps slowly toward the true value, with zero angular rate updates it reaches the true value during the first second. Right: filter standard deviations of the three attitude errors with zero-velocity updates only; roll and pitch stay near one milliradian while yaw grows steadily." />
+<img src="../../notebooks/public/ch21_observability_v2.svg" class="graphic" alt="Three panels over the 29-second walk. Left: heading error with two-sigma bands; with zero-velocity updates only it grows to several degrees, with zero angular rate updates added it stays below one degree. Middle: the estimated vertical gyroscope bias; with zero-velocity updates only it creeps slowly toward the true value, with zero angular rate updates it reaches the true value during the first second. Right: filter standard deviations of the three attitude errors with zero-velocity updates only; roll and pitch stay near one milliradian while yaw grows steadily." />
 
 ```{marimo} python
 :hide-code: true
@@ -902,7 +902,7 @@ mo.md(
 
 Stride length is accurate to a few millimeters, about $0.2\%$ of the stride, and clearance to a couple of millimeters. Stride time, cadence, and gait speed inherit an error of at most one sample period (10 ms) from the timing of the detector. Turning angle is where ZARU matters most: without it, the vertical gyroscope bias adds its drift over each stride to every turning angle, as the observability analysis predicted.
 
-<img src="../notebooks/public/ch21_gait_parameters_v2.svg" class="graphic" alt="Two panels plotting per-stride values for the 24 strides. Left: stride length, true value 1.4 m, with estimates from both filters within about a centimeter. Right: turning angle, true value 0 degrees except 45 degrees on strides 11 to 14, with both estimates on top of the truth." />
+<img src="../../notebooks/public/ch21_gait_parameters_v2.svg" class="graphic" alt="Two panels plotting per-stride values for the 24 strides. Left: stride length, true value 1.4 m, with estimates from both filters within about a centimeter. Right: turning angle, true value 0 degrees except 45 degrees on strides 11 to 14, with both estimates on top of the truth." />
 
 ```{marimo} python
 :hide-code: true

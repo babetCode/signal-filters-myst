@@ -536,7 +536,7 @@ Read the formula as a recipe:
 
 Geometrically, conditioning is slicing: fix $z$, cut the joint density along that line, and rescale the slice to integrate to $1$. The figure shows this for a weight $x \sim \mathcal N(155, 4)$ and a reading $z = x + v$ with independent $v \sim \mathcal N(0, 1)$.
   
-<img src="../notebooks/public/ch12_conditioning_slice_v2.svg" class="graphic" alt="Left: confidence ellipses of the joint distribution of a weight x and a reading z, with the horizontal line z = 157 and the line of conditional means. Right: the prior density of x, centered at 155, and the much narrower conditional density given z = 157, centered at 156.6." />
+<img src="../../notebooks/public/ch12_conditioning_slice_v2.svg" class="graphic" alt="Left: confidence ellipses of the joint distribution of a weight x and a reading z, with the horizontal line z = 157 and the line of conditional means. Right: the prior density of x, centered at 155, and the much narrower conditional density given z = 157, centered at 156.6." />
 
 ```{marimo} python
 :include: false

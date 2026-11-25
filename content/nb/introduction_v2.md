@@ -148,7 +148,7 @@ In general, a filter used to estimate a real-world value receives a sequence[^in
 
 [^informal-sequence]: Used informally here: a list $z_1, z_2, z_3, \ldots$ indexed by the steps. Sequences are defined precisely in [Chapter 3](ch3_sets_for_probability_v2.md).
   
-<img src="../notebooks/public/intro_filter_diagram_v2.svg" class="graphic" alt="Flow diagram: a real-world value is measured by a measurement device, producing a sequence of digital measurements, which a filter turns into an estimate of the real-world value." />
+<img src="../../notebooks/public/intro_filter_diagram_v2.svg" class="graphic" alt="Flow diagram: a real-world value is measured by a measurement device, producing a sequence of digital measurements, which a filter turns into an estimate of the real-world value." />
 
 ```{marimo} python
 :hide-code: true
@@ -175,7 +175,7 @@ _d.save(IMAGES_DIR / "intro_filter_diagram_v2.svg")
 
 For our particular example of a scale measuring weight, this sequence looks like the following (each arrow is labeled with the output of the box before it):
   
-<img src="../notebooks/public/intro_scale_diagram_v2.svg" class="graphic" alt="Flow diagram: force on the platform tenses and compresses strain gauges; the load cell outputs a continuous analog voltage; the ADC samples it into a sequence of digital measurements; the filter turns these into a weight estimate, shown as the scale reading." />
+<img src="../../notebooks/public/intro_scale_diagram_v2.svg" class="graphic" alt="Flow diagram: force on the platform tenses and compresses strain gauges; the load cell outputs a continuous analog voltage; the ADC samples it into a sequence of digital measurements; the filter turns these into a weight estimate, shown as the scale reading." />
 
 ```{marimo} python
 :hide-code: true
@@ -213,7 +213,7 @@ _d.save(IMAGES_DIR / "intro_scale_diagram_v2.svg")
 
 We have yet to explain *how* a filter could remove noise, but we're getting there. Imagine you step on the scale and the first 10 measurements look like this:
   
-<img src="../notebooks/public/intro_weight_measurements_fig_v2.svg" class="graphic" alt="Ten weight measurements taken 0.1 s apart, scattered between about 153.7 and 155.9 lb." />
+<img src="../../notebooks/public/intro_weight_measurements_fig_v2.svg" class="graphic" alt="Ten weight measurements taken 0.1 s apart, scattered between about 153.7 and 155.9 lb." />
 
 ```{marimo} python
 :hide-code: true
@@ -362,7 +362,7 @@ def cumulative_average(measurements):
 
 Over 3 seconds, this looks like:
   
-<img src="../notebooks/public/intro_cumulative_avg_fig_v2.svg" class="graphic" alt="Thirty weight measurements over 3 seconds with their cumulative average, which settles close to the true weight of 155 lb." />
+<img src="../../notebooks/public/intro_cumulative_avg_fig_v2.svg" class="graphic" alt="Thirty weight measurements over 3 seconds with their cumulative average, which settles close to the true weight of 155 lb." />
 
 ```{marimo} python
 :hide-code: true
@@ -572,7 +572,7 @@ As an example, imagine that after weighing yourself on your bathroom scale, you 
 
 [^daily-noise]: Each daily reading is itself the output of the scale's own filter, so the scale's electrical noise is small. What remains is mostly real day-to-day variation in the water and food in your body. Since we want to track the slow trend in your weight, we treat that variation as noise: the "true value" $x_k$ is the trend.
   
-<img src="../notebooks/public/intro_alpha_beta_weight_measurements_fig_v2.svg" class="graphic" alt="Twenty-eight daily weigh-ins that scatter by about a pound around a slowly rising trend, from about 155 lb to about 160 lb." />
+<img src="../../notebooks/public/intro_alpha_beta_weight_measurements_fig_v2.svg" class="graphic" alt="Twenty-eight daily weigh-ins that scatter by about a pound around a slowly rising trend, from about 155 lb to about 160 lb." />
 
 ```{marimo} python
 :hide-code: true

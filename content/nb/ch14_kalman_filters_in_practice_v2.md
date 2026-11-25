@@ -133,7 +133,7 @@ _fig.savefig(IMAGES_DIR / "ch14_cart_v2.svg", metadata={"Date": None})
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch14_cart_v2.svg" class="graphic" alt="Three stacked plots over 20 seconds. Position rises from 0 to 20 m along an S-shaped curve, with noisy position readings scattered about half a meter around it. Velocity ramps from 0 to 2 m/s between 2 and 6 s, stays at 2 m/s, and ramps back to 0 between 12 and 16 s. The true acceleration is a pair of rectangular pulses of plus and minus 0.5 m/s², and the accelerometer readings jitter around it." />
+<img src="../../notebooks/public/ch14_cart_v2.svg" class="graphic" alt="Three stacked plots over 20 seconds. Position rises from 0 to 20 m along an S-shaped curve, with noisy position readings scattered about half a meter around it. Velocity ramps from 0 to 2 m/s between 2 and 6 s, stays at 2 m/s, and ramps back to 0 between 12 and 16 s. The true acceleration is a pair of rectangular pulses of plus and minus 0.5 m/s², and the accelerometer readings jitter around it." />
   
 ### An Implementation for Many Runs at Once
 
@@ -626,7 +626,7 @@ _fig.savefig(IMAGES_DIR / "ch14_bias_v2.svg", metadata={"Date": None})
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch14_bias_v2.svg" class="graphic" alt="Left: position errors of two filters over 20 seconds. The two-state filter's error wanders up to about a meter, far outside its narrow uncertainty band; the three-state filter's error stays within a few tenths of a meter and inside its band. Right: the three-state filter's bias estimate starts at zero with a wide band and settles onto the true value of 0.05 within several seconds, with a band that narrows steadily." />
+<img src="../../notebooks/public/ch14_bias_v2.svg" class="graphic" alt="Left: position errors of two filters over 20 seconds. The two-state filter's error wanders up to about a meter, far outside its narrow uncertainty band; the three-state filter's error stays within a few tenths of a meter and inside its band. Right: the three-state filter's bias estimate starts at zero with a wide band and settles onto the true value of 0.05 within several seconds, with a band that narrows steadily." />
 
 ```{marimo} python
 :hide-code: true
@@ -711,7 +711,7 @@ _fig.savefig(IMAGES_DIR / "ch14_gating_v2.svg", metadata={"Date": None})
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch14_gating_v2.svg" class="graphic" alt="Position error of two filters over 20 seconds, with dotted red lines at the times of glitched readings. The ungated filter's error jumps at every glitch and decays afterward; the gated filter's error stays small and inside its band." />
+<img src="../../notebooks/public/ch14_gating_v2.svg" class="graphic" alt="Position error of two filters over 20 seconds, with dotted red lines at the times of glitched readings. The ungated filter's error jumps at every glitch and decays afterward; the gated filter's error stays small and inside its band." />
 
 ```{marimo} python
 :hide-code: true
@@ -908,7 +908,7 @@ plt.close(_fig)
 stab_first = (float(_covariances(np.float32, "simplified", False, steps=1)[0, 0, 0]), float(_ref[0, 0, 0]))
 ```
 
-<img src="../notebooks/public/ch14_stability_v2.svg" class="graphic" alt="Relative error of the position variance over 300 steps on a logarithmic axis. The single-precision simplified update starts with errors from about ten percent up to fifty times the true value, with a red-shaded stretch of about 80 steps where its matrix is not a valid covariance, before slowly recovering. The single-precision Joseph update stays below about one part in a thousand throughout." />
+<img src="../../notebooks/public/ch14_stability_v2.svg" class="graphic" alt="Relative error of the position variance over 300 steps on a logarithmic axis. The single-precision simplified update starts with errors from about ten percent up to fifty times the true value, with a red-shaded stretch of about 80 steps where its matrix is not a valid covariance, before slowly recovering. The single-precision Joseph update stays below about one part in a thousand throughout." />
 
 ```{marimo} python
 :hide-code: true
@@ -1123,7 +1123,7 @@ _fig.savefig(IMAGES_DIR / "ch14_rts_v2.svg", metadata={"Date": None})
 plt.close(_fig)
 ```
 
-<img src="../notebooks/public/ch14_rts_v2.svg" class="graphic" alt="Velocity over 20 seconds. The true velocity is a trapezoid rising from 0 to 2 m/s and back. The filter's estimate is noisy and lags behind each ramp; the smoother's estimate is much smoother, rounds the corners slightly, and follows the ramps without lag." />
+<img src="../../notebooks/public/ch14_rts_v2.svg" class="graphic" alt="Velocity over 20 seconds. The true velocity is a trapezoid rising from 0 to 2 m/s and back. The filter's estimate is noisy and lags behind each ramp; the smoother's estimate is much smoother, rounds the corners slightly, and follows the ramps without lag." />
 
 ```{marimo} python
 :hide-code: true

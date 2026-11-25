@@ -636,7 +636,7 @@ so $\sum_i w_i^2 \ge \frac1k$, with equality iff every $w_i = \frac1k$. Multiply
 
 Chapter 7 proves a stronger statement: when combining a running estimate with each new reading, the gains $1/k$ of the cumulative average are the best possible for a constant value. So why did the Introduction use an EMA at all? Because real true values move.
   
-<img src="../notebooks/public/ch6_ema_variance_v2.svg" class="graphic" alt="Variance of the EMA divided by the noise variance, plotted against the number of readings on a logarithmic scale, for alpha equal to 0.05, 0.2, and 0.5. Each curve starts at 1 and levels off at alpha over (2 minus alpha), while the sample mean's curve 1 over k keeps falling below all of them." />
+<img src="../../notebooks/public/ch6_ema_variance_v2.svg" class="graphic" alt="Variance of the EMA divided by the noise variance, plotted against the number of readings on a logarithmic scale, for alpha equal to 0.05, 0.2, and 0.5. Each curve starts at 1 and levels off at alpha over (2 minus alpha), while the sample mean's curve 1 over k keeps falling below all of them." />
 
 ```{marimo} python
 :include: false
