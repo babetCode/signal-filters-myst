@@ -541,7 +541,7 @@ def _(mo):
     mo.md(r"""
     ## Formal Proofs
 
-    Logical consequence quantifies over *all* structures, of every size, so it cannot be checked directly. A deductive system replaces it with a finite, mechanical check: a list of logical axioms and rules of inference, with a proof being a sequence of formulas each of which is an axiom or follows from earlier ones by a rule. We use the system of [Enderton (2001), *A Mathematical Introduction to Logic*, 2nd ed., §2.4](https://en.wikipedia.org/wiki/Herbert_Enderton), adapted to our primitive symbols.
+    Logical consequence quantifies over *all* structures, of every size, so it cannot be checked directly. A deductive system replaces it with a finite, mechanical check: a list of logical axioms and rules of inference, with a proof being a sequence of formulas each of which is an axiom or follows from earlier ones by a rule. We use the system of @enderton2001 [§2.4], adapted to our primitive symbols.
 
     ### Logical Axioms and Modus Ponens
 
@@ -637,7 +637,7 @@ def _(mo):
     - If $\varphi_i$ follows by modus ponens from $\varphi_j$ and $\varphi_j \rightarrow \varphi_i$, the induction hypothesis gives $\Gamma \vdash \forall x\,\varphi_j$ and $\Gamma \vdash \forall x\,(\varphi_j \rightarrow \varphi_i)$. Axiom group 3 gives $\forall x\,(\varphi_j \rightarrow \varphi_i) \rightarrow (\forall x\,\varphi_j \rightarrow \forall x\,\varphi_i)$, and two applications of modus ponens give $\Gamma \vdash \forall x\,\varphi_i$. $\blacksquare$
     ///
 
-    The Deduction Lemma is Chapter 1's *conditional proof* ("assume $\gamma$ ... therefore $\gamma \rightarrow \varphi$"), and the Generalization Lemma is *universal generalization* ("let $x$ be arbitrary"): the requirement that $x$ not be free in $\Gamma$ is the formal meaning of "nothing is assumed about $x$". Axiom group 2 is universal instantiation, and modus ponens is itself. Existential generalization and existential instantiation are also derived rules; see Enderton (2001), §2.4.
+    The Deduction Lemma is Chapter 1's *conditional proof* ("assume $\gamma$ ... therefore $\gamma \rightarrow \varphi$"), and the Generalization Lemma is *universal generalization* ("let $x$ be arbitrary"): the requirement that $x$ not be free in $\Gamma$ is the formal meaning of "nothing is assumed about $x$". Axiom group 2 is universal instantiation, and modus ponens is itself. Existential generalization and existential instantiation are also derived rules; see @enderton2001 [§2.4].
     """)
     return
 
@@ -658,7 +658,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: no-icon}
-    Not given here. Soundness is proved by induction along a deduction: every logical axiom is logically valid, and modus ponens preserves satisfaction. Completeness is proved by Henkin's method, which builds a model out of the formulas themselves for any collection from which no contradiction is provable. Both proofs are in Enderton (2001), §2.5; see also [Gödel's completeness theorem (Wikipedia)](https://en.wikipedia.org/wiki/G%C3%B6del%27s_completeness_theorem). $\blacksquare$
+    Not given here. Soundness is proved by induction along a deduction: every logical axiom is logically valid, and modus ponens preserves satisfaction. Completeness is proved by Henkin's method, which builds a model out of the formulas themselves for any collection from which no contradiction is provable. Both proofs are in @enderton2001 [§2.5]; see also [Gödel's completeness theorem (Wikipedia)](https://en.wikipedia.org/wiki/G%C3%B6del%27s_completeness_theorem). $\blacksquare$
     ///
 
     So the mechanical notion $\vdash$ and the semantic notion $\models$ coincide. A collection $\Gamma$ of formulas is *consistent* if there is no formula $\varphi$ with both $\Gamma \vdash \varphi$ and $\Gamma \vdash \lnot\varphi$.
@@ -838,7 +838,7 @@ def _(mo):
     Not given here; see [Gödel's incompleteness theorems (Wikipedia)](https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems) and the references there. $\blacksquare$
     ///
 
-    So this book, like nearly all of mathematics, **assumes that ZFC is consistent**. By the Corollary to Soundness and Completeness, this is the same as assuming that ZFC has a model. The evidence is practical: a century of intensive use has produced no contradiction, and the consistency of ZFC can be proved in stronger theories (which merely shifts the assumption to them). The first incompleteness theorem has a concrete instance in set theory: the Continuum Hypothesis (that every infinite subset of $\mathbb R$ is {term}`equinumerous` with $\mathbb N$ or with $\mathbb R$) can be neither proved nor refuted from ZFC, if ZFC is consistent (Gödel 1940, Cohen 1963; see [Continuum hypothesis (Wikipedia)](https://en.wikipedia.org/wiki/Continuum_hypothesis)). Nothing in this book depends on it.
+    So this book, like nearly all of mathematics, **assumes that ZFC is consistent**. By the Corollary to Soundness and Completeness, this is the same as assuming that ZFC has a model. The evidence is practical: a century of intensive use has produced no contradiction, and the consistency of ZFC can be proved in stronger theories (which merely shifts the assumption to them). The first incompleteness theorem has a concrete instance in set theory: the Continuum Hypothesis (that every infinite subset of $\mathbb R$ is {term}`equinumerous` with $\mathbb N$ or with $\mathbb R$) can be neither proved nor refuted from ZFC, if ZFC is consistent [@godel1940; @cohen1963]; see [Continuum hypothesis (Wikipedia)](https://en.wikipedia.org/wiki/Continuum_hypothesis). Nothing in this book depends on it.
 
     ### Countable Models
 

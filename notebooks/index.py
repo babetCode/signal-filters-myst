@@ -48,7 +48,7 @@ def _(mo):
     mo.md(r"""
     ## Motivation
 
-    My goal for this project was to write an intuitive (and mostly rigorous) guide to Kalman filtering. I was inspired by [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), a fantastic book by Roger Labbe. However, I wanted to do a couple of things differently:
+    My goal for this project was to write an intuitive (and mostly rigorous) guide to Kalman filtering. I was inspired by *Kalman and Bayesian Filters in Python* [@labbe_kalman_filters], a fantastic book by Roger Labbe. However, I wanted to do a couple of things differently:
 
     1. His book is written as a collection of `.ipynb` files, so to read it you can:
         - Download the notebooks from GitHub, set up a conda environment, run a local Jupyter server, and read the book from the local server (this is the recommended way)[^running-kbfp-locally].

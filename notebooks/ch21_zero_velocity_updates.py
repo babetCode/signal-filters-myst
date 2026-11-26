@@ -578,7 +578,7 @@ def _(mo):
 
     **Reset.** The error is now measured from the new nominal state, so its estimate returns to zero and its covariance must be re-expressed. For the vector parts the new error is $\delta\mathbf p - \delta\hat{\mathbf p}$ and so on, with Jacobian $\mathbf I$. For the attitude, the new error $\delta\boldsymbol\theta^+$ satisfies $\operatorname{Exp}(\delta\boldsymbol\theta^+) = \operatorname{Exp}(-\delta\hat{\boldsymbol\theta})\operatorname{Exp}(\delta\boldsymbol\theta)$. The [Baker–Campbell–Hausdorff formula](https://en.wikipedia.org/wiki/Baker%E2%80%93Campbell%E2%80%93Hausdorff_formula) gives $\log(e^{\mathbf A}e^{\mathbf B}) = \mathbf A + \mathbf B + \tfrac12(\mathbf A\mathbf B - \mathbf B\mathbf A) + \cdots$, and with the commutator lemma ($\mathbf A = -[\delta\hat{\boldsymbol\theta}]_\times$, $\mathbf B = [\delta\boldsymbol\theta]_\times$) this yields $\delta\boldsymbol\theta^+ \approx \delta\boldsymbol\theta - \delta\hat{\boldsymbol\theta} - \tfrac12\,\delta\hat{\boldsymbol\theta}\times\delta\boldsymbol\theta$. Its Jacobian with respect to $\delta\boldsymbol\theta$ is $\mathbf I - \tfrac12[\delta\hat{\boldsymbol\theta}]_\times$, so
     $$\mathbf P \leftarrow \mathbf G_r\mathbf P\mathbf G_r^\top, \qquad \mathbf G_r = \operatorname{blockdiag}\big(\mathbf I,\ \mathbf I,\ \mathbf I - \tfrac12[\delta\hat{\boldsymbol\theta}]_\times,\ \mathbf I,\ \mathbf I\big).$$
-    The corrections $\delta\hat{\boldsymbol\theta}$ are milliradians, so $\mathbf G_r \approx \mathbf I$ and many implementations skip this step; it costs nothing, so we keep it. (We also checked $\mathbf G_r$ numerically. For the derivation in full, see [Solà (2017), *Quaternion Kinematics for the Error-State Kalman Filter*](https://arxiv.org/abs/1711.02508), Section 7.)
+    The corrections $\delta\hat{\boldsymbol\theta}$ are milliradians, so $\mathbf G_r \approx \mathbf I$ and many implementations skip this step; it costs nothing, so we keep it. (We also checked $\mathbf G_r$ numerically. For the derivation in full, see @sola2017 [Section 7].)
 
     /// tip | **The filter, one sample at a time**
         attrs: {class: no-icon}
@@ -927,8 +927,8 @@ def _(mo):
     Bounding the heading error requires a measurement that depends on heading. The common options:
 
     - **Magnetometer.** [Chapter 19](ch19_ahrs.md)'s tilt-compensated heading is a measurement of yaw. Since $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta) = \operatorname{Exp}(\hat{\mathbf R}\,\delta\boldsymbol\theta)\hat{\mathbf R}$, the navigation-frame attitude error is $\hat{\mathbf R}\,\delta\boldsymbol\theta$, and to first order the heading error is its vertical component, $\mathbf e_z^\top\hat{\mathbf R}\,\delta\boldsymbol\theta$. A heading measurement therefore has $\mathbf H = [\mathbf 0\ \ \mathbf 0\ \ \mathbf e_z^\top\hat{\mathbf R}\ \ \mathbf 0\ \ \mathbf 0]$. The difficulty is physical: indoors, and especially near the floor, steel and electronics distort the Earth's field by tens of degrees, so magnetic updates need gating ([Chapter 14](ch14_kalman_filters_in_practice.md)) or must be accepted only when the measured field has the expected magnitude and dip.
-    - **Heuristic drift elimination.** Most buildings have corridors along a few dominant directions. When the walker has gone straight for several strides in a direction close to a dominant one, the filter applies a pseudo-measurement that the heading *equals* that direction; see [Borenstein, Ojeda, and Kwanmuang (2009), *Heuristic Reduction of Gyro Drift for Personnel Tracking Systems*](https://doi.org/10.1017/S0373463308005043). It works where its assumption holds and corrupts the heading where it does not.
-    - **Other sources:** satellite positioning outdoors, maps, or a second foot-mounted IMU combined with the constraint that the two feet are never more than a leg length apart ([Skog et al. (2012), *Fusing the Information from Two Navigation Systems Using an Upper Bound on Their Maximum Spatial Separation*](https://doi.org/10.1109/IPIN.2012.6418862)).
+    - **Heuristic drift elimination.** Most buildings have corridors along a few dominant directions. When the walker has gone straight for several strides in a direction close to a dominant one, the filter applies a pseudo-measurement that the heading *equals* that direction; see @borenstein2009. It works where its assumption holds and corrupts the heading where it does not.
+    - **Other sources:** satellite positioning outdoors, maps, or a second foot-mounted IMU combined with the constraint that the two feet are never more than a leg length apart [@skog2012].
 
     For gait analysis, heading drift matters less than it does for navigation: stride length, stride time, and clearance are computed within a stride, and a slowly rotating heading affects only the turning angle, by the drift accumulated during one stride.
     """)
@@ -1263,12 +1263,12 @@ def _(mo):
     mo.md(r"""
     ## Further Reading
 
-    - [Foxlin (2005), *Pedestrian Tracking with Shoe-Mounted Inertial Sensors*](https://doi.org/10.1109/MCG.2005.140), the paper that introduced zero-velocity updates in a Kalman filter for foot-mounted IMUs.
-    - [Skog, Händel, Nilsson, and Rantakokko (2010), *Zero-Velocity Detection—An Algorithm Evaluation*](https://doi.org/10.1109/TBME.2010.2060723): the SHOE detector and a comparison of detectors on real data.
-    - [Nilsson, Skog, Händel, and Hari (2012), *Foot-Mounted INS for Everybody: An Open-Source Embedded Implementation*](https://doi.org/10.1109/PLANS.2012.6236875): OpenShoe, an open hardware and software implementation of the filter in this chapter.
-    - [Jiménez, Seco, Prieto, and Guevara (2009), *A Comparison of Pedestrian Dead-Reckoning Algorithms Using a Low-Cost MEMS IMU*](https://doi.org/10.1109/WISP.2009.5286542): zero-velocity-aided INS compared with step-counting approaches.
-    - [Solà (2017), *Quaternion Kinematics for the Error-State Kalman Filter*](https://arxiv.org/abs/1711.02508): a thorough derivation of error-state filters, including the reset step.
-    - [Borenstein, Ojeda, and Kwanmuang (2009), *Heuristic Reduction of Gyro Drift for Personnel Tracking Systems*](https://doi.org/10.1017/S0373463308005043): heuristic drift elimination.
+    - @foxlin2005, *Pedestrian Tracking with Shoe-Mounted Inertial Sensors*: the paper that introduced zero-velocity updates in a Kalman filter for foot-mounted IMUs.
+    - @skog2010, *Zero-Velocity Detection—An Algorithm Evaluation*: the SHOE detector and a comparison of detectors on real data.
+    - @nilsson2012, *Foot-Mounted INS for Everybody: An Open-Source Embedded Implementation*: OpenShoe, an open hardware and software implementation of the filter in this chapter.
+    - @jimenez2009, *A Comparison of Pedestrian Dead-Reckoning Algorithms Using a Low-Cost MEMS IMU*: zero-velocity-aided INS compared with step-counting approaches.
+    - @sola2017, *Quaternion Kinematics for the Error-State Kalman Filter*: a thorough derivation of error-state filters, including the reset step.
+    - @borenstein2009, *Heuristic Reduction of Gyro Drift for Personnel Tracking Systems*: heuristic drift elimination.
     """)
     return
 

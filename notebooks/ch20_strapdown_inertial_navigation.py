@@ -182,7 +182,7 @@ def _(mo):
 
     The [trapezoidal rule](https://en.wikipedia.org/wiki/Trapezoidal_rule) is exact for linear integrands, and for twice-differentiable integrands its total error over a fixed time span is proportional to $\Delta t^2$. Once we have a simulator with exact ground truth we will check this rate numerically. The helper functions below are the ones from Chapters 17 and 18.
 
-    [^coning]: When the rotation axis changes during a sample period, averaging $\boldsymbol\omega$ ignores the fact that rotations about different axes do not commute. Integrating the rotation vector to second order adds the correction $\tfrac{\Delta t^2}{12}\,\boldsymbol\omega_{k-1}\times\boldsymbol\omega_k$, the two-sample *coning* correction; see Savage (1998), *Strapdown Inertial Navigation Integration Algorithm Design, Part 1: Attitude Algorithms*, Journal of Guidance, Control, and Dynamics. For the walking motions in this chapter it changes the computed positions by 1–2 cm over a 20 s walk, so we omit it.
+    [^coning]: When the rotation axis changes during a sample period, averaging $\boldsymbol\omega$ ignores the fact that rotations about different axes do not commute. Integrating the rotation vector to second order adds the correction $\tfrac{\Delta t^2}{12}\,\boldsymbol\omega_{k-1}\times\boldsymbol\omega_k$, the two-sample *coning* correction; see @savage1998. For the walking motions in this chapter it changes the computed positions by 1–2 cm over a 20 s walk, so we omit it.
     """)
     return
 
@@ -512,7 +512,7 @@ def _(mo):
     mo.md(r"""
     ## The Gait Cycle
 
-    Walking is periodic, and clinicians describe one period of one leg with a fixed vocabulary of events (see Perry and Burnfield (2010), *Gait Analysis: Normal and Pathological Function*, 2nd ed.). For the foot that carries our IMU, in order:
+    Walking is periodic, and clinicians describe one period of one leg with a fixed vocabulary of events [see @perry2024]. For the foot that carries our IMU, in order:
 
     - **Heel strike** (initial contact): the heel touches the ground.
     - **Foot flat:** the whole sole rests on the ground.
@@ -602,7 +602,7 @@ def _(mo):
     so the foot travels a horizontal distance $L$ along the average of its two headings.
     2. **Minimum-jerk profile.** Every transition uses
     $$s(\tau) = 10\tau^3 - 15\tau^4 + 6\tau^5, \qquad s'(\tau) = 30\tau^2(1-\tau)^2, \qquad s''(\tau) = 60\tau(1-\tau)(1-2\tau).$$
-    It rises from $s(0) = 0$ to $s(1) = 1$, and its velocity and acceleration vanish at both ends, so the foot starts and stops smoothly. It is the unique polynomial of degree at most 5 with these six boundary values, and among all motions between two rest positions it minimizes the integrated squared jerk (the third derivative), as [Flash and Hogan (1985), *The Coordination of Arm Movements: An Experimentally Confirmed Mathematical Model*](https://doi.org/10.1523/JNEUROSCI.05-07-01688.1985) showed for reaching movements.
+    It rises from $s(0) = 0$ to $s(1) = 1$, and its velocity and acceleration vanish at both ends, so the foot starts and stops smoothly. It is the unique polynomial of degree at most 5 with these six boundary values, and among all motions between two rest positions it minimizes the integrated squared jerk (the third derivative), as @flash1985 showed for reaching movements.
     3. **Position.** $\ \mathbf p(\tau) = \mathbf P_i + s(\tau)\,\mathbf d_i + h_c\,c(\tau)\,\mathbf e_z$, where $c(\tau) = 256\,\tau^4(1-\tau)^4$ is a clearance bump of height $1$ at $\tau = \tfrac12$ and $h_c$ is the peak clearance.[^bump]
     4. **Heading and pitch.** $\ \psi(\tau) = \psi_i + s(\tau)\,\Delta\psi_i$. The pitch must be toe-down ($\theta > 0$) around toe off and toe-up around heel strike. We use
     $$\theta(\tau) = A\,\tau^3(1-\tau)^4 + B\,\tau^4(1-\tau)^3,$$
@@ -900,7 +900,7 @@ def _(mo):
     - **Acceleration magnitude:** $\ T_{\text{MAG}}(k) = \dfrac{1}{\sigma_a^2 W}\displaystyle\sum_{j\in\Omega_k}\big(\lVert\mathbf f_{m,j}\rVert - g\big)^2.$ Stationary implies $\lVert\mathbf f\rVert = g$, but not conversely: $\lVert\mathbf f\rVert = \lVert\mathbf a^n - \mathbf g^n\rVert = g$ holds for every acceleration on a sphere of radius $g$ around $\mathbf g^n$ (for instance, a foot decelerating forward while dropping), and a swinging foot passes through that sphere.
     - **Angular-rate energy:** $\ T_{\text{ARE}}(k) = \dfrac{1}{\sigma_g^2 W}\displaystyle\sum_{j\in\Omega_k}\lVert\boldsymbol\omega_{m,j}\rVert^2.$ Stationary implies $\boldsymbol\omega = \mathbf 0$, but a foot that translates without rotating passes this test too.
 
-    The detector of [Skog et al. (2010), *Zero-Velocity Detection—An Algorithm Evaluation*](https://doi.org/10.1109/TBME.2010.2060723), called SHOE (stance hypothesis optimal detector), combines both conditions, and it is not an ad hoc combination: it is the generalized likelihood ratio test (GLRT) for "stationary" against "moving".
+    The detector of @skog2010, called SHOE (stance hypothesis optimal detector), combines both conditions, and it is not an ad hoc combination: it is the generalized likelihood ratio test (GLRT) for "stationary" against "moving".
     """)
     return
 

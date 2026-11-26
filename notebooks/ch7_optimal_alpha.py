@@ -917,7 +917,7 @@ def _(mo):
     mo.md(r"""
     ## From α to the Gain $K_k$
 
-    From now on we write $K_k$ for the gain used at step $k$; the letter honors Rudolf Kálmán ([Kalman (1960), *A New Approach to Linear Filtering and Prediction Problems*](https://doi.org/10.1115/1.3662552)). With the optimal gain, one step of the filter reads:
+    From now on we write $K_k$ for the gain used at step $k$; the letter honors Rudolf Kálmán [@kalman1960]. With the optimal gain, one step of the filter reads:
 
     $$\begin{aligned}
     K_k &= \frac{P_k^-}{P_k^- + R} && \text{(optimal gain)}\\

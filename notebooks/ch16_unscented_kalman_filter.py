@@ -161,7 +161,7 @@ def _(mo):
     $$\sum_{i} W_i^{(m)} = 1, \qquad \sum_{i} W_i^{(m)}\boldsymbol\chi_i = \boldsymbol\mu, \qquad \sum_{i} W_i^{(c)}(\boldsymbol\chi_i - \boldsymbol\mu)(\boldsymbol\chi_i - \boldsymbol\mu)^\top = \boldsymbol\Sigma.$$
     ///
 
-    The weights need not be positive, and the points are chosen deterministically, not sampled. (We write $W$ for weights because $\mathbf w_k$ is the process noise.) The standard construction is the *scaled* sigma points of [Julier (2002), *The Scaled Unscented Transformation*](https://doi.org/10.1109/ACC.2002.1025369), in the parametrization of [Wan & van der Merwe (2000), *The Unscented Kalman Filter for Nonlinear Estimation*](https://doi.org/10.1109/ASSPCC.2000.882463). It has three parameters, $\alpha_{\text{UT}} > 0$, $\beta_{\text{UT}}$, and $\kappa$ with $n + \kappa > 0$, and defines
+    The weights need not be positive, and the points are chosen deterministically, not sampled. (We write $W$ for weights because $\mathbf w_k$ is the process noise.) The standard construction is the *scaled* sigma points of @julier2002, in the parametrization of @wan2000. It has three parameters, $\alpha_{\text{UT}} > 0$, $\beta_{\text{UT}}$, and $\kappa$ with $n + \kappa > 0$, and defines
 
     $$\lambda := \alpha_{\text{UT}}^2(n + \kappa) - n, \qquad\text{so that}\qquad n + \lambda = \alpha_{\text{UT}}^2(n + \kappa) > 0.$$
 
@@ -191,7 +191,7 @@ def _(mo):
     - $\kappa$ is a second spread parameter. With $\alpha_{\text{UT}} = 1$ and $\kappa = 3 - n$, the points sit at $\sqrt 3$ standard deviations. Then the fourth moment of the points along each column, $\sum_i W_i^{(m)}\xi_{ij}^4 = 2\cdot\frac{(n+\lambda)^2}{2(n+\lambda)} = n + \lambda = 3$ (with $\xi_{ij}$ the coordinate of $\boldsymbol\chi_i - \boldsymbol\mu$ along $\mathbf a_j$), matches the fourth moment $3$ of a standard normal variable.
     - $\beta_{\text{UT}}$ changes only $W_0^{(c)}$. Increasing it by $b$ adds $b\,(\mathbf y_0 - \bar{\mathbf y})(\mathbf y_0 - \bar{\mathbf y})^\top$ to the transformed covariance defined below, where $\mathbf y_0 - \bar{\mathbf y}$ is the gap between the image of the mean and the transformed mean. That gap is a curvature effect, so $\beta_{\text{UT}}$ tunes a fourth-order correction (see the Squared Gaussian lemma below).
 
-    Two choices are common. [Wan & van der Merwe (2000)](https://doi.org/10.1109/ASSPCC.2000.882463) suggest a small $\alpha_{\text{UT}}$ (such as $10^{-3}$), $\kappa = 0$, and $\beta_{\text{UT}} = 2$. The original unscented transform of Julier and Uhlmann ([Julier & Uhlmann (2004), *Unscented Filtering and Nonlinear Estimation*](https://doi.org/10.1109/JPROC.2003.823141)) corresponds to $\alpha_{\text{UT}} = 1$, $\beta_{\text{UT}} = 0$, $\kappa = 3 - n$. This chapter uses the second for the two-state pendulum: $\lambda = 1$, $W_0 = 1/3$, and $W_i = 1/6$, all positive.
+    Two choices are common. @wan2000 suggest a small $\alpha_{\text{UT}}$ (such as $10^{-3}$), $\kappa = 0$, and $\beta_{\text{UT}} = 2$. The original unscented transform of @julier2004 corresponds to $\alpha_{\text{UT}} = 1$, $\beta_{\text{UT}} = 0$, $\kappa = 3 - n$. This chapter uses the second for the two-state pendulum: $\lambda = 1$, $W_0 = 1/3$, and $W_i = 1/6$, all positive.
     """)
     return
 
@@ -333,7 +333,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    For general smooth functions and input distributions, [Julier & Uhlmann (2004)](https://doi.org/10.1109/JPROC.2003.823141) show that the unscented transform computes the mean and covariance of $\phi(\mathbf x)$ correctly up to the second-order terms of $\phi$'s Taylor series, whereas linearization is correct only up to the first-order terms ([Wan & van der Merwe (2000)](https://doi.org/10.1109/ASSPCC.2000.882463) make the same comparison). The theorem and corollary make the statement about the mean precise. The figure below demonstrates both statements for $\phi = \sin$ at $\mu = 0.8$, using the exact values $\mathbb E[\sin x] = e^{-\sigma^2/2}\sin\mu$ and $\operatorname{Var}(\sin x) = \tfrac12\big(1 - e^{-2\sigma^2}\cos 2\mu\big) - e^{-\sigma^2}\sin^2\mu$ for $x \sim \mathcal N(\mu, \sigma^2)$, which follow from the normal distribution's characteristic function ([Wikipedia: Normal distribution](https://en.wikipedia.org/wiki/Normal_distribution)). Both axes are logarithmic, so an error proportional to $\sigma^p$ appears as a straight line of slope $p$.
+    For general smooth functions and input distributions, @julier2004 show that the unscented transform computes the mean and covariance of $\phi(\mathbf x)$ correctly up to the second-order terms of $\phi$'s Taylor series, whereas linearization is correct only up to the first-order terms (@wan2000 make the same comparison). The theorem and corollary make the statement about the mean precise. The figure below demonstrates both statements for $\phi = \sin$ at $\mu = 0.8$, using the exact values $\mathbb E[\sin x] = e^{-\sigma^2/2}\sin\mu$ and $\operatorname{Var}(\sin x) = \tfrac12\big(1 - e^{-2\sigma^2}\cos 2\mu\big) - e^{-\sigma^2}\sin^2\mu$ for $x \sim \mathcal N(\mu, \sigma^2)$, which follow from the normal distribution's characteristic function ([Wikipedia: Normal distribution](https://en.wikipedia.org/wiki/Normal_distribution)). Both axes are logarithmic, so an error proportional to $\sigma^p$ appears as a straight line of slope $p$.
 
     <img src="public/ch16_ut_accuracy.svg" class="graphic" alt="Two log-log plots of absolute error against sigma for the mean and the variance of sin(x). For the mean, linearization's error has slope 2, the small-alpha unscented transform slope 4, and the alpha equals 1, kappa equals 2 unscented transform slope 6. For the variance, linearization and the small-alpha unscented transform both have slope 4, and the alpha equals 1 unscented transform has slope 6." />
     """)
@@ -1048,7 +1048,7 @@ def _(mo):
 
     The EKF and the UKF both summarize the state's distribution by a mean and a covariance. Some distributions are nothing like a Gaussian. Suppose the pendulum's initial estimate is the mirror image of the truth, $\hat\theta_0 = \pi - 1 \approx 2.14$ rad, with $\mathbf P_0 = 0.7^2\,\mathbf I$, so the truth is about 1.6 standard deviations away. The first camera reading, about $0.84$ m, is explained equally well by $\theta \approx 1$ and by $\theta \approx 2.14$. After it, the {term}`posterior` of $\theta$ ([Chapter 8](ch8_bayesian_view.md)) has two separate peaks, and its mean, between them, is a value the state almost certainly does not have. A Gaussian filter has to commit to one peak.
 
-    A particle filter represents the posterior by many random samples instead of a mean and a covariance. The simplest version is the *bootstrap* filter of [Gordon, Salmond & Smith (1993), *Novel Approach to Nonlinear/Non-Gaussian Bayesian State Estimation*](https://doi.org/10.1049/ip-f-2.1993.0015). It keeps $N$ particles $\mathbf x_k^{(i)}$ with weights $W_k^{(i)} \ge 0$ that sum to 1:
+    A particle filter represents the posterior by many random samples instead of a mean and a covariance. The simplest version is the *bootstrap* filter of @gordon1993. It keeps $N$ particles $\mathbf x_k^{(i)}$ with weights $W_k^{(i)} \ge 0$ that sum to 1:
 
     1. **Initialize.** Draw $\mathbf x_0^{(i)}$ from the initial distribution and set $W_0^{(i)} = 1/N$.
     2. **Predict.** Move every particle through the process model with its own noise: $\mathbf x_k^{(i)} = f(\mathbf x_{k-1}^{(i)}, \mathbf u_k) + \mathbf w_k^{(i)}$, with independent draws $\mathbf w_k^{(i)} \sim \mathcal N(\mathbf 0, \mathbf Q)$.
@@ -1057,7 +1057,7 @@ def _(mo):
 
     Any summary of the weighted particles can serve as the estimate; the weighted mean $\sum_i W_k^{(i)}\mathbf x_k^{(i)}$ is the usual one, though for a two-peaked posterior the peaks themselves are more informative.
 
-    Steps 2 and 3 are the two halves of [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter`. If the weighted particles approximate the posterior at step $k-1$, then moving each one by sampling from the process model approximates the predicted density, and multiplying by the likelihood is Bayes' rule applied particle by particle. Resampling discards particles with negligible weight and duplicates heavy ones, without changing the represented distribution on average. Under mild conditions, the weighted particles converge to the exact Bayes-filter posterior as $N \to \infty$ ([Crisan & Doucet (2002), *A Survey of Convergence Results on Particle Filtering Methods for Practitioners*](https://doi.org/10.1109/78.984773)).
+    Steps 2 and 3 are the two halves of [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter`. If the weighted particles approximate the posterior at step $k-1$, then moving each one by sampling from the process model approximates the predicted density, and multiplying by the likelihood is Bayes' rule applied particle by particle. Resampling discards particles with negligible weight and duplicates heavy ones, without changing the represented distribution on average. Under mild conditions, the weighted particles converge to the exact Bayes-filter posterior as $N \to \infty$ [@crisan2002].
 
     /// note | 📖 **Definition**
         attrs: {class: no-icon}
@@ -1210,7 +1210,7 @@ def _(PF_N, mo, np, pf_clouds, pf_means, pf_truth):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    For a gentle, readable development of particle filters, including other resampling schemes and the effective sample size, see the particle filter chapter (`12-Particle-Filters.ipynb`) of [Roger Labbe, *Kalman and Bayesian Filters in Python*](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), the book that inspired this one.
+    For a gentle, readable development of particle filters, including other resampling schemes and the effective sample size, see the particle filter chapter (`12-Particle-Filters.ipynb`) of *Kalman and Bayesian Filters in Python* [@labbe_kalman_filters], the book that inspired this one.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
         attrs: {class: no-icon}

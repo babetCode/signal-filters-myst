@@ -1173,7 +1173,7 @@ def _(mo):
 
     $$\mathbf x^{(i+1)} := \hat{\mathbf x}_k^- + \mathbf K^{(i)}\Big(\mathbf z_k - h(\mathbf x^{(i)}) - \mathbf H^{(i)}\big(\hat{\mathbf x}_k^- - \mathbf x^{(i)}\big)\Big),$$
 
-    until $\mathbf x^{(i+1)}$ stops changing. Then $\hat{\mathbf x}_k$ is the last iterate and $\mathbf P_k = (\mathbf I - \mathbf K^{(i)}\mathbf H^{(i)})\mathbf P_k^-$. The first iteration is exactly the EKF update. [Bell & Cathey (1993), *The Iterated Kalman Filter Update as a Gauss–Newton Method*](https://doi.org/10.1109/9.250476) show that the iterations are Gauss–Newton steps for the {term}`maximum a posteriori estimate` under the Gaussian assumptions, that is, for the $\mathbf x$ that minimizes
+    until $\mathbf x^{(i+1)}$ stops changing. Then $\hat{\mathbf x}_k$ is the last iterate and $\mathbf P_k = (\mathbf I - \mathbf K^{(i)}\mathbf H^{(i)})\mathbf P_k^-$. The first iteration is exactly the EKF update. @bell1993 show that the iterations are Gauss–Newton steps for the {term}`maximum a posteriori estimate` under the Gaussian assumptions, that is, for the $\mathbf x$ that minimizes
 
     $$\big(\mathbf z_k - h(\mathbf x)\big)^\top\mathbf R^{-1}\big(\mathbf z_k - h(\mathbf x)\big) + \big(\mathbf x - \hat{\mathbf x}_k^-\big)^\top\big(\mathbf P_k^-\big)^{-1}\big(\mathbf x - \hat{\mathbf x}_k^-\big).$$
 

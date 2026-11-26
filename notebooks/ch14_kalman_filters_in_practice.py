@@ -373,7 +373,7 @@ def _(mo):
 
     The constant $q > 0$, in $\text{m}^2/\text{s}^3$, is the *intensity* (power spectral density) of the noise. In particular, integrals over disjoint intervals are uncorrelated.
 
-    [^cwn]: The integrals in (W) are defined as stochastic integrals with respect to a Wiener process, and the covariance formula is the [Itô isometry](https://en.wikipedia.org/wiki/It%C3%B4_isometry). For an accessible treatment, see [Bar-Shalom, Li & Kirubarajan (2001), *Estimation with Applications to Tracking and Navigation*, Ch. 6](https://doi.org/10.1002/0471221279.ch6).
+    [^cwn]: The integrals in (W) are defined as stochastic integrals with respect to a Wiener process, and the covariance formula is the [Itô isometry](https://en.wikipedia.org/wiki/It%C3%B4_isometry). For an accessible treatment, see @barshalom2002 [Ch. 6].
 
     /// important | 📐 **Theorem (Discretized Continuous White-Noise Acceleration)**
         attrs: {class: no-icon}
@@ -392,7 +392,7 @@ def _(mo):
 
     The same argument works for any linear model $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf G a(t)$: the transition matrix is the {term}`matrix exponential` $\mathbf F = e^{\mathbf A\Delta t}$ ([Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md)) and
     $$\mathbf Q = q\int_0^{\Delta t}e^{\mathbf A\tau}\mathbf G\mathbf G^\top e^{\mathbf A^\top\tau}\,d\tau,$$
-    which can be evaluated with a single matrix exponential of a block matrix ([Van Loan (1978), *Computing Integrals Involving the Matrix Exponential*](https://doi.org/10.1109/TAC.1978.1101743)). For the constant-velocity model, $\mathbf A = \begin{bmatrix}0 & 1 \\ 0 & 0\end{bmatrix}$ satisfies $\mathbf A^2 = \mathbf 0$, so the exponential series stops after two terms, $e^{\mathbf A\tau} = \mathbf I + \mathbf A\tau = \begin{bmatrix}1 & \tau \\ 0 & 1\end{bmatrix}$, and the general formula reduces to the theorem.
+    which can be evaluated with a single matrix exponential of a block matrix [@vanloan1978]. For the constant-velocity model, $\mathbf A = \begin{bmatrix}0 & 1 \\ 0 & 0\end{bmatrix}$ satisfies $\mathbf A^2 = \mathbf 0$, so the exponential series stops after two terms, $e^{\mathbf A\tau} = \mathbf I + \mathbf A\tau = \begin{bmatrix}1 & \tau \\ 0 & 1\end{bmatrix}$, and the general formula reduces to the theorem.
     """)
     return
 
@@ -443,7 +443,7 @@ def _(mo):
     | Rank | 1 | 2 |
     | Fits when | the acceleration really is held over each step, e.g. a sampled input | the acceleration varies quickly compared with $\Delta t$ |
 
-    With $q = \sigma_a^2\Delta t$ the two models give the same velocity variance per step; they differ in the position entries ($\Delta t^4/4$ versus $\Delta t^4/3$) and in the correlation. For small $\Delta t$ the difference rarely matters. What matters is the *size*: $\sigma_a$ (or $\sqrt{q/\Delta t}$) should be comparable to the accelerations the model does not explain. A common starting point for the piecewise-constant model is $\sigma_a$ between about half and all of the largest expected acceleration ([Bar-Shalom, Li & Kirubarajan (2001), Ch. 6](https://doi.org/10.1002/0471221279.ch6)), followed by the consistency tests below.
+    With $q = \sigma_a^2\Delta t$ the two models give the same velocity variance per step; they differ in the position entries ($\Delta t^4/4$ versus $\Delta t^4/3$) and in the correlation. For small $\Delta t$ the difference rarely matters. What matters is the *size*: $\sigma_a$ (or $\sqrt{q/\Delta t}$) should be comparable to the accelerations the model does not explain. A common starting point for the piecewise-constant model is $\sigma_a$ between about half and all of the largest expected acceleration [@barshalom2002, Ch. 6], followed by the consistency tests below.
 
     **The cart.** When an accelerometer is available, the acceleration is no longer unknown: it becomes the {term}`control input`. The reading $u_k = a_k + n_k$ contains white noise $n_k$ with standard deviation $\sigma_{\text{acc}}$, held over the 10 ms step. Substituting $a_k = u_k - n_k$ into the exact truth model,
     $$\mathbf x_k = \mathbf F\mathbf x_{k-1} + \mathbf B u_k - \mathbf B n_k,$$
@@ -1009,7 +1009,7 @@ def _(mo):
 
     **The test.** Simulate $N$ independent runs, and at each step $k$ average the NEES over the runs: $\bar\epsilon^{\mathbf x}_k := \frac1N\sum_i\epsilon^{\mathbf x,(i)}_k$, where $\epsilon^{\mathbf x,(i)}_k$ is the NEES of run $i$. For a consistent filter, $N\bar\epsilon^{\mathbf x}_k \sim \chi^2_{Nn}$, so $\bar\epsilon^{\mathbf x}_k$ lies in
     $$\Big[\tfrac1N F^{-1}_{\chi^2_{Nn}}(0.025),\ \tfrac1N F^{-1}_{\chi^2_{Nn}}(0.975)\Big]$$
-    with probability 95%, where $F^{-1}$ is the quantile function. About 95% of the steps should land inside this band. Averages persistently **above** the band mean the errors are larger than $\mathbf P_k$ claims: the filter is *overconfident*. Averages **below** it mean the filter is *underconfident*: it reports more uncertainty than it has and so gives the measurements too much or too little weight. The NIS test is the same with $m$ in place of $n$, and needs no truth, so it can run on real data. On a single real record, average the NIS over time instead of over runs; the innovations of a correct filter are uncorrelated over time (the vector version of Chapter 9's result; see [Bar-Shalom, Li & Kirubarajan (2001), Ch. 5](https://doi.org/10.1002/0471221279.ch5)), so the same chi-squared band applies.
+    with probability 95%, where $F^{-1}$ is the quantile function. About 95% of the steps should land inside this band. Averages persistently **above** the band mean the errors are larger than $\mathbf P_k$ claims: the filter is *overconfident*. Averages **below** it mean the filter is *underconfident*: it reports more uncertainty than it has and so gives the measurements too much or too little weight. The NIS test is the same with $m$ in place of $n$, and needs no truth, so it can run on real data. On a single real record, average the NIS over time instead of over runs; the innovations of a correct filter are uncorrelated over time, the vector version of Chapter 9's result [@barshalom2002, Ch. 5], so the same chi-squared band applies.
 
     The figure runs 50 independent simulations of the cart, each with its own initial-estimate error drawn from $\mathcal N(\mathbf 0, \mathbf P_0)$, its own accelerometer noise, and its own position noise. The sliders are the ones from the sensor-fusion section.
     """)
@@ -1221,7 +1221,7 @@ def _(mo, stab_first, stab_rows):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In double precision this example is harmless, which is why desktop experiments rarely show the problem. On embedded hardware, or with larger and more poorly scaled state vectors (Part 6 has 15 states mixing meters, radians, and sensor biases), it is real. The most robust remedy is a **square-root filter**, which never forms $\mathbf P$ at all: it propagates a factor $\mathbf L$ with $\mathbf P = \mathbf L\mathbf L^\top$, such as its Cholesky factor, so that $\mathbf P$ is positive semidefinite by construction, and it effectively doubles the available precision. Several variants (square-root covariance, square-root information, and $\mathbf U\mathbf D\mathbf U^\top$ factorizations) are described in [Wikipedia: Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) and in [Bar-Shalom, Li & Kirubarajan (2001)](https://doi.org/10.1002/0471221279).
+    In double precision this example is harmless, which is why desktop experiments rarely show the problem. On embedded hardware, or with larger and more poorly scaled state vectors (Part 6 has 15 states mixing meters, radians, and sensor biases), it is real. The most robust remedy is a **square-root filter**, which never forms $\mathbf P$ at all: it propagates a factor $\mathbf L$ with $\mathbf P = \mathbf L\mathbf L^\top$, such as its Cholesky factor, so that $\mathbf P$ is positive semidefinite by construction, and it effectively doubles the available precision. Several variants (square-root covariance, square-root information, and $\mathbf U\mathbf D\mathbf U^\top$ factorizations) are described in [Wikipedia: Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) and in @barshalom2002.
     """)
     return
 
@@ -1335,7 +1335,7 @@ def _(mo):
 
     - **Increase $\mathbf Q$** until the consistency tests pass during maneuvers, accepting more noise when the motion is calm.
     - **Model what is missing.** Here, the accelerometer, which makes the maneuvers known inputs. In general, add states for the unmodeled effect, as for the bias above.
-    - **Adapt.** Monitor the NIS and inflate $\mathbf Q$ when it rises (maneuver detection), or run several models at once and weight them by their innovations (the interacting multiple model estimator, [Bar-Shalom, Li & Kirubarajan (2001)](https://doi.org/10.1002/0471221279)).
+    - **Adapt.** Monitor the NIS and inflate $\mathbf Q$ when it rises (maneuver detection), or run several models at once and weight them by their innovations (the interacting multiple model estimator) [@barshalom2002].
     - **Never let $\mathbf P$ collapse.** A floor on the diagonal of $\mathbf P$, or a *fading-memory* factor that multiplies $\mathbf P^-$ by a number slightly above 1, keeps the gains from going to zero.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
@@ -1355,7 +1355,7 @@ def _(mo):
 
     The filter's estimate $\hat{\mathbf x}_k$ uses $\mathbf z_1, \ldots, \mathbf z_k$ only, because a real-time filter cannot see the future. When the whole record is available afterwards, as in the gait analysis of Part 6, the estimate of $\mathbf x_k$ can also use $\mathbf z_{k+1}, \ldots, \mathbf z_K$. The **Rauch–Tung–Striebel smoother** does this with one backward pass over the filter's stored output. Starting from $\hat{\mathbf x}_K^s = \hat{\mathbf x}_K$ and $\mathbf P_K^s = \mathbf P_K$, for $k = K-1, \ldots, 1$:
     $$\mathbf C_k = \mathbf P_k\mathbf F^\top(\mathbf P_{k+1}^-)^{-1}, \qquad \hat{\mathbf x}_k^s = \hat{\mathbf x}_k + \mathbf C_k\big(\hat{\mathbf x}_{k+1}^s - \hat{\mathbf x}_{k+1}^-\big), \qquad \mathbf P_k^s = \mathbf P_k + \mathbf C_k\big(\mathbf P_{k+1}^s - \mathbf P_{k+1}^-\big)\mathbf C_k^\top.$$
-    Under (A1)–(A6), $\hat{\mathbf x}_k^s = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K]$ and $\mathbf P_k^s = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K)$. The proof is not given here; see [Rauch, Tung & Striebel (1965), *Maximum Likelihood Estimates of Linear Dynamic Systems*](https://doi.org/10.2514/3.3166). The hidden cell below checks the claim numerically against direct Gaussian conditioning on all measurements of a short record, and then applies the smoother to the position-only cart filter with $\sigma_a = 1\ \text{m/s}^2$.
+    Under (A1)–(A6), $\hat{\mathbf x}_k^s = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K]$ and $\mathbf P_k^s = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K)$. The proof is not given here; see @rauch1965. The hidden cell below checks the claim numerically against direct Gaussian conditioning on all measurements of a short record, and then applies the smoother to the position-only cart filter with $\sigma_a = 1\ \text{m/s}^2$.
     """)
     return
 

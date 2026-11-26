@@ -1559,7 +1559,7 @@ def _(mo):
     3. $\frac{d}{dx}\big(\sin^2 x + \cos^2 x\big) = 2\sin x\cos x - 2\cos x \sin x = 0$, so $\sin^2 + \cos^2$ is constant and equals its value $0 + 1$ at $0$. Then $\sin^2 x \le 1$, so $|\sin x| \le 1$, and likewise for $\cos$. $\blacksquare$
     ///
 
-    The remaining facts of trigonometry also follow from the series, and we cite them: $\cos$ has a smallest positive zero, and $\pi$ is defined as twice that zero; $\sin$ and $\cos$ have period $2\pi$; and $\theta \mapsto (\cos\theta, \sin\theta)$ maps $[0, 2\pi)$ bijectively onto the unit circle $\{(x, y) : x^2 + y^2 = 1\}$, with $\theta$ equal to the arc length from $(1, 0)$. So these series are the familiar sine and cosine, with angles in radians. Proofs are in Rudin (1976), *Principles of Mathematical Analysis*, Chapter 8, and summarized in [Wikipedia: Trigonometric functions](https://en.wikipedia.org/wiki/Trigonometric_functions).
+    The remaining facts of trigonometry also follow from the series, and we cite them: $\cos$ has a smallest positive zero, and $\pi$ is defined as twice that zero; $\sin$ and $\cos$ have period $2\pi$; and $\theta \mapsto (\cos\theta, \sin\theta)$ maps $[0, 2\pi)$ bijectively onto the unit circle $\{(x, y) : x^2 + y^2 = 1\}$, with $\theta$ equal to the arc length from $(1, 0)$. So these series are the familiar sine and cosine, with angles in radians. Proofs are in @rudin1976 [Chapter 8], and summarized in [Wikipedia: Trigonometric functions](https://en.wikipedia.org/wiki/Trigonometric_functions).
 
     **The small-angle approximation.** Since $\sin''(0) = -\sin 0 = 0$, the degree-$2$ Taylor polynomial of $\sin$ at $0$ is just $x$, and the error bound (with $|\sin'''| = |\cos| \le 1$) gives
     $$|\sin x - x| \le \frac{|x|^3}{6}.$$

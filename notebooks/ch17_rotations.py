@@ -1007,7 +1007,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof (sketch)**
         attrs: {class: no-icon}
-    The full argument uses topology beyond this book; see [Stuelpnagel (1964), *On the Parametrization of the Three-Dimensional Rotation Group*](https://doi.org/10.1137/1006093). In outline, regard $SO(3)$ as a subset of $\mathbb R^9$ (the nine entries).
+    The full argument uses topology beyond this book; see @stuelpnagel1964. In outline, regard $SO(3)$ as a subset of $\mathbb R^9$ (the nine entries).
 
     1. $SO(3)$ is *compact*[^compact]: it is closed (it is defined by the continuous equations $\mathbf R^\top\mathbf R = \mathbf I$ and $\det\mathbf R = 1$) and bounded (every entry has absolute value at most 1, because the columns are unit vectors).
     2. $SO(3)$ is three-dimensional in the precise sense that near every $\mathbf R$ it looks like a ball in $\mathbb R^3$: the map $\boldsymbol\theta \mapsto \mathbf R\operatorname{Exp}(\boldsymbol\theta)$, restricted to $\|\boldsymbol\theta\| < \pi$, is a continuous bijection onto a neighborhood of $\mathbf R$ with continuous inverse $\mathbf R' \mapsto \operatorname{Log}(\mathbf R^\top\mathbf R')$.

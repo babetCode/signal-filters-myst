@@ -232,9 +232,14 @@ Use the label `Theorem` for main results, `Lemma` for helper results, and `Corol
 - **Glossary references:** use `{term}`variance`` or `{term}`variances <variance>``. Only reference terms that exist in the allocation table (§4) or that you define yourself.
 - **Words used before their formal definition:** mark the first informal use with a footnote such as `[^informal-probability]: Used informally here; defined precisely in [Chapter 4](ch4_probability_spaces.md).`
 - **Citations:**
-  - `content/refs.bib` must not be edited. Existing keys you may cite with `[@key]`: `avia_hx711_datasheet`, `holtek_ht45f75_data_sheet`, `wishnofsky1958`.
-  - Cite everything else with an inline markdown link that gives author, title, and year, e.g. `[Kalman (1960), *A New Approach to Linear Filtering and Prediction Problems*](https://doi.org/10.1115/1.3662552)`.
-  - Only link URLs you are confident are correct (DOIs, Wikipedia, well-known project pages).
+  - Cite every published work (book, paper, preprint, datasheet) by its `content/refs.bib` key, not with an inline link to the work. Use whichever form reads best in the sentence:
+    - `[@kalman1960]` renders as (Kalman, 1960). This is the usual form.
+    - `@kalman1960` renders as Kalman (1960). Use it when the authors are part of the sentence.
+    - `[@barshalom2002, Ch. 5]` or `@barshalom2002 [Ch. 5]` points to a chapter or section, and `[see @kalman1960]` adds a lead-in.
+    - `[@godel1938; @cohen1963]` cites several works together.
+  - Add a missing work to `content/refs.bib` before citing it, and leave the other entries as they are. Name the key after the first author and year (`kalman1960`); datasheets and undated works take a descriptive key (`avia_hx711_datasheet`).
+  - Take an entry's details from its DOI record or publisher, never from memory. Give the `doi` if there is one, otherwise a `url`.
+- **Web links:** use an inline markdown link for web resources that are not published works (Wikipedia, software and project websites). Only link URLs you are confident are correct.
 
 ### Writing principles (from `index.py`; non-negotiable)
 
@@ -673,7 +678,7 @@ Reuse and improve the existing `ch3_numbers_probabilities.py` material (coin tos
 - Cross-check: the same result follows from Ch 12 Gaussian conditioning.
 - `echo=true` NumPy implementation.
 - Two-state bulking [weight, rate] with a diet change mid-way.
-- **Alpha-beta revisited:** the steady-state KF gains $[\alpha, \beta/\Delta t]^\top$. Compute them by iterating the Riccati equation, and compare with Kalata's tracking-index relations (with a citation link).
+- **Alpha-beta revisited:** the steady-state KF gains $[\alpha, \beta/\Delta t]^\top$. Compute them by iterating the Riccati equation, and compare with Kalata's tracking-index relations (with a citation).
 - Observability: rank test, with the tare-offset example from Ch 11.
 - **Interactive:** σ_a and R sliders.
 
@@ -773,7 +778,7 @@ Use the §3 conventions throughout.
   - optional turns
   - true $\boldsymbol\omega^b$ and $\mathbf f^b$ from the analytic trajectory
   - noise and bias added per §3
-- Zero-velocity detectors: acceleration-magnitude and gyro thresholds, and the SHOE/GLRT statistic ([Skog et al. 2010](https://doi.org/10.1109/TBME.2010.2060723)). Evaluate them on the synthetic data.
+- Zero-velocity detectors: acceleration-magnitude and gyro thresholds, and the SHOE/GLRT statistic [@skog2010]. Evaluate them on the synthetic data.
 - Dead reckoning without ZUPT diverges (demo).
 
 ### ch21_zero_velocity_updates
@@ -795,7 +800,7 @@ Use the §3 conventions throughout.
   - turning angle
 - A table comparing estimates with ground truth.
 - Failure modes: running (short stance), stairs, detector thresholds, saturation.
-- References as links: [Foxlin 2005](https://doi.org/10.1109/MCG.2005.140), Skog 2010, [Nilsson et al. 2012 (OpenShoe)](https://doi.org/10.1109/PLANS.2012.6236875), Jiménez et al. 2009.
+- Further reading, as citations: [@foxlin2005], [@skog2010], [@nilsson2012] (OpenShoe), [@jimenez2009].
 - **Interactive:** detector-threshold and noise sliders, plus a trajectory plot.
 
 ### appendix_c_calculus
@@ -862,4 +867,4 @@ The script:
 
 Fix the notebook until it reports `[RUN] ok`, `[CHECK] ok`, and `[EXPORT] ok`. Unresolved `{term}` references are fine only if the allocation table assigns the term to another chapter. Running a notebook writes its SVGs into `notebooks/public/`; that is expected.
 
-Do not modify any file other than your assigned `*.py` files and their `public/*.svg` outputs. In particular, leave `content/`, `scripts/`, other notebooks, `myst.yml`, and `refs.bib` untouched.
+Do not modify any file other than your assigned `*.py` files and their `public/*.svg` outputs, except to add citation entries to `content/refs.bib`. In particular, leave the rest of `content/` (including `myst.yml`), `scripts/`, and other notebooks untouched.

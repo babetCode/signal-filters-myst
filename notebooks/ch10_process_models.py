@@ -377,7 +377,7 @@ def _(mo):
 
     The Introduction's footnote estimated a daily weight gain from the energy you eat and the energy you burn. Let us turn that recipe into a process model for the 28-day bulk: a 23-year-old man, 175 cm tall, with a moderate activity level, starting at 155 lb. Weight $x_k$ is in pounds and is measured each morning; the input $u_k$ is the energy eaten on day $k$, in kcal.
 
-    1. **Basal metabolic rate.** The Mifflin–St Jeor equation for men ([Mifflin et al. (1990), *A New Predictive Equation for Resting Energy Expenditure in Healthy Individuals*](https://doi.org/10.1093/ajcn/51.2.241)) estimates
+    1. **Basal metabolic rate.** The Mifflin–St Jeor equation for men [@mifflin1990] estimates
     $$\text{BMR} = 10\,m + 6.25\,H - 5\,A + 5 \ \text{kcal/day},$$
     with mass $m$ in kg, height $H$ in cm, and age $A$ in years. A weight of $x$ lb is a mass of $m = \kappa x$ kg, with $\kappa = 0.45359237$ kg/lb.
     2. **Total daily energy expenditure.** TDEE is BMR times an activity multiplier $s$ ($s = 1.5$ for moderate activity). So
@@ -463,7 +463,7 @@ def _(mo):
         attrs: {class: no-icon}
     - **Population formulas.** Mifflin–St Jeor predicts the *average* BMR of people with your age, height, and weight. Individuals typically differ by around 10%. A wrong $\gamma$ or $\delta$ is a *bias*, not noise: it adds the same error every day, so the estimate drifts away from the truth instead of scattering around it. The last section shows how to detect this.
     - **The activity multiplier is a guess,** and it changes when your training changes.
-    - **The 3500 kcal/lb rule** treats every pound gained or lost as the same tissue. Over months it overestimates weight change, because expenditure adapts and the composition of the change varies ([Hall et al. (2011), *Quantification of the Effect of Energy Imbalance on Bodyweight*](https://doi.org/10.1016/S0140-6736(11)60812-X)). For four weeks it is a reasonable approximation.
+    - **The 3500 kcal/lb rule** treats every pound gained or lost as the same tissue. Over months it overestimates weight change, because expenditure adapts and the composition of the change varies [@hall2011]. For four weeks it is a reasonable approximation.
     - **Logging errors are rarely zero-mean.** People tend to under-report what they eat. A systematic under-report is a bias in $u_k$, with the same effect as a wrong TDEE.
     - **Day-to-day water and food-content swings** (about $\pm 1$ lb) are not in the model. They make the *reading* differ from the tissue weight we model, so they belong in the measurement noise $R$, not in $Q$.
     ///

@@ -533,7 +533,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: no-icon}
-    Not given here. The key step is the Steinitz exchange lemma; see [Axler (2024), *Linear Algebra Done Right*, 4th ed., Chapter 2](https://linear.axler.net/). $\blacksquare$
+    Not given here. The key step is the Steinitz exchange lemma; see @axler2024 [Chapter 2]. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
@@ -543,7 +543,7 @@ def _(mo):
     The rank of $\mathbf A \in \mathbb R^{m\times n}$, written $\operatorname{rank}\mathbf A$, is the largest $k \ge 0$ such that some $k$ columns of $\mathbf A$ form a linearly independent list.
     ///
 
-    By the Dimension theorem, $\operatorname{rank}\mathbf A$ is the dimension of the column space. It is also a theorem that $\operatorname{rank}\mathbf A^\top = \operatorname{rank}\mathbf A$ ("row rank equals column rank"; [Axler, Chapter 3](https://linear.axler.net/)). For the load cell with $h \ne 0$: in the first matrix, $h\,(1, 1) - (h, h) = \mathbf 0$, so the columns are dependent, while each column alone is nonzero; its rank is $1$. In the second, $c_1(h, 0) + c_2(1, 1) = \mathbf 0$ forces $c_2 = 0$ (second entry) and then $c_1 = 0$; its rank is $2$. [Chapter 13](ch13_kalman_filter.md) turns this into the rank test for observability.
+    By the Dimension theorem, $\operatorname{rank}\mathbf A$ is the dimension of the column space. It is also a theorem that $\operatorname{rank}\mathbf A^\top = \operatorname{rank}\mathbf A$ ("row rank equals column rank") [@axler2024, Chapter 3]. For the load cell with $h \ne 0$: in the first matrix, $h\,(1, 1) - (h, h) = \mathbf 0$, so the columns are dependent, while each column alone is nonzero; its rank is $1$. In the second, $c_1(h, 0) + c_2(1, 1) = \mathbf 0$ forces $c_2 = 0$ (second entry) and then $c_1 = 0$; its rank is $2$. [Chapter 13](ch13_kalman_filter.md) turns this into the rank test for observability.
 
     /// important | 📐 **Theorem (Invertible Matrix Theorem)**
         attrs: {class: no-icon}
@@ -637,7 +637,7 @@ def _(mo):
         attrs: {class: no-icon}
     For $n = 2$, (1), (3), and (4) are checked by expanding both sides, and (2) by
     $\det\Big(\begin{bmatrix} a & b \\ c & d\end{bmatrix}\begin{bmatrix} p & q \\ r & s\end{bmatrix}\Big) = (ap + br)(cq + ds) - (aq + bs)(cp + dr) = (ad - bc)(ps - qr)$.
-    (5) for $n = 2$ is the next lemma. For general $n$, see [Axler (2024), *Linear Algebra Done Right*, 4th ed., Chapter 9](https://linear.axler.net/) or [Wikipedia: Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants). $\blacksquare$
+    (5) for $n = 2$ is the next lemma. For general $n$, see @axler2024 [Chapter 9] or [Wikipedia: Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants). $\blacksquare$
     ///
 
     /// important | 📐 **Lemma (Inverse of a 2 × 2 Matrix)**

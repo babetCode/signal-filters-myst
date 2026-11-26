@@ -418,7 +418,7 @@ def _(mo):
     A recursive {term}`filter` for a quantity that follows a linear model of how it changes and is observed through a linear measurement model, both with additive noise of known variance (covariance, for vectors), that alternates two steps: a predict step, which propagates the estimate and its {term}`error variance` through the model of change, and an update step, which combines the resulting prediction with the new measurement using the {term}`optimal gain`. The *scalar Kalman filter* above is the case of a single unknown with the random-walk model.
     ///
 
-    The filter is named after Rudolf Kálmán, who published it for vector-valued states in [Kalman (1960), *A New Approach to Linear Filtering and Prediction Problems*](https://doi.org/10.1115/1.3662552). [Chapter 10](ch10_process_models.md) generalizes the process model, [Chapter 11](ch11_measurement_functions.md) the measurement model, and [Chapter 13](ch13_kalman_filter.md) handles vectors. Here is a complete implementation. It accepts a single sequence of measurements or many sequences at once (one per row), which we use for simulations; note that `P_pred`, `S`, `K`, and `P` do not depend on the measurements at all.
+    The filter is named after Rudolf Kálmán, who published it for vector-valued states in @kalman1960. [Chapter 10](ch10_process_models.md) generalizes the process model, [Chapter 11](ch11_measurement_functions.md) the measurement model, and [Chapter 13](ch13_kalman_filter.md) handles vectors. Here is a complete implementation. It accepts a single sequence of measurements or many sequences at once (one per row), which we use for simulations; note that `P_pred`, `S`, `K`, and `P` do not depend on the measurements at all.
     """)
     return
 

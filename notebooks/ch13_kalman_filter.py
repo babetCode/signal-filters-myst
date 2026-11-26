@@ -317,7 +317,7 @@ def _(mo):
     for the error covariance after an update $\hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k(\mathbf z_k - \mathbf H_k\hat{\mathbf x}_k^-)$ with an arbitrary deterministic gain $\mathbf K_k$.
     ///
 
-    The name honors Peter Joseph, whose book with Richard Bucy popularized it ([Bucy & Joseph (1968), *Filtering for Stochastic Processes with Applications to Guidance*](https://bookstore.ams.org/CHEL/326)). Two consequences matter already. Every gain gives an **unbiased** estimate; the gain only decides how large the error covariance is. And the update never needs the measurement to compute $\mathbf P_k$: the whole covariance sequence can be computed before any data arrive.
+    The name honors Peter Joseph, whose book with Richard Bucy popularized it [@bucy1968]. Two consequences matter already. Every gain gives an **unbiased** estimate; the gain only decides how large the error covariance is. And the update never needs the measurement to compute $\mathbf P_k$: the whole covariance sequence can be computed before any data arrive.
     """)
     return
 
@@ -493,7 +493,7 @@ def _(mo):
     The block $\mathbf S$ is invertible (Innovation Covariance theorem). The conditioning formula gives the mean $\hat{\mathbf x}^- + \mathbf P^-\mathbf H^\top\mathbf S^{-1}(\boldsymbol\zeta - \mathbf H\hat{\mathbf x}^-)$ and the covariance $\mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf S^{-1}\mathbf H\mathbf P^- = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-$. $\blacksquare$
     ///
 
-    Applied at every step, this is [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter` with Gaussian densities. Under (A1)–(A6), the conditional distribution of $\mathbf x_{k-1}$ given $\mathbf z_1, \ldots, \mathbf z_{k-1}$ is Gaussian. The prediction step maps it through the linear process model with independent Gaussian noise, which keeps it Gaussian with mean $\hat{\mathbf x}_k^-$ and covariance $\mathbf P_k^-$, and the theorem performs the update. By induction on $k$, $\hat{\mathbf x}_k = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k]$ and $\mathbf P_k = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k)$; a detailed proof is in [Bar-Shalom, Li & Kirubarajan (2001), *Estimation with Applications to Tracking and Navigation*, Ch. 5](https://doi.org/10.1002/0471221279.ch5). The conditional mean is the {term}`minimum mean squared error estimator` (Chapter 8). So:
+    Applied at every step, this is [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter` with Gaussian densities. Under (A1)–(A6), the conditional distribution of $\mathbf x_{k-1}$ given $\mathbf z_1, \ldots, \mathbf z_{k-1}$ is Gaussian. The prediction step maps it through the linear process model with independent Gaussian noise, which keeps it Gaussian with mean $\hat{\mathbf x}_k^-$ and covariance $\mathbf P_k^-$, and the theorem performs the update. By induction on $k$, $\hat{\mathbf x}_k = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k]$ and $\mathbf P_k = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k)$; a detailed proof is in @barshalom2002 [Ch. 5]. The conditional mean is the {term}`minimum mean squared error estimator` (Chapter 8). So:
 
     - **Without (A6)**, the Kalman filter is the best filter of the linear form above (previous section).
     - **With (A6)**, it is the best estimator of any form whatsoever, linear or not.
@@ -936,7 +936,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: no-icon}
-    Not given here; this is a standard result of linear estimation theory. See, for example, [Bar-Shalom, Li & Kirubarajan (2001), *Estimation with Applications to Tracking and Navigation*, Ch. 5](https://doi.org/10.1002/0471221279.ch5), which also proves that the resulting steady-state filter is stable.
+    Not given here; this is a standard result of linear estimation theory. See, for example, @barshalom2002 [Ch. 5], which also proves that the resulting steady-state filter is stable.
     ///
 
     For the bulking model, observability was checked above, and with $\mathbf G = \sigma_a\boldsymbol\Gamma$,
@@ -977,7 +977,7 @@ def _(mo):
     Since $\alpha + \beta/2 > 0$, taking the positive square root gives $\alpha = \sqrt{2\beta} - \beta/2$. $\blacksquare$
     ///
 
-    Solving relations 1 and 2 for $\alpha$ and $\beta$ gives the closed form published by [Kalata (1984), *The Tracking Index: A Generalized Parameter for α-β and α-β-γ Target Trackers*](https://doi.org/10.1109/TAES.1984.310438):
+    Solving relations 1 and 2 for $\alpha$ and $\beta$ gives the closed form published by @kalata1984:
     $$\alpha = -\frac{\Lambda^2 + 8\Lambda - (\Lambda + 4)\sqrt{\Lambda^2 + 8\Lambda}}{8}, \qquad \beta = \frac{\Lambda^2 + 4\Lambda - \Lambda\sqrt{\Lambda^2 + 8\Lambda}}{4}.$$
     You can confirm by substitution that these satisfy relations 1 and 2. The table compares them with the gains reached by iterating the Riccati recursion 3,000 times from $\mathbf P_0 = 10^3\,\mathbf I$.
     """)
@@ -1124,7 +1124,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
         attrs: {class: no-icon}
     - **Steady state only.** The frozen gains are optimal only after the Kalman filter's transient has died out. Early on, the Kalman filter uses *larger* gains (it knows it does not know much yet), so an alpha-beta filter started from a poor guess converges more slowly than the Kalman filter would.
-    - **The process-noise model matters.** Kalata's relations assume the piecewise-constant acceleration $\mathbf Q$ used here. With the continuous white-noise acceleration $\mathbf Q$ of [Chapter 14](ch14_kalman_filters_in_practice.md), the steady-state gains satisfy different relations; see [Bar-Shalom, Li & Kirubarajan (2001), Ch. 6](https://doi.org/10.1002/0471221279.ch6).
+    - **The process-noise model matters.** Kalata's relations assume the piecewise-constant acceleration $\mathbf Q$ used here. With the continuous white-noise acceleration $\mathbf Q$ of [Chapter 14](ch14_kalman_filters_in_practice.md), the steady-state gains satisfy different relations; see @barshalom2002 [Ch. 6].
     - **Regular sampling and a position-only measurement.** The relations assume a fixed $\Delta t$ and $\mathbf H = [1\ \ 0]$. With irregular or missing samples, the Kalman filter's time-varying gains adapt; frozen gains do not.
     - **Model violations still hurt.** The diet change in the example is not a small white acceleration. Neither the Kalman filter nor its frozen version handles a sudden jump optimally; Chapter 14 shows what happens when $\mathbf Q$ is too small for such a maneuver.
     ///
