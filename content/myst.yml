@@ -54,8 +54,9 @@ project:
 site:
   template: book-theme
   options:
-    favicon: ../static/filter-book-icon.svg
+    favicon: ../static/filter-book-icon.png
     logo: ../static/filter-book-icon.svg
+    logo_dark: ../static/filter-book-icon-dark.svg
     logo_text: Signal Filter Guidebook
     hide_authors: true
     style: ../notebooks/notebook-styles.css
