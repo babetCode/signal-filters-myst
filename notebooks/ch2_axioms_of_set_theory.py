@@ -990,7 +990,7 @@ def _(mo):
     the Recursion Theorem with a Step Index, applied to $g(n, x) := G(\operatorname{succ}(n), x)$, gives exactly one function $k \mapsto \hat x_k$ on all of $\mathbb N$.
     ///
 
-    Here $A$ is the set of possible estimates (the real numbers, in Part 1). The step index matters because the rule changes with $k$: for the cumulative average, $G(k, x) = x + \tfrac1k\,(z_k - x)$ depends on $k$ through the gain $\tfrac1k$ and through the measurement $z_k$, which is a fixed parameter of the rule[^measurements-fixed]. The theorem guarantees that the estimates exist and are unambiguous; it says nothing about whether they are *good*. That question occupies the rest of Part 1.
+    Here $A$ is the set of possible estimates (the real numbers, in Part I). The step index matters because the rule changes with $k$: for the cumulative average, $G(k, x) = x + \tfrac1k\,(z_k - x)$ depends on $k$ through the gain $\tfrac1k$ and through the measurement $z_k$, which is a fixed parameter of the rule[^measurements-fixed]. The theorem guarantees that the estimates exist and are unambiguous; it says nothing about whether they are *good*. That question occupies the rest of Part I.
 
     Below, the scale readings of the Introduction (true weight 155 lb, readings scattered by about 1 lb) are filtered by the rule $G(k, x) = x + \alpha_k\,(z_k - x)$ with two choices of gain: $\alpha_k = 1/k$ (the cumulative average) and the constant $\alpha_k = 0.2$ for $k \ge 2$ of an {term}`exponential moving average` (EMA). In both cases $\alpha_1 = 1$, which makes $\hat x_1 = z_1$ whatever the initial value $\hat x_0$ (first-measurement initialization). The code evaluates $\hat x_1, \hat x_2, \ldots$ in order, which computes exactly the function the theorem guarantees.
 

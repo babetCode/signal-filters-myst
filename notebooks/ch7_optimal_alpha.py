@@ -180,7 +180,7 @@ def _(mo):
     In Chapters 4–6, random variables were written in uppercase ($X$, $Y$) and their values in lowercase ($x$, $y$). From here on we adopt the convention of the filtering literature instead:
 
     - The symbols $x_k$, $z_k$, $v_k$, $\hat x_k$, $\hat x_k^-$, $e_k$, $e_k^-$ denote {term}`random variables <random variable>`: functions on a {term}`probability space` $(\Omega, \mathcal F, \mathbb P)$. The same symbols also denote the values these functions take at the outcome that actually occurred, and the context makes clear which is meant. For example, $\mathbb E[z_5]$ treats $z_5$ as a random variable, while "$z_5 = 155.91$" reports its observed value.
-    - Uppercase letters such as $P_k$, $P_k^-$, and $R$ (and later $Q$ and $S_k$) are *not* random: they are numbers, namely variances. The gain $\alpha$ is also a number. This is the reason for the switch: Kalman filter texts reserve uppercase letters for variances (which become matrices in Part 3), so random quantities must be written in lowercase.
+    - Uppercase letters such as $P_k$, $P_k^-$, and $R$ (and later $Q$ and $S_k$) are *not* random: they are numbers, namely variances. The gain $\alpha$ is also a number. This is the reason for the switch: Kalman filter texts reserve uppercase letters for variances (which become matrices in Part III), so random quantities must be written in lowercase.
     - A number $c$ can be regarded as the constant random variable $\omega \mapsto c$, with $\mathbb E c = c$ and $\operatorname{Var} c = 0$, so all of Chapter 6's rules apply to it. A true weight $x$ that does not change is such a constant.
     """)
     return

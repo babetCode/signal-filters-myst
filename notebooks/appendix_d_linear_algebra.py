@@ -71,9 +71,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    From [Chapter 12](ch12_vectors_matrices_covariance.md) on, the state of a filter is no longer one number but a list of numbers (the position and velocity of a cart, a weight and its rate of gain, an attitude and a gyro bias), and its uncertainty is a square table of numbers. Every scalar formula from Parts 1–2 gets a counterpart in which scalars become vectors and matrices:
+    From [Chapter 12](ch12_vectors_matrices_covariance.md) on, the state of a filter is no longer one number but a list of numbers (the position and velocity of a cart, a weight and its rate of gain, an attitude and a gyro bias), and its uncertainty is a square table of numbers. Every scalar formula from Parts I–II gets a counterpart in which scalars become vectors and matrices:
 
-    | Scalar (Parts 1–2) | Vectors and matrices (Part 3 on) |
+    | Scalar (Parts I–II) | Vectors and matrices (Part III on) |
     |---|---|
     | $\hat x_k^- = a\,\hat x_{k-1}$ | $\hat{\mathbf x}_k^- = \mathbf F\,\hat{\mathbf x}_{k-1}$ |
     | $P_k^- = a^2 P_{k-1} + Q$ | $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$ |

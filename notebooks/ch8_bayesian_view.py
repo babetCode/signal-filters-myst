@@ -721,7 +721,7 @@ def _(mo):
     mo.md(r"""
     ## The Bayes Filter
 
-    So far we have incorporated one measurement. A filter must handle a stream of them while the true value may change. The Bayesian answer is a two-step recursion. We state it for the scalar model used throughout Parts 1 and 2:
+    So far we have incorporated one measurement. A filter must handle a stream of them while the true value may change. The Bayesian answer is a two-step recursion. We state it for the scalar model used throughout Parts I and II:
 
     - **(B1)** The initial value $x_0$ has a density $p_0$.
     - **(B2)** For $k \ge 1$, $\;x_k = x_{k-1} + \Delta x_k + w_k\;$ and $\;z_k = x_k + v_k$, where the expected changes $\Delta x_k$ are known numbers.
@@ -978,7 +978,7 @@ def _(mo):
 
     ## What's Next
 
-    Part 1 answered the Introduction's question: given the noise levels $P_k^-$ and $R$, the best gain is $K_k = P_k^-/(P_k^- + R)$. But where do these numbers come from? [Chapter 9](ch9_noise_levels.md) opens Part 2 by estimating $R$ from data, deriving $P_k^-$ from a model of how the true value changes, and assembling the result into the scalar Kalman filter. It then answers the Introduction's original question about the EMA: in the long run the Kalman filter *becomes* an EMA, with a gain determined by the two noise levels.
+    Part I answered the Introduction's question: given the noise levels $P_k^-$ and $R$, the best gain is $K_k = P_k^-/(P_k^- + R)$. But where do these numbers come from? [Chapter 9](ch9_noise_levels.md) opens Part II by estimating $R$ from data, deriving $P_k^-$ from a model of how the true value changes, and assembling the result into the scalar Kalman filter. It then answers the Introduction's original question about the EMA: in the long run the Kalman filter *becomes* an EMA, with a gain determined by the two noise levels.
     """)
     return
 

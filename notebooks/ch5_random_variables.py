@@ -1045,7 +1045,7 @@ def _(mo):
     Let $Z_k$ be the {term}`random variable` giving the measurement at step $k$ of a quantity whose true value is the real number $x_k$. The measurement noise at step $k$ is the random variable $V_k := Z_k - x_k$.
     ///
 
-    By definition $Z_k = x_k + V_k$, so this equation is not an assumption. The assumptions are about the distribution of the noise process $(V_k)$. The model used throughout Parts 1 and 2 of this book is:
+    By definition $Z_k = x_k + V_k$, so this equation is not an assumption. The assumptions are about the distribution of the noise process $(V_k)$. The model used throughout Parts I and II of this book is:
 
     > **Standard measurement-noise model.** For $k = 1, 2, \ldots$, $\ Z_k = x_k + V_k$, where $x_1, x_2, \ldots$ are fixed real numbers (unknown to the filter) and $V_1, V_2, \ldots$ are i.i.d. $\mathcal N(0, \sigma^2)$ for some $\sigma > 0$.
 

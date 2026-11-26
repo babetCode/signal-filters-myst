@@ -720,7 +720,7 @@ def _(mo):
     - **$\boldsymbol\Sigma$ must be symmetric positive definite** for the Cholesky factorization. Rounding can make a computed covariance slightly asymmetric or indefinite, and then `np.linalg.cholesky` fails. Symmetrize, $\tfrac12(\mathbf P + \mathbf P^\top)$, after each update and, if necessary, add a tiny multiple of $\mathbf I$. Square-root versions of the UKF propagate the Cholesky factor itself and avoid the problem.
     - **Negative weights.** When $\lambda < 0$, $W_0^{(m)}$ is negative (and $W_0^{(c)}$ may be), and $\mathbf P_{yy}$ can fail to be positive semidefinite even though $\boldsymbol\Sigma$ is. For large $n$ the choice $\kappa = 3 - n$ is negative and causes exactly this, which is why the scaled form was introduced.
     - **Only two moments.** The transform reports a mean and a covariance. A transformed distribution that is strongly skewed or has several peaks is still summarized by an ellipse.
-    - **Quantities that wrap around.** Averaging is wrong for angles near the wrap point: sigma points at bearings $179°$ and $-179°$ average to $0°$, not $180°$. Angles need a circular mean and wrapped differences, which matters in Parts 5 and 6.
+    - **Quantities that wrap around.** Averaging is wrong for angles near the wrap point: sigma points at bearings $179°$ and $-179°$ average to $0°$, not $180°$. Angles need a circular mean and wrapped differences, which matters in Parts V and VI.
     - **The guarantees are local.** Exactness holds for polynomials of degree at most 3 (mean) and for affine functions (covariance). Far from those, as with a spread of 2 in the explorer, the unscented transform can also be badly wrong; it is usually just less wrong than linearization.
     ///
     """)
@@ -1243,7 +1243,7 @@ def _(mo):
     3. If the EKF is inconsistent during transients or Jacobians are impractical, try the UKF. On the pendulum it cost about the same and was consistent where the EKF was not.
     4. If the measurements can be explained by several distinct states (ambiguities, symmetric sensors, unknown data association), no Gaussian filter is safe; use a particle filter, or remove the ambiguity with better initialization or another sensor.
 
-    Often the best fix is not a different filter but a better *problem*: a state in which the errors stay small. That is the idea behind the error-state filters of Parts 5 and 6, which apply an EKF to the small error of an attitude or navigation solution rather than to the attitude itself, so that linearization is accurate and the EKF's low cost is kept.
+    Often the best fix is not a different filter but a better *problem*: a state in which the errors stay small. That is the idea behind the error-state filters of Parts V and VI, which apply an EKF to the small error of an attitude or navigation solution rather than to the attitude itself, so that linearization is accurate and the EKF's low cost is kept.
 
     /// attention | 🗝️ **Key Idea**
         attrs: {class: no-icon}
@@ -1265,7 +1265,7 @@ def _(mo):
 
     ## What's Next
 
-    Part 5 turns to the nonlinearity that matters most in navigation: orientation. [Chapter 17](ch17_rotations.md) develops rotation matrices, Euler angles, and the angular velocity, and shows why every three-number description of orientation has singularities. Those singularities, and the fact that orientations cannot be averaged like vectors, are the reason Parts 5 and 6 use quaternions and error-state Kalman filters.
+    Part V turns to the nonlinearity that matters most in navigation: orientation. [Chapter 17](ch17_rotations.md) develops rotation matrices, Euler angles, and the angular velocity, and shows why every three-number description of orientation has singularities. Those singularities, and the fact that orientations cannot be averaged like vectors, are the reason Parts V and VI use quaternions and error-state Kalman filters.
     """)
     return
 

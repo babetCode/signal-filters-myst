@@ -61,7 +61,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts 5 and 6 therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](ch18_quaternions.md).
+    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](ch18_quaternions.md).
 
     /// attention | 🗝️ **Key Idea**
         attrs: {class: no-icon}

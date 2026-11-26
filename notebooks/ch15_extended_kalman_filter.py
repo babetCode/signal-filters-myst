@@ -89,7 +89,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The Kalman filter of [Chapter 13](ch13_kalman_filter.md) assumes that the next state is a *linear* function of the current one and that the sensor measures a linear function of the state. Most real systems break at least one of these assumptions. A pendulum's angular acceleration depends on $\sin\theta$; a camera measures positions through trigonometry; and every orientation filter in Parts 5 and 6 rotates vectors by matrices that depend on the state.
+    The Kalman filter of [Chapter 13](ch13_kalman_filter.md) assumes that the next state is a *linear* function of the current one and that the sensor measures a linear function of the state. Most real systems break at least one of these assumptions. A pendulum's angular acceleration depends on $\sin\theta$; a camera measures positions through trigonometry; and every orientation filter in Parts V and VI rotates vectors by matrices that depend on the state.
 
     This chapter's key concept is **linearization**: near the current estimate, replace each nonlinear function by the affine function that matches it best, and run the Kalman filter on that approximation. The result is the **extended Kalman filter** (EKF). It is the most widely used nonlinear filter, and it is the filter behind the attitude and gait estimators of [Chapter 19](ch19_ahrs.md) and [Chapter 21](ch21_zero_velocity_updates.md).
 

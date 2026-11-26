@@ -154,14 +154,14 @@ def _(mo):
 
     | Part | Chapters | Question it answers |
     |---|---|---|
-    | Part 1: Choosing α | [1](ch1_language_of_logic.md)–[8](ch8_bayesian_view.md) | Given how noisy a prediction and a measurement are, how much weight should each get? |
-    | Part 2: The Scalar Kalman Filter | [9](ch9_noise_levels.md)–[11](ch11_measurement_functions.md) | How noisy are the prediction and the measurement, how should we predict, and what if the sensor measures something other than what we want to know? |
-    | Part 3: State Vectors | [12](ch12_vectors_matrices_covariance.md)–[14](ch14_kalman_filters_in_practice.md) | What if what we want to know can't be represented by a single number? |
-    | Part 4: Nonlinearity | [15](ch15_extended_kalman_filter.md)–[16](ch16_unscented_kalman_filter.md) | What if it changes, or is measured, in nonlinear ways? |
-    | Part 5: Orientation | [17](ch17_rotations.md)–[19](ch19_ahrs.md) | How do we represent and estimate which way something is pointing, without singularities? |
-    | Part 6: Inertial Navigation for Gait | [20](ch20_strapdown_inertial_navigation.md)–[21](ch21_zero_velocity_updates.md) | How can a motion sensor strapped to a shoe measure how someone walks? |
+    | Part I: Choosing α | [1](ch1_language_of_logic.md)–[8](ch8_bayesian_view.md) | Given how noisy a prediction and a measurement are, how much weight should each get? |
+    | Part II: The Scalar Kalman Filter | [9](ch9_noise_levels.md)–[11](ch11_measurement_functions.md) | How noisy are the prediction and the measurement, how should we predict, and what if the sensor measures something other than what we want to know? |
+    | Part III: State Vectors | [12](ch12_vectors_matrices_covariance.md)–[14](ch14_kalman_filters_in_practice.md) | What if what we want to know can't be represented by a single number? |
+    | Part IV: Nonlinearity | [15](ch15_extended_kalman_filter.md)–[16](ch16_unscented_kalman_filter.md) | What if it changes, or is measured, in nonlinear ways? |
+    | Part V: Orientation | [17](ch17_rotations.md)–[19](ch19_ahrs.md) | How do we represent and estimate which way something is pointing, without singularities? |
+    | Part VI: Inertial Navigation for Gait | [20](ch20_strapdown_inertial_navigation.md)–[21](ch21_zero_velocity_updates.md) | How can a motion sensor strapped to a shoe measure how someone walks? |
 
-    Part 1 is the longest, because its answer ([Chapter 7](ch7_optimal_alpha.md)) is a statement about probabilities, and we want to prove it rather than ask you to take it on faith. So Part 1 first builds the mathematics that statement depends on, in dependency order: logic ([Chapter 1](ch1_language_of_logic.md)), sets ([Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md)), and probability ([Chapters 4](ch4_probability_spaces.md)–[6](ch6_expectation_and_variance.md)). If you are already comfortable with this material, skim it and start at Chapter 7. Every chapter after the Introduction opens with a **Prerequisites** box listing exactly what it uses, with links, so you can always find your way back.
+    Part I is the longest, because its answer ([Chapter 7](ch7_optimal_alpha.md)) is a statement about probabilities, and we want to prove it rather than ask you to take it on faith. So Part I first builds the mathematics that statement depends on, in dependency order: logic ([Chapter 1](ch1_language_of_logic.md)), sets ([Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md)), and probability ([Chapters 4](ch4_probability_spaces.md)–[6](ch6_expectation_and_variance.md)). If you are already comfortable with this material, skim it and start at Chapter 7. Every chapter after the Introduction opens with a **Prerequisites** box listing exactly what it uses, with links, so you can always find your way back.
     """)
     return
 
@@ -178,7 +178,7 @@ def _(mo):
     | [Appendix A: Formal Logic](appendix_a_formal_logic.md) | Formal syntax, semantics, and proofs | Any time after Chapter 2, if you are curious; it deepens Chapters 1–2, and nothing on the main path depends on it |
     | [Appendix B: Constructing the Number Systems](appendix_b_number_systems.md) | The integers, rational numbers, and real numbers, built from the natural numbers | Before or alongside Chapter 3, which uses its main result |
     | [Appendix C: Calculus](appendix_c_calculus.md) | Limits, series, derivatives, integrals, and differential equations | Sequences and series before Chapter 4; integrals before Chapter 5; differential equations for Chapter 10; Jacobians for Chapter 15 |
-    | [Appendix D: Linear Algebra](appendix_d_linear_algebra.md) | Vectors, matrices, eigenvalues, and derivatives with respect to matrices | Before Part 3 |
+    | [Appendix D: Linear Algebra](appendix_d_linear_algebra.md) | Vectors, matrices, eigenvalues, and derivatives with respect to matrices | Before Part III |
     """)
     return
 

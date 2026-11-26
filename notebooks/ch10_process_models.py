@@ -190,7 +190,7 @@ def _(mo):
 
     A system whose process model has the form
     $$x_k = a_k\,x_{k-1} + b_k\,u_k + w_k \quad \text{for every step } k \ge 1,$$
-    where the coefficients $a_k$ and $b_k$ are known numbers that do not depend on the state, the inputs, or the noise. In continuous time the corresponding form is $\dot x(t) = \lambda(t)\,x(t) + g(t)\,u(t)$ plus noise. (Part 3 replaces the numbers by matrices.)
+    where the coefficients $a_k$ and $b_k$ are known numbers that do not depend on the state, the inputs, or the noise. In continuous time the corresponding form is $\dot x(t) = \lambda(t)\,x(t) + g(t)\,u(t)$ plus noise. (Part III replaces the numbers by matrices.)
     ///
 
     The random walk is the case $a_k = b_k = 1$ with $u_k = \Delta x_k$. The constant model is $a_k = 1$, $b_k = 0$, $w_k = 0$. A model such as $x_k = x_{k-1}^2 + w_k$ is not linear, because the new state depends on the square of the old one; [Chapter 15](ch15_extended_kalman_filter.md) deals with such models.
@@ -817,7 +817,7 @@ def _(mo):
     $$
     Two things stand out. The variance of the weight prediction depends on the *covariance* between the two errors, so keeping track of two variances is not enough. And even if the errors are uncorrelated today, one prediction step makes them correlated, because an error in the rate becomes part of the error in the weight. To run a Kalman filter on this model we must track two variances and a covariance, three numbers that naturally form a $2\times 2$ table, and we need an update rule for all of them.
 
-    That is what Part 3 provides. [Chapter 12](ch12_vectors_matrices_covariance.md) packages variances and covariances into a covariance matrix, and [Chapter 13](ch13_kalman_filter.md) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
+    That is what Part III provides. [Chapter 12](ch12_vectors_matrices_covariance.md) packages variances and covariances into a covariance matrix, and [Chapter 13](ch13_kalman_filter.md) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
     """)
     return
 

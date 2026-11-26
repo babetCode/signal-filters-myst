@@ -1363,11 +1363,11 @@ def _(mo):
 
     > Given some amounts of noise in our prediction ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?
 
-    **Part 1: Choosing α** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](ch1_language_of_logic.md), sets in [Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md), and probability in [Chapters 4](ch4_probability_spaces.md) through [6](ch6_expectation_and_variance.md). [Chapter 7](ch7_optimal_alpha.md) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](ch8_bayesian_view.md) reinterprets the answer using Bayes' theorem.
+    **Part I: Choosing α** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](ch1_language_of_logic.md), sets in [Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md), and probability in [Chapters 4](ch4_probability_spaces.md) through [6](ch6_expectation_and_variance.md). [Chapter 7](ch7_optimal_alpha.md) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](ch8_bayesian_view.md) reinterprets the answer using Bayes' theorem.
 
     Once we know the optimal $\alpha$ for given levels of noise in $\hat x_k^-$ and $z_k$, the remaining parts answer the following questions.
 
-    **Part 2: The Scalar Kalman Filter** ([Chapters 9](ch9_noise_levels.md) through [11](ch11_measurement_functions.md))
+    **Part II: The Scalar Kalman Filter** ([Chapters 9](ch9_noise_levels.md) through [11](ch11_measurement_functions.md))
 
     > How do we determine the levels of noise in $\hat x_k^-$ and $z_k$?
 
@@ -1381,31 +1381,31 @@ def _(mo):
 
     (Time for measurement functions in [Chapter 11](ch11_measurement_functions.md)!)
 
-    **Part 3: State Vectors** ([Chapters 12](ch12_vectors_matrices_covariance.md) through [14](ch14_kalman_filters_in_practice.md))
+    **Part III: State Vectors** ([Chapters 12](ch12_vectors_matrices_covariance.md) through [14](ch14_kalman_filters_in_practice.md))
 
     > What if my real-world value can't be represented as a scalar?
 
     (Time for state vectors! The alpha-beta filter already tracks two numbers, a weight and its change per day. [Chapter 13](ch13_kalman_filter.md) shows that it is a special case of the multivariate Kalman filter, and [Chapter 14](ch14_kalman_filters_in_practice.md) covers tuning, sensor fusion, and checking that a filter is working.)
 
-    **Part 4: Nonlinearity** ([Chapters 15](ch15_extended_kalman_filter.md) and [16](ch16_unscented_kalman_filter.md))
+    **Part IV: Nonlinearity** ([Chapters 15](ch15_extended_kalman_filter.md) and [16](ch16_unscented_kalman_filter.md))
 
     > What if I expect my real-world value to change in super weird, nonlinear ways?
 
     (Linear approximation techniques in the extended Kalman filter, then sigma points in the unscented Kalman filter.)
 
-    **Part 5: Orientation** ([Chapters 17](ch17_rotations.md) through [19](ch19_ahrs.md))
+    **Part V: Orientation** ([Chapters 17](ch17_rotations.md) through [19](ch19_ahrs.md))
 
     > What if I need to avoid singularities in my state representation?
 
     (Quaternion time! We represent orientation with rotation matrices and quaternions, then build an AHRS that fuses gyroscopes, accelerometers, and magnetometers.)
 
-    **Part 6: Inertial Navigation for Gait** ([Chapters 20](ch20_strapdown_inertial_navigation.md) and [21](ch21_zero_velocity_updates.md))
+    **Part VI: Inertial Navigation for Gait** ([Chapters 20](ch20_strapdown_inertial_navigation.md) and [21](ch21_zero_velocity_updates.md))
 
     > Can a single IMU strapped to a shoe measure how someone walks?
 
     (We put everything together: we integrate the IMU's measurements to track the foot, and correct the resulting drift every time the foot is flat on the ground, to measure stride length, cadence, and gait speed.)
 
-    **Optional appendices.** Four appendices build foundational material from the ground up: [Appendix A: Formal Logic](appendix_a_formal_logic.md), [Appendix B: Constructing the Number Systems](appendix_b_number_systems.md), [Appendix C: Calculus](appendix_c_calculus.md), and [Appendix D: Linear Algebra](appendix_d_linear_algebra.md). You don't need to read them front to back. Every chapter after this one opens with a Prerequisites box that lists exactly which appendix sections it relies on, so read a section when a chapter points to it and the material is new to you. In particular, if they are unfamiliar, read Appendix C's sections on sequences and series before Chapter 4, and Appendix D before Part 3.
+    **Optional appendices.** Four appendices build foundational material from the ground up: [Appendix A: Formal Logic](appendix_a_formal_logic.md), [Appendix B: Constructing the Number Systems](appendix_b_number_systems.md), [Appendix C: Calculus](appendix_c_calculus.md), and [Appendix D: Linear Algebra](appendix_d_linear_algebra.md). You don't need to read them front to back. Every chapter after this one opens with a Prerequisites box that lists exactly which appendix sections it relies on, so read a section when a chapter points to it and the material is new to you. In particular, if they are unfamiliar, read Appendix C's sections on sequences and series before Chapter 4, and Appendix D before Part III.
 
     We begin with [Chapter 1: Language of Logic](ch1_language_of_logic.md).
     """)

@@ -63,7 +63,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 13](ch13_kalman_filter.md) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part 6.
+    [Chapter 13](ch13_kalman_filter.md) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
 
     /// attention | 🗝️ **Key Idea**
         attrs: {class: no-icon}
@@ -98,7 +98,7 @@ def _(mo):
     A cart rolls along a straight track. It starts at rest at position 0, accelerates at $0.5\ \text{m/s}^2$ from $t = 2$ s to $t = 6$ s, cruises at 2 m/s, brakes at $-0.5\ \text{m/s}^2$ from $t = 12$ s to $t = 16$ s, and stops at 20 m. Two sensors watch it:
 
     - a **position sensor** (think of a ranging beacon) that reports the position at 10 Hz with noise standard deviation $\sigma_p = 0.5$ m;
-    - an **accelerometer** that reports the acceleration at 100 Hz with noise standard deviation $\sigma_{\text{acc}} = 0.05\ \text{m/s}^2$, the default inertial-sensor noise used in Parts 5 and 6. For now it has no bias.
+    - an **accelerometer** that reports the acceleration at 100 Hz with noise standard deviation $\sigma_{\text{acc}} = 0.05\ \text{m/s}^2$, the default inertial-sensor noise used in Parts V and VI. For now it has no bias.
 
     The state is $\mathbf x = [p, \dot p]^\top$ (position $p$ in m, velocity $\dot p$ in m/s; the letter $v$ stays reserved for measurement noise). The filter steps at the accelerometer's rate, $\Delta t = 0.01$ s, so a position reading arrives every tenth step. The true acceleration is held constant over each 10 ms step, so the truth is generated exactly by
     $$\mathbf x_k = \mathbf F\mathbf x_{k-1} + \mathbf B a_k, \qquad \mathbf F = \begin{bmatrix}1 & \Delta t \\ 0 & 1\end{bmatrix}, \qquad \mathbf B = \begin{bmatrix}\tfrac12\Delta t^2 \\ \Delta t\end{bmatrix}.$$
@@ -716,7 +716,7 @@ def _(mo):
     mo.md(r"""
     ### An Unmodeled Bias
 
-    Real accelerometers have a bias; Part 6's default is $0.05\ \text{m/s}^2$. Dead reckoning turns a constant bias $b$ into a position error of $\tfrac12bt^2$, which is 10 m after 20 s. The filter above assumes zero-mean accelerometer noise, assumption (A2), so a bias violates its model. The remedy suggested in Chapter 13 is to make the bias a state. With $\mathbf x = [p, \dot p, b]^\top$, a constant bias, and $u_k = a_k + b + n_k$,
+    Real accelerometers have a bias; Part VI's default is $0.05\ \text{m/s}^2$. Dead reckoning turns a constant bias $b$ into a position error of $\tfrac12bt^2$, which is 10 m after 20 s. The filter above assumes zero-mean accelerometer noise, assumption (A2), so a bias violates its model. The remedy suggested in Chapter 13 is to make the bias a state. With $\mathbf x = [p, \dot p, b]^\top$, a constant bias, and $u_k = a_k + b + n_k$,
     $$\mathbf x_k = \begin{bmatrix}1 & \Delta t & -\tfrac12\Delta t^2 \\ 0 & 1 & -\Delta t \\ 0 & 0 & 1\end{bmatrix}\mathbf x_{k-1} + \begin{bmatrix}\tfrac12\Delta t^2 \\ \Delta t \\ 0\end{bmatrix}(u_k - n_k), \qquad z_k = [1\ \ 0\ \ 0]\,\mathbf x_k + v_k.$$
     Is the bias observable from position readings alone? The rank test answers it. For the model with $\mathbf F$ over one 0.1 s interval between position readings (the 100 Hz matrix raised to the 10th power), the observability matrix $[\mathbf H; \mathbf H\mathbf F; \mathbf H\mathbf F^2]$ has rank 3, so yes, but its smallest singular value is small compared with its largest (computed below). The bias is observable, but only weakly, and learning it takes time. The figure compares the two-state filter with the three-state filter on data with a $0.05\ \text{m/s}^2$ bias. The three-state filter starts with $\hat b_0 = 0$ and a standard deviation of $0.1\ \text{m/s}^2$.
     """)
@@ -839,7 +839,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    This is the pattern of Part 6 in miniature: an inertial sensor that is excellent over short times, an aiding measurement that bounds its drift, and sensor biases estimated as extra states, as far as they are observable.
+    This is the pattern of Part VI in miniature: an inertial sensor that is excellent over short times, an aiding measurement that bounds its drift, and sensor biases estimated as extra states, as far as they are observable.
 
     ## Outlier Gating
 
@@ -1221,7 +1221,7 @@ def _(mo, stab_first, stab_rows):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In double precision this example is harmless, which is why desktop experiments rarely show the problem. On embedded hardware, or with larger and more poorly scaled state vectors (Part 6 has 15 states mixing meters, radians, and sensor biases), it is real. The most robust remedy is a **square-root filter**, which never forms $\mathbf P$ at all: it propagates a factor $\mathbf L$ with $\mathbf P = \mathbf L\mathbf L^\top$, such as its Cholesky factor, so that $\mathbf P$ is positive semidefinite by construction, and it effectively doubles the available precision. Several variants (square-root covariance, square-root information, and $\mathbf U\mathbf D\mathbf U^\top$ factorizations) are described in [Wikipedia: Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) and in @barshalom2002.
+    In double precision this example is harmless, which is why desktop experiments rarely show the problem. On embedded hardware, or with larger and more poorly scaled state vectors (Part VI has 15 states mixing meters, radians, and sensor biases), it is real. The most robust remedy is a **square-root filter**, which never forms $\mathbf P$ at all: it propagates a factor $\mathbf L$ with $\mathbf P = \mathbf L\mathbf L^\top$, such as its Cholesky factor, so that $\mathbf P$ is positive semidefinite by construction, and it effectively doubles the available precision. Several variants (square-root covariance, square-root information, and $\mathbf U\mathbf D\mathbf U^\top$ factorizations) are described in [Wikipedia: Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) and in @barshalom2002.
     """)
     return
 
@@ -1353,7 +1353,7 @@ def _(mo):
     mo.md(r"""
     ## Smoothing
 
-    The filter's estimate $\hat{\mathbf x}_k$ uses $\mathbf z_1, \ldots, \mathbf z_k$ only, because a real-time filter cannot see the future. When the whole record is available afterwards, as in the gait analysis of Part 6, the estimate of $\mathbf x_k$ can also use $\mathbf z_{k+1}, \ldots, \mathbf z_K$. The **Rauch–Tung–Striebel smoother** does this with one backward pass over the filter's stored output. Starting from $\hat{\mathbf x}_K^s = \hat{\mathbf x}_K$ and $\mathbf P_K^s = \mathbf P_K$, for $k = K-1, \ldots, 1$:
+    The filter's estimate $\hat{\mathbf x}_k$ uses $\mathbf z_1, \ldots, \mathbf z_k$ only, because a real-time filter cannot see the future. When the whole record is available afterwards, as in the gait analysis of Part VI, the estimate of $\mathbf x_k$ can also use $\mathbf z_{k+1}, \ldots, \mathbf z_K$. The **Rauch–Tung–Striebel smoother** does this with one backward pass over the filter's stored output. Starting from $\hat{\mathbf x}_K^s = \hat{\mathbf x}_K$ and $\mathbf P_K^s = \mathbf P_K$, for $k = K-1, \ldots, 1$:
     $$\mathbf C_k = \mathbf P_k\mathbf F^\top(\mathbf P_{k+1}^-)^{-1}, \qquad \hat{\mathbf x}_k^s = \hat{\mathbf x}_k + \mathbf C_k\big(\hat{\mathbf x}_{k+1}^s - \hat{\mathbf x}_{k+1}^-\big), \qquad \mathbf P_k^s = \mathbf P_k + \mathbf C_k\big(\mathbf P_{k+1}^s - \mathbf P_{k+1}^-\big)\mathbf C_k^\top.$$
     Under (A1)–(A6), $\hat{\mathbf x}_k^s = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K]$ and $\mathbf P_k^s = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_K)$. The proof is not given here; see @rauch1965. The hidden cell below checks the claim numerically against direct Gaussian conditioning on all measurements of a short record, and then applies the smoother to the position-only cart filter with $\sigma_a = 1\ \text{m/s}^2$.
     """)
@@ -1489,7 +1489,7 @@ def _(mo):
 
     ## What's Next
 
-    Every model in Parts 2 and 3 was linear: $\mathbf F\mathbf x$, $\mathbf H\mathbf x$. A pendulum's acceleration depends on the *sine* of its angle, a range sensor measures a square root, and an orientation is not a vector at all. [Chapter 15](ch15_extended_kalman_filter.md) begins Part 4 by linearizing such models around the current estimate. That gives the extended Kalman filter, and with it a new set of failure modes that the consistency tests of this chapter will help detect.
+    Every model in Parts II and III was linear: $\mathbf F\mathbf x$, $\mathbf H\mathbf x$. A pendulum's acceleration depends on the *sine* of its angle, a range sensor measures a square root, and an orientation is not a vector at all. [Chapter 15](ch15_extended_kalman_filter.md) begins Part IV by linearizing such models around the current estimate. That gives the extended Kalman filter, and with it a new set of failure modes that the consistency tests of this chapter will help detect.
     """)
     return
 

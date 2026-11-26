@@ -54,7 +54,7 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In Part 2 the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part 6) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](ch9_noise_levels.md) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
+    In Part II the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part VI) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](ch9_noise_levels.md) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
 
     /// attention | 🗝️ **Key Idea**
         attrs: {class: no-icon}
@@ -93,7 +93,7 @@ def _(mo):
 
     $$\mathbf x_k = \begin{bmatrix} x_k \\ r_k \end{bmatrix},$$
 
-    where $x_k$ is the true weight on day $k$ (lb), as in Parts 1 and 2, and $r_k$ is the true rate of gain (lb/day). If the rate stayed constant during each day of length $\Delta t = 1$ day, then $x_k = x_{k-1} + \Delta t\, r_{k-1}$ and $r_k = r_{k-1}$, that is,
+    where $x_k$ is the true weight on day $k$ (lb), as in Parts I and II, and $r_k$ is the true rate of gain (lb/day). If the rate stayed constant during each day of length $\Delta t = 1$ day, then $x_k = x_{k-1} + \Delta t\, r_{k-1}$ and $r_k = r_{k-1}$, that is,
 
     $$\mathbf x_k = \mathbf F\mathbf x_{k-1}, \qquad \mathbf F = \begin{bmatrix} 1 & \Delta t \\ 0 & 1\end{bmatrix}.$$
 
@@ -183,7 +183,7 @@ def _(mo):
     - **(A3) fails** when noise is correlated in time, for example slow drift. The filter then treats repeated errors as independent evidence and becomes overconfident. The fixes are to model the correlated part as an extra state, or to inflate $\mathbf Q$ or $\mathbf R$.
     - **(A4) fails** when the same disturbance affects both the process and the sensor. The cross terms that vanish in the proofs below then survive, and the optimal gain changes, just as Chapter 7's correlated-errors gain $(P^- - c)/(P^- + R - 2c)$ differs from $P^-/(P^- + R)$.
     - **(A5) fails** when $\hat{\mathbf x}_0$ or $\mathbf P_0$ is wrong. The early estimates are then poor, but for observable models the effect fades (Chapter 14, Initialization).
-    - **Nonlinear models** are not covered at all; they are the subject of Part 4.
+    - **Nonlinear models** are not covered at all; they are the subject of Part IV.
     ///
     """)
     return
@@ -891,7 +891,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
         attrs: {class: no-icon}
     - **Observability is a yes-or-no property; information is a matter of degree.** A model can be observable and still learn a state very slowly when $\mathcal O$ is nearly rank deficient. Chapter 14 estimates an accelerometer bias that is observable but takes seconds to learn.
-    - **Unobservable directions are never corrected.** The filter's covariance in an unobservable direction never shrinks below what the prior and the prediction step give it. If $\mathbf Q$ adds uncertainty in that direction, the covariance grows without bound. Part 6 meets this for real: zero-velocity updates cannot observe the heading of a walking foot, so heading drift must be bounded by another sensor.
+    - **Unobservable directions are never corrected.** The filter's covariance in an unobservable direction never shrinks below what the prior and the prediction step give it. If $\mathbf Q$ adds uncertainty in that direction, the covariance grows without bound. Part VI meets this for real: zero-velocity updates cannot observe the heading of a walking foot, so heading drift must be bounded by another sensor.
     - **The rank test assumes the model is right.** A state that is observable in the model but not in reality, for example because $\mathbf H$ is wrong, is "observed" incorrectly.
     ///
     """)

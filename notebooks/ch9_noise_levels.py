@@ -121,7 +121,7 @@ def data(Path, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Part 1 ended with the optimal gain $K_k = P_k^-/(P_k^- + R)$, under the assumption that we *know* the measurement noise variance $R$ and the prediction's error variance $P_k^-$. This chapter answers the Introduction's next question: how do we determine these noise levels?
+    Part I ended with the optimal gain $K_k = P_k^-/(P_k^- + R)$, under the assumption that we *know* the measurement noise variance $R$ and the prediction's error variance $P_k^-$. This chapter answers the Introduction's next question: how do we determine these noise levels?
 
     $R$ is the easier one: we measure it. $P_k^-$ takes more work, because it depends on how much the true value can change between measurements in ways our prediction does not foresee. Modeling that change as *process noise* with variance $Q$ gives a one-line rule for $P_k^-$, and together with Chapter 7's update it forms the scalar **Kalman filter**. We then prove that in the long run the Kalman filter becomes an exponential moving average, which finally tells us how to choose the EMA's $\alpha$, and we learn to check from the measurements alone whether a filter's noise levels are right.
     """)
@@ -321,7 +321,7 @@ def _(mo):
 
     ### Noise That Is Not White
 
-    The sample variance assumes the noise in different readings is uncorrelated. Some sensors, gyroscopes in particular, also have slowly wandering errors, and then the sample variance depends on how long you record. The standard tool for separating noise types by time scale is the *Allan variance* ([Wikipedia: Allan variance](https://en.wikipedia.org/wiki/Allan_variance)), which we will meet again with inertial sensors in Parts 5 and 6.
+    The sample variance assumes the noise in different readings is uncorrelated. Some sensors, gyroscopes in particular, also have slowly wandering errors, and then the sample variance depends on how long you record. The standard tool for separating noise types by time scale is the *Allan variance* ([Wikipedia: Allan variance](https://en.wikipedia.org/wiki/Allan_variance)), which we will meet again with inertial sensors in Parts V and VI.
     """)
     return
 

@@ -11,7 +11,7 @@ project:
     - file: nb/index.md
     - file: nb/introduction.md
       title: Introduction
-    - title: "Part 1: Choosing Alpha"
+    - title: "Part I: Choosing Alpha"
       children:
       - file: nb/ch1_language_of_logic.md
       - file: nb/ch2_axioms_of_set_theory.md
@@ -21,26 +21,26 @@ project:
       - file: nb/ch6_expectation_and_variance.md
       - file: nb/ch7_optimal_alpha.md
       - file: nb/ch8_bayesian_view.md
-    - title: "Part 2: The Scalar Kalman Filter"
+    - title: "Part II: The Scalar Kalman Filter"
       children:
         - file: nb/ch9_noise_levels.md
         - file: nb/ch10_process_models.md
         - file: nb/ch11_measurement_functions.md
-    - title: "Part 3: State Vectors"
+    - title: "Part III: State Vectors"
       children:
         - file: nb/ch12_vectors_matrices_covariance.md
         - file: nb/ch13_kalman_filter.md
         - file: nb/ch14_kalman_filters_in_practice.md
-    - title: "Part 4: Nonlinearity"
+    - title: "Part IV: Nonlinearity"
       children:
         - file: nb/ch15_extended_kalman_filter.md
         - file: nb/ch16_unscented_kalman_filter.md
-    - title: "Part 5: Orientation"
+    - title: "Part V: Orientation"
       children:
         - file: nb/ch17_rotations.md
         - file: nb/ch18_quaternions.md
         - file: nb/ch19_ahrs.md
-    - title: "Part 6: Inertial Navigation for Gait"
+    - title: "Part VI: Inertial Navigation for Gait"
       children:
         - file: nb/ch20_strapdown_inertial_navigation.md
         - file: nb/ch21_zero_velocity_updates.md
