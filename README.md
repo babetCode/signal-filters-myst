@@ -1,10 +1,16 @@
-# Signal Filters
+<p align="center">
+  <img src="static/filter-book-icon.svg" alt="Image description" width="100" />
+</p>
+
+<h1 align="center">Signal Filter Guidebook</h1>
 
 An intuitive (and mostly rigorous) guide to Kalman filtering, built with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-marimo) so that the code is interactive in the browser, with no downloads or configuration needed.
 
-It's impossible to measure anything in the real world with 100% precision. Signal filters combine multiple measurements with knowledge about what's being measured to reduce this uncertainty and better estimate the true values.
+The book was inspired by Roger Labbe's [*Kalman and Bayesian Filters in Python*](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), and aims to bridge the gap between introduction and textbook: accessible to more readers while still using precise language. It answers questions including:
 
-The book was inspired by Roger Labbe's [*Kalman and Bayesian Filters in Python*](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python), and aims to bridge the gap between introduction and textbook: accessible to more readers while still using precise language.
+- *What is a signal?*
+- *What is a Kalman filter?*
+- *How are Kalman filters used in IMU gait analysis?*
 
 ## Contents
 

@@ -75,38 +75,15 @@ def _(mo):
 
     In my pursuit of a middle ground between introduction and textbook, I've made the following notes-to-self:
 
-    - I like accessible writing because it's faster to read and can be understood with minimal prerequisite knowledge (so more people can get something out of it).
     - I like textbook writing because it uses well defined language and provides a more complete understanding of material (so those who have the prerequisite knowledge can get the most out of it).
+    - I like accessible writing because it can be understood with minimal prerequisite knowledge and is faster to read (so more people can get something out of it).
 
     Therefore, my favorite writing (where the most people can get the most out of it) should:
 
-    1. Be concise and fast to read
-    2. Require minimal prerequisite knowledge
-    3. Use well defined language
-    4. Provide a complete understanding
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Concision
-
-    - Establish the key concept and its purpose up-front.
-    - Then, *only* include other concepts which are necessary for understanding the organizational hierarchy which the key concept is built on.
-    - Do so in as few words as possible while still being clear.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### Prerequisites
-
-    - Assume minimal knowledge from the reader; it is preferable to build all concepts from the ground up.
-    - When a concept is not worth building from the ground up in the book, link to an external resource that does.
+    1. Use well defined language
+    2. Provide a complete understanding
+    3. Require minimal prerequisite knowledge
+    4. Be concise and fast to read
     """)
     return
 
@@ -138,9 +115,33 @@ def _(mo):
 
     - Order concepts by dependency so that nothing is used before it is introduced.
     - When possible, start with a concrete example, then generalize; intuition makes formalism feel motivated rather than arbitrary.
-    - Justify steps rather than asserting them. Include a derivation when possible and link to one when it isn't.
+    - Justify steps rather than asserting them. Include a derivation or proof when possible and link to one when it isn't.
     - Make examples interactive, so readers can change an input and see the result.
     - State assumptions and say what happens when they fail; a complete understanding includes knowing where a result stops being true.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Prerequisites
+
+    - Assume minimal knowledge from the reader; it is preferable to build all concepts from the ground up.
+    - When a concept is not worth building from the ground up in the book, link to an external resource that does.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Concision
+
+    - Establish the key concept and its purpose up-front.
+    - Then, only include other concepts if they are part of the organizational hierarchy which the key concept is built on.
+    - Do so in as few words as possible while still being clear.
+    - It is important that concision is achieved through proper concept selection, organization, and wording, and not through imprecision, approximation, or assumption of knowlege.
     """)
     return
 
@@ -174,7 +175,7 @@ def _(mo):
     The appendices build foundational material from the ground up that many readers will already know. You don't need to read them front to back: read a section when a Prerequisites box points to it and the material is new to you.
 
     | Appendix | What it covers | When to read it |
-    |---|---|---|
+    |:---|:---|:---|
     | [Appendix A: Formal Logic](appendix_a_formal_logic.md) | Formal syntax, semantics, and proofs | Any time after Chapter 2, if you are curious; it deepens Chapters 1–2, and nothing on the main path depends on it |
     | [Appendix B: Constructing the Number Systems](appendix_b_number_systems.md) | The integers, rational numbers, and real numbers, built from the natural numbers | Before or alongside Chapter 3, which uses its main result |
     | [Appendix C: Calculus](appendix_c_calculus.md) | Limits, series, derivatives, integrals, and differential equations | Sequences and series before Chapter 4; integrals before Chapter 5; differential equations for Chapter 10; Jacobians for Chapter 15 |

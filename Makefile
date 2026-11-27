@@ -1,19 +1,42 @@
 export PYTHONUTF8 = 1
 export NODE_OPTIONS = --disable-warning=DEP0169
 
-.PHONY: sync-notebooks link-plugin book-build book-start clean
+# Set NO_EVAL=1 to skip evaluating marimo cells (faster)
+EVAL_FLAG = $(if $(NO_EVAL),--no-eval)
 
-link-plugin: # For jupyter-book-marimo on Windows
+.PHONY: link-plugin sync-notebooks build-html start preview clean \
+        book-build book-start book-dev
+
+# For jupyter-book-marimo plugin to work with Windows file paths
+link-plugin:
 	uv run python scripts/link_plugin.py
 
+# Export marimo notebooks from notebooks/ to .md files in content/nb/
 sync-notebooks:
-	uv run python scripts/sync_notebooks.py
+	uv run python scripts/sync_notebooks.py $(EVAL_FLAG)
 
-book-build: sync-notebooks
+# Build static HTML in content/_build/html/
+build-html:
 	cd content && uv run jupyter-book build --html --strict
 
-book-start: link-plugin # use `make book-start NO_EVAL=1` to avoid building marimo cells (faster)
-	uv run python scripts/sync_notebooks.py --serve --port 3102 --server-port 4102 $(if $(NO_EVAL),--no-eval)
+# Dev server for content/; does not watch notebooks
+start:
+	cd content && uv run myst start
 
+# Serve the last static build at http://localhost:8000
+preview:
+	uv run python scripts/preview.py
+
+# Full static build (used by CI)
+book-build: link-plugin sync-notebooks build-html
+
+# Export once, then start the dev server
+book-start: link-plugin sync-notebooks start
+
+# Export, watch notebooks, and start the dev server with live reload
+book-write: link-plugin
+	uv run python scripts/sync_notebooks.py --serve --port 3102 --server-port 4102 $(EVAL_FLAG)
+
+# Clean files
 clean:
 	uv run python -c "import shutil; [shutil.rmtree(p, ignore_errors=True) for p in ['content/_build', '_build', 'content/.jupyter-book-marimo', 'content/nb/.jupyter-book-marimo','.jupyter-book-marimo', 'content/.bin', '.bin', '.marimo-export']]"
