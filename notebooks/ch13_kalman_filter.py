@@ -54,7 +54,7 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In Part II the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part VI) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](ch9_noise_levels.md) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
+    In Part II the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part VI) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](#ch9-sec-the-scalar-kalman-filter) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
 
     /// attention | 🗝️ **Key Idea**
     The multivariate Kalman filter predicts with $\hat{\mathbf x}_k^- = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$, then corrects the prediction with the gain $\mathbf K_k = \mathbf P_k^-\mathbf H^\top\mathbf S_k^{-1}$, the unique gain that minimizes the error variance of every component of the state at once. Each step is the matrix version of a scalar step you already know.
@@ -67,15 +67,15 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the alpha-beta filter.
-    - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation; covariance.
-    - [Chapter 7](ch7_optimal_alpha.md): the optimal gain by completing the square.
-    - [Chapter 8](ch8_bayesian_view.md): the minimum mean squared error estimator and the Bayes filter (only for the cross-check section).
-    - [Chapter 9](ch9_noise_levels.md): the scalar Kalman filter, process noise, white noise, steady-state gain, innovation variance.
-    - [Chapter 10](ch10_process_models.md): process models, control inputs, rate models.
-    - [Chapter 11](ch11_measurement_functions.md): measurement models, the gain $P^-h/(h^2P^- + R)$, the tare-offset example.
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): random vectors, mean vectors, covariance and cross-covariance matrices, $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, the multivariate normal distribution, conditioning a joint Gaussian.
-    - [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): at an interior minimum the derivative vanishes.
+    - [Introduction](introduction.md): [the alpha-beta filter](#intro-sec-beta-weighting-term).
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [covariance](#ch6-sec-covariance-and-correlation).
+    - [Chapter 7](ch7_optimal_alpha.md): [the optimal gain by completing the square](#ch7-sec-completing-the-square).
+    - [Chapter 8](ch8_bayesian_view.md): [the minimum mean squared error estimator](#ch8-thm-the-posterior-mean-is-the-mmse-estimator) and [the Bayes filter](#ch8-sec-the-bayes-filter) (only for the cross-check section).
+    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), [process noise](#ch9-sec-process-noise), [white noise](#ch9-sec-process-noise), [steady-state gain](#ch9-thm-steady-state-gain), [innovation variance](#ch9-sec-innovations).
+    - [Chapter 10](ch10_process_models.md): [process models](#ch10-sec-linear-process-models), [control inputs](#ch10-sec-systems-states-and-inputs), [rate models](#ch10-sec-rate-models-when-the-state-needs-two-numbers).
+    - [Chapter 11](ch11_measurement_functions.md): [measurement models](#ch11-sec-from-pounds-to-counts), the gain $P^-h/(h^2P^- + R)$, [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [random vectors](#ch12-sec-random-vectors-and-mean-vectors), [mean vectors](#ch12-sec-random-vectors-and-mean-vectors), [covariance and cross-covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, [the multivariate normal distribution](#ch12-sec-the-multivariate-normal-distribution), [conditioning a joint Gaussian](#ch12-thm-conditioning-a-joint-normal-distribution).
+    - [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): [at an interior minimum the derivative vanishes](#appc-lem-interior-extremum).
     - Appendix D: [Matrix Multiplication](#appd-sec-matrix-multiplication); [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse); [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank); [Trace](#appd-sec-trace); [Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices); [Derivatives with Respect to Matrices](#appd-sec-derivatives-with-respect-to-matrices).
     ///
     """)
@@ -88,7 +88,7 @@ def _(mo):
     <!-- label: ch13-sec-a-second-state-variable -->
     ## A Second State Variable
 
-    The Introduction's alpha-beta filter tracked a weight estimate $\hat x_k$ *and* a predicted daily change $\widehat{\Delta x}_k$, corrected by two hand-picked gains $\alpha$ and $\beta$. [Chapter 10](ch10_process_models.md) showed why one number is not enough when a quantity changes at an unknown rate: the rate has to be estimated too. So collect both numbers in a vector,
+    The Introduction's alpha-beta filter tracked a weight estimate $\hat x_k$ *and* a predicted daily change $\widehat{\Delta x}_k$, corrected by two hand-picked gains $\alpha$ and $\beta$. [Chapter 10](#ch10-sec-rate-models-when-the-state-needs-two-numbers) showed why one number is not enough when a quantity changes at an unknown rate: the rate has to be estimated too. So collect both numbers in a vector,
 
     $$\mathbf x_k = \begin{bmatrix} x_k \\ r_k \end{bmatrix},$$
 
@@ -109,7 +109,7 @@ def _(mo):
     <!-- label: ch13-sec-the-state-space-model -->
     ## The State-Space Model
 
-    From here on, bold lowercase letters are column vectors and bold uppercase letters are matrices; $\mathbf a^\top$ is the transpose. As in [Chapter 12](ch12_vectors_matrices_covariance.md), for random vectors $\mathbf a$ and $\mathbf b$ with finite second moments,
+    From here on, bold lowercase letters are column vectors and bold uppercase letters are matrices; $\mathbf a^\top$ is the transpose. As in [Chapter 12](#ch12-lem-rules-for-cross-covariances), for random vectors $\mathbf a$ and $\mathbf b$ with finite second moments,
 
     $$\operatorname{Cov}(\mathbf a) := \mathbb E\big[(\mathbf a - \mathbb E\mathbf a)(\mathbf a - \mathbb E\mathbf a)^\top\big], \qquad \operatorname{Cov}(\mathbf a, \mathbf b) := \mathbb E\big[(\mathbf a - \mathbb E\mathbf a)(\mathbf b - \mathbb E\mathbf b)^\top\big],$$
 
@@ -173,7 +173,7 @@ def _(mo):
     - **(A6) Gaussian.** All randomness comes from independent Gaussian sources: $\mathbf x_0 = \hat{\mathbf x}_0 + \mathbf G_0\boldsymbol\xi_0$, $\mathbf w_k = \mathbf G_k\boldsymbol\xi_k$, and $\mathbf v_k = \boldsymbol\eta_k$ for constant matrices $\mathbf G_k$ and independent random vectors $\boldsymbol\xi_0, \boldsymbol\xi_1, \ldots, \boldsymbol\eta_1, \boldsymbol\eta_2, \ldots$, each with a {term}`multivariate normal distribution`. (The matrices $\mathbf G_k$ allow a singular $\mathbf Q$, as in the bulking example below, where $\mathbf w_k = \boldsymbol\Gamma a_k$ comes from a single scalar $a_k$.)
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **(A1) fails** when the model is wrong (wrong $\mathbf F$ or $\mathbf H$) or when an input is not known. The filter then becomes biased, and its reported covariance no longer describes its errors. An unknown input can be moved into the noise (Chapter 10 did this with logging error) or estimated as an extra state. [Chapter 14](ch14_kalman_filters_in_practice.md) shows how to detect a wrong model with consistency tests.
+    - **(A1) fails** when the model is wrong (wrong $\mathbf F$ or $\mathbf H$) or when an input is not known. The filter then becomes biased, and its reported covariance no longer describes its errors. An unknown input can be moved into the noise (Chapter 10 did this with logging error) or estimated as an extra state. [Chapter 14](#ch14-sec-consistency-tests) shows how to detect a wrong model with consistency tests.
     - **(A2) fails** when a noise has a nonzero mean, such as a {term}`sensor bias`. The estimates inherit the bias. The fix is to add the bias to the state, which works only if the enlarged model is observable (see Observability below); Chapter 14 does this for an accelerometer.
     - **(A3) fails** when noise is correlated in time, for example slow drift. The filter then treats repeated errors as independent evidence and becomes overconfident. The fixes are to model the correlated part as an extra state, or to inflate $\mathbf Q$ or $\mathbf R$.
     - **(A4) fails** when the same disturbance affects both the process and the sensor. The cross terms that vanish in the proofs below then survive, and the optimal gain changes, just as Chapter 7's correlated-errors gain $(P^- - c)/(P^- + R - 2c)$ differs from $P^-/(P^- + R)$.
@@ -190,7 +190,7 @@ def _(mo):
     <!-- label: ch13-sec-two-covariance-rules -->
     ### Two Covariance Rules
 
-    Every proof in this chapter reduces to the following bookkeeping. It extends [Chapter 12](ch12_vectors_matrices_covariance.md)'s rules for covariances and cross-covariances of two vectors to sums of several.
+    Every proof in this chapter reduces to the following bookkeeping. It extends [Chapter 12](#ch12-lem-rules-for-cross-covariances)'s rules for covariances and cross-covariances of two vectors to sums of several.
 
     /// admonition | 📐 **Lemma (Covariance Rules)**
         attrs: {class: lemma, id: ch13-lem-covariance-rules}
@@ -204,7 +204,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Each entry of $\mathbf A\mathbf X\mathbf C^\top$ is a fixed linear combination of the entries of $\mathbf X$, so linearity of expectation ([Chapter 6](ch6_expectation_and_variance.md)) gives $\mathbb E[\mathbf A\mathbf X\mathbf C^\top] = \mathbf A\,\mathbb E[\mathbf X]\,\mathbf C^\top$ for a random matrix $\mathbf X$ and, in the same way, $\mathbb E[\sum_i\mathbf A_i\mathbf a_i + \mathbf c] = \sum_i\mathbf A_i\bar{\mathbf a}_i + \mathbf c$ with $\bar{\mathbf a}_i := \mathbb E\mathbf a_i$. Hence the centered first argument is $\sum_i\mathbf A_i(\mathbf a_i - \bar{\mathbf a}_i)$, and likewise the centered second argument is $\sum_j\mathbf C_j(\mathbf b_j - \bar{\mathbf b}_j)$. Multiplying out,
+    Each entry of $\mathbf A\mathbf X\mathbf C^\top$ is a fixed linear combination of the entries of $\mathbf X$, so linearity of expectation ([Chapter 6](#ch6-thm-linearity-and-positivity-of-expectation)) gives $\mathbb E[\mathbf A\mathbf X\mathbf C^\top] = \mathbf A\,\mathbb E[\mathbf X]\,\mathbf C^\top$ for a random matrix $\mathbf X$ and, in the same way, $\mathbb E[\sum_i\mathbf A_i\mathbf a_i + \mathbf c] = \sum_i\mathbf A_i\bar{\mathbf a}_i + \mathbf c$ with $\bar{\mathbf a}_i := \mathbb E\mathbf a_i$. Hence the centered first argument is $\sum_i\mathbf A_i(\mathbf a_i - \bar{\mathbf a}_i)$, and likewise the centered second argument is $\sum_j\mathbf C_j(\mathbf b_j - \bar{\mathbf b}_j)$. Multiplying out,
 
     $$\mathbb E\Big[\Big(\sum_i\mathbf A_i(\mathbf a_i - \bar{\mathbf a}_i)\Big)\Big(\sum_j\mathbf C_j(\mathbf b_j - \bar{\mathbf b}_j)\Big)^\top\Big] = \sum_i\sum_j\mathbf A_i\,\mathbb E\big[(\mathbf a_i - \bar{\mathbf a}_i)(\mathbf b_j - \bar{\mathbf b}_j)^\top\big]\,\mathbf C_j^\top,$$
 
@@ -228,7 +228,7 @@ def _(mo):
 
     $$\mathbf e_k^- := \hat{\mathbf x}_k^- - \mathbf x_k, \qquad \mathbf e_k := \hat{\mathbf x}_k - \mathbf x_k \quad (\text{so } \mathbf e_0 = \hat{\mathbf x}_0 - \mathbf x_0),$$
 
-    and their covariances as $\mathbf P_k^- := \operatorname{Cov}(\mathbf e_k^-)$ and $\mathbf P_k := \operatorname{Cov}(\mathbf e_k)$, the vector versions of the {term}`estimation error` and {term}`error variance` of [Chapter 7](ch7_optimal_alpha.md).
+    and their covariances as $\mathbf P_k^- := \operatorname{Cov}(\mathbf e_k^-)$ and $\mathbf P_k := \operatorname{Cov}(\mathbf e_k)$, the vector versions of the {term}`estimation error` and {term}`error variance` of [Chapter 7](#ch7-sec-setting-up-the-problem).
 
     /// admonition | 📐 **Lemma (Errors Are Linear in the Noise)**
         attrs: {class: lemma, id: ch13-lem-errors-are-linear-in-the-noise}
@@ -258,7 +258,7 @@ def _(mo):
     By the Lemma, $\mathbf e_k^- = \mathbf F\mathbf e_{k-1} - \mathbf w_k$, so $\mathbb E\mathbf e_k^- = \mathbf F\mathbf 0 - \mathbf 0 = \mathbf 0$ by linearity and (A2). The Lemma also gives $\operatorname{Cov}(\mathbf e_{k-1}, \mathbf w_k) = \mathbf 0$, so the last statement of the Covariance Rules (with $\mathbf A = \mathbf F$ and $\mathbf C = -\mathbf I$) gives $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$. $\blacksquare$
     ///
 
-    For $n = 1$ and $\mathbf F = a$ this is [Chapter 10](ch10_process_models.md)'s $P_k^- = a^2P_{k-1} + Q$. The control input shifts the prediction but adds no uncertainty, because it is known exactly. A control input that is itself *measured* with noise, such as an accelerometer reading, contributes that noise to $\mathbf w_k$; Chapter 14 works this out for a cart.
+    For $n = 1$ and $\mathbf F = a$ this is [Chapter 10](#ch10-thm-linear-prediction)'s $P_k^- = a^2P_{k-1} + Q$. The control input shifts the prediction but adds no uncertainty, because it is known exactly. A control input that is itself *measured* with noise, such as an accelerometer reading, contributes that noise to $\mathbf w_k$; Chapter 14 works this out for a cart.
     """)
     return
 
@@ -282,7 +282,7 @@ def _(mo):
         attrs: {class: proof}
     $\tilde{\mathbf y}_k = \mathbf H\mathbf x_k + \mathbf v_k - \mathbf H\hat{\mathbf x}_k^- = -\mathbf H\mathbf e_k^- + \mathbf v_k$, so its mean is $\mathbf 0$. Since $\operatorname{Cov}(\mathbf e_k^-, \mathbf v_k) = \mathbf 0$ (Lemma), the Covariance Rules give $\operatorname{Cov}(\tilde{\mathbf y}_k) = \mathbf H\mathbf P_k^-\mathbf H^\top + \mathbf R$. Both terms are symmetric. For $\mathbf a \ne \mathbf 0$,
     $$\mathbf a^\top\mathbf S_k\mathbf a = (\mathbf H^\top\mathbf a)^\top\mathbf P_k^-(\mathbf H^\top\mathbf a) + \mathbf a^\top\mathbf R\mathbf a > 0,$$
-    because the first term is $\ge 0$ ($\mathbf P_k^-$ is a covariance matrix, hence positive semidefinite by [Chapter 12](ch12_vectors_matrices_covariance.md)) and the second is $> 0$ by (A2). Finally, if $\mathbf S_k\mathbf a = \mathbf 0$ then $\mathbf a^\top\mathbf S_k\mathbf a = 0$, so $\mathbf a = \mathbf 0$; a square matrix whose only null vector is $\mathbf 0$ has full rank and is invertible ([Appendix D: Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank)). $\blacksquare$
+    because the first term is $\ge 0$ ($\mathbf P_k^-$ is a covariance matrix, hence positive semidefinite by [Chapter 12](#ch12-thm-covariance-matrices-are-symmetric-and-positive-semidefinite)) and the second is $> 0$ by (A2). Finally, if $\mathbf S_k\mathbf a = \mathbf 0$ then $\mathbf a^\top\mathbf S_k\mathbf a = 0$, so $\mathbf a = \mathbf 0$; a square matrix whose only null vector is $\mathbf 0$ has full rank and is invertible ([Appendix D: Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank)). $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
@@ -291,7 +291,7 @@ def _(mo):
     The covariance matrix $\mathbf S_k := \operatorname{Cov}(\tilde{\mathbf y}_k)$ of the innovation $\tilde{\mathbf y}_k = \mathbf z_k - \mathbf H_k\hat{\mathbf x}_k^-$ of a linear state-space model. Under (A1)–(A4), $\mathbf S_k = \mathbf H_k\mathbf P_k^-\mathbf H_k^\top + \mathbf R_k$.
     ///
 
-    For $m = 1$ this is the {term}`innovation variance` of [Chapter 9](ch9_noise_levels.md). Now the update error, for *any* gain:
+    For $m = 1$ this is the {term}`innovation variance` of [Chapter 9](#ch9-sec-innovations). Now the update error, for *any* gain:
 
     /// admonition | 📐 **Theorem (Update with an Arbitrary Gain)**
         attrs: {class: theorem, id: ch13-thm-update-with-an-arbitrary-gain}
@@ -364,7 +364,7 @@ def _(mo):
     The gain $\mathbf K_k := \mathbf P_k^-\mathbf H_k^\top\mathbf S_k^{-1}$ in the update $\hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k(\mathbf z_k - \mathbf H_k\hat{\mathbf x}_k^-)$, where $\mathbf P_k^-$ is the error covariance of the prediction and $\mathbf S_k = \mathbf H_k\mathbf P_k^-\mathbf H_k^\top + \mathbf R_k$ is the innovation covariance.
     ///
 
-    The Kalman gain is the vector version of the {term}`optimal gain`. For $n = m = 1$ and $\mathbf H = h$ it is [Chapter 11](ch11_measurement_functions.md)'s $K = P^-h/(h^2P^- + R)$, and for $h = 1$ it is Chapter 7's $P^-/(P^- + R)$. Step 3 is Chapter 7's completing-the-square argument with matrices.
+    The Kalman gain is the vector version of the {term}`optimal gain`. For $n = m = 1$ and $\mathbf H = h$ it is [Chapter 11](#ch11-thm-optimal-gain-with-a-measurement-function)'s $K = P^-h/(h^2P^- + R)$, and for $h = 1$ it is Chapter 7's $P^-/(P^- + R)$. Step 3 is Chapter 7's completing-the-square argument with matrices.
 
     /// admonition | 📐 **Corollary (Simplified Covariance Update)**
         attrs: {class: corollary, id: ch13-cor-simplified-covariance-update}
@@ -471,7 +471,7 @@ def _(mo):
     <!-- label: ch13-sec-cross-check-gaussian-conditioning -->
     ## Cross-Check: Gaussian Conditioning
 
-    [Chapter 12](ch12_vectors_matrices_covariance.md) derived, with the Schur complement, the conditional distribution of one part of a jointly Gaussian vector given the other: if
+    [Chapter 12](#ch12-thm-conditioning-a-joint-normal-distribution) derived, with the Schur complement, the conditional distribution of one part of a jointly Gaussian vector given the other: if
     $$\begin{bmatrix}\mathbf a \\ \mathbf b\end{bmatrix} \sim \mathcal N\left(\begin{bmatrix}\boldsymbol\mu_a \\ \boldsymbol\mu_b\end{bmatrix}, \begin{bmatrix}\boldsymbol\Sigma_{aa} & \boldsymbol\Sigma_{ab} \\ \boldsymbol\Sigma_{ba} & \boldsymbol\Sigma_{bb}\end{bmatrix}\right)$$
     with $\boldsymbol\Sigma_{bb}$ invertible, then given $\mathbf b = \boldsymbol\beta$, $\mathbf a$ is normal with mean $\boldsymbol\mu_a + \boldsymbol\Sigma_{ab}\boldsymbol\Sigma_{bb}^{-1}(\boldsymbol\beta - \boldsymbol\mu_b)$ and covariance $\boldsymbol\Sigma_{aa} - \boldsymbol\Sigma_{ab}\boldsymbol\Sigma_{bb}^{-1}\boldsymbol\Sigma_{ba}$. Nothing in that derivation mentions gains or traces, yet it produces the same update.
 
@@ -489,7 +489,7 @@ def _(mo):
     The block $\mathbf S$ is invertible (Innovation Covariance theorem). The conditioning formula gives the mean $\hat{\mathbf x}^- + \mathbf P^-\mathbf H^\top\mathbf S^{-1}(\boldsymbol\zeta - \mathbf H\hat{\mathbf x}^-)$ and the covariance $\mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf S^{-1}\mathbf H\mathbf P^- = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-$. $\blacksquare$
     ///
 
-    Applied at every step, this is [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter` with Gaussian densities. Under (A1)–(A6), the conditional distribution of $\mathbf x_{k-1}$ given $\mathbf z_1, \ldots, \mathbf z_{k-1}$ is Gaussian. The prediction step maps it through the linear process model with independent Gaussian noise, which keeps it Gaussian with mean $\hat{\mathbf x}_k^-$ and covariance $\mathbf P_k^-$, and the theorem performs the update. By induction on $k$, $\hat{\mathbf x}_k = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k]$ and $\mathbf P_k = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k)$; a detailed proof is in @barshalom2002 [Ch. 5]. The conditional mean is the {term}`minimum mean squared error estimator` (Chapter 8). So:
+    Applied at every step, this is [Chapter 8](#ch8-sec-the-bayes-filter)'s {term}`Bayes filter` with Gaussian densities. Under (A1)–(A6), the conditional distribution of $\mathbf x_{k-1}$ given $\mathbf z_1, \ldots, \mathbf z_{k-1}$ is Gaussian. The prediction step maps it through the linear process model with independent Gaussian noise, which keeps it Gaussian with mean $\hat{\mathbf x}_k^-$ and covariance $\mathbf P_k^-$, and the theorem performs the update. By induction on $k$, $\hat{\mathbf x}_k = \mathbb E[\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k]$ and $\mathbf P_k = \operatorname{Cov}(\mathbf x_k \mid \mathbf z_1, \ldots, \mathbf z_k)$; a detailed proof is in @barshalom2002 [Ch. 5]. The conditional mean is the {term}`minimum mean squared error estimator` (Chapter 8). So:
 
     - **Without (A6)**, the Kalman filter is the best filter of the linear form above (previous section).
     - **With (A6)**, it is the best estimator of any form whatsoever, linear or not.
@@ -542,7 +542,7 @@ def _(mo):
     <!-- label: ch13-sec-the-algorithm -->
     ## The Algorithm
 
-    Collecting the results gives the multivariate {term}`Kalman filter`. For $n = m = 1$ it is exactly the scalar filter of [Chapter 9](ch9_noise_levels.md).
+    Collecting the results gives the multivariate {term}`Kalman filter`. For $n = m = 1$ it is exactly the scalar filter of [Chapter 9](#ch9-sec-the-scalar-kalman-filter).
 
     /// attention | 🗝️ **Key Idea**
     Start from $\hat{\mathbf x}_0$ and $\mathbf P_0$. For $k = 1, 2, \ldots$:
@@ -612,7 +612,7 @@ def _(mo):
     $$r_k = r_{k-1} + a_k\Delta t, \qquad x_k = x_{k-1} + r_{k-1}\Delta t + \tfrac12 a_k\Delta t^2,$$
     so $\mathbf w_k = \boldsymbol\Gamma a_k$ with $\boldsymbol\Gamma = [\tfrac12\Delta t^2,\ \Delta t]^\top$, and by the Covariance Rules
     $$\mathbf Q = \operatorname{Cov}(\boldsymbol\Gamma a_k) = \sigma_a^2\boldsymbol\Gamma\boldsymbol\Gamma^\top = \sigma_a^2\begin{bmatrix}\tfrac14\Delta t^4 & \tfrac12\Delta t^3 \\ \tfrac12\Delta t^3 & \Delta t^2\end{bmatrix}.$$
-    The $a_k$ are uncorrelated across days, so (A3) holds. This *piecewise-constant acceleration* model is one of two standard choices; [Chapter 14](ch14_kalman_filters_in_practice.md) compares it with the other.
+    The $a_k$ are uncorrelated across days, so (A3) holds. This *piecewise-constant acceleration* model is one of two standard choices; [Chapter 14](#ch14-sec-choosing-q) compares it with the other.
 
     **Initial condition.** On day 0, before the first weigh-in, you know your weight to about $\pm 1$ lb and have no idea of the rate beyond "within about $\pm 0.5$ lb/day": $\hat{\mathbf x}_0 = [155, 0]^\top$, $\mathbf P_0 = \operatorname{diag}(1, 0.25)$.
 
@@ -734,7 +734,7 @@ def _(mo):
     mo.md(r"""
     Things to try:
 
-    - **Small $\sigma_a$** (say $0.005$) tells the filter that the rate hardly ever changes. The rate band shrinks, and after the diet change the estimated rate creeps toward the truth over weeks while the true rate sits far outside the band. This is the vector version of [Chapter 9](ch9_noise_levels.md)'s observation that $Q = 0$ turns the filter into a running average that stops listening.
+    - **Small $\sigma_a$** (say $0.005$) tells the filter that the rate hardly ever changes. The rate band shrinks, and after the diet change the estimated rate creeps toward the truth over weeks while the true rate sits far outside the band. This is the vector version of [Chapter 9](#ch9-thm-no-process-noise)'s observation that $Q = 0$ turns the filter into a running average that stops listening.
     - **Large $\sigma_a$** (say $0.5$) lets the rate change quickly, so the estimate can follow the cut within days, but every noisy reading now moves the rate estimate by tenths of a lb/day, and the $\pm 2\sigma$ band becomes so wide that it says little.
     - **Small $R$** makes the filter trust each reading; **large $R$** makes it trust its own predictions. The data, with true $\sigma_v = 1$ lb, do not change.
     - In every setting, the gains settle to constants within a few weeks. The section Alpha-Beta Revisited shows what those constants are.
@@ -748,7 +748,7 @@ def _(mo):
     <!-- label: ch13-sec-observability -->
     ## Observability
 
-    The bulking filter estimated a rate that the scale never measures. That worked because a rate leaves a trace in the weights: two different rates produce different weight sequences. [Chapter 11](ch11_measurement_functions.md)'s tare offset is the opposite case: a heavier person on a scale with a smaller offset can produce exactly the same readings. Observability makes the difference precise.
+    The bulking filter estimated a rate that the scale never measures. That worked because a rate leaves a trace in the weights: two different rates produce different weight sequences. [Chapter 11](#ch11-sec-two-unknowns-one-reading)'s tare offset is the opposite case: a heavier person on a scale with a smaller offset can produce exactly the same readings. Observability makes the difference precise.
 
     /// note | 📖 **Definition**
     <u>**Observability**</u>
@@ -919,7 +919,7 @@ def _(mo):
     The prediction is $\hat{\mathbf x}_k^- = [\hat x_{k-1} + \hat r_{k-1}\Delta t,\ \hat r_{k-1}]^\top = [\hat x_{k-1} + \widehat{\Delta x}_k,\ \hat r_{k-1}]^\top$, whose first entry is the alpha-beta prediction $\hat x_k^-$. The innovation $z_k - \mathbf H\hat{\mathbf x}_k^- = z_k - \hat x_k^-$ is the alpha-beta $\tilde y_k$. The update gives $\hat x_k = \hat x_k^- + \alpha\tilde y_k$ and $\hat r_k = \hat r_{k-1} + (\beta/\Delta t)\tilde y_k$; multiplying the latter by $\Delta t$ gives $\widehat{\Delta x}_{k+1} = \widehat{\Delta x}_k + \beta\tilde y_k$. $\blacksquare$
     ///
 
-    So the alpha-beta filter is a Kalman filter whose gain has been frozen. The bulking example showed that the Kalman filter's own gains settle to constants. Freezing them at those limits gives the alpha-beta filter that is *optimal in steady state*: the vector version of [Chapter 9](ch9_noise_levels.md)'s theorem that the steady-state scalar Kalman filter is an exponential moving average with $\alpha = K_\infty$.
+    So the alpha-beta filter is a Kalman filter whose gain has been frozen. The bulking example showed that the Kalman filter's own gains settle to constants. Freezing them at those limits gives the alpha-beta filter that is *optimal in steady state*: the vector version of [Chapter 9](#ch9-thm-the-steady-state-kalman-filter-is-an-ema)'s theorem that the steady-state scalar Kalman filter is an exponential moving average with $\alpha = K_\infty$.
 
     **The Riccati recursion.** Because the gains do not depend on the data, we can eliminate the update and write the predicted covariance in terms of itself:
     $$\mathbf P_{k+1}^- = \mathbf F\Big(\mathbf P_k^- - \mathbf P_k^-\mathbf H^\top\big(\mathbf H\mathbf P_k^-\mathbf H^\top + \mathbf R\big)^{-1}\mathbf H\mathbf P_k^-\Big)\mathbf F^\top + \mathbf Q.$$
@@ -1119,7 +1119,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Steady state only.** The frozen gains are optimal only after the Kalman filter's transient has died out. Early on, the Kalman filter uses *larger* gains (it knows it does not know much yet), so an alpha-beta filter started from a poor guess converges more slowly than the Kalman filter would.
-    - **The process-noise model matters.** Kalata's relations assume the piecewise-constant acceleration $\mathbf Q$ used here. With the continuous white-noise acceleration $\mathbf Q$ of [Chapter 14](ch14_kalman_filters_in_practice.md), the steady-state gains satisfy different relations; see @barshalom2002 [Ch. 6].
+    - **The process-noise model matters.** Kalata's relations assume the piecewise-constant acceleration $\mathbf Q$ used here. With the continuous white-noise acceleration $\mathbf Q$ of [Chapter 14](#ch14-sec-continuous-white-noise-acceleration), the steady-state gains satisfy different relations; see @barshalom2002 [Ch. 6].
     - **Regular sampling and a position-only measurement.** The relations assume a fixed $\Delta t$ and $\mathbf H = [1\ \ 0]$. With irregular or missing samples, the Kalman filter's time-varying gains adapt; frozen gains do not.
     - **Model violations still hurt.** The diet change in the example is not a small white acceleration. Neither the Kalman filter nor its frozen version handles a sudden jump optimally; Chapter 14 shows what happens when $\mathbf Q$ is too small for such a maneuver.
     ///

@@ -72,7 +72,7 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): statements and predicates; the connectives $\neg, \land, \lor, \rightarrow, \leftrightarrow$; the quantifiers $\forall$, $\exists$, $\exists!$ and the bounded forms $\forallin{x}{A}$, $\existsin{x}{A}$; the notations $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and the proof techniques (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
+    - [Chapter 1](ch1_language_of_logic.md): [statements](#ch1-sec-statements) and [predicates](#ch1-sec-predicates-and-variables); [the connectives](#ch1-sec-connectives-and-truth-tables) $\neg, \land, \lor, \rightarrow, \leftrightarrow$; [the quantifiers](#ch1-sec-quantifiers) $\forall$, $\exists$, $\exists!$ and [the bounded forms](#ch1-sec-bounded-quantifiers) $\forallin{x}{A}$, $\existsin{x}{A}$; [the notations](#ch1-sec-definitions-and-longleftrightarrow) $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and [the proof techniques](#ch1-sec-proof-techniques) (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
     - [Appendix A](appendix_a_formal_logic.md) (optional): the formal language behind the notation of this chapter.
     ///
     """)
@@ -82,13 +82,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Every filter in this book is a *recursion*: it computes the {term}`estimate` $\hat x_k$ from the previous estimate $\hat x_{k-1}$ and the newest measurement $z_k$, for $k = 1, 2, 3, \ldots$ The Introduction's cumulative average is one example:
+    Every filter in this book computes the {term}`estimate` $\hat x_k$ from the previous estimate $\hat x_{k-1}$ and the newest measurement $z_k$, for $k = 1, 2, 3, \ldots$ A rule of this kind, which defines each term of a sequence from the term before it, is called a *recursion*; the Recursion Theorem at the end of this chapter makes the idea precise. The Introduction's cumulative average is one example:
 
     $$\hat x_k = \hat x_{k-1} + \tfrac1k\,(z_k - \hat x_{k-1}).$$
 
-    Writing "and so on" is easy. Proving that such a rule defines exactly one estimate for *every* step $k$ is not, because it needs precise notions of the steps $k$ (the natural numbers), of "a value for every step" (a function), and of the pairs $(k, \hat x_k)$ that make up such a function. This chapter builds all three from the axioms of Zermelo–Fraenkel set theory with the Axiom of Choice (ZFC). It ends with the Recursion Theorem: an initial value and an update rule determine exactly one sequence[^sequence-informal] of estimates. Everything later in the book rests on the same foundation; for example, the probabilities of [Chapter 4](ch4_probability_spaces.md) are functions whose inputs are sets.
+    Writing "and so on" is easy. Proving that such a rule defines exactly one estimate for *every* step $k$ is not, because it needs precise notions of the steps $k$ (the natural numbers), of "a value for every step" (a function), and of the pairs $(k, \hat x_k)$ that make up such a function. This chapter builds all three from the axioms of Zermelo–Fraenkel set theory with the Axiom of Choice (ZFC). It ends with the Recursion Theorem: an initial value and an update rule determine exactly one sequence[^sequence-informal] of estimates. Everything later in the book rests on the same foundation; for example, the probabilities of [Chapter 4](#ch4-sec-kolmogorovs-axioms) are functions whose inputs are sets.
 
-    [^sequence-informal]: Used informally here; *sequence* is defined precisely in [Chapter 3](ch3_sets_for_probability.md).
+    [^sequence-informal]: Used informally here; *sequence* is defined precisely in [Chapter 3](#ch3-sec-indexed-families-and-sequences).
     """)
     return
 
@@ -223,7 +223,7 @@ def _(mo):
     $$\forall x\,(x \notin \emptyset).$$
     ///
 
-    The empty set is a subset of every set: $\emptyset \subseteq A$ says $\forallin{x}{\emptyset}\,(x \in A)$, which is vacuously true because there is no $x \in \emptyset$ (recall the conditional in [Chapter 1](ch1_language_of_logic.md)). A set $A$ is *nonempty* iff $A \neq \emptyset$. By Extensionality, this holds iff $A$ has at least one element: a set with no elements has the same elements as $\emptyset$.
+    The empty set is a subset of every set: $\emptyset \subseteq A$ says $\forallin{x}{\emptyset}\,(x \in A)$, which is vacuously true because there is no $x \in \emptyset$ (recall the conditional in [Chapter 1](#ch1-sec-vacuous-truth)). A set $A$ is *nonempty* iff $A \neq \emptyset$. By Extensionality, this holds iff $A$ has at least one element: a set with no elements has the same elements as $\emptyset$.
     """)
     return
 
@@ -367,7 +367,7 @@ def _(mo):
     $$x \in A \setminus B \;\leftrightarrow\; (x \in A \land x \notin B).$$
     ///
 
-    For example, if $a$, $b$, $c$ are distinct sets, then $\{a, b\} \cap \{b, c\} = \{b\}$ and $\{a, b, c\} \setminus \{b\} = \{a, c\}$. Unlike $\cup$ and $\cap$, set difference is not symmetric: $\{a, b\} \setminus \{b\} = \{a\}$, but $\{b\} \setminus \{a, b\} = \emptyset$. The complement of a set relative to an ambient set, $A^c := \Omega \setminus A$, is introduced in [Chapter 3](ch3_sets_for_probability.md).
+    For example, if $a$, $b$, $c$ are distinct sets, then $\{a, b\} \cap \{b, c\} = \{b\}$ and $\{a, b, c\} \setminus \{b\} = \{a, c\}$. Unlike $\cup$ and $\cap$, set difference is not symmetric: $\{a, b\} \setminus \{b\} = \{a\}$, but $\{b\} \setminus \{a, b\} = \emptyset$. The complement of a set relative to an ambient set, $A^c := \Omega \setminus A$, is introduced in [Chapter 3](#ch3-sec-complements-and-de-morgans-laws).
     """)
     return
 
@@ -395,7 +395,7 @@ def _(mo):
 
     For example, $\mathcal P(\emptyset) = \{\emptyset\}$, and if $a \neq b$, then $\mathcal P(\{a, b\}) = \{\emptyset, \{a\}, \{b\}, \{a, b\}\}$. For every set $A$, both $\emptyset \in \mathcal P(A)$ and $A \in \mathcal P(A)$.
 
-    Separation only shrinks sets, and Pairing and Union enlarge them modestly; Power Set is the axiom that produces genuinely larger sets ([Chapter 3](ch3_sets_for_probability.md) proves Cantor's theorem, which makes "larger" precise). Below, it supplies the room needed for Cartesian products and sets of functions. In [Chapter 4](ch4_probability_spaces.md), the events of a probability space are elements of $\mathcal P(\Omega)$, where $\Omega$ is the set of possible outcomes.
+    Separation only shrinks sets, and Pairing and Union enlarge them modestly; Power Set is the axiom that produces genuinely larger sets ([Chapter 3](#ch3-thm-cantor) proves Cantor's theorem, which makes "larger" precise). Below, it supplies the room needed for Cartesian products and sets of functions. In [Chapter 4](#ch4-sec-sigma-algebras), the events of a probability space are elements of $\mathcal P(\Omega)$, where $\Omega$ is the set of possible outcomes.
     """)
     return
 
@@ -475,7 +475,7 @@ def _(mo):
 
     So the Axiom of Infinity says that an inductive set exists. Such a set contains $\emptyset$, $\operatorname{succ}(\emptyset)$, $\operatorname{succ}(\operatorname{succ}(\emptyset))$, and so on; each of these is an element of all later ones, and no set is an element of itself (Regularity, below), so no two of them are equal, and an inductive set is infinite[^infinite-informal]. The other axioms cannot prove that any inductive set exists[^hereditarily-finite]. Every infinite object in this book, from the time index $k$ to the real line, rests on this axiom. The natural numbers are defined from it under Natural Numbers below.
 
-    [^infinite-informal]: Used informally here; *finite* and *infinite* are defined precisely in [Chapter 3](ch3_sets_for_probability.md).
+    [^infinite-informal]: Used informally here; *finite* and *infinite* are defined precisely in [Chapter 3](#ch3-sec-countable-and-uncountable-sets).
 
     [^hereditarily-finite]: The [hereditarily finite sets](https://en.wikipedia.org/wiki/Hereditarily_finite_set) satisfy all the other axioms but contain no inductive set, so Infinity cannot be derived from the others (provided they are consistent).
     """)
@@ -523,7 +523,7 @@ def _(mo):
 
     Such a set $C$ is called a *choice set* for $F$. Unlike the other set-building axioms, Choice does not determine its set: it asserts that a selection exists without giving a rule for making it, and a choice set is generally not unique, so Choice introduces no notation.
 
-    **Why it is needed.** Finitely many choices need no axiom: from "$A_1$ is nonempty" a proof may say "let $x_1 \in A_1$," and a proof can contain finitely many such steps. For infinitely many sets with no rule for picking an element, the other axioms are not enough: Choice can be neither proved nor disproved from them [@godel1938; @cohen1963]; see [Axiom of choice](https://en.wikipedia.org/wiki/Axiom_of_choice). Most of mathematics, including this book, accepts it. [Chapter 3](ch3_sets_for_probability.md) uses it to show that a countable union of countable sets is countable, and [Chapter 4](ch4_probability_spaces.md) uses it to construct the Vitali set, a set of numbers in $[0, 1)$ to which no probability can be assigned consistently. That example is why probabilities are assigned only to a chosen collection of *events* rather than to every subset of the outcomes. An equivalent form of Choice that uses functions appears under Functions below.
+    **Why it is needed.** Finitely many choices need no axiom: from "$A_1$ is nonempty" a proof may say "let $x_1 \in A_1$," and a proof can contain finitely many such steps. For infinitely many sets with no rule for picking an element, the other axioms are not enough: Choice can be neither proved nor disproved from them [@godel1938; @cohen1963]; see [Axiom of choice](https://en.wikipedia.org/wiki/Axiom_of_choice). Most of mathematics, including this book, accepts it. [Chapter 3](#ch3-thm-countable-unions-of-countable-sets) uses it to show that a countable union of countable sets is countable, and [Chapter 4](#ch4-thm-vitali) uses it to construct the Vitali set, a set of numbers in $[0, 1)$ to which no probability can be assigned consistently. That example is why probabilities are assigned only to a chosen collection of *events* rather than to every subset of the outcomes. An equivalent form of Choice that uses functions appears under Functions below.
     """)
     return
 
@@ -616,7 +616,7 @@ def _(mo):
 
     $$\{(x, y) \in X \times Y : \varphi(x, y)\} := \big\{p \in X \times Y : \exists x\,\exists y\,\big(p = (x, y) \land \varphi(x, y)\big)\big\}.$$
 
-    For example, on $A := \{\emptyset, \{\emptyset\}\}$ the membership relation $\{(x, y) \in A \times A : x \in y\}$ equals $\{(\emptyset, \{\emptyset\})\}$. The order $<$ on the natural numbers below is a relation, and so are the equivalence relations of [Appendix B](appendix_b_number_systems.md).
+    For example, on $A := \{\emptyset, \{\emptyset\}\}$ the membership relation $\{(x, y) \in A \times A : x \in y\}$ equals $\{(\emptyset, \{\emptyset\})\}$. The order $<$ on the natural numbers below is a relation, and so are the equivalence relations of [Appendix B](#appb-sec-equivalence-relations-and-quotients).
 
     Every relation has a set of first coordinates and a set of second coordinates. To build them with Separation we need a set that contains every coordinate.
 
@@ -677,7 +677,7 @@ def _(mo):
 
     For instance, the function $f = \{(a, c), (b, c)\}$ above satisfies both $f : \{a, b\} \to \{c\}$ and $f : \{a, b\} \to \{a, b, c\}$; a codomain is always stated alongside the function. A {term}`signal` is a function whose domain is a set of times. For example, the scale readings of the Introduction form a function from the set of sample indices to the real numbers[^reals-informal].
 
-    [^reals-informal]: Used informally here; the real numbers are constructed in [Appendix B](appendix_b_number_systems.md) and characterized in [Chapter 3](ch3_sets_for_probability.md).
+    [^reals-informal]: Used informally here; the real numbers are constructed in [Appendix B](#appb-sec-the-real-numbers) and characterized in [Chapter 3](#ch3-sec-the-real-numbers).
 
     /// admonition | 📐 **Lemma (Equality of Functions)**
         attrs: {class: lemma, id: ch2-lem-equality-of-functions}
@@ -915,9 +915,9 @@ def _(mo):
     (4) Suppose $\operatorname{succ}(m) = \operatorname{succ}(n)$ but $m \neq n$. Since $m \in \operatorname{succ}(m) = \operatorname{succ}(n) = n \cup \{n\}$ and $m \neq n$, we get $m \in n$. The same argument with $m$ and $n$ exchanged gives $n \in m$. Now $n$ is transitive (Transitivity Lemma), so $m \in n$ gives $m \subseteq n$, and then $n \in m$ gives $n \in n$. This contradicts the theorem that no set is an element of itself. $\blacksquare$
     ///
 
-    Property 4 says that different natural numbers have different successors; in the language of [Chapter 3](ch3_sets_for_probability.md), the function $(n \mapsto \operatorname{succ}(n)) : \mathbb N \to \mathbb N$ is *injective*[^injective-informal].
+    Property 4 says that different natural numbers have different successors; in the language of [Chapter 3](#ch3-sec-injections-surjections-and-bijections), the function $(n \mapsto \operatorname{succ}(n)) : \mathbb N \to \mathbb N$ is *injective*[^injective-informal].
 
-    [^injective-informal]: Used informally here; injective functions are defined in [Chapter 3](ch3_sets_for_probability.md).
+    [^injective-informal]: Used informally here; injective functions are defined in [Chapter 3](#ch3-sec-injections-surjections-and-bijections).
     """)
     return
 
@@ -991,7 +991,7 @@ def _(mo):
 
     Below, the scale readings of the Introduction (true weight 155 lb, readings scattered by about 1 lb) are filtered by the rule $G(k, x) = x + \alpha_k\,(z_k - x)$ with two choices of gain: $\alpha_k = 1/k$ (the cumulative average) and the constant $\alpha_k = 0.2$ for $k \ge 2$ of an {term}`exponential moving average` (EMA). In both cases $\alpha_1 = 1$, which makes $\hat x_1 = z_1$ whatever the initial value $\hat x_0$ (first-measurement initialization). The code evaluates $\hat x_1, \hat x_2, \ldots$ in order, which computes exactly the function the theorem guarantees.
 
-    [^measurements-fixed]: Treating the measurements as given makes $G$ a fixed function. In [Chapter 5](ch5_random_variables.md) the measurements become random variables, and the recursion is applied to each possible sequence of measurements.
+    [^measurements-fixed]: Treating the measurements as given makes $G$ a fixed function. In [Chapter 5](#ch5-sec-the-measurement-noise-model) the measurements become random variables, and the recursion is applied to each possible sequence of measurements.
     """)
     return
 
@@ -1065,7 +1065,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The update must be defined for every value it can receive.** The theorem requires $g : A \to A$ (or $g : \mathbb N \times A \to A$): defined on all of $A$, with values in $A$. If a rule is undefined for some value the recursion can reach, the recursion stops there. For example, an update containing $1/(\hat x_{k-1} - c)$ is undefined as soon as some estimate equals $c$.
     - **The rule may use only the previous value and the step index.** Rules that refer to later values need not define anything, as the constant-function example above shows. Rules that use several earlier values, such as $h(n+2) = g(h(n), h(n+1))$, reduce to the theorem by recursing on pairs $(h(n), h(n+1))$, just as the Introduction's alpha-beta filter carries the pair (estimate, rate) from step to step.
-    - **The theorem is about exact values.** A computer evaluates $h(1), h(2), \ldots$ in finite-precision arithmetic, so the computed values can drift from the exact ones over many steps. [Chapter 14](ch14_kalman_filters_in_practice.md) discusses this for the Kalman filter.
+    - **The theorem is about exact values.** A computer evaluates $h(1), h(2), \ldots$ in finite-precision arithmetic, so the computed values can drift from the exact ones over many steps. [Chapter 14](#ch14-sec-numerical-stability) discusses this for the Kalman filter.
     ///
     """)
     return
@@ -1099,7 +1099,7 @@ def _(mo):
 
     $$n = \{m \in \mathbb N : m < n\}.$$
 
-    So $n = \{0, 1, \ldots, n - 1\}$: each natural number is the set of the natural numbers before it, as the explorer above showed. For a filter, the number $k$ is literally the set of time steps before step $k$. [Chapter 3](ch3_sets_for_probability.md) uses these sets to define what it means for a set to be finite.
+    So $n = \{0, 1, \ldots, n - 1\}$: each natural number is the set of the natural numbers before it, as the explorer above showed. For a filter, the number $k$ is literally the set of time steps before step $k$. [Chapter 3](#ch3-sec-countable-and-uncountable-sets) uses these sets to define what it means for a set to be finite.
 
     /// admonition | 📐 **Theorem (Arithmetic and Order on $\mathbb N$)**
         attrs: {class: theorem, id: ch2-thm-arithmetic-and-order-on-n}

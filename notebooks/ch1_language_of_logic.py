@@ -60,7 +60,7 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the notation $z_k$, $\hat x_k$, $\hat x_k^-$ and the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
+    - [Introduction](introduction.md): [the notation](#intro-sec-measurements-and-definitions) $z_k$, $\hat x_k$, $\hat x_k^-$ and [the update](#intro-sec-exponential-moving-average) $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
     - [Appendix A: Formal Logic](appendix_a_formal_logic.md) (optional; the formal grammar, semantics, and deductive system behind this chapter).
     ///
     """)
@@ -104,7 +104,7 @@ def _(mo):
 
     Whether a statement is true or false is its *truth value*, written $\text{T}$ or $\text{F}$. We do not need to know the truth value for a sentence to be a statement: "the $10^{100}$-th decimal digit of $\pi$ is $7$" is a statement, though nobody knows which truth value it has. We use the letters $P$, $Q$, $R$ (called *statement letters*) to stand for arbitrary statements.
 
-    [^informal-numbers]: Numbers, arithmetic, and inequalities are used informally in this chapter's examples. [Chapter 2](ch2_axioms_of_set_theory.md) builds the natural numbers from sets, [Appendix B](appendix_b_number_systems.md) builds the integers, rationals, and reals, and [Chapter 3](ch3_sets_for_probability.md) lists the properties of the real numbers that we rely on.
+    [^informal-numbers]: Numbers, arithmetic, and inequalities are used informally in this chapter's examples. [Chapter 2](#ch2-sec-natural-numbers) builds the natural numbers from sets, [Appendix B](appendix_b_number_systems.md) builds the integers, rationals, and reals, and [Chapter 3](#ch3-sec-the-real-numbers) lists the properties of the real numbers that we rely on.
     """)
     return
 
@@ -543,7 +543,7 @@ def _(mo):
 
     The expression "$z > 150$" from the start of the chapter is not a statement, because $z$ has no fixed value. Once a value is supplied it becomes one: with $z = 155.3$ it is true, with $z = 149$ it is false.
 
-    A *variable* is a symbol, such as $x$, $z$, or $n$, that stands for an unspecified object. The objects a variable may stand for form the *domain of discourse*, which must be stated (or clear from context) before an expression involving variables has a meaning. (This is unrelated to the {term}`domain` of a function, defined in [Chapter 2](ch2_axioms_of_set_theory.md).)
+    A *variable* is a symbol, such as $x$, $z$, or $n$, that stands for an unspecified object. The objects a variable may stand for form the *domain of discourse*, which must be stated (or clear from context) before an expression involving variables has a meaning. (This is unrelated to the {term}`domain` of a function, defined in [Chapter 2](#ch2-sec-relations).)
 
     /// note | 📖 **Definition**
     <u>**Predicate**</u>
@@ -553,7 +553,7 @@ def _(mo):
 
     We name predicates by their variables: if $P(z)$ is "$z > 150$" with the real numbers as domain of discourse, then $P(155.3)$ is a true statement and $P(149)$ is a false one. A predicate may have several variables: $L(x, y)$, "$x \le y$", becomes a statement once both $x$ and $y$ are given values. A predicate with one variable is often called a *property*.
 
-    Connectives combine predicates just as they combine statements: $P(z) \land L(z, 160)$ is the predicate "$z > 150$ and $z \le 160$". In [Chapter 2](ch2_axioms_of_set_theory.md), set theory starts from a single undefined predicate, $x \in y$ ("$x$ is an element of $y$"). Every other predicate in this book is defined from it.
+    Connectives combine predicates just as they combine statements: $P(z) \land L(z, 160)$ is the predicate "$z > 150$ and $z \le 160$". In [Chapter 2](#ch2-sec-sets-and-membership), set theory starts from a single undefined predicate, $x \in y$ ("$x$ is an element of $y$"). Every other predicate in this book is defined from it.
     """)
     return
 
@@ -620,7 +620,7 @@ def _(mo):
 
     $$\forallin{x}{A} P(x) := \forall x\, (x \in A \rightarrow P(x)), \qquad \existsin{x}{A} P(x) := \exists x\, (x \in A \land P(x)),$$
 
-    read "for all $x$ in $A$, $P(x)$" and "there exists $x$ in $A$ such that $P(x)$". (The symbol $:=$ is explained in Definitions below.) The universal form uses $\rightarrow$ and the existential form uses $\land$, and swapping them gives the wrong meaning. $\forall x\,(x \in A \land P(x))$ would claim that *every* object is in $A$. $\exists x\,(x \in A \rightarrow P(x))$ is true as soon as any object lies outside $A$ (by vacuous truth), whatever $P$ is. Bounds written with an inequality work the same way: $\forall \varepsilon > 0\; P(\varepsilon)$ abbreviates $\forall \varepsilon\,(\varepsilon > 0 \rightarrow P(\varepsilon))$, and $\exists k \ge K\; P(k)$ abbreviates $\exists k\,(k \ge K \land P(k))$. Once {term}`subsets <subset>` are defined in [Chapter 2](ch2_axioms_of_set_theory.md), $\forallsubseteq{x}{A} P(x)$ and $\existssubseteq{x}{A} P(x)$ abbreviate $\forall x\,(x \subseteq A \rightarrow P(x))$ and $\exists x\,(x \subseteq A \land P(x))$.
+    read "for all $x$ in $A$, $P(x)$" and "there exists $x$ in $A$ such that $P(x)$". (The symbol $:=$ is explained in Definitions below.) The universal form uses $\rightarrow$ and the existential form uses $\land$, and swapping them gives the wrong meaning. $\forall x\,(x \in A \land P(x))$ would claim that *every* object is in $A$. $\exists x\,(x \in A \rightarrow P(x))$ is true as soon as any object lies outside $A$ (by vacuous truth), whatever $P$ is. Bounds written with an inequality work the same way: $\forall \varepsilon > 0\; P(\varepsilon)$ abbreviates $\forall \varepsilon\,(\varepsilon > 0 \rightarrow P(\varepsilon))$, and $\exists k \ge K\; P(k)$ abbreviates $\exists k\,(k \ge K \land P(k))$. Once {term}`subsets <subset>` are defined in [Chapter 2](#ch2-sec-sets-and-membership), $\forallsubseteq{x}{A} P(x)$ and $\existssubseteq{x}{A} P(x)$ abbreviate $\forall x\,(x \subseteq A \rightarrow P(x))$ and $\exists x\,(x \subseteq A \land P(x))$.
 
     If $A$ has no elements, then $\forallin{x}{A} P(x)$ is true (vacuously, since every hypothesis $x \in A$ is false) and $\existsin{x}{A} P(x)$ is false, whatever $P$ is.
 
@@ -630,7 +630,7 @@ def _(mo):
 
     For the first, $\lnot \forall x\,(x \in A \rightarrow P(x)) \equiv \exists x\, \lnot(x \in A \rightarrow P(x)) \equiv \exists x\,(x \in A \land \lnot P(x))$, by the quantifier rule and then the negated conditional (law 3). For the second, $\lnot \exists x\,(x \in A \land P(x)) \equiv \forall x\, \lnot(x \in A \land P(x)) \equiv \forall x\,(\lnot\, x \in A \lor \lnot P(x)) \equiv \forall x\,(x \in A \rightarrow \lnot P(x))$, by the quantifier rule, De Morgan's law, and the conditional as a disjunction (law 3). Each step replaces the predicate inside the quantifier by one with the same truth value for every $x$, which leaves the quantified statement's truth value unchanged.
 
-    [^informal-sets]: Used informally here: a set is a collection of objects, and $x \in A$ means $x$ is an element of $A$. [Chapter 2](ch2_axioms_of_set_theory.md) takes "set" and "$\in$" as undefined notions governed by axioms.
+    [^informal-sets]: Used informally here: a set is a collection of objects, and $x \in A$ means $x$ is an element of $A$. [Chapter 2](#ch2-sec-sets-and-membership) takes "set" and "$\in$" as undefined notions governed by axioms.
     """)
     return
 
@@ -668,7 +668,7 @@ def _(mo):
 
     $$\exists! x\, P(x) := \exists x\, \big(P(x) \land \forall y\, (P(y) \rightarrow y = x)\big),$$
 
-    where $y$ is a variable that does not occur in $P(x)$, and $y = x$ means $y$ and $x$ are the same object. It combines *existence* (some $x$ has the property) and *uniqueness* (any $y$ with the property is that $x$), and a proof of $\exists!$ must establish both. Over the natural numbers, $\exists! n\,(n + 2 = 5)$ is true, while $\exists! n\,(n \cdot n = n)$ is false because both $0$ and $1$ satisfy it. [Chapter 2](ch2_axioms_of_set_theory.md) uses unique existence to justify giving sets names such as $\emptyset$.
+    where $y$ is a variable that does not occur in $P(x)$, and $y = x$ means $y$ and $x$ are the same object. It combines *existence* (some $x$ has the property) and *uniqueness* (any $y$ with the property is that $x$), and a proof of $\exists!$ must establish both. Over the natural numbers, $\exists! n\,(n + 2 = 5)$ is true, while $\exists! n\,(n \cdot n = n)$ is false because both $0$ and $1$ satisfy it. [Chapter 2](#ch2-lem-uniqueness) uses unique existence to justify giving sets names such as $\emptyset$.
     """)
     return
 
@@ -686,7 +686,7 @@ def _(mo):
 
     Both $:=$ and $:\Longleftrightarrow$ belong to the metalanguage. The symbols $=$ and $\leftrightarrow$ appear *inside* statements and make claims; $:=$ and $:\Longleftrightarrow$ are announcements about notation and make no claim at all. A definition of a property is a biconditional, so it gives a condition that is necessary and sufficient for the property, exactly the test a {term}`definition` must pass. (Many texts write "if" in definitions where "iff" is meant; this book always means "iff".)
 
-    Naming an object with $:=$ requires that the right side names exactly one object. When an object is *described* by a property ("the set with no elements"), the $\exists!$ statement must be proved before the name may be used; [Chapter 2](ch2_axioms_of_set_theory.md) does exactly this. Because every defined symbol can be replaced by its definition, definitions add convenience but no new assumptions. [Appendix A: Extension by Definitions](#appa-sec-extension-by-definitions) proves this.
+    Naming an object with $:=$ requires that the right side names exactly one object. When an object is *described* by a property ("the set with no elements"), the $\exists!$ statement must be proved before the name may be used; [Chapter 2](#ch2-sec-2-empty-set) does exactly this. Because every defined symbol can be replaced by its definition, definitions add convenience but no new assumptions. [Appendix A: Extension by Definitions](#appa-sec-extension-by-definitions) proves this.
     """)
     return
 
@@ -705,7 +705,9 @@ def _(mo):
     A {term}`statement` assumed without proof as one of the starting points of a mathematical theory, where a *theory* is the subject determined by a chosen list of axioms.
     ///
 
-    For example, set theory (ZFC) is determined by the axioms in [Chapter 2](ch2_axioms_of_set_theory.md), and the theory of complete ordered fields by the axioms in [Chapter 3](ch3_sets_for_probability.md). An axiom is not claimed to be "self-evident", only assumed. Whether it is actually true depends on what objects we interpret it to be about. For instance, the axioms of a complete ordered field are all true of the real numbers, but not all true of the rational numbers. A theorem of the theory is then guaranteed to be true of any objects of which all the axioms are true. [Appendix A: Theories and Logical Consequence](#appa-sec-theories-and-logical-consequence) makes this precise.
+    For example, set theory (ZFC) is determined by the axioms[^axioms-are-sentences] in [Chapter 2](#ch2-sec-the-axioms-of-zfc), and the theory of complete ordered fields by the axioms in [Chapter 3](#ch3-sec-the-real-numbers). An axiom is not claimed to be "self-evident", only assumed. Whether it is actually true depends on what objects we interpret it to be about. For instance, the axioms of a complete ordered field are all true of the real numbers, but not all true of the rational numbers. A theorem of the theory is then guaranteed to be true of any objects of which all the axioms are true. [Appendix A: Theories and Logical Consequence](#appa-sec-theories-and-logical-consequence) makes this precise.
+
+    [^axioms-are-sentences]: Because an axiom is a statement, it is true or false, so every variable in it is bound by a quantifier; an expression with a free variable, such as "$x \in y$", is a {term}`predicate` and cannot be an axiom. In formal logic, a formula with no free variables is called a *sentence* ([Appendix A: Sentences](#appa-sec-sentences)).
     """)
     return
 
@@ -784,7 +786,7 @@ def _(mo):
     <!-- label: ch1-sec-proof-techniques -->
     ## Proof Techniques
 
-    Each technique below is a pattern of the rules of inference, justified by a tautology. The examples use the integers and real numbers informally, together with the definitions of even and odd from Definitions above. The last technique in common use, proof by induction, needs the natural numbers and appears in [Chapter 2](ch2_axioms_of_set_theory.md).
+    Each technique below is a pattern of the rules of inference, justified by a tautology. The examples use the integers and real numbers informally, together with the definitions of even and odd from Definitions above. The last technique in common use, proof by induction, needs the natural numbers and appears in [Chapter 2](#ch2-sec-induction).
 
     <!-- label: ch1-sec-direct-proof -->
     ### Direct Proof
@@ -932,7 +934,7 @@ def _(mo):
     <!-- label: ch1-sec-a-filtering-proof -->
     ## A Filtering Proof
 
-    The [Introduction](introduction.md) claimed that the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ always chooses a value between the previous estimate $\hat x_{k-1}$ and the new measurement $z_k$. We can now state this precisely and prove it. For real numbers $a$ and $b$, let $\min(a, b)$ be $a$ if $a \le b$ and $b$ otherwise, and let $\max(a, b)$ be $b$ if $a \le b$ and $a$ otherwise. "$u$ lies between $a$ and $b$" means $\min(a, b) \le u \le \max(a, b)$.
+    The [Introduction](#intro-sec-exponential-moving-average) claimed that the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ always chooses a value between the previous estimate $\hat x_{k-1}$ and the new measurement $z_k$. We can now state this precisely and prove it. For real numbers $a$ and $b$, let $\min(a, b)$ be $a$ if $a \le b$ and $b$ otherwise, and let $\max(a, b)$ be $b$ if $a \le b$ and $a$ otherwise. "$u$ lies between $a$ and $b$" means $\min(a, b) \le u \le \max(a, b)$.
 
     /// admonition | 📐 **Theorem (The Update Lies Between)**
         attrs: {class: theorem, id: ch1-thm-the-update-lies-between}

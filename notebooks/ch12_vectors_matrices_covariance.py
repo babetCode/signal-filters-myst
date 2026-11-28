@@ -60,14 +60,14 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 4](ch4_probability_spaces.md): almost surely, and continuity of probability from below (one lemma only).
-    - [Chapter 5](ch5_random_variables.md): random variables, joint and marginal densities, independence as factorization of the joint density, and the normal distribution.
-    - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, variance, covariance, the correlation coefficient, and Chebyshev's inequality.
-    - [Chapter 7](ch7_optimal_alpha.md) and [Chapter 11](ch11_measurement_functions.md): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and the tare-offset example.
-    - [Chapter 8](ch8_bayesian_view.md): conditional densities and the minimum mean squared error estimator.
-    - [Chapter 9](ch9_noise_levels.md): the chi-squared distribution and the normalized innovation squared.
-    - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): iterated integrals, the change-of-variables formula, and polar coordinates.
-    - [Appendix D: Linear Algebra](appendix_d_linear_algebra.md): the sections listed in the toolkit below.
+    - [Chapter 4](ch4_probability_spaces.md): [almost surely](#ch4-sec-almost-surely), and [continuity of probability from below](#ch4-thm-continuity-from-below) (one lemma only).
+    - [Chapter 5](ch5_random_variables.md): [random variables](#ch5-sec-definition), [joint and marginal densities](#ch5-sec-joint-distributions), [independence as factorization of the joint density](#ch5-thm-factorization-criteria), and [the normal distribution](#ch5-sec-the-uniform-and-normal-distributions).
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), [variance](#ch6-sec-variance-and-standard-deviation), [covariance](#ch6-sec-covariance-and-correlation), [the correlation coefficient](#ch6-sec-covariance-and-correlation), and [Chebyshev's inequality](#ch6-thm-chebyshevs-inequality).
+    - [Chapter 7](ch7_optimal_alpha.md) and [Chapter 11](ch11_measurement_functions.md): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
+    - [Chapter 8](ch8_bayesian_view.md): [conditional densities](#ch8-sec-conditional-densities) and [the minimum mean squared error estimator](#ch8-thm-the-posterior-mean-is-the-mmse-estimator).
+    - [Chapter 9](ch9_noise_levels.md): [the chi-squared distribution](#ch9-sec-checking-the-noise-levels) and [the normalized innovation squared](#ch9-sec-checking-the-noise-levels).
+    - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): [iterated integrals](#appc-thm-tonelli-and-fubini), [the change-of-variables formula](#appc-thm-change-of-variables), and [polar coordinates](#appc-cor-polar-coordinates).
+    - [Appendix D: Linear Algebra](appendix_d_linear_algebra.md): the sections listed in [the toolkit below](#ch12-sec-notation-and-linear-algebra-toolkit).
     ///
     """)
     return
@@ -138,7 +138,7 @@ def _(mo):
     A list $\mathbf x = [x_1, \ldots, x_n]^\top$ of {term}`random variables <random variable>` defined on the same probability space. Equivalently, a function $\mathbf x: \Omega \to \mathbb R^n$ each of whose components is a random variable.
     ///
 
-    The *distribution* of a random vector is the {term}`joint distribution` of its components ([Chapter 5](ch5_random_variables.md)). When it has a {term}`joint density` $f_{\mathbf x}: \mathbb R^n \to [0, \infty)$, probabilities are integrals over regions of $\mathbb R^n$: $\mathbb P(\mathbf x \in B) = \int_B f_{\mathbf x}(\mathbf x)\,d\mathbf x$. As in the scalar case, we use the same letter for a random vector and for a point where its density is evaluated when no confusion can arise.
+    The *distribution* of a random vector is the {term}`joint distribution` of its components ([Chapter 5](#ch5-sec-joint-distributions)). When it has a {term}`joint density` $f_{\mathbf x}: \mathbb R^n \to [0, \infty)$, probabilities are integrals over regions of $\mathbb R^n$: $\mathbb P(\mathbf x \in B) = \int_B f_{\mathbf x}(\mathbf x)\,d\mathbf x$. As in the scalar case, we use the same letter for a random vector and for a point where its density is evaluated when no confusion can arise.
 
     The expected value of a vector or matrix whose entries are random variables is taken entry by entry.
 
@@ -158,7 +158,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Entry $(i, j)$ of $\mathbf A\mathbf X\mathbf B + \mathbf C$ is $\sum_{k=1}^m\sum_{l=1}^n A_{ik}X_{kl}B_{lj} + C_{ij}$, a linear combination of entries of $\mathbf X$ plus a constant. By linearity of expectation ([Chapter 6](ch6_expectation_and_variance.md)) its expected value is $\sum_{k,l} A_{ik}\,\mathbb E[X_{kl}]\,B_{lj} + C_{ij}$, which is entry $(i, j)$ of $\mathbf A\,\mathbb E[\mathbf X]\,\mathbf B + \mathbf C$. Transposition only relabels entries. $\blacksquare$
+    Entry $(i, j)$ of $\mathbf A\mathbf X\mathbf B + \mathbf C$ is $\sum_{k=1}^m\sum_{l=1}^n A_{ik}X_{kl}B_{lj} + C_{ij}$, a linear combination of entries of $\mathbf X$ plus a constant. By linearity of expectation ([Chapter 6](#ch6-thm-linearity-and-positivity-of-expectation)) its expected value is $\sum_{k,l} A_{ik}\,\mathbb E[X_{kl}]\,B_{lj} + C_{ij}$, which is entry $(i, j)$ of $\mathbf A\,\mathbb E[\mathbf X]\,\mathbf B + \mathbf C$. Transposition only relabels entries. $\blacksquare$
     ///
     """)
     return
@@ -205,7 +205,7 @@ def _(mo):
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
     ($\Leftarrow$) If $y = \mathbb E[y]$ almost surely, then $(y - \mathbb E[y])^2$ has the same distribution as the constant $0$, so its expected value, $\operatorname{Var}(y)$, is $0$.
-    ($\Rightarrow$) By Chebyshev's inequality ([Chapter 6](ch6_expectation_and_variance.md)), the events $A_j := \{|y - \mathbb E[y]| \ge 1/j\}$ have $\mathbb P(A_j) \le j^2\operatorname{Var}(y) = 0$ for every $j \in \mathbb N^+$. They increase with $j$, and their union is $\{y \neq \mathbb E[y]\}$, so by continuity from below ([Chapter 4](ch4_probability_spaces.md)) $\mathbb P(y \neq \mathbb E[y]) = \lim_{j\to\infty}\mathbb P(A_j) = 0$. $\blacksquare$
+    ($\Rightarrow$) By Chebyshev's inequality ([Chapter 6](#ch6-thm-chebyshevs-inequality)), the events $A_j := \{|y - \mathbb E[y]| \ge 1/j\}$ have $\mathbb P(A_j) \le j^2\operatorname{Var}(y) = 0$ for every $j \in \mathbb N^+$. They increase with $j$, and their union is $\{y \neq \mathbb E[y]\}$, so by continuity from below ([Chapter 4](#ch4-thm-continuity-from-below)) $\mathbb P(y \neq \mathbb E[y]) = \lim_{j\to\infty}\mathbb P(A_j) = 0$. $\blacksquare$
     ///
 
     /// admonition | 📐 **Theorem (When a Covariance Matrix Is Positive Definite)**
@@ -284,7 +284,7 @@ def _(mo):
     1. The first is the definition; for the second, transpose the matrix inside the expectation, using $(\mathbf u\mathbf v^\top)^\top = \mathbf v\mathbf u^\top$.
     2. The centered vectors are $\mathbf A(\mathbf x - \boldsymbol\mu_x)$ and $\mathbf B(\mathbf y - \boldsymbol\mu_y)$; pull $\mathbf A$ and $\mathbf B^\top$ out of the expectation with the linearity lemma.
     3. Expand $\mathbb E\big[(\mathbf u + \mathbf v)(\mathbf u + \mathbf v)^\top\big]$ for the centered vectors $\mathbf u = \mathbf x - \boldsymbol\mu_x$, $\mathbf v = \mathbf y - \boldsymbol\mu_y$ into four terms and use linearity.
-    4. Each entry $\operatorname{Cov}(x_i, y_j)$ is $0$, because independent random variables are uncorrelated ([Chapter 6](ch6_expectation_and_variance.md)).
+    4. Each entry $\operatorname{Cov}(x_i, y_j)$ is $0$, because independent random variables are uncorrelated ([Chapter 6](#ch6-thm-independent-implies-uncorrelated)).
     5. Compare entries block by block with the definitions. $\blacksquare$
     ///
     """)
@@ -297,7 +297,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Finite variances.** Covariance matrices exist only when every component has a finite variance. Some heavy-tailed noise models (the Cauchy distribution, for example) have none, and then nothing in this chapter applies.
     - **Positive semidefinite, not always definite.** A covariance matrix is singular exactly when some combination of the components is constant. In a filter this happens when a quantity is known exactly (for example, a state with zero initial uncertainty that never receives process noise); formulas that invert such a matrix then fail.
-    - **Numerically computed covariances** can lose symmetry or positive semidefiniteness through rounding. A covariance estimated from fewer samples than its dimension is always singular. Chapter 13 and [Chapter 14](ch14_kalman_filters_in_practice.md) discuss remedies.
+    - **Numerically computed covariances** can lose symmetry or positive semidefiniteness through rounding. A covariance estimated from fewer samples than its dimension is always singular. Chapter 13 and [Chapter 14](#ch14-sec-numerical-stability) discuss remedies.
     ///
     """)
     return
@@ -309,7 +309,7 @@ def _(mo):
     <!-- label: ch12-sec-the-multivariate-normal-distribution -->
     ## The Multivariate Normal Distribution
 
-    Chapter 5's normal density has the variance in the denominator of the exponent. The multivariate version puts the inverse covariance matrix there. We first build the simplest example from scalar normals. Let $y_1, \ldots, y_n$ be independent standard normal random variables and $\mathbf y := [y_1, \ldots, y_n]^\top$. By independence ([Chapter 5](ch5_random_variables.md)), the joint density is the product of the marginal densities:
+    Chapter 5's normal density has the variance in the denominator of the exponent. The multivariate version puts the inverse covariance matrix there. We first build the simplest example from scalar normals. Let $y_1, \ldots, y_n$ be independent standard normal random variables and $\mathbf y := [y_1, \ldots, y_n]^\top$. By independence ([Chapter 5](#ch5-thm-factorization-criteria)), the joint density is the product of the marginal densities:
     $$f_{\mathbf y}(\mathbf y) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi}}e^{-y_i^2/2} = (2\pi)^{-n/2}\exp\Big(-\tfrac12\,\mathbf y^\top\mathbf y\Big).$$
     Its mean is $\mathbf 0$ and its covariance is $\mathbf I$ (unit variances, and independent components are uncorrelated). This is the case $\boldsymbol\mu = \mathbf 0$, $\boldsymbol\Sigma = \mathbf I$ of the following definition.
 
@@ -355,7 +355,7 @@ def _(mo):
     1. $\mathbf L$ is invertible (lemma above), so by the previous theorem $\mathbf x$ has density
     $$f_{\mathbf x}(\mathbf x) = \frac{(2\pi)^{-n/2}}{|\det\mathbf L|}\exp\Big(-\tfrac12\big(\mathbf L^{-1}(\mathbf x - \boldsymbol\mu)\big)^\top\big(\mathbf L^{-1}(\mathbf x - \boldsymbol\mu)\big)\Big).$$
     The exponent is $-\tfrac12(\mathbf x - \boldsymbol\mu)^\top(\mathbf L^{-1})^\top\mathbf L^{-1}(\mathbf x - \boldsymbol\mu) = -\tfrac12(\mathbf x - \boldsymbol\mu)^\top(\mathbf L\mathbf L^\top)^{-1}(\mathbf x - \boldsymbol\mu)$, and $|\det\mathbf L| = (\det\boldsymbol\Sigma)^{1/2}$ because $\det\boldsymbol\Sigma = (\det\mathbf L)^2$. So $f_{\mathbf x}$ is exactly the density in the definition. Being the density of a random vector, it integrates to $1$.
-    2. For $\mathbf x$ from part 1, the affine-transformation theorem gives mean $\mathbf L\mathbf 0 + \boldsymbol\mu = \boldsymbol\mu$ and covariance $\mathbf L\mathbf I\mathbf L^\top = \boldsymbol\Sigma$. Means and covariances are computed from the density alone ([Chapter 6](ch6_expectation_and_variance.md)), so every random vector with this density has the same mean and covariance. $\blacksquare$
+    2. For $\mathbf x$ from part 1, the affine-transformation theorem gives mean $\mathbf L\mathbf 0 + \boldsymbol\mu = \boldsymbol\mu$ and covariance $\mathbf L\mathbf I\mathbf L^\top = \boldsymbol\Sigma$. Means and covariances are computed from the density alone ([Chapter 6](#ch6-thm-lotus)), so every random vector with this density has the same mean and covariance. $\blacksquare$
     ///
 
     Part 1 is also how simulations draw samples from $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$: draw independent standard normals and compute $\mathbf L\mathbf y + \boldsymbol\mu$ with `np.linalg.cholesky`. The next lemma lets us recognize a multivariate normal density from the shape of its exponent alone, without computing determinants.
@@ -426,10 +426,10 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the invertible-affine-map theorem, $\mathbf y := \mathbf L^{-1}(\mathbf x - \boldsymbol\mu) \sim \mathcal N\big(\mathbf 0, \mathbf L^{-1}\boldsymbol\Sigma(\mathbf L^{-1})^\top\big) = \mathcal N(\mathbf 0, \mathbf I)$. The $\mathcal N(\mathbf 0, \mathbf I)$ density is the product of $n$ standard normal densities, so $y_1, \ldots, y_n$ are independent standard normal random variables ([Chapter 5](ch5_random_variables.md)). And $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)^2 = (\mathbf x - \boldsymbol\mu)^\top(\mathbf L^{-1})^\top\mathbf L^{-1}(\mathbf x - \boldsymbol\mu) = \mathbf y^\top\mathbf y = \sum_{i=1}^n y_i^2$. $\blacksquare$
+    By the invertible-affine-map theorem, $\mathbf y := \mathbf L^{-1}(\mathbf x - \boldsymbol\mu) \sim \mathcal N\big(\mathbf 0, \mathbf L^{-1}\boldsymbol\Sigma(\mathbf L^{-1})^\top\big) = \mathcal N(\mathbf 0, \mathbf I)$. The $\mathcal N(\mathbf 0, \mathbf I)$ density is the product of $n$ standard normal densities, so $y_1, \ldots, y_n$ are independent standard normal random variables ([Chapter 5](#ch5-thm-factorization-criteria)). And $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)^2 = (\mathbf x - \boldsymbol\mu)^\top(\mathbf L^{-1})^\top\mathbf L^{-1}(\mathbf x - \boldsymbol\mu) = \mathbf y^\top\mathbf y = \sum_{i=1}^n y_i^2$. $\blacksquare$
     ///
 
-    For $n = 1$ this is [Chapter 9](ch9_noise_levels.md)'s normalized innovation squared, $\tilde y_k^2/S_k$. In two dimensions the distribution has a simple closed form.
+    For $n = 1$ this is [Chapter 9](#ch9-sec-checking-the-noise-levels)'s normalized innovation squared, $\tilde y_k^2/S_k$. In two dimensions the distribution has a simple closed form.
 
     /// admonition | 📐 **Theorem (Two Dimensions)**
         attrs: {class: theorem, id: ch12-thm-two-dimensions}
@@ -580,7 +580,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Normality.** The probability $1 - e^{-r^2/2}$ and the chi-squared law hold for normal vectors. For other distributions with the same covariance, the ellipse still has the same shape, but the probability inside it can be quite different (heavy tails put more mass outside).
     - **The dimension matters.** In $n$ dimensions the radius for probability $p$ is the square root of the chi-squared quantile with $n$ degrees of freedom, which grows with $n$. Using the two-dimensional radius for a higher-dimensional state undercovers.
-    - **Estimated covariances.** An ellipse drawn from a covariance matrix that was itself estimated, or computed by a mis-tuned filter, inherits those errors. Checking whether true errors actually fall inside the filter's ellipses at the advertised rate is the consistency test of [Chapter 14](ch14_kalman_filters_in_practice.md).
+    - **Estimated covariances.** An ellipse drawn from a covariance matrix that was itself estimated, or computed by a mis-tuned filter, inherits those errors. Checking whether true errors actually fall inside the filter's ellipses at the advertised rate is the consistency test of [Chapter 14](#ch14-sec-consistency-tests).
     ///
     """)
     return
@@ -640,7 +640,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    The marginal density of $\mathbf z$ is $f_{\mathbf z}(\mathbf z) = \int_{\mathbb R^n} f(\mathbf x, \mathbf z)\,d\mathbf x$ ([Chapter 5](ch5_random_variables.md), with $n$ variables integrated out). In $(\ast)$, for fixed $\mathbf z$ the last factor is $1/\kappa_{x\mid z}$ times the $\mathcal N(\mathbf m(\mathbf z), \boldsymbol\Sigma_{x\mid z})$ density in $\mathbf x$, so its integral over $\mathbf x$ is $1/\kappa_{x\mid z}$, whatever $\mathbf z$ is. Hence
+    The marginal density of $\mathbf z$ is $f_{\mathbf z}(\mathbf z) = \int_{\mathbb R^n} f(\mathbf x, \mathbf z)\,d\mathbf x$ ([Chapter 5](#ch5-thm-the-marginal-density-is-a-density), with $n$ variables integrated out). In $(\ast)$, for fixed $\mathbf z$ the last factor is $1/\kappa_{x\mid z}$ times the $\mathcal N(\mathbf m(\mathbf z), \boldsymbol\Sigma_{x\mid z})$ density in $\mathbf x$, so its integral over $\mathbf x$ is $1/\kappa_{x\mid z}$, whatever $\mathbf z$ is. Hence
     $$f_{\mathbf z}(\mathbf z) = \frac{\kappa}{\kappa_{x\mid z}}\exp\Big(-\tfrac12(\mathbf z - \boldsymbol\mu_z)^\top\boldsymbol\Sigma_{zz}^{-1}(\mathbf z - \boldsymbol\mu_z)\Big),$$
     and the normalization lemma gives $\mathbf z \sim \mathcal N(\boldsymbol\mu_z, \boldsymbol\Sigma_{zz})$. For $\mathbf x$, note that $[\mathbf z; \mathbf x]$ is obtained from $[\mathbf x; \mathbf z]$ by an invertible linear map (a reordering of components), so it is normal with mean $[\boldsymbol\mu_z; \boldsymbol\mu_x]$ and the blocks of $\boldsymbol\Sigma$ rearranged accordingly; apply the first part with the roles exchanged. $\blacksquare$
     ///
@@ -663,7 +663,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Now the main result. The {term}`conditional density` of $\mathbf x$ given $\mathbf z = \mathbf z$ is $f(\mathbf x, \mathbf z)/f_{\mathbf z}(\mathbf z)$, exactly as in [Chapter 8](ch8_bayesian_view.md) but with joint densities of vectors.
+    Now the main result. The {term}`conditional density` of $\mathbf x$ given $\mathbf z = \mathbf z$ is $f(\mathbf x, \mathbf z)/f_{\mathbf z}(\mathbf z)$, exactly as in [Chapter 8](#ch8-sec-conditional-densities) but with joint densities of vectors.
 
     /// admonition | 📐 **Theorem (Conditioning a Joint Normal Distribution)**
         attrs: {class: theorem, id: ch12-thm-conditioning-a-joint-normal-distribution}
@@ -746,7 +746,7 @@ def _(mo):
     mo.md(r"""
     Here $\operatorname{Cov}(x, z) = \operatorname{Var}(x) = 4$ and $\operatorname{Var}(z) = 4 + 1 = 5$, so the reading $z = 157$ moves the mean by $\tfrac45 \cdot 2 = 1.6$ lb to $156.6$ lb and shrinks the variance from $4$ to $4 - \tfrac{16}{5} = 0.8$ lb$^2$. That is precisely Chapter 7's update with gain $4/5$.
 
-    The conditional mean also has a meaning that does not depend on normality: it is the best *linear* estimate for any distribution with these means and covariances. For jointly normal vectors it is moreover the conditional expectation $\mathbb E[\mathbf x \mid \mathbf z]$, which [Chapter 8](ch8_bayesian_view.md) showed is the best estimate of all.
+    The conditional mean also has a meaning that does not depend on normality: it is the best *linear* estimate for any distribution with these means and covariances. For jointly normal vectors it is moreover the conditional expectation $\mathbb E[\mathbf x \mid \mathbf z]$, which [Chapter 8](#ch8-thm-the-posterior-mean-is-the-mmse-estimator) showed is the best estimate of all.
 
     /// admonition | 📐 **Theorem (Best Linear Estimator)**
         attrs: {class: theorem, id: ch12-thm-best-linear-estimator}
@@ -772,7 +772,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Joint normality, not just normal components.** Let $x \sim \mathcal N(0, 1)$ and let $s = \pm 1$ with probability $\tfrac12$ each, independent of $x$. Then $z := s\,x$ is also $\mathcal N(0, 1)$ and $\operatorname{Cov}(x, z) = \mathbb E[s]\,\mathbb E[x^2] = 0$, yet $|z| = |x|$, so they are far from independent. By the corollary, $[x; z]$ cannot be jointly normal. The conditioning theorem needs the *joint* distribution to be normal.
-    - **Without normality** the formula still gives the best linear estimate, but it is no longer the conditional distribution. With outliers or multimodal errors the best nonlinear estimate can be much better ([Chapter 8](ch8_bayesian_view.md)), and the reported covariance $\boldsymbol\Sigma_{x\mid z}$ no longer describes the actual spread given the observed value.
+    - **Without normality** the formula still gives the best linear estimate, but it is no longer the conditional distribution. With outliers or multimodal errors the best nonlinear estimate can be much better ([Chapter 8](#ch8-sec-when-the-noise-is-not-normal)), and the reported covariance $\boldsymbol\Sigma_{x\mid z}$ no longer describes the actual spread given the observed value.
     - **The covariances must be right.** The update uses $\boldsymbol\Sigma_{xz}$ and $\boldsymbol\Sigma_{zz}$ as given. If they are wrong (a mis-tuned filter), the mean moves by the wrong amount and the reported covariance is wrong, even though the formula is applied perfectly.
     - **Numerics.** Computing $\boldsymbol\Sigma_{xx} - \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}$ by subtraction can lose symmetry or positive definiteness through rounding when the result is much smaller than $\boldsymbol\Sigma_{xx}$. Chapter 13's Joseph form is the standard remedy.
     ///
@@ -786,7 +786,7 @@ def _(mo):
     <!-- label: ch12-sec-the-kalman-update-in-disguise -->
     ## The Kalman Update in Disguise
 
-    Now apply the conditioning theorem to filtering. Before a measurement, the filter's knowledge of the state $\mathbf x \in \mathbb R^n$ is a prediction $\hat{\mathbf x}^-$ with error covariance $\mathbf P^-$; in the language of [Chapter 8](ch8_bayesian_view.md), the {term}`prior` is $\mathbf x \sim \mathcal N(\hat{\mathbf x}^-, \mathbf P^-)$, with $\mathbf P^-$ positive definite. The measurement is
+    Now apply the conditioning theorem to filtering. Before a measurement, the filter's knowledge of the state $\mathbf x \in \mathbb R^n$ is a prediction $\hat{\mathbf x}^-$ with error covariance $\mathbf P^-$; in the language of [Chapter 8](#ch8-sec-prior-likelihood-posterior-and-evidence), the {term}`prior` is $\mathbf x \sim \mathcal N(\hat{\mathbf x}^-, \mathbf P^-)$, with $\mathbf P^-$ positive definite. The measurement is
     $$\mathbf z = \mathbf H\mathbf x + \mathbf v, \qquad \mathbf v \sim \mathcal N(\mathbf 0, \mathbf R)\ \text{independent of}\ \mathbf x,$$
     with a known matrix $\mathbf H \in \mathbb R^{m\times n}$ (the vector version of Chapter 11's linear measurement function; Chapter 13 calls it the {term}`measurement matrix`) and $\mathbf R$ positive definite.
 
@@ -799,7 +799,7 @@ def _(mo):
     $$\boxed{\ \hat{\mathbf x} = \hat{\mathbf x}^- + \mathbf K\,(\mathbf z - \mathbf H\hat{\mathbf x}^-), \qquad \mathbf P = \mathbf P^- - \mathbf K\mathbf H\mathbf P^- = (\mathbf I - \mathbf K\mathbf H)\,\mathbf P^-, \qquad \mathbf K := \mathbf P^-\mathbf H^\top\mathbf S^{-1}.\ }$$
     This is the Kalman filter's update step for vectors: prediction plus gain times {term}`innovation`, with the innovation $\mathbf z - \mathbf H\hat{\mathbf x}^-$ having covariance $\mathbf S$ (it is $\boldsymbol\Sigma_{zz}$, the covariance of $\mathbf z$ around its predicted value). For one state and one measurement, $\mathbf H = h$, it reads $K = P^-h/(h^2P^- + R)$, Chapter 11's gain, and for $h = 1$ it is Chapter 7's $P^-/(P^- + R)$. The covariance update, a Schur complement, is $P = (1 - Kh)P^-$.
 
-    [Chapter 13](ch13_kalman_filter.md) derives the same gain without assuming normality, by minimizing the error variance over all gains, and adds the prediction step. The best-linear-estimator theorem above already tells us why the two derivations agree: the conditional mean of jointly normal vectors is the best linear update.
+    [Chapter 13](#ch13-sec-the-optimal-gain) derives the same gain without assuming normality, by minimizing the error variance over all gains, and adds the prediction step. The best-linear-estimator theorem above already tells us why the two derivations agree: the conditional mean of jointly normal vectors is the best linear update.
 
     **Example: weight and offset.** Return to Chapter 11's scale, with the offset converted to pounds using the calibrated sensitivity (so $c = 85{,}000/20{,}000 = 4.25$ lb nominally). The state is $\mathbf x = [x, c]^\top$ (weight, offset). Before anyone steps on, the filter believes $x \sim \mathcal N(150, 5^2)$ and, from the last tare, $c \sim \mathcal N(4.25, \sigma_c^2)$, independently, so $\mathbf P^- = \operatorname{diag}(25, \sigma_c^2)$. Actually, the person weighs 155 lb and the offset has drifted to $5.25$ lb. A 3-second standing measurement averages 30 readings, $z_1 = x + c + v_1$ with $\operatorname{Var}(v_1) = 1/30$ lb$^2$, so $\mathbf H = [1\ \ 1]$. An empty-platform measurement, also an average of 30 readings, is $z_0 = c + v_0$, with row $[0\ \ 1]$. Conditioning on both measurements at once uses the stacked $\mathbf H = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$ and $\mathbf R = \operatorname{diag}(1/30, 1/30)$.
     """)
@@ -885,7 +885,7 @@ def _(mo):
     mo.md(r"""
     The standing measurement pins down $x + c$ very precisely but leaves $x - c$ almost as uncertain as before: the ellipse becomes a thin diagonal sliver, and the weight and offset become strongly *negatively* correlated (if the offset is higher, the weight must be lower). How uncertain the weight remains depends entirely on how well we knew the offset: with $\sigma_c = 2$ lb the weight is still uncertain by about $\pm 3.7$ lb (two standard deviations), and no number of standing readings would change that. This is Chapter 11's "two unknowns, one reading", now quantified. Check the box to add the empty-platform measurement: its row $[0\ \ 1]$ cuts across the sliver, and both unknowns are pinned down. Chapter 13 turns the question "do the measurements cut across every direction?" into the rank test for {term}`observability`.
 
-    Conditioning on the two measurements one after the other, using the first result as the prior for the second, gives exactly the same answer as conditioning on both at once (try it with `condition_on_measurement`). [Chapter 14](ch14_kalman_filters_in_practice.md) uses this to process measurements one at a time.
+    Conditioning on the two measurements one after the other, using the first result as the prior for the second, gives exactly the same answer as conditioning on both at once (try it with `condition_on_measurement`). [Chapter 14](#ch14-sec-sequential-updates) uses this to process measurements one at a time.
     """)
     return
 

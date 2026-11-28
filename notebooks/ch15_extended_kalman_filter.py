@@ -71,15 +71,15 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 5](ch5_random_variables.md): the distribution of $aX + b$ when $X$ is normal.
-    - [Chapter 6](ch6_expectation_and_variance.md): linearity and monotonicity of expectation; the law of large numbers.
-    - [Chapter 10](ch10_process_models.md): process models and discretization of continuous-time models.
-    - [Chapter 11](ch11_measurement_functions.md): measurement functions.
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): mean vectors, covariance matrices, $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, multivariate normal distributions, and confidence ellipses.
-    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's predict and update equations, and the Joseph form.
-    - [Chapter 14](ch14_kalman_filters_in_practice.md): the continuous white-noise acceleration model for $\mathbf Q$, multi-rate operation, NEES consistency tests, and filter divergence.
-    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): the Lagrange form of the remainder.
-    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): partial derivatives, the Jacobian, the chain rule, and first-order Taylor approximation.
+    - [Chapter 5](ch5_random_variables.md): [the distribution of](#ch5-cor-affine-maps-of-normal-and-uniform-random-variables) $aX + b$ when $X$ is normal.
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity and monotonicity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [the law of large numbers](#ch6-thm-weak-law-of-large-numbers).
+    - [Chapter 10](ch10_process_models.md): [process models](#ch10-sec-linear-process-models) and [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 11](ch11_measurement_functions.md): [measurement functions](#ch11-sec-from-pounds-to-counts).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [mean vectors](#ch12-sec-random-vectors-and-mean-vectors), [covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, [multivariate normal distributions](#ch12-sec-the-multivariate-normal-distribution), and [confidence ellipses](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
+    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's [predict and update equations](#ch13-sec-the-algorithm), and [the Joseph form](#ch13-sec-update).
+    - [Chapter 14](ch14_kalman_filters_in_practice.md): [the continuous white-noise acceleration model](#ch14-sec-continuous-white-noise-acceleration) for $\mathbf Q$, [multi-rate operation](#ch14-sec-missing-measurements-and-multi-rate-data), [NEES consistency tests](#ch14-sec-consistency-tests), and [filter divergence](#ch14-sec-filter-divergence).
+    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
+    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): [partial derivatives](#appc-sec-partial-derivatives-gradients-and-jacobians), [the Jacobian](#appc-sec-partial-derivatives-gradients-and-jacobians), [the chain rule](#appc-thm-chain-rule-in-several-variables), and [first-order Taylor approximation](#appc-thm-first-order-taylor-approximation).
     ///
     """)
     return
@@ -88,9 +88,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The Kalman filter of [Chapter 13](ch13_kalman_filter.md) assumes that the next state is a *linear* function of the current one and that the sensor measures a linear function of the state. Most real systems break at least one of these assumptions. A pendulum's angular acceleration depends on $\sin\theta$; a camera measures positions through trigonometry; and every orientation filter in Parts V and VI rotates vectors by matrices that depend on the state.
+    The Kalman filter of [Chapter 13](#ch13-sec-the-state-space-model) assumes that the next state is a *linear* function of the current one and that the sensor measures a linear function of the state. Most real systems break at least one of these assumptions. A pendulum's angular acceleration depends on $\sin\theta$; a camera measures positions through trigonometry; and every orientation filter in Parts V and VI rotates vectors by matrices that depend on the state.
 
-    This chapter's key concept is **linearization**: near the current estimate, replace each nonlinear function by the affine function that matches it best, and run the Kalman filter on that approximation. The result is the **extended Kalman filter** (EKF). It is the most widely used nonlinear filter, and it is the filter behind the attitude and gait estimators of [Chapter 19](ch19_ahrs.md) and [Chapter 21](ch21_zero_velocity_updates.md).
+    This chapter's key concept is **linearization**: near the current estimate, replace each nonlinear function by the affine function that matches it best, and run the Kalman filter on that approximation. The result is the **extended Kalman filter** (EKF). It is the most widely used nonlinear filter, and it is the filter behind the attitude and gait estimators of [Chapter 19](#ch19-sec-an-error-state-kalman-filter) and [Chapter 21](#ch21-sec-the-error-state-filter).
 
     /// attention | 🗝️ **Key Idea**
     The EKF moves the estimate through the true nonlinear functions, but moves the covariance through their Jacobians evaluated at the current estimate. It works well when the state's uncertainty is small compared with the region over which those functions look linear.
@@ -120,7 +120,7 @@ def _(mo):
     - $\mathbf x_k \in \mathbb R^n$ is the state, $\mathbf u_k \in \mathbb R^l$ a known {term}`control input`, and $\mathbf z_k \in \mathbb R^m$ the measurement;
     - $f: \mathbb R^n \times \mathbb R^l \to \mathbb R^n$ is the *process function*, the deterministic part of the {term}`process model`;
     - $h: \mathbb R^n \to \mathbb R^m$ is the {term}`measurement function`;
-    - $\mathbf w_k$ and $\mathbf v_k$ are zero-mean noise vectors with covariance matrices $\mathbf Q$ and $\mathbf R$, as in [Chapter 13](ch13_kalman_filter.md).
+    - $\mathbf w_k$ and $\mathbf v_k$ are zero-mean noise vectors with covariance matrices $\mathbf Q$ and $\mathbf R$, as in [Chapter 13](#ch13-sec-the-state-space-model).
 
     A function $\phi: \mathbb R^n \to \mathbb R^m$ is **affine** if there exist an $m \times n$ matrix $\mathbf A$ and a vector $\mathbf b \in \mathbb R^m$ such that $\phi(\mathbf x) = \mathbf A\mathbf x + \mathbf b$ for every $\mathbf x \in \mathbb R^n$. (These are the "linear functions" of school algebra; in linear algebra, "linear" also requires $\mathbf b = \mathbf 0$.) A function of two vector arguments, such as $f$, is affine if it is affine as a function of the stacked vector $(\mathbf x, \mathbf u)$; that is, if $f(\mathbf x, \mathbf u) = \mathbf F\mathbf x + \mathbf B\mathbf u + \mathbf c$ for some fixed $\mathbf F$, $\mathbf B$, $\mathbf c$.
 
@@ -150,7 +150,7 @@ def _(mo):
     2. the covariance transforms as $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\operatorname{Cov}(\mathbf x)\mathbf A^\top$;
     3. an affine function of a normal random vector is normal.
 
-    None of these holds for a general nonlinear $\phi$. For example, if $x$ equals $-1$ or $1$ with probability $\tfrac12$ each, then $\mathbb E[x^2] = 1$ but $(\mathbb E x)^2 = 0$, so the mean does not pass through $\phi(x) = x^2$. And if $x$ is normal, $x^2$ is never negative, so it cannot be normal. Without these facts the exact {term}`Bayes filter` of [Chapter 8](ch8_bayesian_view.md) generally has no closed form, and we must approximate. The rest of this chapter builds the most common approximation.
+    None of these holds for a general nonlinear $\phi$. For example, if $x$ equals $-1$ or $1$ with probability $\tfrac12$ each, then $\mathbb E[x^2] = 1$ but $(\mathbb E x)^2 = 0$, so the mean does not pass through $\phi(x) = x^2$. And if $x$ is normal, $x^2$ is never negative, so it cannot be normal. Without these facts the exact {term}`Bayes filter` of [Chapter 8](#ch8-sec-the-bayes-filter) generally has no closed form, and we must approximate. The rest of this chapter builds the most common approximation.
     """)
     return
 
@@ -163,8 +163,8 @@ def _(mo):
 
     To see what goes wrong, and how badly, take the simplest case: a scalar $x \sim \mathcal N(\mu, \sigma^2)$ and $y = \phi(x)$ for a differentiable $\phi: \mathbb R \to \mathbb R$. There are two ways to estimate the mean and variance of $y$.
 
-    - **Monte Carlo.** Draw many independent samples $x^{(1)}, \ldots, x^{(N)}$, compute $y^{(i)} = \phi(x^{(i)})$, and take their sample mean and {term}`sample variance`. By the law of large numbers ([Chapter 6](ch6_expectation_and_variance.md)) these converge to $\mathbb E[y]$ and $\operatorname{Var}(y)$ as $N \to \infty$, whenever those exist. This is accurate but costs $N$ evaluations of $\phi$.
-    - **Tangent line.** Replace $\phi$ by its tangent line at the mean, $\phi(x) \approx \phi(\mu) + \phi'(\mu)(x - \mu)$. The right-hand side has the form $ax + b$, so by [Chapter 5](ch5_random_variables.md) the approximation $y_{\text{lin}} := \phi(\mu) + \phi'(\mu)(x - \mu)$ is exactly normal:
+    - **Monte Carlo.** Draw many independent samples $x^{(1)}, \ldots, x^{(N)}$, compute $y^{(i)} = \phi(x^{(i)})$, and take their sample mean and {term}`sample variance`. By the law of large numbers ([Chapter 6](#ch6-thm-weak-law-of-large-numbers)) these converge to $\mathbb E[y]$ and $\operatorname{Var}(y)$ as $N \to \infty$, whenever those exist. This is accurate but costs $N$ evaluations of $\phi$.
+    - **Tangent line.** Replace $\phi$ by its tangent line at the mean, $\phi(x) \approx \phi(\mu) + \phi'(\mu)(x - \mu)$. The right-hand side has the form $ax + b$, so by [Chapter 5](#ch5-cor-affine-maps-of-normal-and-uniform-random-variables) the approximation $y_{\text{lin}} := \phi(\mu) + \phi'(\mu)(x - \mu)$ is exactly normal:
 
     $$y_{\text{lin}} \sim \mathcal N\big(\phi(\mu),\ \phi'(\mu)^2\sigma^2\big).$$
 
@@ -187,7 +187,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Define the remainder $r(t) := \phi(t) - \phi(\mu) - \phi'(\mu)(t - \mu)$, a continuous function of $t$. By [Taylor's theorem](appendix_c_calculus.md) with the Lagrange remainder, for each $t$ there is a $\xi$ between $\mu$ and $t$ with $r(t) = \tfrac12\phi''(\xi)(t - \mu)^2$, so
+    Define the remainder $r(t) := \phi(t) - \phi(\mu) - \phi'(\mu)(t - \mu)$, a continuous function of $t$. By [Taylor's theorem](#appc-thm-taylors-theorem-with-lagrange-remainder) with the Lagrange remainder, for each $t$ there is a $\xi$ between $\mu$ and $t$ with $r(t) = \tfrac12\phi''(\xi)(t - \mu)^2$, so
 
     $$|r(t)| \le \tfrac M2 (t - \mu)^2 \quad \text{for every } t.$$
 
@@ -420,7 +420,7 @@ def _(mo):
 
     /// admonition | 📐 **Lemma (The EKF Generalizes the Kalman Filter)**
         attrs: {class: lemma, id: ch15-lem-the-ekf-generalizes-the-kalman-filter}
-    If $f(\mathbf x, \mathbf u) = \mathbf F\mathbf x + \mathbf B\mathbf u$ and $h(\mathbf x) = \mathbf H\mathbf x$, then the EKF's equations are exactly the Kalman filter's equations of [Chapter 13](ch13_kalman_filter.md).
+    If $f(\mathbf x, \mathbf u) = \mathbf F\mathbf x + \mathbf B\mathbf u$ and $h(\mathbf x) = \mathbf H\mathbf x$, then the EKF's equations are exactly the Kalman filter's equations of [Chapter 13](#ch13-sec-the-algorithm).
     ///
 
     /// admonition | ✍️ **Proof**
@@ -451,7 +451,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Dropped remainders are not small.** When the uncertainty is large compared with the region over which $f$ or $h$ looks linear, the predicted mean is biased (as in the Gaussian explorer above) and $\mathbf P_k$ is typically too small. The filter becomes overconfident and can diverge.
     - **The linearization point is far from the truth.** The Jacobians then describe the wrong part of the function, and the update can push the estimate the wrong way. A large initial error is the usual cause.
-    - **(E2) fails.** If $f$ or $h$ is not differentiable at the estimate (a saturation, an absolute value, or an angle that wraps from $\pi$ to $-\pi$), the Jacobian is undefined or meaningless there. Reparametrize the state, or use a derivative-free filter ([Chapter 16](ch16_unscented_kalman_filter.md)).
+    - **(E2) fails.** If $f$ or $h$ is not differentiable at the estimate (a saturation, an absolute value, or an angle that wraps from $\pi$ to $-\pi$), the Jacobian is undefined or meaningless there. Reparametrize the state, or use a derivative-free filter ([Chapter 16](#ch16-sec-the-unscented-kalman-filter)).
     - **Non-additive noise.** If the model is $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k, \mathbf w_k)$, linearize in $\mathbf w$ as well: $\mathbf P_k^- = \mathbf F_k\mathbf P_{k-1}\mathbf F_k^\top + \mathbf L_k\mathbf Q\mathbf L_k^\top$ with $\mathbf L_k := \partial f/\partial\mathbf w$ at $(\hat{\mathbf x}_{k-1}, \mathbf u_k, \mathbf 0)$, and similarly for $\mathbf v$ in $h$.
     - **(E1) fails.** Correlated noise has the same effects as in Chapter 13: overconfidence, and gains that are no longer appropriate.
     - **Wrong Jacobians.** A coding or derivation error in $\mathbf F_k$ or $\mathbf H_k$ does not stop the filter from running; it silently makes the covariance wrong. Always check Jacobians numerically, as below.
@@ -482,7 +482,7 @@ def _(mo):
 
     $$\dot{\mathbf x} = a(\mathbf x) := \begin{bmatrix}\omega \\ -\tfrac gL\sin\theta - c\,\omega\end{bmatrix}.$$
 
-    Unlike the linear equations of [Chapter 10](ch10_process_models.md), this equation has no known closed-form solution, so we {term}`discretize <discretization>` it numerically. The classical fourth-order Runge–Kutta method (RK4) advances the state by one time step $\Delta t$ using four evaluations of $a$:
+    Unlike the linear equations of [Chapter 10](#ch10-sec-continuous-time-models-and-discretization), this equation has no known closed-form solution, so we {term}`discretize <discretization>` it numerically. The classical fourth-order Runge–Kutta method (RK4) advances the state by one time step $\Delta t$ using four evaluations of $a$:
 
     $$\mathbf k_1 = a(\mathbf x),\quad \mathbf k_2 = a\big(\mathbf x + \tfrac{\Delta t}2\mathbf k_1\big),\quad \mathbf k_3 = a\big(\mathbf x + \tfrac{\Delta t}2\mathbf k_2\big),\quad \mathbf k_4 = a\big(\mathbf x + \Delta t\,\mathbf k_3\big),$$
 
@@ -514,7 +514,7 @@ def _(mo):
 
     $$z_k = h(\mathbf x_k) + v_k, \qquad h(\mathbf x) := L\sin\theta, \qquad v_k \sim \mathcal N(0, \sigma_z^2), \quad \sigma_z = 0.05\ \text{m},$$
 
-    so $\mathbf R = [\sigma_z^2]$ is $1 \times 1$. On the other four steps the filter only predicts, as in the multi-rate filters of [Chapter 14](ch14_kalman_filters_in_practice.md).
+    so $\mathbf R = [\sigma_z^2]$ is $1 \times 1$. On the other four steps the filter only predicts, as in the multi-rate filters of [Chapter 14](#ch14-sec-missing-measurements-and-multi-rate-data).
 
     **Truth.** The simulated pendulum starts at rest at $\theta_0 = 1$ rad (57$^\circ$), so $\mathbf x_0 = [1, 0]^\top$, and follows exactly this model, with noise drawn from the stated distributions. The filter's model is therefore correct, and every error below comes from the filter's approximations rather than from model mismatch.
 
@@ -1016,7 +1016,7 @@ def _(mo):
     <!-- label: ch15-sec-strong-nonlinearity -->
     ### Strong Nonlinearity
 
-    The Gaussian explorer showed that the tangent line describes a wide distribution poorly. In a filter, this shows up as overconfidence. Panel (a) below runs the EKF 50 times from initial estimates drawn from $\mathcal N(\mathbf x_0, \mathbf P_0)$, so that the initial covariance is honest, with $\mathbf P_0 = \sigma_0^2\mathbf I$ for a narrow $\sigma_0 = 0.1$ and a wide $\sigma_0 = 0.6$. It plots the average {term}`normalized estimation error squared` over the runs that converged, with the 95% band of [Chapter 14](ch14_kalman_filters_in_practice.md) for a consistent filter.
+    The Gaussian explorer showed that the tangent line describes a wide distribution poorly. In a filter, this shows up as overconfidence. Panel (a) below runs the EKF 50 times from initial estimates drawn from $\mathcal N(\mathbf x_0, \mathbf P_0)$, so that the initial covariance is honest, with $\mathbf P_0 = \sigma_0^2\mathbf I$ for a narrow $\sigma_0 = 0.1$ and a wide $\sigma_0 = 0.6$. It plots the average {term}`normalized estimation error squared` over the runs that converged, with the 95% band of [Chapter 14](#ch14-sec-consistency-tests) for a consistent filter.
 
     <!-- label: ch15-sec-bad-jacobians -->
     ### Bad Jacobians

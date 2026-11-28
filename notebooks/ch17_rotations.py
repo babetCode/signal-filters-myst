@@ -74,13 +74,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): bold lowercase vectors and bold uppercase matrices.
-    - [Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Transpose, Identity, and Inverse](appendix_d_linear_algebra.md), and [Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md): a matrix is determined by its action on a basis, and a square matrix with a left inverse is invertible.
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [bold lowercase vectors and bold uppercase matrices](#ch12-sec-notation-and-linear-algebra-toolkit).
+    - [Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse), and [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank): a matrix is determined by its action on a basis, and [a square matrix with a left inverse is invertible](#appd-thm-invertible-matrix-theorem).
     - [Appendix D: Determinants](#appd-sec-determinants): $\det(\mathbf A\mathbf B) = \det\mathbf A\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and cofactor expansion of a $3\times 3$ determinant.
-    - [Appendix D: Trace](#appd-sec-trace), [Orthogonal Matrices](appendix_d_linear_algebra.md), and [Eigenvalues and Eigenvectors](appendix_d_linear_algebra.md).
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $[\mathbf a]_\times\mathbf b = \mathbf a\times\mathbf b$, every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one $\mathbf a$, and the triple-product expansion $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$.
+    - [Appendix D: Trace](#appd-sec-trace), [Orthogonal Matrices](#appd-sec-orthogonal-matrices), and [Eigenvalues and Eigenvectors](#appd-sec-eigenvalues-and-eigenvectors).
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $[\mathbf a]_\times\mathbf b = \mathbf a\times\mathbf b$, every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one $\mathbf a$, and [the triple-product expansion](#appd-thm-cross-product-identities) $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$.
     - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\exp(\mathbf A) = \sum_{m\ge 0}\mathbf A^m/m!$, $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$, and $\exp(\mathbf A + \mathbf B) = \exp(\mathbf A)\exp(\mathbf B)$ when $\mathbf A\mathbf B = \mathbf B\mathbf A$.
-    - [Appendix C: Derivatives](#appc-sec-derivatives) (the product rule, applied entrywise to matrices) and [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm) (the power series and remainder bounds of $\sin$ and $\cos$).
+    - [Appendix C: Derivatives](#appc-sec-derivatives) ([the product rule](#appc-thm-differentiation-rules), applied entrywise to matrices) and [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm) (the power series and remainder bounds of $\sin$ and $\cos$).
     ///
     """)
     return
@@ -124,7 +124,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **The navigation frame is treated as non-rotating.** In reality an ENU frame turns with the Earth at $7.29\times 10^{-5}$ rad/s (about 15$^\circ$/h). Gyroscopes measure rotation relative to non-rotating space, so we are ignoring a rate roughly 140 times smaller than the gyroscope bias we assume in [Chapter 19](ch19_ahrs.md). Navigation-grade systems cannot ignore it.
+    - **The navigation frame is treated as non-rotating.** In reality an ENU frame turns with the Earth at $7.29\times 10^{-5}$ rad/s (about 15$^\circ$/h). Gyroscopes measure rotation relative to non-rotating space, so we are ignoring a rate roughly 140 times smaller than the gyroscope bias we assume in [Chapter 19](#ch19-sec-measurement-models). Navigation-grade systems cannot ignore it.
     - **The navigation frame is treated as flat.** Over the few hundred meters of a walk, the Earth's curvature changes the direction of "up" by less than 0.01$^\circ$.
     - **Conventions differ between texts.** Aerospace texts often use north-east-down (NED) and forward-right-down axes. Mixing conventions silently flips signs, so every formula in Chapters 17–21 uses exactly the conventions above.
     ///
@@ -917,7 +917,7 @@ def _(mo):
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Constant rate within each step.** If $\boldsymbol\omega$ changes direction during a sample period, the true increment is not $\operatorname{Exp}(\boldsymbol\omega_k\Delta t)$, because rotations about different axes do not commute. The resulting error (called *coning* in the navigation literature) is small at 100 Hz for walking motion but grows with vibration and lower sample rates.
-    - **Rounding.** Each product $\mathbf R_{k-1}\operatorname{Exp}(\cdot)$ is computed in floating point, so after many steps $\mathbf R_k$ drifts slightly away from $SO(3)$. Practical code re-orthonormalizes occasionally, or stores the attitude as a quaternion and normalizes it ([Chapter 18](ch18_quaternions.md)).
+    - **Rounding.** Each product $\mathbf R_{k-1}\operatorname{Exp}(\cdot)$ is computed in floating point, so after many steps $\mathbf R_k$ drifts slightly away from $SO(3)$. Practical code re-orthonormalizes occasionally, or stores the attitude as a quaternion and normalizes it ([Chapter 18](#ch18-sec-why-not-just-use-eulers-method)).
     - **Tiny angles.** Evaluating $\sin\vartheta/\vartheta$ and $(1 - \cos\vartheta)/\vartheta^2$ naively loses precision for very small $\vartheta$; use their Taylor series there.
     ///
     """)
@@ -984,7 +984,7 @@ def _(Exp, np, skew):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    The first-order formulas are only as good as the angle is small. A filter whose attitude error grows to tens of degrees (for example after a bad initialization) linearizes about the wrong point, and its Jacobians, built from $\mathbf I + [\delta\boldsymbol\theta]_\times$, can point the correction in the wrong direction. This is the rotational version of the extended Kalman filter's failure modes in [Chapter 15](ch15_extended_kalman_filter.md).
+    The first-order formulas are only as good as the angle is small. A filter whose attitude error grows to tens of degrees (for example after a bad initialization) linearizes about the wrong point, and its Jacobians, built from $\mathbf I + [\delta\boldsymbol\theta]_\times$, can point the correction in the wrong direction. This is the rotational version of the extended Kalman filter's failure modes in [Chapter 15](#ch15-sec-failure-modes).
     ///
     """)
     return
@@ -1015,7 +1015,7 @@ def _(mo):
     In practice the failure shows up in one of two ways: a jump (Euler angles wrapping at $\pm 180^\circ$, the rotation vector flipping at $\vartheta = \pi$) or a singular kinematic equation (gimbal lock, where angle rates become infinite). There are two ways out, and the next two chapters use one each:
 
     - **Use more than three numbers.** The matrix $\mathbf R$ itself uses nine numbers with six constraints. A *unit quaternion* uses four numbers with one constraint, has no singularities, and has a kinematic equation that is linear in the attitude. That is [Chapter 18](ch18_quaternions.md).
-    - **Use three numbers only locally.** A small rotation vector $\delta\boldsymbol\theta$ measured from a reference attitude is perfectly well behaved near $\mathbf 0$, far from its jump at $\pi$. If the reference is updated after every step, the three numbers never get large. That is the error-state filter of [Chapter 19](ch19_ahrs.md).
+    - **Use three numbers only locally.** A small rotation vector $\delta\boldsymbol\theta$ measured from a reference attitude is perfectly well behaved near $\mathbf 0$, far from its jump at $\pi$. If the reference is updated after every step, the three numbers never get large. That is the error-state filter of [Chapter 19](#ch19-sec-an-error-state-kalman-filter).
 
     [^compact]: A subset of $\mathbb R^m$ is *open* if every point has a small ball around it inside the set, *closed* if its complement is open, and *compact* if it is closed and bounded (equivalent to the general definition by the [Heine–Borel theorem](https://en.wikipedia.org/wiki/Heine%E2%80%93Borel_theorem)).
     """)

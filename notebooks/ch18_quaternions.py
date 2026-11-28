@@ -63,7 +63,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 17](ch17_rotations.md) ended with a negative result: no description of every rotation by three numbers is free of jumps and singularities. Quaternions get around it with one extra number. A unit quaternion is a point on the unit sphere in $\mathbb R^4$; multiplying quaternions composes rotations; and the attitude kinematics become the *linear* equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$, whose coefficients never blow up. Quaternions are also cheap: four numbers instead of nine, and restoring unit length after rounding is a single division. Every attitude filter in the rest of this book stores the attitude as a unit quaternion.
+    [Chapter 17](#ch17-thm-no-global-three-parameter-description) ended with a negative result: no description of every rotation by three numbers is free of jumps and singularities. Quaternions get around it with one extra number. A unit quaternion is a point on the unit sphere in $\mathbb R^4$; multiplying quaternions composes rotations; and the attitude kinematics become the *linear* equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$, whose coefficients never blow up. Quaternions are also cheap: four numbers instead of nine, and restoring unit length after rounding is a single division. Every attitude filter in the rest of this book stores the attitude as a unit quaternion.
 
     /// attention | 🗝️ **Key Idea**
     The unit quaternion $q = [\cos\tfrac\vartheta2,\ \sin\tfrac\vartheta2\,\mathbf u]$ represents the rotation by $\vartheta$ about $\mathbf u$. Vectors rotate as $q\otimes[0, \mathbf v]\otimes q^*$, rotations compose by the Hamilton product $\otimes$, and attitude evolves by the singularity-free linear equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$. The one price is that $q$ and $-q$ represent the same rotation.
@@ -76,7 +76,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 17](ch17_rotations.md): rotation matrices and their properties (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), ZYX Euler angles and their extraction, Rodrigues' formula, Euler's rotation theorem, rotation vectors and $\operatorname{Exp}$, angular velocity, and the constant-angular-velocity theorem. The rotation angle is written $\vartheta$ because $\theta$ is pitch.
+    - [Chapter 17](ch17_rotations.md): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), [rotation vectors](#ch17-thm-rotation-vectors-and-the-matrix-exponential) and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
     - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
     - [Chapter 3](ch3_sets_for_probability.md): the definition of a {term}`field`, for one remark.
@@ -218,7 +218,7 @@ def _(mo):
 
     For the second claim, $s^2 + \|\mathbf w\|^2 = 1$ gives $s \in [-1, 1]$; let $\vartheta := 2\arccos s \in [0, 2\pi]$, so that $s = \cos\tfrac\vartheta2$ and $\|\mathbf w\| = \sqrt{1 - s^2} = \sin\tfrac\vartheta2$. Take $\mathbf u := \mathbf w/\|\mathbf w\|$ if $\mathbf w \ne \mathbf 0$ (any unit vector otherwise). Substituting and using $\cos^2\tfrac\vartheta2 - \sin^2\tfrac\vartheta2 = \cos\vartheta$, $2\sin^2\tfrac\vartheta2 = 1 - \cos\vartheta$, and $2\sin\tfrac\vartheta2\cos\tfrac\vartheta2 = \sin\vartheta$:
     $$\mathbf R(q)\mathbf v = \cos\vartheta\,\mathbf v + (1 - \cos\vartheta)(\mathbf u\cdot\mathbf v)\mathbf u + \sin\vartheta\,\mathbf u\times\mathbf v.$$
-    Rodrigues' formula ([Chapter 17](ch17_rotations.md)) gives the same expression for $\mathbf R(\mathbf u, \vartheta)\mathbf v$, because $[\mathbf u]_\times^2\mathbf v = (\mathbf u\cdot\mathbf v)\mathbf u - \mathbf v$. Finally, $\mathbf R(\mathbf u, \vartheta) = \operatorname{Exp}(\vartheta\mathbf u) \in SO(3)$ by Chapter 17. $\blacksquare$
+    Rodrigues' formula ([Chapter 17](#ch17-thm-rodrigues-formula)) gives the same expression for $\mathbf R(\mathbf u, \vartheta)\mathbf v$, because $[\mathbf u]_\times^2\mathbf v = (\mathbf u\cdot\mathbf v)\mathbf u - \mathbf v$. Finally, $\mathbf R(\mathbf u, \vartheta) = \operatorname{Exp}(\vartheta\mathbf u) \in SO(3)$ by Chapter 17. $\blacksquare$
     ///
 
     In components (using $q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1$ to simplify the diagonal), the theorem's matrix is

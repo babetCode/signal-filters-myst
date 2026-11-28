@@ -95,7 +95,7 @@ def scale_data(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The [Introduction](introduction.md) ended with a question:
+    The [Introduction](#intro-sec-whats-next) ended with a question:
 
     > Given some amount of noise in our prediction $\hat x_k^-$ and in our measurement $z_k$, what value of $\alpha$ should we pick?
 
@@ -103,9 +103,9 @@ def _(mo):
 
     $$\alpha^* = \frac{P^-}{P^- + R},$$
 
-    and the resulting estimate is more certain than either source on its own. The derivation needs nothing beyond [Chapter 6](ch6_expectation_and_variance.md)'s rule for the variance of a weighted sum and the high-school trick of completing the square. With it we prove that the Introduction's cumulative average was the best possible filter for a constant weight, and we arrive at the update equation at the heart of every Kalman filter[^kf-forward].
+    and the resulting estimate is more certain than either source on its own. The derivation needs nothing beyond [Chapter 6](#ch6-thm-variance-of-a-linear-combination)'s rule for the variance of a weighted sum and the high-school trick of completing the square. With it we prove that the Introduction's cumulative average was the best possible filter for a constant weight, and we arrive at the update equation at the heart of every Kalman filter[^kf-forward].
 
-    [^kf-forward]: Used informally here; defined precisely in [Chapter 9](ch9_noise_levels.md).
+    [^kf-forward]: Used informally here; defined precisely in [Chapter 9](#ch9-sec-the-scalar-kalman-filter).
     """)
     return
 
@@ -114,10 +114,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, the cumulative average, and the {term}`exponential moving average` (EMA) with first-measurement initialization.
-    - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.
-    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, the {term}`normal distribution`, and the measurement-noise model $z_k = x_k + v_k$.
-    - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, {term}`variance`, {term}`covariance` and its properties (including linearity in each argument and the Cauchy–Schwarz inequality), {term}`uncorrelated` random variables, the variance of a linear combination, in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, Bienaymé's corollary, {term}`unbiased` estimators, {term}`mean squared error` and the bias–variance decomposition, the variance $\sigma^2/k$ of the {term}`sample mean`, and the EMA's error variance, including the corollary that for a constant value averaging beats the EMA.
+    - [Introduction](introduction.md): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, [the cumulative average](#intro-sec-a-recursive-average), and the {term}`exponential moving average` (EMA) with [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [proof by induction](#ch2-thm-induction).
+    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, the {term}`normal distribution`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model) $z_k = x_k + v_k$.
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance` and [its properties](#ch6-thm-properties-of-covariance) (including linearity in each argument and [the Cauchy–Schwarz inequality](#ch6-thm-cauchyschwarz-inequality)), {term}`uncorrelated` random variables, [the variance of a linear combination](#ch6-thm-variance-of-a-linear-combination), in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, [Bienaymé's corollary](#ch6-cor-bienayme), {term}`unbiased` estimators, {term}`mean squared error` and [the bias–variance decomposition](#ch6-thm-biasvariance-decomposition), the variance $\sigma^2/k$ of the {term}`sample mean`, and [the EMA's error variance](#ch6-thm-ema-of-a-constant-value), including [the corollary that for a constant value averaging beats the EMA](#ch6-cor-for-a-constant-value-averaging-beats-the-ema).
     - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation in one tip).
     ///
     """)
@@ -423,9 +423,9 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **(A1) Zero-mean errors.** If either source has a bias, the estimate inherits a weighted bias, and no gain removes it. See *Bias* below.
-    - **(A2) Known variances.** If $P^-$ or $R$ is wrong, the estimate is still zero-mean, but the gain is not optimal and the reported $P^*$ is wrong. See *Mis-specified Variances* below. [Chapter 9](ch9_noise_levels.md) shows how to obtain $R$ and $P^-$.
+    - **(A2) Known variances.** If $P^-$ or $R$ is wrong, the estimate is still zero-mean, but the gain is not optimal and the reported $P^*$ is wrong. See *Mis-specified Variances* below. [Chapter 9](#ch9-sec-estimating-r) shows how to obtain $R$ and $P^-$.
     - **(A3) Uncorrelated errors.** If $\operatorname{Cov}(e^-, v) \ne 0$, the optimal gain changes, and $P^*$ may understate the true error variance. See *Correlated Errors* below.
-    - **"Optimal" means optimal among gains.** The theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. A nonlinear rule can do better when the errors are not normal; see [Chapter 8](ch8_bayesian_view.md).
+    - **"Optimal" means optimal among gains.** The theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. A nonlinear rule can do better when the errors are not normal; see [Chapter 8](#ch8-sec-when-the-noise-is-not-normal).
     - **No distributional assumption.** The theorem holds for any error distributions with the stated means, variances, and covariance.
     ///
     """)
@@ -440,7 +440,7 @@ def _(mo):
 
     Use the sliders to set $P^-$ and $R$. The left panel shows the error variance $P(\alpha)$ and its two parts; its lowest point is at $\alpha^*$. The right panel shows, for a true weight of $155$ lb, the distributions of the prediction $\hat x^-$, the measurement $z$, and the optimal estimate $\hat x$, assuming normal errors[^normal-for-drawing]. The markers on the horizontal axis show one simulated draw of each: the estimate always lies between the prediction and the measurement, closer to the more reliable one, and its distribution is always the narrowest.
 
-    [^normal-for-drawing]: Drawing a density requires choosing a distribution, so the figure takes $e^-$ and $v$ to be independent and normal. Then $\hat x$ is normal too, by [Chapter 5](ch5_random_variables.md)'s corollary on linear combinations of independent normal random variables. The theorem itself does not use normality.
+    [^normal-for-drawing]: Drawing a density requires choosing a distribution, so the figure takes $e^-$ and $v$ to be independent and normal. Then $\hat x$ is normal too, by [Chapter 5](#ch5-cor-linear-combinations-of-independent-normals)'s corollary on linear combinations of independent normal random variables. The theorem itself does not use normality.
     """)
     return
 
@@ -712,10 +712,10 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The two theorems above rest on four assumptions:
 
-    - **The true value is constant.** If $x$ drifts, the gain $1/k$ shrinks toward $0$ and the estimate stops following it. This is why the Introduction switched to the EMA. [Chapter 9](ch9_noise_levels.md) models the drift as process noise and shows that the optimal gain then levels off at a positive value, which turns the optimal filter into an EMA.
+    - **The true value is constant.** If $x$ drifts, the gain $1/k$ shrinks toward $0$ and the estimate stops following it. This is why the Introduction switched to the EMA. [Chapter 9](#ch9-sec-process-noise) models the drift as process noise and shows that the optimal gain then levels off at a positive value, which turns the optimal filter into an EMA.
     - **The noise is uncorrelated over time.** If you sway slowly, neighboring readings err in the same direction. The average is still unbiased, but its error variance is larger than the reported $R/k$, so the filter is overconfident (see *Correlated Errors* below).
     - **Every reading has the same variance.** If $\operatorname{Var} v_k = R_k$ varies, the same induction with $\alpha_k = P_{k-1}/(P_{k-1} + R_k)$ and item 4 of the Optimal Gain theorem gives $1/P_k = \sum_{i \le k} 1/R_i$: the optimal filter is no longer the plain average but weights each reading in proportion to $1/R_i$.
-    - **First-measurement initialization.** If the filter starts from a guess $\hat x_0$ with known error variance instead, the gains change slightly; [Chapter 9](ch9_noise_levels.md) shows that the guess then acts like a number of extra "virtual" readings.
+    - **First-measurement initialization.** If the filter starts from a guess $\hat x_0$ with known error variance instead, the gains change slightly; [Chapter 9](#ch9-thm-no-process-noise) shows that the guess then acts like a number of extra "virtual" readings.
     ///
     """)
     return
@@ -883,7 +883,7 @@ def _(mo):
 
     $$\mathbb E\big[(\hat x_k - x)^2\big] = \frac Rk + b^2 \;\ge\; b^2 \quad\text{for every } k.$$
 
-    A bias must be removed by calibration, or estimated as part of what the filter tracks ([Chapter 11](ch11_measurement_functions.md) treats sensor bias).
+    A bias must be removed by calibration, or estimated as part of what the filter tracks ([Chapter 11](#ch11-sec-sensor-bias-and-a-drifting-tare) treats sensor bias).
 
     <!-- label: ch7-sec-mis-specified-variances -->
     ### Mis-specified Variances
@@ -906,12 +906,12 @@ def _(mo):
 
     - **Small gain errors are cheap.** The penalty grows with the *square* of the gain error. With $P^- = R = 1\ \text{lb}^2$, using $\tilde\alpha = 0.6$ instead of $0.5$ costs only $2(0.1)^2 = 0.02\ \text{lb}^2$ on top of $P^* = 0.5\ \text{lb}^2$.
     - **Only the ratio sets the gain.** Multiplying both $\tilde P^-$ and $\tilde R$ by the same factor leaves $\tilde\alpha$ unchanged but multiplies $\tilde P$ by that factor. A filter can therefore estimate well while reporting a misleading error variance. In the sequential constant-weight problem, the gains $1/k$ do not depend on $R$ at all, so a wrong $\tilde R$ changes only the reported $P_k = \tilde R/k$.
-    - **The reported variance can be badly wrong.** With $P^- = R = 1\ \text{lb}^2$ but $\tilde R = 0.25\ \text{lb}^2$ (an overly optimistic datasheet), the filter uses $\tilde\alpha = 0.8$, whose actual error variance is $0.2^2 + 0.8^2 = 0.68\ \text{lb}^2$, but it reports $\tilde P = 0.2\ \text{lb}^2$, claiming to be $3.4$ times more certain than it is. [Chapter 9](ch9_noise_levels.md) shows how to detect this from the measurements alone.
+    - **The reported variance can be badly wrong.** With $P^- = R = 1\ \text{lb}^2$ but $\tilde R = 0.25\ \text{lb}^2$ (an overly optimistic datasheet), the filter uses $\tilde\alpha = 0.8$, whose actual error variance is $0.2^2 + 0.8^2 = 0.68\ \text{lb}^2$, but it reports $\tilde P = 0.2\ \text{lb}^2$, claiming to be $3.4$ times more certain than it is. [Chapter 9](#ch9-sec-checking-the-noise-levels) shows how to detect this from the measurements alone.
 
     <!-- label: ch7-sec-linear-is-not-everything -->
     ### Linear Is Not Everything
 
-    The Optimal Gain theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. It says nothing about nonlinear rules such as "if the reading is more than 5 lb from the prediction, ignore it." When the errors are normal, [Chapter 8](ch8_bayesian_view.md) proves that no rule of any kind beats the optimal gain. When the noise has occasional large outliers, Chapter 8 shows a nonlinear rule that does.
+    The Optimal Gain theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. It says nothing about nonlinear rules such as "if the reading is more than 5 lb from the prediction, ignore it." When the errors are normal, [Chapter 8](#ch8-cor-the-optimal-gain-is-optimal-among-all-estimators) proves that no rule of any kind beats the optimal gain. When the noise has occasional large outliers, Chapter 8 shows a nonlinear rule that does.
     """)
     return
 

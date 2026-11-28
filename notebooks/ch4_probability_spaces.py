@@ -60,10 +60,10 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): power sets, the intersection $\bigcap F$ of a nonempty set of sets, sets of functions $Y^X$, and the Axiom of Choice (used once, for the Vitali set).
-    - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and De Morgan's laws, {term}`indexed families <indexed family>` and the Disjointification lemma, {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including the Listing theorem and the countability of $\mathbb Q$), the Archimedean property, {term}`intervals <interval>`, and the {term}`extended real numbers`.
-    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits): limits, the limit laws, and Monotone Convergence (for the continuity of probability).
-    - [Appendix C: Series](#appc-sec-series): series of nonnegative terms, their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped (Nonnegative Sums in Any Order).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [power sets](#ch2-sec-6-power-set), [the intersection](#ch2-lem-general-intersection) $\bigcap F$ of a nonempty set of sets, [sets of functions](#ch2-sec-functions) $Y^X$, and [the Axiom of Choice](#ch2-sec-10-choice) (used once, for the Vitali set).
+    - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and [De Morgan's laws](#ch3-thm-de-morgans-laws), {term}`indexed families <indexed family>` and [the Disjointification lemma](#ch3-lem-disjointification), {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including [the Listing theorem](#ch3-thm-listing-countable-sets) and [the countability of](#ch3-thm-the-integers-and-the-rationals-are-countable) $\mathbb Q$), [the Archimedean property](#ch3-thm-archimedean-property), {term}`intervals <interval>`, and the {term}`extended real numbers`.
+    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits): limits, [the limit laws](#appc-thm-limit-laws-for-sequences), and [Monotone Convergence](#appc-thm-monotone-convergence) (for the continuity of probability).
+    - [Appendix C: Series](#appc-sec-series): [series of nonnegative terms](#appc-sec-series-with-nonnegative-terms), their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped ([Nonnegative Sums in Any Order](#appc-thm-nonnegative-sums-in-any-order)).
     ///
     """)
     return
@@ -98,7 +98,7 @@ def _(mo):
 
     So the questions we want probabilities for are *sets* of possible noise values, combined with complements, unions, and intersections, sometimes of infinitely many sets. The question "what is the probability that $\omega$ is exactly $0.03$?" will turn out to have the answer $0$ in every reasonable continuous model, even though some value of $\omega$ certainly occurs. A probability model therefore assigns probabilities to sets, and it must say which sets.
 
-    [^noise-informal]: For now $\omega$ is just an unknown real number. [Chapter 5](ch5_random_variables.md) makes noise precise as a random variable.
+    [^noise-informal]: For now $\omega$ is just an unknown real number. [Chapter 5](#ch5-sec-the-measurement-noise-model) makes noise precise as a random variable.
     """)
     return
 
@@ -191,7 +191,7 @@ def _(mo):
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
     1. $\emptyset = \Omega^c$.
-    3. By De Morgan's laws for families ([Chapter 3](ch3_sets_for_probability.md)), $\bigcap_n A_n = \big(\bigcup_n A_n^c\big)^c$. Each $A_n^c \in \mathcal F$, so the union is in $\mathcal F$, and so is its complement.
+    3. By De Morgan's laws for families ([Chapter 3](#ch3-thm-de-morgans-laws-for-families)), $\bigcap_n A_n = \big(\bigcup_n A_n^c\big)^c$. Each $A_n^c \in \mathcal F$, so the union is in $\mathcal F$, and so is its complement.
     2. Extend $A_1, \ldots, A_n$ to a sequence by $A_k := \emptyset$ for $k > n$; its union is $\bigcup_{k=1}^n A_k$, which is therefore in $\mathcal F$. Extending by $A_k := \Omega$ instead, the intersection of the sequence is $\bigcap_{k=1}^n A_k$, which is in $\mathcal F$ by part 3.
     4. $A \setminus B = A \cap B^c$ ([Chapter 3: Rules for Complements](#ch3-lem-rules-for-complements)), which is in $\mathcal F$ by part 2. $\blacksquare$
     ///
@@ -263,7 +263,7 @@ def _(mo):
 
     *Unions of atoms form a $\sigma$-algebra containing $\mathcal G$.* Let $\mathcal U := \{\bigcup \mathcal S : \mathcal S \subseteq \mathcal A\}$. It contains $\Omega = \bigcup \mathcal A$. Since every outcome lies in exactly one atom, $(\bigcup \mathcal S)^c = \bigcup (\mathcal A \setminus \mathcal S)$. A union of unions of atoms is the union of all the atoms involved. Each $G_i$ is the union of the atoms of its elements, because if $\omega \in G_i$ and $\omega'$ is indistinguishable from $\omega$, then $\omega' \in G_i$. So $\sigma(\mathcal G) \subseteq \mathcal U$.
 
-    *Unions of atoms lie in $\sigma(\mathcal G)$.* For each $i$ let $G_i^\omega := G_i$ if $\omega \in G_i$ and $G_i^\omega := G_i^c$ otherwise. Then $a(\omega) = \bigcap_{i=1}^m G_i^\omega$ (or $a(\omega) = \Omega$ if $m = 0$), a finite intersection of members of $\sigma(\mathcal G)$, so $a(\omega) \in \sigma(\mathcal G)$. The set $\mathcal A$ is the image of the countable set $\Omega$ under $\omega \mapsto a(\omega)$, so it is countable, and so is every $\mathcal S \subseteq \mathcal A$ ([Chapter 3](ch3_sets_for_probability.md)). If $\mathcal S \neq \emptyset$, the Listing theorem writes $\mathcal S$ as the set of terms of a sequence, so $\bigcup \mathcal S$ is a countable union of members of $\sigma(\mathcal G)$; and $\bigcup \emptyset = \emptyset \in \sigma(\mathcal G)$. $\blacksquare$
+    *Unions of atoms lie in $\sigma(\mathcal G)$.* For each $i$ let $G_i^\omega := G_i$ if $\omega \in G_i$ and $G_i^\omega := G_i^c$ otherwise. Then $a(\omega) = \bigcap_{i=1}^m G_i^\omega$ (or $a(\omega) = \Omega$ if $m = 0$), a finite intersection of members of $\sigma(\mathcal G)$, so $a(\omega) \in \sigma(\mathcal G)$. The set $\mathcal A$ is the image of the countable set $\Omega$ under $\omega \mapsto a(\omega)$, so it is countable, and so is every $\mathcal S \subseteq \mathcal A$ ([Chapter 3](#ch3-cor-subsets-and-images)). If $\mathcal S \neq \emptyset$, the Listing theorem writes $\mathcal S$ as the set of terms of a sequence, so $\bigcup \mathcal S$ is a countable union of members of $\sigma(\mathcal G)$; and $\bigcup \emptyset = \emptyset \in \sigma(\mathcal G)$. $\blacksquare$
     ///
 
     Distinct sets of atoms have distinct unions, because atoms are nonempty and disjoint. So if there are $k$ atoms, $\sigma(\mathcal G)$ has as many events as a $k$-element set has subsets, namely $2^k$ (see [Power set](https://en.wikipedia.org/wiki/Power_set)). The explorer below computes the atoms for a die and the events you choose to generate from. The atoms are exactly the pieces of information the generating events can reveal.
@@ -348,7 +348,7 @@ def _(mo):
     The Borel $\sigma$-algebra on $\mathbb R$ is $\mathcal B(\mathbb R) := \sigma(\mathcal I)$, the {term}`sigma-algebra generated by <generated sigma-algebra>` the set $\mathcal I$ of all {term}`intervals <interval>`. Its elements are called *Borel sets*. For a Borel set $\Omega_0 \subseteq \mathbb R$, the Borel $\sigma$-algebra on $\Omega_0$ is $\mathcal B(\Omega_0) := \{B \in \mathcal B(\mathbb R) : B \subseteq \Omega_0\}$.
     ///
 
-    The same $\sigma$-algebra is generated by the open subsets of $\mathbb R$, which is how many books define it ([Borel set](https://en.wikipedia.org/wiki/Borel_set)), and [Chapter 5](ch5_random_variables.md) shows that the rays $(-\infty, b]$ alone already generate it.
+    The same $\sigma$-algebra is generated by the open subsets of $\mathbb R$, which is how many books define it ([Borel set](https://en.wikipedia.org/wiki/Borel_set)), and [Chapter 5](#ch5-lem-rays-generate-the-borel-sets) shows that the rays $(-\infty, b]$ alone already generate it.
 
     /// admonition | 📐 **Lemma (Borel Sets)**
         attrs: {class: lemma, id: ch4-lem-borel-sets}
@@ -359,12 +359,12 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    1. Intervals lie in $\mathcal I \subseteq \mathcal B(\mathbb R)$, and $\{x\} = [x, x]$. A nonempty countable set $C$ is $\{c_n : n \in \mathbb N^+\}$ for some sequence (Listing theorem, [Chapter 3](ch3_sets_for_probability.md)), so $C = \bigcup_{n=1}^\infty \{c_n\}$ is a countable union of Borel sets; and $\emptyset$ is in every $\sigma$-algebra. $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ are countable, and $\mathbb R \setminus \mathbb Q$ is a complement.
+    1. Intervals lie in $\mathcal I \subseteq \mathcal B(\mathbb R)$, and $\{x\} = [x, x]$. A nonempty countable set $C$ is $\{c_n : n \in \mathbb N^+\}$ for some sequence (Listing theorem, [Chapter 3](#ch3-thm-listing-countable-sets)), so $C = \bigcup_{n=1}^\infty \{c_n\}$ is a countable union of Borel sets; and $\emptyset$ is in every $\sigma$-algebra. $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ are countable, and $\mathbb R \setminus \mathbb Q$ is a complement.
     2. $\Omega_0 \in \mathcal B(\Omega_0)$. If $B \in \mathcal B(\Omega_0)$, then $\Omega_0 \setminus B = \Omega_0 \cap (\mathbb R \setminus B)$ is a Borel set by the Closure Properties lemma, and it is a subset of $\Omega_0$. A countable union of members of $\mathcal B(\Omega_0)$ is a Borel subset of $\Omega_0$. Intervals contained in $\Omega_0$ are Borel sets by part 1.
     3. We use the good-sets principle. Let $\mathcal A := \{B \subseteq \mathbb R : B + t \in \mathcal B(\mathbb R)\}$. Because $x \mapsto x + t$ is a bijection of $\mathbb R$ with inverse $x \mapsto x - t$, we have $\mathbb R + t = \mathbb R$, $(\mathbb R \setminus B) + t = \mathbb R \setminus (B + t)$, and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. So $\mathcal A$ is a $\sigma$-algebra. Translating an interval gives an interval of the same form, for example $[a, b] + t = [a + t, b + t]$, so $\mathcal I \subseteq \mathcal A$. Hence $\mathcal B(\mathbb R) = \sigma(\mathcal I) \subseteq \mathcal A$. $\blacksquare$
     ///
 
-    Not every subset of $\mathbb R$ is a Borel set; we meet one below. But every set you are likely to write down is, so restricting events to Borel sets costs nothing in practice.
+    Not every subset of $\mathbb R$ is a Borel set: the Vitali sets constructed later in this chapter are not ([Vitali Sets Are Not Borel Sets](#ch4-cor-vitali-sets-are-not-borel-sets)). But every set you are likely to write down is, so restricting events to Borel sets costs nothing in practice.
     """)
     return
 
@@ -393,9 +393,9 @@ def _(mo):
     A triple $(\Omega, \mathcal F, \mathbb P)$ in which $\Omega$ is a {term}`sample space`, $\mathcal F$ is a {term}`sigma-algebra` on $\Omega$, and $\mathbb P$ is a {term}`probability measure` on $(\Omega, \mathcal F)$. We read $\mathbb P(A)$ as "the probability of $A$".
     ///
 
-    Axiom 3 needs $\bigcup_n A_n$ to be an event, which is why events must be closed under countable unions. Its right side is the value in $[0, \infty]$ of a series of nonnegative terms ([Chapter 3](ch3_sets_for_probability.md) and [Appendix C: Series](#appc-sec-series)); the axiom says in particular that this value is the real number $\mathbb P(\bigcup_n A_n)$.
+    Axiom 3 needs $\bigcup_n A_n$ to be an event, which is why events must be closed under countable unions. Its right side is a series of nonnegative terms. Before the axiom is applied, all that is known about such a series is that its value lies in $[0, \infty]$ ([Chapter 3: Extended Real Numbers](#ch3-sec-extended-real-numbers) and [Appendix C: Series with Nonnegative Terms](#appc-sec-series-with-nonnegative-terms)): it might diverge to $\infty$. The axiom asserts that its value is the real number $\mathbb P(\bigcup_n A_n)$, so in particular the series converges. That this value is at most $1$ is not an extra assumption; it follows from the axioms (the [Monotonicity theorem](#ch4-thm-monotonicity) below).
 
-    The axioms say how probabilities combine, not what they mean. Whether $\mathbb P(A)$ is read as a long-run frequency or as a degree of belief, the same rules apply. The experiment at the end of this chapter compares probabilities with frequencies, and [Chapter 6](ch6_expectation_and_variance.md) proves the connection.
+    The axioms say how probabilities combine, not what they mean. Whether $\mathbb P(A)$ is read as a long-run frequency or as a degree of belief, the same rules apply. The [experiment at the end of this chapter](#ch4-sec-experiment-relative-frequencies) compares probabilities with relative frequencies, and the [Weak Law of Large Numbers](#ch6-thm-weak-law-of-large-numbers) in Chapter 6 proves how they are related: as the number of independent repetitions grows, the probability that an event's relative frequency differs from its probability by more than any fixed amount tends to $0$.
     """)
     return
 
@@ -408,7 +408,7 @@ def _(mo):
 
     **Coin toss.** Let $\Omega = \{H, T\}$ and $\mathcal F = \mathcal P(\Omega) = \{\emptyset, \{H\}, \{T\}, \Omega\}$. Choose a number $p \in [0, 1]$, the probability of heads, and set
     $$\mathbb P(\emptyset) = 0, \qquad \mathbb P(\{H\}) = p, \qquad \mathbb P(\{T\}) = 1 - p, \qquad \mathbb P(\Omega) = 1.$$
-    A fair coin has $p = \tfrac12$, but the axioms allow any $p$. Axiom 1 holds because each assigned value ($0$, $p$, $1 - p$, $1$) is nonnegative, and axiom 2 holds because $\mathbb P(\Omega) = 1$ was assigned directly. Checking axiom 3 by hand means considering every sequence of pairwise disjoint subsets of $\{H, T\}$; the Discrete Probability Measures theorem below does this once for all models of this kind. It uses the *indicator* of a set $A \subseteq \Omega$, the function $\mathbf 1_A : \Omega \to \{0, 1\}$ with $\mathbf 1_A(\omega) := 1$ if $\omega \in A$ and $\mathbf 1_A(\omega) := 0$ otherwise.
+    A fair coin has $p = \tfrac12$, but the axioms allow any $p$. Axiom 1 holds because each assigned value ($0$, $p$, $1 - p$, $1$) is nonnegative, and axiom 2 holds because $\mathbb P(\Omega) = 1$ was assigned directly. Checking axiom 3 by hand means considering every sequence of pairwise disjoint subsets of $\{H, T\}$; the [Discrete Probability Measures theorem](#ch4-thm-discrete-probability-measures) below does this once for all models of this kind. It uses the *indicator* of a set $A \subseteq \Omega$, the function $\mathbf 1_A : \Omega \to \{0, 1\}$ with $\mathbf 1_A(\omega) := 1$ if $\omega \in A$ and $\mathbf 1_A(\omega) := 0$ otherwise.
 
     /// admonition | 📐 **Theorem (Discrete Probability Measures)**
         attrs: {class: theorem, id: ch4-thm-discrete-probability-measures}
@@ -424,12 +424,12 @@ def _(mo):
     The order of summation may be exchanged because the terms are nonnegative: by Nonnegative Sums in Any Order ([Appendix C: Series](#appc-sec-series)), both iterated sums equal the sum of the family $\big(p_n \mathbf 1_{A_k}(\omega_n)\big)_{(n, k) \in \mathbb N^+ \times \mathbb N^+}$, grouped by $n$ in one case and by $k$ in the other. $\blacksquare$
     ///
 
-    Think of $p_n$ as a mass placed at the outcome $\omega_n$; then $\mathbb P(A)$ is the total mass inside $A$. Repetitions in the sequence $(\omega_n)$ are allowed, and their masses add up.
+    If we think of $p_n$ as a mass placed at the outcome $\omega_n$, then $\mathbb P(A)$ is the total mass inside $A$. Repetitions in the sequence $(\omega_n)$ are allowed, and their masses add up.
 
     - *Coin.* Take $\omega_1 := H$, $\omega_2 := T$, $p_1 := p$, $p_2 := 1 - p$, and $p_n := 0$, $\omega_n := H$ for $n \ge 3$. This gives exactly the four probabilities above.
     - *Die.* Take $\omega_n := n$ and $p_n := \tfrac16$ for $n \le 6$, and $p_n := 0$, $\omega_n := 1$ for $n > 6$. Then $\mathbb P(A) = \sum_{n=1}^6 \tfrac16 \mathbf 1_A(n)$ is one sixth of the number of outcomes in $A$; for example $\mathbb P(\{2, 4, 6\}) = \tfrac12$.
 
-    Conversely, every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\Omega$ countable arises this way. By Chapter 3, $\Omega$ is finite or countably infinite, so it can be listed without repetition as $\omega_1, \omega_2, \ldots$ (for a finite $\Omega$, pad the list with $p_n := 0$). Set $p_n := \mathbb P(\{\omega_n\})$. For $A \subseteq \Omega$, the sets $\{\omega_n\} \cap A$ (and $\emptyset$ beyond the end of a finite list) are pairwise disjoint with union $A$, so countable additivity gives $\mathbb P(A) = \sum_n p_n \mathbf 1_A(\omega_n)$. A probability space of this kind, with $\Omega$ countable and $\mathcal F = \mathcal P(\Omega)$, is called *discrete*.
+    The converse of the [Discrete Probability Measures theorem](#ch4-thm-discrete-probability-measures) also holds: every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\Omega$ countable arises this way. By the [Countable Sets Are Finite or Countably Infinite theorem](#ch3-thm-countable-sets-are-finite-or-countably-infinite) of Chapter 3, $\Omega$ is finite or countably infinite, so it can be listed without repetition as $\omega_1, \omega_2, \ldots$ (for a finite $\Omega$, pad the list with $p_n := 0$). Set $p_n := \mathbb P(\{\omega_n\})$. For $A \subseteq \Omega$, the sets $\{\omega_n\} \cap A$ (and $\emptyset$ beyond the end of a finite list) are pairwise disjoint with union $A$, so countable additivity gives $\mathbb P(A) = \sum_n p_n \mathbf 1_A(\omega_n)$. A probability space of this kind, with $\Omega$ countable and $\mathcal F = \mathcal P(\Omega)$, is called *discrete*.
     """)
     return
 
@@ -440,7 +440,7 @@ def _(mo):
     <!-- label: ch4-sec-a-random-rational-number -->
     ### A Random Rational Number
 
-    Now let $\Omega := \mathbb Q \cap [0, 1]$. It is countable, as a subset of $\mathbb Q$, and infinite, since it contains the distinct numbers $1, \tfrac12, \tfrac13, \ldots$; so it is countably infinite ([Chapter 3](ch3_sets_for_probability.md)). Can we choose a rational number in $[0, 1]$ with every rational equally likely?
+    Now let $\Omega := \mathbb Q \cap [0, 1]$. It is countable, as a subset of $\mathbb Q$, and infinite, since it contains the distinct numbers $1, \tfrac12, \tfrac13, \ldots$; so it is countably infinite ([Chapter 3](#ch3-sec-countable-and-uncountable-sets)). Can we choose a rational number in $[0, 1]$ with every rational equally likely?
 
     /// admonition | 📐 **Theorem (No Uniform Probability on a Countably Infinite Set)**
         attrs: {class: theorem, id: ch4-thm-no-uniform-probability-on-a-countably-infinite-set}
@@ -454,11 +454,11 @@ def _(mo):
     If $c = 0$ the sum is $0$, and if $c > 0$ it is $\infty$ ([Chapter 3: Extended Real Numbers](#ch3-sec-extended-real-numbers)). Neither equals $1$. $\blacksquare$
     ///
 
-    In particular, there is no "uniformly random natural number". Countable additivity forbids spreading probability evenly over countably many points, and the same two-case argument will defeat the Vitali set below.
+    In particular, there is no "uniformly random natural number". Countable additivity forbids spreading probability evenly over countably many points, and the same two-case argument is the core of the proof of the [Vitali theorem](#ch4-thm-vitali) later in this chapter.
 
     We can still choose a rational number at random if we give up "equally likely". List $\Omega$ by increasing denominator, in lowest terms:
     $$q_1 = 0,\ q_2 = 1,\ q_3 = \tfrac12,\ q_4 = \tfrac13,\ q_5 = \tfrac23,\ q_6 = \tfrac14,\ q_7 = \tfrac34,\ \ldots$$
-    This lists every element of $\Omega$ exactly once. With $p_n := 2^{-n}$ and $\sum_{n=1}^\infty 2^{-n} = 1$ (geometric series, [Appendix C: Series](#appc-sec-series)), the Discrete Probability Measures theorem gives a probability measure with $\mathbb P(\{0\}) = \tfrac12$, $\mathbb P(\{1\}) = \tfrac14$, $\mathbb P(\{\tfrac12\}) = \tfrac18$, and so on. The model depends entirely on the chosen listing, so there is no canonical "random rational".
+    This lists every element of $\Omega$ exactly once. With $p_n := 2^{-n}$ and $\sum_{n=1}^\infty 2^{-n} = 1$ (geometric series, [Appendix C: Series](#appc-sec-series)), the [Discrete Probability Measures theorem](#ch4-thm-discrete-probability-measures) gives a probability measure with $\mathbb P(\{0\}) = \tfrac12$, $\mathbb P(\{1\}) = \tfrac14$, $\mathbb P(\{\tfrac12\}) = \tfrac18$, and so on. The model depends entirely on the chosen listing, so there is no canonical "random rational".
     """)
     return
 
@@ -536,7 +536,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Let $D_n := A_n \setminus \bigcup_{k=1}^{n-1} A_k$. These are events (Closure Properties), and by the Disjointification lemma ([Chapter 3](ch3_sets_for_probability.md)) they are pairwise disjoint, with $D_n \subseteq A_n$ and $\bigcup_n D_n = \bigcup_n A_n$. By countable additivity and Monotonicity,
+    Let $D_n := A_n \setminus \bigcup_{k=1}^{n-1} A_k$. These are events (Closure Properties), and by the Disjointification lemma ([Chapter 3](#ch3-lem-disjointification)) they are pairwise disjoint, with $D_n \subseteq A_n$ and $\bigcup_n D_n = \bigcup_n A_n$. By countable additivity and Monotonicity,
     $$\mathbb P\Big(\bigcup_{n=1}^\infty A_n\Big) = \sum_{n=1}^\infty \mathbb P(D_n) \le \sum_{n=1}^\infty \mathbb P(A_n),$$
     where the inequality compares two series of nonnegative terms term by term. For finitely many events, extend the list by $\emptyset$. $\blacksquare$
     ///
@@ -571,7 +571,7 @@ def _(mo):
     Conversely, a function on $\mathcal F$ that is finitely additive and continuous from below is countably additive: for pairwise disjoint $A_n$, the events $B_N := \bigcup_{n=1}^N A_n$ increase to $\bigcup_n A_n$, so $\mathbb P\big(\bigcup_n A_n\big) = \lim_N \mathbb P(B_N) = \lim_N \sum_{n=1}^N \mathbb P(A_n) = \sum_{n=1}^\infty \mathbb P(A_n)$.
 
     /// attention | 🗝️ **Key Idea**
-    Countable additivity is exactly what makes probability compatible with limits: given finite additivity, it is equivalent to continuity from below. The limit arguments about probabilities in later chapters, starting with the properties of distribution functions in [Chapter 5](ch5_random_variables.md), rest on it.
+    Countable additivity is exactly what makes probability compatible with limits: given finite additivity, it is equivalent to continuity from below. The limit arguments about probabilities in later chapters, starting with the properties of distribution functions in [Chapter 5](#ch5-thm-properties-of-cdfs), rest on it.
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
@@ -606,7 +606,7 @@ def _(mo):
     The set exists by Replacement. Since $x - x = 0 \in \mathbb Q$, we have $x \in E_x$, so the sets $E_x$ are nonempty and cover $[0, 1)$. Suppose $z \in E_x \cap E_y$. Then $z - x$ and $z - y$ are rational, hence so is $y - x = (z - x) - (z - y)$. For any $w \in E_y$, $w - x = (w - y) + (y - x)$ is rational, so $E_y \subseteq E_x$; by symmetry $E_x = E_y$. So two of the sets are either equal or disjoint. $\blacksquare$
     ///
 
-    The sets $E_x$ are nonempty and pairwise disjoint, so the Axiom of Choice ([Chapter 2](ch2_axioms_of_set_theory.md)) gives a set $C$ containing exactly one element of each $E_x$. Then $V := C \cap [0, 1)$ contains exactly one element of each $E_x$ and nothing else. Any such set is called a *Vitali set*, after Giuseppe Vitali, who introduced it in 1905 ([Vitali set](https://en.wikipedia.org/wiki/Vitali_set)). Choice asserts that $V$ exists but gives no rule for which element of each $E_x$ to take.
+    The sets $E_x$ are nonempty and pairwise disjoint, so the Axiom of Choice ([Chapter 2](#ch2-sec-10-choice)) gives a set $C$ containing exactly one element of each $E_x$. Then $V := C \cap [0, 1)$ contains exactly one element of each $E_x$ and nothing else. Any such set is called a *Vitali set*, after Giuseppe Vitali, who introduced it in 1905 ([Vitali set](https://en.wikipedia.org/wiki/Vitali_set)). Choice asserts that $V$ exists but gives no rule for which element of each $E_x$ to take.
 
     /// admonition | 📐 **Theorem (Vitali)**
         attrs: {class: theorem, id: ch4-thm-vitali}
@@ -664,7 +664,7 @@ def _(mo):
     Translation invariance follows from uniqueness. Fix $t$ and let $\mu(B) := \lambda(B + t)$ for $B \in \mathcal B(\mathbb R)$, which is defined by the Borel Sets lemma. Then $\mu(\emptyset) = 0$, and $\mu$ is countably additive because translating pairwise disjoint sets gives pairwise disjoint sets and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. Also $\mu([a, b]) = \lambda([a + t, b + t]) = b - a$. By uniqueness, $\mu = \lambda$. $\blacksquare$
     ///
 
-    Restricting $\lambda$ to the Borel subsets of $[0, 1]$ gives a probability measure on $([0, 1], \mathcal B([0, 1]))$: it is countably additive because $\lambda$ is, and $\lambda([0, 1]) = 1$. It is also called **Lebesgue measure on $[0, 1]$** and also written $\lambda$. The probability space $([0, 1], \mathcal B([0, 1]), \lambda)$ models a number chosen uniformly at random from $[0, 1]$: probabilities of intervals are their lengths. This is the uniform distribution of [Chapter 5](ch5_random_variables.md).
+    Restricting $\lambda$ to the Borel subsets of $[0, 1]$ gives a probability measure on $([0, 1], \mathcal B([0, 1]))$: it is countably additive because $\lambda$ is, and $\lambda([0, 1]) = 1$. It is also called **Lebesgue measure on $[0, 1]$** and also written $\lambda$. The probability space $([0, 1], \mathcal B([0, 1]), \lambda)$ models a number chosen uniformly at random from $[0, 1]$: probabilities of intervals are their lengths. This is the uniform distribution of [Chapter 5](#ch5-sec-the-uniform-and-normal-distributions).
 
     /// admonition | 📐 **Theorem (A Uniformly Random Number)**
         attrs: {class: theorem, id: ch4-thm-a-uniformly-random-number}
@@ -684,7 +684,7 @@ def _(mo):
 
     Part 1 also follows from Continuity from Above: the intervals $[x, x + \tfrac1n] \cap [0, 1]$ decrease to $\{x\}$ (any $y > x$ is excluded once $\tfrac1n < y - x$, by the Archimedean property), and their probabilities are at most $\tfrac1n$, which tends to $0$.
 
-    Compare with the random rational. There, countable additivity forced unequal weights on the points. Here every point has probability $0$, yet $\lambda([0, 1]) = 1$. There is no contradiction, because $[0, 1]$ is uncountable ([Chapter 3](ch3_sets_for_probability.md)): it is not the set of terms of any sequence, so countable additivity never adds up the zeros.
+    Compare with the random rational. There, countable additivity forced unequal weights on the points. Here every point has probability $0$, yet $\lambda([0, 1]) = 1$. There is no contradiction, because $[0, 1]$ is uncountable ([Chapter 3](#ch3-thm-the-real-numbers-are-uncountable)): it is not the set of terms of any sequence, so countable additivity never adds up the zeros.
 
     /// admonition | 📐 **Corollary (Vitali Sets Are Not Borel Sets)**
         attrs: {class: corollary, id: ch4-cor-vitali-sets-are-not-borel-sets}
@@ -702,7 +702,7 @@ def _(mo):
 
     **Back to the scale.** As a toy model, suppose the noise $\omega$ of a reading is uniformly distributed on $[-0.5, 0.5]$: take $\Omega := [-0.5, 0.5]$, $\mathcal F := \mathcal B(\Omega)$, and $\mathbb P := \lambda$ restricted to $\mathcal F$, a probability measure because $\lambda(\Omega) = 1$. Then
     $$\mathbb P(\text{display shows } 155.0) = \lambda([-0.05, 0.05)) = 0.1, \qquad \mathbb P(\text{noise is exactly } 0.03) = \lambda(\{0.03\}) = 0.$$
-    Real scale noise is closer to normal than to uniform. [Chapter 5](ch5_random_variables.md) builds such models from densities, and also shows that the rounding error of a display is well modeled as uniform.
+    Real scale noise is closer to normal than to uniform. [Chapter 5](#ch5-sec-continuous-random-variables) builds such models from densities, and also shows that the rounding error of a display is well modeled as uniform.
     """)
     return
 
@@ -763,7 +763,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Nonnegativity is clear, and $\mathbb P(\Omega \mid B) = \mathbb P(B)/\mathbb P(B) = 1 = \mathbb P(B \mid B)$. If $(A_n)$ are pairwise disjoint, so are the events $A_n \cap B$, and their union is $\big(\bigcup_n A_n\big) \cap B$ by the Distributive Laws ([Chapter 3](ch3_sets_for_probability.md)). By countable additivity, $\mathbb P\big(\big(\bigcup_n A_n\big) \cap B\big) = \sum_n \mathbb P(A_n \cap B)$. Dividing by $\mathbb P(B)$ is allowed termwise: the partial sums converge, and the limit laws let us divide each partial sum by $\mathbb P(B)$. $\blacksquare$
+    Nonnegativity is clear, and $\mathbb P(\Omega \mid B) = \mathbb P(B)/\mathbb P(B) = 1 = \mathbb P(B \mid B)$. If $(A_n)$ are pairwise disjoint, so are the events $A_n \cap B$, and their union is $\big(\bigcup_n A_n\big) \cap B$ by the Distributive Laws ([Chapter 3](#ch3-lem-distributive-laws)). By countable additivity, $\mathbb P\big(\big(\bigcup_n A_n\big) \cap B\big) = \sum_n \mathbb P(A_n \cap B)$. Dividing by $\mathbb P(B)$ is allowed termwise: the partial sums converge, and the limit laws let us divide each partial sum by $\mathbb P(B)$. $\blacksquare$
     ///
 
     So every rule proven above, such as the Complement Rule, also holds for conditional probabilities given a fixed $B$. Rearranging the definition gives the **multiplication rule**
@@ -794,7 +794,7 @@ def _(mo):
     By the multiplication rule, used twice, $\mathbb P(A \mid B)\,\mathbb P(B) = \mathbb P(A \cap B) = \mathbb P(B \mid A)\,\mathbb P(A)$; divide by $\mathbb P(B)$. For the second formula, the denominator is $\mathbb P(B)$ by the Law of Total Probability. $\blacksquare$
     ///
 
-    In filtering, the $A_n$ are hypotheses about the true state and $B$ is a measurement. Bayes' theorem turns "how likely is this measurement if hypothesis $A_k$ is true" into "how likely is hypothesis $A_k$ given this measurement". [Chapter 8](ch8_bayesian_view.md) names the ingredients and develops this into the Bayes filter.
+    In filtering, the $A_n$ are hypotheses about the true state and $B$ is a measurement. Bayes' theorem turns "how likely is this measurement if hypothesis $A_k$ is true" into "how likely is hypothesis $A_k$ given this measurement". [Chapter 8](#ch8-sec-the-bayes-filter) names the ingredients and develops this into the Bayes filter.
     """)
     return
 
@@ -817,10 +817,10 @@ def _(mo):
 
     **Example (a faulty load cell).** Suppose a scale's load cell is faulty with probability $0.01$. A healthy cell gives a reading more than $2$ lb from the truth with probability $0.05$, and a faulty one with probability $0.9$. (A discrete probability space with four outcomes, healthy or faulty and off or not, realizes these numbers.) A reading comes out $2.5$ lb off. With $W$ the event "the cell is faulty" and $O$ the event "the reading is more than $2$ lb off",
     $$\mathbb P(W \mid O) = \frac{\mathbb P(O \mid W)\,\mathbb P(W)}{\mathbb P(O \mid W)\,\mathbb P(W) + \mathbb P(O \mid W^c)\,\mathbb P(W^c)} = \frac{0.9 \cdot 0.01}{0.9 \cdot 0.01 + 0.05 \cdot 0.99} \approx 0.154.$$
-    Even after a reading that a healthy cell rarely produces, the cell is most likely healthy, because faults are rare to begin with. Confusing $\mathbb P(O \mid W) = 0.9$ with $\mathbb P(W \mid O) \approx 0.15$ is a common mistake. Deciding whether to discard such a reading as an outlier involves exactly this trade-off ([Chapter 14](ch14_kalman_filters_in_practice.md)).
+    Even after a reading that a healthy cell rarely produces, the cell is most likely healthy, because faults are rare to begin with. Confusing $\mathbb P(O \mid W) = 0.9$ with $\mathbb P(W \mid O) \approx 0.15$ is a common mistake. Deciding whether to discard such a reading as an outlier involves exactly this trade-off ([Chapter 14](#ch14-sec-outlier-gating)).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **$\mathbb P(B) > 0$ is required.** Conditioning on a null event, such as "the noise is exactly $0.03$", is undefined by this formula. [Chapter 8](ch8_bayesian_view.md) conditions on exact values of continuous quantities using densities. Doing so naively leads to paradoxes ([Borel–Kolmogorov paradox](https://en.wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox)).
+    - **$\mathbb P(B) > 0$ is required.** Conditioning on a null event, such as "the noise is exactly $0.03$", is undefined by this formula. [Chapter 8](#ch8-sec-conditional-densities) conditions on exact values of continuous quantities using densities. Doing so naively leads to paradoxes ([Borel–Kolmogorov paradox](https://en.wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox)).
     - **$\mathbb P(A \mid B) \neq \mathbb P(B \mid A)$ in general**, as the load-cell example shows.
     - **The answer depends on the model of the observation**, not only on the fact observed, as the two card scenarios show.
     ///
@@ -877,7 +877,7 @@ def _(mo):
 
     Independent repetitions give a concrete way to look at $\mathbb P(A)$: in $n$ trials, count how often $A$ happens and divide by $n$. The plot below simulates five independent runs with a pseudo-random number generator and shows the *relative frequency* of $A$ after each trial.
 
-    This is an **experiment, not a proof.** The plot suggests that the relative frequency settles near $\mathbb P(A)$ as $n$ grows. [Chapter 6](ch6_expectation_and_variance.md) proves the weak law of large numbers, which states precisely in what sense this happens, using only the axioms of this chapter and independence. Things to try: with few trials the runs disagree wildly; with many they bunch around $\mathbb P(A)$. The spread shrinks roughly like $1/\sqrt n$, which Chapter 6 explains through the variance $\sigma^2/n$ of an average. The convergence relies on independent trials under identical conditions; if the coin's bias drifted, or each toss depended on the previous ones, the frequencies need not settle at $\mathbb P(A)$.
+    This is an **experiment, not a proof.** The plot suggests that the relative frequency settles near $\mathbb P(A)$ as $n$ grows. [Chapter 6](#ch6-thm-weak-law-of-large-numbers) proves the weak law of large numbers, which states precisely in what sense this happens, using only the axioms of this chapter and independence. Things to try: with few trials the runs disagree wildly; with many they bunch around $\mathbb P(A)$. The spread shrinks roughly like $1/\sqrt n$, which Chapter 6 explains through the variance $\sigma^2/n$ of an average. The convergence relies on independent trials under identical conditions; if the coin's bias drifted, or each toss depended on the previous ones, the frequencies need not settle at $\mathbb P(A)$.
     """)
     return
 

@@ -57,11 +57,11 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): functions, the set $Y^X$ of all functions from $X$ to $Y$, Cartesian products, induction, and definition by recursion.
-    - [Chapter 3](ch3_sets_for_probability.md): finite sums $\sum$, composition and inverse functions, and $\mathbb R$ as a complete ordered field (including absolute value).
-    - [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): square roots of nonnegative numbers.
-    - Only for The Matrix Exponential: [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) (limit laws), [Appendix C: Series](#appc-sec-series) (comparison test, Cauchy product), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity) (intermediate value theorem), [Appendix C: Derivatives](#appc-sec-derivatives) (product rule), and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema).
-    - Only for Derivatives with Respect to Matrices: [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) (partial derivatives) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema) (interior extrema).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [functions](#ch2-sec-functions), the set $Y^X$ of all functions from $X$ to $Y$, [Cartesian products](#ch2-sec-cartesian-products), [induction](#ch2-thm-induction), and [definition by recursion](#ch2-thm-recursion).
+    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-lem-rules-for-finite-sums) $\sum$, [composition](#ch3-lem-compositions) and [inverse functions](#ch3-lem-inverse-functions), and $\mathbb R$ as [a complete ordered field](#ch3-thm-the-real-numbers) (including [absolute value](#ch3-lem-properties-of-absolute-value)).
+    - [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): [square roots of nonnegative numbers](#appc-cor-square-roots).
+    - Only for The Matrix Exponential: [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([limit laws](#appc-thm-limit-laws-for-sequences)), [Appendix C: Series](#appc-sec-series) ([comparison test](#appc-thm-comparison-test), [Cauchy product](#appc-cor-cauchy-product)), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity) ([intermediate value theorem](#appc-thm-intermediate-value-theorem)), [Appendix C: Derivatives](#appc-sec-derivatives) ([product rule](#appc-thm-differentiation-rules)), and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema).
+    - Only for Derivatives with Respect to Matrices: [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) ([partial derivatives](#appc-sec-partial-derivatives-gradients-and-jacobians)) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema) ([interior extrema](#appc-lem-interior-extremum)).
     ///
     """)
     return
@@ -126,13 +126,13 @@ def _(mo):
     For $n \in \mathbb N^+$, a vector in $\mathbb R^n$ is a function $\mathbf x : \{1, \ldots, n\} \to \mathbb R$. Its $i$-th entry is $x_i := \mathbf x(i)$, and we write $\mathbf x = (x_1, \ldots, x_n)$. The set of all such vectors is $\mathbb R^n := \mathbb R^{\{1, \ldots, n\}}$.
     ///
 
-    Two vectors are equal exactly when all their entries are equal, because that is what equality of functions means ([Chapter 2](ch2_axioms_of_set_theory.md)). In displayed formulas we write vectors as columns.
+    Two vectors are equal exactly when all their entries are equal, because that is what equality of functions means ([Chapter 2](#ch2-lem-equality-of-functions)). In displayed formulas we write vectors as columns.
 
     For $\mathbf x, \mathbf y \in \mathbb R^n$ and $c \in \mathbb R$, addition and scalar multiplication act entry by entry:
 
     $$(\mathbf x + \mathbf y)_i := x_i + y_i, \qquad (c\mathbf x)_i := c\,x_i \qquad (i = 1, \ldots, n).$$
 
-    The zero vector is $\mathbf 0 := (0, \ldots, 0)$, and $-\mathbf x := (-1)\mathbf x$ and $\mathbf x - \mathbf y := \mathbf x + (-\mathbf y)$. Because both operations act entry by entry, rules such as $\mathbf x + \mathbf y = \mathbf y + \mathbf x$, $(\mathbf x + \mathbf y) + \mathbf z = \mathbf x + (\mathbf y + \mathbf z)$, $c(\mathbf x + \mathbf y) = c\mathbf x + c\mathbf y$, $(c + d)\mathbf x = c\mathbf x + d\mathbf x$, $(cd)\mathbf x = c(d\mathbf x)$, $\mathbf x + \mathbf 0 = \mathbf x$, and $\mathbf x - \mathbf x = \mathbf 0$ all hold: comparing $i$-th entries turns each one into a field axiom of $\mathbb R$ ([Chapter 3](ch3_sets_for_probability.md)). We use them without comment.
+    The zero vector is $\mathbf 0 := (0, \ldots, 0)$, and $-\mathbf x := (-1)\mathbf x$ and $\mathbf x - \mathbf y := \mathbf x + (-\mathbf y)$. Because both operations act entry by entry, rules such as $\mathbf x + \mathbf y = \mathbf y + \mathbf x$, $(\mathbf x + \mathbf y) + \mathbf z = \mathbf x + (\mathbf y + \mathbf z)$, $c(\mathbf x + \mathbf y) = c\mathbf x + c\mathbf y$, $(c + d)\mathbf x = c\mathbf x + d\mathbf x$, $(cd)\mathbf x = c(d\mathbf x)$, $\mathbf x + \mathbf 0 = \mathbf x$, and $\mathbf x - \mathbf x = \mathbf 0$ all hold: comparing $i$-th entries turns each one into a field axiom of $\mathbb R$ ([Chapter 3](#ch3-sec-the-real-numbers)). We use them without comment.
 
     A **linear combination** of vectors $\mathbf v_1, \ldots, \mathbf v_k \in \mathbb R^n$ is a vector $c_1\mathbf v_1 + \cdots + c_k\mathbf v_k = \sum_{j=1}^k c_j\mathbf v_j$ with $c_1, \ldots, c_k \in \mathbb R$. The **standard basis vectors** $\mathbf e_1, \ldots, \mathbf e_n \in \mathbb R^n$ are defined by $(\mathbf e_j)_i := 1$ if $i = j$ and $(\mathbf e_j)_i := 0$ otherwise. Every vector is a linear combination of them,
 
@@ -169,7 +169,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    (1) and (2) hold term by term ($x_iy_i = y_ix_i$, $(x_i + y_i)z_i = x_iz_i + y_iz_i$, $(cx_i)y_i = c(x_iy_i)$), and finite sums can be split and scaled ([Chapter 3](ch3_sets_for_probability.md)). For (3), each $x_i^2 \ge 0$ in an ordered field, so the sum is $\ge 0$. If $\mathbf x\cdot\mathbf x = 0$, then for each $i$ we have $0 \le x_i^2 \le \sum_j x_j^2 = 0$, so $x_i^2 = 0$ and therefore $x_i = 0$ (a field has no zero divisors). Conversely, $\mathbf 0\cdot\mathbf 0 = 0$. $\blacksquare$
+    (1) and (2) hold term by term ($x_iy_i = y_ix_i$, $(x_i + y_i)z_i = x_iz_i + y_iz_i$, $(cx_i)y_i = c(x_iy_i)$), and finite sums can be split and scaled ([Chapter 3](#ch3-lem-rules-for-finite-sums)). For (3), each $x_i^2 \ge 0$ in an ordered field, so the sum is $\ge 0$. If $\mathbf x\cdot\mathbf x = 0$, then for each $i$ we have $0 \le x_i^2 \le \sum_j x_j^2 = 0$, so $x_i^2 = 0$ and therefore $x_i = 0$ (a field has no zero divisors). Conversely, $\mathbf 0\cdot\mathbf 0 = 0$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
@@ -213,7 +213,7 @@ def _(mo):
     $\|\mathbf x + \mathbf y\|^2 = \|\mathbf x\|^2 + 2\,\mathbf x\cdot\mathbf y + \|\mathbf y\|^2 \le \|\mathbf x\|^2 + 2\|\mathbf x\|\|\mathbf y\| + \|\mathbf y\|^2 = (\|\mathbf x\| + \|\mathbf y\|)^2$ by Cauchy–Schwarz. Take nonnegative square roots as in the previous proof. $\blacksquare$
     ///
 
-    For nonzero $\mathbf x, \mathbf y$, Cauchy–Schwarz says $\mathbf x\cdot\mathbf y/(\|\mathbf x\|\|\mathbf y\|) \in [-1, 1]$; this number is the cosine of the angle between them, and orthogonal vectors are those at a right angle. The correlation coefficient of [Chapter 6](ch6_expectation_and_variance.md) has exactly this form, which is why it also lies in $[-1, 1]$.
+    For nonzero $\mathbf x, \mathbf y$, Cauchy–Schwarz says $\mathbf x\cdot\mathbf y/(\|\mathbf x\|\|\mathbf y\|) \in [-1, 1]$; this number is the cosine of the angle between them, and orthogonal vectors are those at a right angle. The correlation coefficient of [Chapter 6](#ch6-sec-covariance-and-correlation) has exactly this form, which is why it also lies in $[-1, 1]$.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The dot product adds products of entries, so $\|\mathbf x\|$ is physically meaningful only when all entries share a unit. For the cart state (position in m, velocity in m/s), $\|\mathbf x\|^2$ would add m$^2$ to m$^2$/s$^2$, and changing the position unit from m to cm would change which of two states counts as "larger". The Kalman filter does not fall into this trap: its gain is the same no matter how the entries are weighted (see Derivatives with Respect to Matrices below).
@@ -282,9 +282,9 @@ def _(mo):
 
     $$\mathbf R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}.$$
 
-    Not every useful map is linear. A linear map sends $\mathbf 0$ to $\mathbf 0$, because $T(\mathbf 0) = T(0\cdot\mathbf 0) = 0\cdot T(\mathbf 0) = \mathbf 0$. So adding a constant offset, $\mathbf x \mapsto \mathbf x + \mathbf b$ with $\mathbf b \ne \mathbf 0$, is not linear, and neither is the pendulum's $\theta \mapsto L\sin\theta$ ([Chapter 15](ch15_extended_kalman_filter.md) handles such maps by approximating them with linear ones).
+    Not every useful map is linear. A linear map sends $\mathbf 0$ to $\mathbf 0$, because $T(\mathbf 0) = T(0\cdot\mathbf 0) = 0\cdot T(\mathbf 0) = \mathbf 0$. So adding a constant offset, $\mathbf x \mapsto \mathbf x + \mathbf b$ with $\mathbf b \ne \mathbf 0$, is not linear, and neither is the pendulum's $\theta \mapsto L\sin\theta$ ([Chapter 15](#ch15-sec-linearization) handles such maps by approximating them with linear ones).
 
-    [^rotation-informal]: This geometric argument is informal; [Chapter 17](ch17_rotations.md) defines rotations precisely as matrices.
+    [^rotation-informal]: This geometric argument is informal; [Chapter 17](#ch17-sec-rotation-matrices) defines rotations precisely as matrices.
     """)
     return
 
@@ -325,7 +325,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the theorem, $T_{(\mathbf A\mathbf B)\mathbf C} = T_{\mathbf A\mathbf B}\circ T_{\mathbf C} = (T_{\mathbf A}\circ T_{\mathbf B})\circ T_{\mathbf C}$ and $T_{\mathbf A(\mathbf B\mathbf C)} = T_{\mathbf A}\circ T_{\mathbf B\mathbf C} = T_{\mathbf A}\circ(T_{\mathbf B}\circ T_{\mathbf C})$. {term}`Composition` of functions is associative ([Chapter 3](ch3_sets_for_probability.md)), so the two maps are equal, and by the uniqueness part of "Matrices Are Linear Maps" so are the two matrices. $\blacksquare$
+    By the theorem, $T_{(\mathbf A\mathbf B)\mathbf C} = T_{\mathbf A\mathbf B}\circ T_{\mathbf C} = (T_{\mathbf A}\circ T_{\mathbf B})\circ T_{\mathbf C}$ and $T_{\mathbf A(\mathbf B\mathbf C)} = T_{\mathbf A}\circ T_{\mathbf B\mathbf C} = T_{\mathbf A}\circ(T_{\mathbf B}\circ T_{\mathbf C})$. {term}`Composition` of functions is associative ([Chapter 3](#ch3-lem-compositions)), so the two maps are equal, and by the uniqueness part of "Matrices Are Linear Maps" so are the two matrices. $\blacksquare$
     ///
 
     We therefore write $\mathbf A\mathbf B\mathbf C$ without parentheses. Comparing entries also gives the distributive laws $\mathbf A(\mathbf B + \mathbf C) = \mathbf A\mathbf B + \mathbf A\mathbf C$, $(\mathbf A + \mathbf B)\mathbf C = \mathbf A\mathbf C + \mathbf B\mathbf C$, and $(c\mathbf A)\mathbf B = c(\mathbf A\mathbf B) = \mathbf A(c\mathbf B)$ whenever the sizes fit.
@@ -364,7 +364,7 @@ def _(mo):
     $[\mathbf A\mathbf B]_{ik} = \sum_{j \le n_1} a_{ij}b_{jk} + \sum_{j > n_1} a_{ij}b_{jk}$. The first sum is the corresponding entry of $\mathbf A_{r1}\mathbf B_{1t}$ and the second is the corresponding entry of $\mathbf A_{r2}\mathbf B_{2t}$. $\blacksquare$
     ///
 
-    For the 3-D cart this gives $\mathbf F^2 = \begin{bmatrix} \mathbf I_3\mathbf I_3 + \Delta t\,\mathbf I_3\mathbf 0 & \mathbf I_3\,\Delta t\,\mathbf I_3 + \Delta t\,\mathbf I_3\mathbf I_3 \\ \mathbf 0 & \mathbf I_3\mathbf I_3\end{bmatrix} = \begin{bmatrix} \mathbf I_3 & 2\Delta t\,\mathbf I_3 \\ \mathbf 0 & \mathbf I_3\end{bmatrix}$, using $\mathbf I_3\mathbf M = \mathbf M\mathbf I_3 = \mathbf M$ (proved in the next section). The 15-state error model of [Chapter 21](ch21_zero_velocity_updates.md) is written entirely in such blocks.
+    For the 3-D cart this gives $\mathbf F^2 = \begin{bmatrix} \mathbf I_3\mathbf I_3 + \Delta t\,\mathbf I_3\mathbf 0 & \mathbf I_3\,\Delta t\,\mathbf I_3 + \Delta t\,\mathbf I_3\mathbf I_3 \\ \mathbf 0 & \mathbf I_3\mathbf I_3\end{bmatrix} = \begin{bmatrix} \mathbf I_3 & 2\Delta t\,\mathbf I_3 \\ \mathbf 0 & \mathbf I_3\end{bmatrix}$, using $\mathbf I_3\mathbf M = \mathbf M\mathbf I_3 = \mathbf M$ (proved in the next section). The 15-state error model of [Chapter 21](#ch21-thm-linearized-ins-error-model) is written entirely in such blocks.
     """)
     return
 
@@ -389,7 +389,7 @@ def _(mo):
     - $\mathbf x^\top\mathbf y = \sum_i x_iy_i = \mathbf x\cdot\mathbf y$, a $1\times 1$ matrix, i.e. a number;
     - the **outer product** $\mathbf x\mathbf y^\top \in \mathbb R^{n\times n}$, with entries $[\mathbf x\mathbf y^\top]_{ij} = x_iy_j$.
 
-    For an error vector $\mathbf e$, the outer product $\mathbf e\mathbf e^\top$ collects all products $e_ie_j$; its expected value is the covariance matrix of [Chapter 12](ch12_vectors_matrices_covariance.md).
+    For an error vector $\mathbf e$, the outer product $\mathbf e\mathbf e^\top$ collects all products $e_ie_j$; its expected value is the covariance matrix of [Chapter 12](#ch12-sec-covariance-matrices).
 
     /// admonition | 📐 **Lemma (Transpose Rules)**
         attrs: {class: lemma, id: appd-lem-transpose-rules}
@@ -415,7 +415,7 @@ def _(mo):
     For $n \in \mathbb N^+$, the $n\times n$ identity matrix $\mathbf I_n$ (or $\mathbf I$) has entries $[\mathbf I]_{ij} := \delta_{ij}$, where $\delta_{ij} := 1$ if $i = j$ and $\delta_{ij} := 0$ otherwise.
     ///
 
-    Its columns are $\mathbf e_1, \ldots, \mathbf e_n$. For $\mathbf A \in \mathbb R^{m\times n}$, $[\mathbf I_m\mathbf A]_{ik} = \sum_j \delta_{ij}a_{jk} = a_{ik}$, so $\mathbf I_m\mathbf A = \mathbf A$, and likewise $\mathbf A\mathbf I_n = \mathbf A$. More generally, a **diagonal matrix** $\operatorname{diag}(d_1, \ldots, d_n)$ has $d_i$ in position $(i, i)$ and zeros elsewhere; comparing entries shows $\operatorname{diag}(c_1, \ldots, c_n)\operatorname{diag}(d_1, \ldots, d_n) = \operatorname{diag}(c_1d_1, \ldots, c_nd_n)$. For square $\mathbf A$, **powers** are defined by recursion ([Chapter 2](ch2_axioms_of_set_theory.md)): $\mathbf A^0 := \mathbf I$ and $\mathbf A^{k+1} := \mathbf A^k\mathbf A$. By induction on $l$ and associativity, $\mathbf A^k\mathbf A^l = \mathbf A^{k+l}$.
+    Its columns are $\mathbf e_1, \ldots, \mathbf e_n$. For $\mathbf A \in \mathbb R^{m\times n}$, $[\mathbf I_m\mathbf A]_{ik} = \sum_j \delta_{ij}a_{jk} = a_{ik}$, so $\mathbf I_m\mathbf A = \mathbf A$, and likewise $\mathbf A\mathbf I_n = \mathbf A$. More generally, a **diagonal matrix** $\operatorname{diag}(d_1, \ldots, d_n)$ has $d_i$ in position $(i, i)$ and zeros elsewhere; comparing entries shows $\operatorname{diag}(c_1, \ldots, c_n)\operatorname{diag}(d_1, \ldots, d_n) = \operatorname{diag}(c_1d_1, \ldots, c_nd_n)$. For square $\mathbf A$, **powers** are defined by recursion ([Chapter 2](#ch2-thm-recursion)): $\mathbf A^0 := \mathbf I$ and $\mathbf A^{k+1} := \mathbf A^k\mathbf A$. By induction on $l$ and associativity, $\mathbf A^k\mathbf A^l = \mathbf A^{k+l}$.
     """)
     return
 
@@ -436,7 +436,7 @@ def _(mo):
     A square matrix $\mathbf A \in \mathbb R^{n\times n}$ is invertible if there is a matrix $\mathbf B \in \mathbb R^{n\times n}$ with $\mathbf A\mathbf B = \mathbf I$ and $\mathbf B\mathbf A = \mathbf I$.
     ///
 
-    Such a $\mathbf B$ is unique: if $\mathbf C$ also works, then $\mathbf B = \mathbf B\mathbf I = \mathbf B(\mathbf A\mathbf C) = (\mathbf B\mathbf A)\mathbf C = \mathbf I\mathbf C = \mathbf C$. We call it the **inverse** $\mathbf A^{-1}$. Only square matrices are called invertible; $\mathbf H = [1\ \ 0]$ has no inverse, reflecting that one reading cannot recover two unknowns ([Chapter 11](ch11_measurement_functions.md)).
+    Such a $\mathbf B$ is unique: if $\mathbf C$ also works, then $\mathbf B = \mathbf B\mathbf I = \mathbf B(\mathbf A\mathbf C) = (\mathbf B\mathbf A)\mathbf C = \mathbf I\mathbf C = \mathbf C$. We call it the **inverse** $\mathbf A^{-1}$. Only square matrices are called invertible; $\mathbf H = [1\ \ 0]$ has no inverse, reflecting that one reading cannot recover two unknowns ([Chapter 11](#ch11-sec-two-unknowns-one-reading)).
 
     /// admonition | 📐 **Lemma (Inverse Rules)**
         attrs: {class: lemma, id: appd-lem-inverse-rules}
@@ -476,7 +476,7 @@ def _(mo):
     <!-- label: appd-sec-linear-independence-basis-and-rank -->
     ## Linear Independence, Basis, and Rank
 
-    In [Chapter 11](ch11_measurement_functions.md), a load cell reads $z = hx + c$: the weight $x$ scaled by $h$, plus a tare offset $c$. With state $(x, c)$, two readings taken with a person on the platform, and one reading with a person plus one of the empty platform, are described by the rows of
+    In [Chapter 11](#ch11-sec-from-pounds-to-counts), a load cell reads $z = hx + c$: the weight $x$ scaled by $h$, plus a tare offset $c$. With state $(x, c)$, two readings taken with a person on the platform, and one reading with a person plus one of the empty platform, are described by the rows of
 
     $$\begin{bmatrix} h & 1 \\ h & 1\end{bmatrix} \qquad\text{and}\qquad \begin{bmatrix} h & 1 \\ 0 & 1\end{bmatrix}.$$
 
@@ -536,7 +536,7 @@ def _(mo):
     The rank of $\mathbf A \in \mathbb R^{m\times n}$, written $\operatorname{rank}\mathbf A$, is the largest $k \ge 0$ such that some $k$ columns of $\mathbf A$ form a linearly independent list.
     ///
 
-    By the Dimension theorem, $\operatorname{rank}\mathbf A$ is the dimension of the column space. It is also a theorem that $\operatorname{rank}\mathbf A^\top = \operatorname{rank}\mathbf A$ ("row rank equals column rank") [@axler2024, Chapter 3]. For the load cell with $h \ne 0$: in the first matrix, $h\,(1, 1) - (h, h) = \mathbf 0$, so the columns are dependent, while each column alone is nonzero; its rank is $1$. In the second, $c_1(h, 0) + c_2(1, 1) = \mathbf 0$ forces $c_2 = 0$ (second entry) and then $c_1 = 0$; its rank is $2$. [Chapter 13](ch13_kalman_filter.md) turns this into the rank test for observability.
+    By the Dimension theorem, $\operatorname{rank}\mathbf A$ is the dimension of the column space. It is also a theorem that $\operatorname{rank}\mathbf A^\top = \operatorname{rank}\mathbf A$ ("row rank equals column rank") [@axler2024, Chapter 3]. For the load cell with $h \ne 0$: in the first matrix, $h\,(1, 1) - (h, h) = \mathbf 0$, so the columns are dependent, while each column alone is nonzero; its rank is $1$. In the second, $c_1(h, 0) + c_2(1, 1) = \mathbf 0$ forces $c_2 = 0$ (second entry) and then $c_1 = 0$; its rank is $2$. [Chapter 13](#ch13-thm-rank-test-for-observability) turns this into the rank test for observability.
 
     /// admonition | 📐 **Theorem (Invertible Matrix Theorem)**
         attrs: {class: theorem, id: appd-thm-invertible-matrix-theorem}
@@ -571,7 +571,7 @@ def _(mo):
     <!-- label: appd-sec-determinants -->
     ## Determinants
 
-    The matrix $\begin{bmatrix} a & b \\ c & d\end{bmatrix}$ sends the unit square to the parallelogram spanned by its columns $(a, c)$ and $(b, d)$, whose area is $|ad - bc|$.[^area] The same number decides invertibility: we prove below that the matrix is invertible exactly when $ad - bc \ne 0$. The determinant extends this number to $n\times n$ matrices; it appears in the multivariate normal density of [Chapter 12](ch12_vectors_matrices_covariance.md) as $\det\boldsymbol\Sigma$.
+    The matrix $\begin{bmatrix} a & b \\ c & d\end{bmatrix}$ sends the unit square to the parallelogram spanned by its columns $(a, c)$ and $(b, d)$, whose area is $|ad - bc|$.[^area] The same number decides invertibility: we prove below that the matrix is invertible exactly when $ad - bc \ne 0$. The determinant extends this number to $n\times n$ matrices; it appears in the multivariate normal density of [Chapter 12](#ch12-sec-the-multivariate-normal-distribution) as $\det\boldsymbol\Sigma$.
 
     For $n \ge 2$, $\mathbf A \in \mathbb R^{n\times n}$, and $i, j \in \{1, \ldots, n\}$, let $\mathbf A_{(i,j)} \in \mathbb R^{(n-1)\times(n-1)}$ be $\mathbf A$ with row $i$ and column $j$ deleted. Precisely, $[\mathbf A_{(i,j)}]_{kl} := a_{k'l'}$, where $k' := k$ if $k < i$ and $k' := k + 1$ if $k \ge i$, and $l'$ is defined from $l$ and $j$ in the same way.
 
@@ -677,7 +677,7 @@ def _(mo):
     <!-- label: appd-sec-trace -->
     ## Trace
 
-    For a 3-D position error $\mathbf e$ with mean $\mathbf 0$ and covariance matrix $\mathbf P$ ([Chapter 12](ch12_vectors_matrices_covariance.md)), the diagonal entries $p_{11}, p_{22}, p_{33}$ are the variances of the East, North, and Up errors. By linearity of expectation ([Chapter 6](ch6_expectation_and_variance.md)), their sum is the mean squared distance between estimate and truth: $p_{11} + p_{22} + p_{33} = \mathbb E[e_1^2 + e_2^2 + e_3^2] = \mathbb E\|\mathbf e\|^2$. [Chapter 13](ch13_kalman_filter.md) chooses the Kalman gain to make this sum as small as possible.
+    For a 3-D position error $\mathbf e$ with mean $\mathbf 0$ and covariance matrix $\mathbf P$ ([Chapter 12](#ch12-sec-covariance-matrices)), the diagonal entries $p_{11}, p_{22}, p_{33}$ are the variances of the East, North, and Up errors. By linearity of expectation ([Chapter 6](#ch6-thm-linearity-and-positivity-of-expectation)), their sum is the mean squared distance between estimate and truth: $p_{11} + p_{22} + p_{33} = \mathbb E[e_1^2 + e_2^2 + e_3^2] = \mathbb E\|\mathbf e\|^2$. [Chapter 13](#ch13-sec-the-optimal-gain) chooses the Kalman gain to make this sum as small as possible.
 
     /// note | 📖 **Definition**
     <u>**Trace**</u>
@@ -780,12 +780,12 @@ def _(mo):
     (1 $\Rightarrow$ 2) $\mathbf Q\mathbf x\cdot\mathbf Q\mathbf y = \mathbf x^\top\mathbf Q^\top\mathbf Q\mathbf y = \mathbf x^\top\mathbf y$. (2 $\Rightarrow$ 3) Take $\mathbf y = \mathbf x$ and square roots. (3 $\Rightarrow$ 2) Expanding with the dot product rules gives the polarization identity $\mathbf x\cdot\mathbf y = \tfrac14\big(\|\mathbf x + \mathbf y\|^2 - \|\mathbf x - \mathbf y\|^2\big)$; apply it to $\mathbf Q\mathbf x, \mathbf Q\mathbf y$ and use $\mathbf Q\mathbf x \pm \mathbf Q\mathbf y = \mathbf Q(\mathbf x \pm \mathbf y)$. (2 $\Rightarrow$ 1) $[\mathbf Q^\top\mathbf Q]_{ij} = \mathbf Q\mathbf e_i\cdot\mathbf Q\mathbf e_j = \mathbf e_i\cdot\mathbf e_j = \delta_{ij}$. $\blacksquare$
     ///
 
-    **Examples.** $\mathbf R(\theta)$ has determinant $+1$. The mirror $\operatorname{diag}(1, -1)$ is orthogonal with determinant $-1$: it preserves lengths but flips orientation (a counterclockwise turn becomes clockwise). A **permutation matrix**, whose columns are $\mathbf e_1, \ldots, \mathbf e_n$ in some order, is orthogonal. The orthogonal matrices with determinant $+1$ are exactly the rotation matrices of [Chapter 17](ch17_rotations.md), which form the {term}`special orthogonal group`.
+    **Examples.** $\mathbf R(\theta)$ has determinant $+1$. The mirror $\operatorname{diag}(1, -1)$ is orthogonal with determinant $-1$: it preserves lengths but flips orientation (a counterclockwise turn becomes clockwise). A **permutation matrix**, whose columns are $\mathbf e_1, \ldots, \mathbf e_n$ in some order, is orthogonal. The orthogonal matrices with determinant $+1$ are exactly the rotation matrices of [Chapter 17](#ch17-sec-rotation-matrices), which form the {term}`special orthogonal group`.
 
-    Orthogonal changes of coordinates do not change the mean squared error. If an error vector $\mathbf e$ with covariance $\mathbf P$ is expressed in rotated coordinates $\mathbf Q\mathbf e$, its covariance becomes $\mathbf Q\mathbf P\mathbf Q^\top$ ([Chapter 12](ch12_vectors_matrices_covariance.md)), and $\operatorname{tr}(\mathbf Q\mathbf P\mathbf Q^\top) = \operatorname{tr}(\mathbf P\mathbf Q^\top\mathbf Q) = \operatorname{tr}\mathbf P$.
+    Orthogonal changes of coordinates do not change the mean squared error. If an error vector $\mathbf e$ with covariance $\mathbf P$ is expressed in rotated coordinates $\mathbf Q\mathbf e$, its covariance becomes $\mathbf Q\mathbf P\mathbf Q^\top$ ([Chapter 12](#ch12-thm-affine-transformation-of-mean-and-covariance)), and $\operatorname{tr}(\mathbf Q\mathbf P\mathbf Q^\top) = \operatorname{tr}(\mathbf P\mathbf Q^\top\mathbf Q) = \operatorname{tr}\mathbf P$.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    In floating-point arithmetic, a product of many orthogonal matrices (for example, an attitude updated 100 times per second) slowly stops being orthogonal: rounding makes $\mathbf Q^\top\mathbf Q$ drift away from $\mathbf I$, so lengths are no longer preserved. Attitude code therefore re-orthonormalizes periodically; [Chapter 18](ch18_quaternions.md) shows the quaternion version of this fix.
+    In floating-point arithmetic, a product of many orthogonal matrices (for example, an attitude updated 100 times per second) slowly stops being orthogonal: rounding makes $\mathbf Q^\top\mathbf Q$ drift away from $\mathbf I$, so lengths are no longer preserved. Attitude code therefore re-orthonormalizes periodically; [Chapter 18](#ch18-sec-why-not-just-use-eulers-method) shows the quaternion version of this fix.
     ///
     """)
     return
@@ -801,7 +801,7 @@ def _(mo):
 
     $$\boldsymbol\Sigma\begin{bmatrix} 1 \\ 1\end{bmatrix} = \begin{bmatrix} 3 \\ 3\end{bmatrix} = 3\begin{bmatrix} 1 \\ 1\end{bmatrix}, \qquad \boldsymbol\Sigma\begin{bmatrix} 1 \\ -1\end{bmatrix} = \begin{bmatrix} 1 \\ -1\end{bmatrix} = 1\begin{bmatrix} 1 \\ -1\end{bmatrix}.$$
 
-    Along $(1, 1)$, $\boldsymbol\Sigma$ stretches by $3$; along the perpendicular direction $(1, -1)$ it changes nothing. In [Chapter 12](ch12_vectors_matrices_covariance.md) these become the axes of a confidence ellipse. By contrast, the quarter-turn $\mathbf R(90^\circ) = \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix}$ turns every nonzero vector by a right angle, so it keeps no real direction fixed. Yet $\mathbf R(90^\circ)^2 = -\mathbf I$: in some sense it "multiplies by a square root of $-1$". Complex numbers make this precise, and they guarantee that every square matrix has at least one eigenvalue, which the spectral theorem in the next section needs.
+    Along $(1, 1)$, $\boldsymbol\Sigma$ stretches by $3$; along the perpendicular direction $(1, -1)$ it changes nothing. In [Chapter 12](#ch12-sec-mahalanobis-distance-and-confidence-ellipses) these become the axes of a confidence ellipse. By contrast, the quarter-turn $\mathbf R(90^\circ) = \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix}$ turns every nonzero vector by a right angle, so it keeps no real direction fixed. Yet $\mathbf R(90^\circ)^2 = -\mathbf I$: in some sense it "multiplies by a square root of $-1$". Complex numbers make this precise, and they guarantee that every square matrix has at least one eigenvalue, which the spectral theorem in the next section needs.
 
     <!-- label: appd-sec-complex-numbers-just-enough -->
     ### Complex numbers (just enough)
@@ -896,7 +896,7 @@ def _(mo):
 
     A matrix of this form is called **diagonalizable**. In the coordinates given by the eigenvectors it acts on each coordinate separately, multiplying the $i$-th one by $\lambda_i$ at every step; so in $\mathbf x_k = \mathbf A^k\mathbf x_0$ a component dies out if $|\lambda_i| < 1$ and grows if $|\lambda_i| > 1$. This is why the eigenvalues of the matrix that propagates a filter's error decide whether old errors are forgotten. The cart matrix $\mathbf F$ is *not* diagonalizable, because any two of its eigenvectors are multiples of $\mathbf e_1$ and hence dependent. The next section shows that this cannot happen for symmetric matrices.
 
-    Eigenvalues also describe rotations: [Chapter 17](ch17_rotations.md) shows that every 3-D rotation matrix has the eigenvalue $1$, and an eigenvector for it is the rotation axis.
+    Eigenvalues also describe rotations: [Chapter 17](#ch17-thm-eulers-rotation-theorem) shows that every 3-D rotation matrix has the eigenvalue $1$, and an eigenvector for it is the rotation axis.
     """)
     return
 
@@ -988,7 +988,7 @@ def _(mo):
     <!-- label: appd-sec-symmetric-and-positive-definite-matrices -->
     ## Symmetric and Positive Definite Matrices
 
-    Covariance matrices ([Chapter 12](ch12_vectors_matrices_covariance.md)) have two special properties: they equal their own transpose, and the "variance in every direction" they assign is nonnegative. This section shows what these properties buy: perpendicular eigenvectors, real positive eigenvalues, and invertibility.
+    Covariance matrices ([Chapter 12](#ch12-thm-covariance-matrices-are-symmetric-and-positive-semidefinite)) have two special properties: they equal their own transpose, and the "variance in every direction" they assign is nonnegative. This section shows what these properties buy: perpendicular eigenvectors, real positive eigenvalues, and invertibility.
 
     /// note | 📖 **Definition**
     <u>**Symmetric matrix**</u>
@@ -1083,12 +1083,12 @@ def _(mo):
 
     $$\mathbf A\begin{bmatrix} \cos\varphi \\ \sin\varphi\end{bmatrix} = \lambda_+\begin{bmatrix} \cos\varphi \\ \sin\varphi\end{bmatrix}, \qquad \mathbf A\begin{bmatrix} -\sin\varphi \\ \cos\varphi\end{bmatrix} = \lambda_-\begin{bmatrix} -\sin\varphi \\ \cos\varphi\end{bmatrix}.$$
 
-    So $\mathbf Q = \mathbf R(\varphi)$: the eigenvectors are the perpendicular directions at angles $\varphi$ and $\varphi + 90^\circ$. If $r = 0$, then $\mathbf A = a\mathbf I$ and every nonzero vector is an eigenvector. For $\boldsymbol\Sigma = \begin{bmatrix} 2 & 1 \\ 1 & 2\end{bmatrix}$: $r = 1$, $\varphi = 45^\circ$, and $\lambda_\pm = 3, 1$, as found at the start of the previous section. [Chapter 12](ch12_vectors_matrices_covariance.md) draws confidence ellipses with exactly these axes.
+    So $\mathbf Q = \mathbf R(\varphi)$: the eigenvectors are the perpendicular directions at angles $\varphi$ and $\varphi + 90^\circ$. If $r = 0$, then $\mathbf A = a\mathbf I$ and every nonzero vector is an eigenvector. For $\boldsymbol\Sigma = \begin{bmatrix} 2 & 1 \\ 1 & 2\end{bmatrix}$: $r = 1$, $\varphi = 45^\circ$, and $\lambda_\pm = 3, 1$, as found at the start of the previous section. [Chapter 12](#ch12-sec-mahalanobis-distance-and-confidence-ellipses) draws confidence ellipses with exactly these axes.
 
     <!-- label: appd-sec-positive-definite-matrices -->
     ### Positive definite matrices
 
-    For a covariance matrix $\boldsymbol\Sigma$ and a direction $\mathbf w$, the number $\mathbf w^\top\boldsymbol\Sigma\mathbf w$ is the variance of the combination $\mathbf w^\top\mathbf x$ of the random entries ([Chapter 12](ch12_vectors_matrices_covariance.md)), so it can never be negative. Numbers of the form $\mathbf x^\top\mathbf A\mathbf x = \sum_{i,j}a_{ij}x_ix_j$ are called **quadratic forms**. For $\boldsymbol\Sigma = \begin{bmatrix} 2 & 1 \\ 1 & 2\end{bmatrix}$,
+    For a covariance matrix $\boldsymbol\Sigma$ and a direction $\mathbf w$, the number $\mathbf w^\top\boldsymbol\Sigma\mathbf w$ is the variance of the combination $\mathbf w^\top\mathbf x$ of the random entries ([Chapter 12](#ch12-thm-covariance-matrices-are-symmetric-and-positive-semidefinite)), so it can never be negative. Numbers of the form $\mathbf x^\top\mathbf A\mathbf x = \sum_{i,j}a_{ij}x_ix_j$ are called **quadratic forms**. For $\boldsymbol\Sigma = \begin{bmatrix} 2 & 1 \\ 1 & 2\end{bmatrix}$,
     $$\mathbf x^\top\boldsymbol\Sigma\mathbf x = 2x_1^2 + 2x_1x_2 + 2x_2^2 = x_1^2 + x_2^2 + (x_1 + x_2)^2 > 0 \quad\text{for } \mathbf x \ne \mathbf 0,$$
     whereas $\begin{bmatrix} 1 & 2 \\ 2 & 1\end{bmatrix}$ gives $1 - 4 + 1 = -2$ at $\mathbf x = (1, -1)$, so it cannot be a covariance matrix (it would need a correlation coefficient of $2$).
 
@@ -1146,7 +1146,7 @@ def _(mo):
     All three matrices are symmetric by the transpose rules. (1) $\mathbf x^\top\mathbf M\mathbf A\mathbf M^\top\mathbf x = (\mathbf M^\top\mathbf x)^\top\mathbf A(\mathbf M^\top\mathbf x) \ge 0$; for $\mathbf M\mathbf M^\top$ take $\mathbf A = \mathbf I$. (2) For $\mathbf x \ne \mathbf 0$, $\mathbf C\mathbf x \ne \mathbf 0$ (Invertible Matrix Theorem), so $\mathbf x^\top\mathbf C^\top\mathbf A\mathbf C\mathbf x = (\mathbf C\mathbf x)^\top\mathbf A(\mathbf C\mathbf x) > 0$. (3) $\mathbf x^\top(\mathbf A + \mathbf B)\mathbf x = \mathbf x^\top\mathbf A\mathbf x + \mathbf x^\top\mathbf B\mathbf x$. $\blacksquare$
     ///
 
-    **Why the Kalman gain always exists.** In [Chapter 13](ch13_kalman_filter.md), if $\mathbf P$ and $\mathbf Q$ are positive semidefinite, then so is the predicted covariance $\mathbf F\mathbf P\mathbf F^\top + \mathbf Q$ (parts 1 and 3). If moreover the measurement noise covariance $\mathbf R$ is positive definite, then the innovation covariance $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$ is positive definite (parts 1 and 3), hence invertible, so $\mathbf K = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ is defined. A perfect sensor ($\mathbf R$ only semidefinite) can make $\mathbf S$ singular.
+    **Why the Kalman gain always exists.** In [Chapter 13](#ch13-thm-kalman-gain), if $\mathbf P$ and $\mathbf Q$ are positive semidefinite, then so is the predicted covariance $\mathbf F\mathbf P\mathbf F^\top + \mathbf Q$ (parts 1 and 3). If moreover the measurement noise covariance $\mathbf R$ is positive definite, then the innovation covariance $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$ is positive definite (parts 1 and 3), hence invertible, so $\mathbf K = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ is defined. A perfect sensor ($\mathbf R$ only semidefinite) can make $\mathbf S$ singular.
 
     /// admonition | 📐 **Theorem ($2 \times 2$ Test)**
         attrs: {class: theorem, id: appd-thm-2-times-2-test}
@@ -1163,11 +1163,11 @@ def _(mo):
     <!-- label: appd-sec-matrix-square-roots -->
     ### Matrix square roots
 
-    If $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$ is positive semidefinite, then $\mathbf A^{1/2} := \mathbf Q\operatorname{diag}(\sqrt{\lambda_1}, \ldots, \sqrt{\lambda_n})\mathbf Q^\top$ is symmetric, positive semidefinite (its eigenvalues are $\sqrt{\lambda_i} \ge 0$), and satisfies $\mathbf A^{1/2}\mathbf A^{1/2} = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top = \mathbf A$. It does not depend on which spectral decomposition is used, because $\mathbf A$ has exactly one positive semidefinite square root ([Wikipedia: Square root of a matrix](https://en.wikipedia.org/wiki/Square_root_of_a_matrix)). Filtering uses the word "square root" more loosely: *any* $\mathbf S$ with $\mathbf S\mathbf S^\top = \mathbf A$ will do, for example to scale sigma points ([Chapter 16](ch16_unscented_kalman_filter.md)). $\mathbf A^{1/2}$ is one such $\mathbf S$; the next section builds a cheaper, triangular one.
+    If $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$ is positive semidefinite, then $\mathbf A^{1/2} := \mathbf Q\operatorname{diag}(\sqrt{\lambda_1}, \ldots, \sqrt{\lambda_n})\mathbf Q^\top$ is symmetric, positive semidefinite (its eigenvalues are $\sqrt{\lambda_i} \ge 0$), and satisfies $\mathbf A^{1/2}\mathbf A^{1/2} = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top = \mathbf A$. It does not depend on which spectral decomposition is used, because $\mathbf A$ has exactly one positive semidefinite square root ([Wikipedia: Square root of a matrix](https://en.wikipedia.org/wiki/Square_root_of_a_matrix)). Filtering uses the word "square root" more loosely: *any* $\mathbf S$ with $\mathbf S\mathbf S^\top = \mathbf A$ will do, for example to scale sigma points ([Chapter 16](#ch16-sec-sigma-points-in-general)). $\mathbf A^{1/2}$ is one such $\mathbf S$; the next section builds a cheaper, triangular one.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Symmetry is essential.** $\begin{bmatrix} 1 & 4 \\ 0 & 1\end{bmatrix}$ has both eigenvalues equal to $1$, yet $\mathbf x = (1, -1)$ gives $\mathbf x^\top\mathbf A\mathbf x = -2$. A quadratic form only sees the symmetric part $\tfrac12(\mathbf A + \mathbf A^\top) = \begin{bmatrix} 1 & 2 \\ 2 & 1\end{bmatrix}$, whose eigenvalues are $3$ and $-1$. Without symmetry the spectral theorem also fails: the cart matrix $\mathbf F$ is not even diagonalizable.
-    - **Rounding.** A covariance matrix computed in floating point can become slightly non-symmetric or even acquire a tiny negative eigenvalue. Filters guard against this by symmetrizing, $\mathbf P \leftarrow \tfrac12(\mathbf P + \mathbf P^\top)$, and by update formulas that preserve definiteness ([Chapter 13](ch13_kalman_filter.md), [Chapter 14](ch14_kalman_filters_in_practice.md)).
+    - **Rounding.** A covariance matrix computed in floating point can become slightly non-symmetric or even acquire a tiny negative eigenvalue. Filters guard against this by symmetrizing, $\mathbf P \leftarrow \tfrac12(\mathbf P + \mathbf P^\top)$, and by update formulas that preserve definiteness ([Chapter 13](#ch13-thm-update-with-an-arbitrary-gain), [Chapter 14](#ch14-sec-numerical-stability)).
     ///
     """)
     return
@@ -1183,7 +1183,7 @@ def _(mo):
 
     $$\begin{bmatrix} x \\ y\end{bmatrix} = \underbrace{\begin{bmatrix} \sigma_x & 0 \\ \rho\sigma_y & \sigma_y\sqrt{1 - \rho^2}\end{bmatrix}}_{\mathbf L}\begin{bmatrix} w_1 \\ w_2\end{bmatrix}.$$
 
-    [Chapter 12](ch12_vectors_matrices_covariance.md) shows that $\mathbf L\mathbf w$ has covariance matrix $\mathbf L\mathbf L^\top$, and multiplying out,
+    [Chapter 12](#ch12-thm-affine-transformation-of-mean-and-covariance) shows that $\mathbf L\mathbf w$ has covariance matrix $\mathbf L\mathbf L^\top$, and multiplying out,
 
     $$\mathbf L\mathbf L^\top = \begin{bmatrix} \sigma_x^2 & \rho\sigma_x\sigma_y \\ \rho\sigma_x\sigma_y & \rho^2\sigma_y^2 + \sigma_y^2(1 - \rho^2)\end{bmatrix} = \begin{bmatrix} \sigma_x^2 & \rho\sigma_x\sigma_y \\ \rho\sigma_x\sigma_y & \sigma_y^2\end{bmatrix},$$
 
@@ -1298,14 +1298,14 @@ def _(mo):
     so unit vectors land on $E_{\mathbf A}$; and every $\mathbf y \in E_{\mathbf A}$ is $\mathbf S(\mathbf S^{-1}\mathbf y)$ with $\|\mathbf S^{-1}\mathbf y\|^2 = \mathbf y^\top\mathbf A^{-1}\mathbf y = 1$. $\blacksquare$
     ///
 
-    In the eigenvector coordinates $\mathbf z = \mathbf Q^\top\mathbf y$ of $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, the equation of $E_{\mathbf A}$ reads $\sum_i z_i^2/\lambda_i = 1$: an ellipse (for $n = 2$) with semi-axes $\sqrt{\lambda_i}$ along the eigenvectors. When $\mathbf A$ is a covariance matrix, $E_{\mathbf A}$ is the one-standard-deviation {term}`confidence ellipse` of [Chapter 12](ch12_vectors_matrices_covariance.md). The unscented transform of [Chapter 16](ch16_unscented_kalman_filter.md) places its sigma points at the mean plus and minus (scaled) columns of a square root $\mathbf S$; by the lemma, those points lie on this ellipse whichever square root is used.
+    In the eigenvector coordinates $\mathbf z = \mathbf Q^\top\mathbf y$ of $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, the equation of $E_{\mathbf A}$ reads $\sum_i z_i^2/\lambda_i = 1$: an ellipse (for $n = 2$) with semi-axes $\sqrt{\lambda_i}$ along the eigenvectors. When $\mathbf A$ is a covariance matrix, $E_{\mathbf A}$ is the one-standard-deviation {term}`confidence ellipse` of [Chapter 12](#ch12-sec-mahalanobis-distance-and-confidence-ellipses). The unscented transform of [Chapter 16](#ch16-sec-the-unscented-transform) places its sigma points at the mean plus and minus (scaled) columns of a square root $\mathbf S$; by the lemma, those points lie on this ellipse whichever square root is used.
 
     <!-- label: appd-sec-explore-two-square-roots-one-ellipse -->
     ### Explore: two square roots, one ellipse
 
     The sliders set a $2\times 2$ covariance matrix $\mathbf A$. The red arrows are the columns of the Cholesky factor $\mathbf L$ (images of $\mathbf e_1, \mathbf e_2$), and the blue arrows are the columns of $\mathbf A^{1/2}$. Both maps carry the dashed unit circle onto the same orange ellipse, but they send $\mathbf e_1$ and $\mathbf e_2$ to different points on it. The gray dots are $300$ samples $\mathbf L\mathbf w$, where $\mathbf w$ has two independent standard normal entries;[^normal-informal] they spread out in the shape of the ellipse. As $|\rho| \to 1$, the ellipse collapses toward a line and the second diagonal entry $\sigma_y\sqrt{1 - \rho^2}$ of $\mathbf L$ goes to $0$.
 
-    [^normal-informal]: Standard normal random variables are defined in [Chapter 5](ch5_random_variables.md); here they only produce a cloud whose covariance is $\mathbf A$ ([Chapter 12](ch12_vectors_matrices_covariance.md)).
+    [^normal-informal]: Standard normal random variables are defined in [Chapter 5](#ch5-sec-the-uniform-and-normal-distributions); here they only produce a cloud whose covariance is $\mathbf A$ ([Chapter 12](#ch12-thm-affine-transformation-of-mean-and-covariance)).
     """)
     return
 
@@ -1375,7 +1375,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Positive definiteness is required.** A singular positive semidefinite matrix (for example a covariance with $|\rho| = 1$, or with a state that is known exactly) produces a zero radicand, and the plain algorithm divides by zero. Variants with pivoting handle the semidefinite case.
-    - **Rounding can break it.** A covariance matrix that should be positive definite but has a tiny negative eigenvalue after rounding makes the algorithm fail. This is a common way for an unscented Kalman filter to crash ([Chapter 16](ch16_unscented_kalman_filter.md)), and a reason to symmetrize and to use numerically careful updates ([Chapter 14](ch14_kalman_filters_in_practice.md)).
+    - **Rounding can break it.** A covariance matrix that should be positive definite but has a tiny negative eigenvalue after rounding makes the algorithm fail. This is a common way for an unscented Kalman filter to crash ([Chapter 16](#ch16-sec-the-unscented-kalman-filter)), and a reason to symmetrize and to use numerically careful updates ([Chapter 14](#ch14-sec-numerical-stability)).
     ///
     """)
     return
@@ -1387,7 +1387,7 @@ def _(mo):
     <!-- label: appd-sec-block-matrices-and-the-schur-complement -->
     ## Block Matrices and the Schur Complement
 
-    Under Matrix Multiplication we multiplied block matrices; here we invert them. The motivating example is the scalar Kalman update in disguise. Treat the true weight $x$ as random with variance $P^-$ about the prediction (the Bayesian view of [Chapter 8](ch8_bayesian_view.md)), and let $z = x + v$ with measurement noise $v$ of variance $R$, uncorrelated with $x$. Then the pair $(x, z)$ has covariance matrix ([Chapter 12](ch12_vectors_matrices_covariance.md))
+    Under Matrix Multiplication we multiplied block matrices; here we invert them. The motivating example is the scalar Kalman update in disguise. Treat the true weight $x$ as random with variance $P^-$ about the prediction (the Bayesian view of [Chapter 8](#ch8-sec-prior-likelihood-posterior-and-evidence)), and let $z = x + v$ with measurement noise $v$ of variance $R$, uncorrelated with $x$. Then the pair $(x, z)$ has covariance matrix ([Chapter 12](#ch12-sec-covariance-matrices))
 
     $$\boldsymbol\Sigma = \begin{bmatrix} P^- & P^- \\ P^- & P^- + R\end{bmatrix}.$$
 
@@ -1395,7 +1395,7 @@ def _(mo):
 
     $$P^- - P^-(P^- + R)^{-1}P^- = \frac{P^-R}{P^- + R},$$
 
-    is exactly the updated error variance of [Chapter 7](ch7_optimal_alpha.md). [Chapter 12](ch12_vectors_matrices_covariance.md) proves that it is the variance of $x$ once $z$ is known. For matrices, this number becomes the Schur complement.
+    is exactly the updated error variance of [Chapter 7](#ch7-thm-optimal-gain). [Chapter 12](#ch12-thm-conditioning-a-joint-normal-distribution) proves that it is the variance of $x$ once $z$ is known. For matrices, this number becomes the Schur complement.
 
     Throughout this section, $\mathbf M = \begin{bmatrix} \mathbf A & \mathbf B \\ \mathbf C & \mathbf D\end{bmatrix}$ with square blocks $\mathbf A \in \mathbb R^{p\times p}$ and $\mathbf D \in \mathbb R^{q\times q}$ (so $\mathbf B \in \mathbb R^{p\times q}$ and $\mathbf C \in \mathbb R^{q\times p}$), and $\mathbf I$ and $\mathbf 0$ denote identity and zero blocks of the appropriate sizes.
 
@@ -1444,7 +1444,7 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-    The bottom-right block of $\mathbf M^{-1}$ is $(\mathbf M/\mathbf A)^{-1}$ and the top-left block is $(\mathbf M/\mathbf D)^{-1}$. Taking a Schur complement is what "eliminating" a block of variables does to a matrix; in [Chapter 12](ch12_vectors_matrices_covariance.md), conditioning a Gaussian on some of its entries leaves a Schur complement as the new covariance.
+    The bottom-right block of $\mathbf M^{-1}$ is $(\mathbf M/\mathbf A)^{-1}$ and the top-left block is $(\mathbf M/\mathbf D)^{-1}$. Taking a Schur complement is what "eliminating" a block of variables does to a matrix; in [Chapter 12](#ch12-sec-marginals-and-conditioning), conditioning a Gaussian on some of its entries leaves a Schur complement as the new covariance.
     ///
     """)
     return
@@ -1475,9 +1475,9 @@ def _(mo):
 
     The identity is not a lucky guess: for $\mathbf M = \begin{bmatrix} \mathbf A & -\mathbf U \\ \mathbf V & \mathbf C^{-1}\end{bmatrix}$, the top-left block of $\mathbf M^{-1}$ is $(\mathbf M/\mathbf C^{-1})^{-1} = (\mathbf A + \mathbf U\mathbf C\mathbf V)^{-1}$ by the corollary, and also $\mathbf A^{-1} - \mathbf A^{-1}\mathbf U\mathbf W^{-1}\mathbf V\mathbf A^{-1}$ by the theorem, since $\mathbf M/\mathbf A = \mathbf W$. The lemma equates the two. It pays off when $k \ll n$: the right side inverts only the $k\times k$ matrix $\mathbf W$.
 
-    **Example (the information form of the Kalman update).** Let $\mathbf P^- \in \mathbb R^{n\times n}$ and $\mathbf R \in \mathbb R^{m\times m}$ be positive definite, $\mathbf H \in \mathbb R^{m\times n}$, $\mathbf S := \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$, and $\mathbf K := \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ (the {term}`Kalman gain` of [Chapter 13](ch13_kalman_filter.md)). The lemma with $\mathbf A = (\mathbf P^-)^{-1}$, $\mathbf U = \mathbf H^\top$, $\mathbf C = \mathbf R^{-1}$, $\mathbf V = \mathbf H$ (so $\mathbf W = \mathbf S$, invertible as shown under Symmetric and Positive Definite Matrices) gives
+    **Example (the information form of the Kalman update).** Let $\mathbf P^- \in \mathbb R^{n\times n}$ and $\mathbf R \in \mathbb R^{m\times m}$ be positive definite, $\mathbf H \in \mathbb R^{m\times n}$, $\mathbf S := \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$, and $\mathbf K := \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ (the {term}`Kalman gain` of [Chapter 13](#ch13-thm-kalman-gain)). The lemma with $\mathbf A = (\mathbf P^-)^{-1}$, $\mathbf U = \mathbf H^\top$, $\mathbf C = \mathbf R^{-1}$, $\mathbf V = \mathbf H$ (so $\mathbf W = \mathbf S$, invertible as shown under Symmetric and Positive Definite Matrices) gives
     $$\big((\mathbf P^-)^{-1} + \mathbf H^\top\mathbf R^{-1}\mathbf H\big)^{-1} = \mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf S^{-1}\mathbf H\mathbf P^- = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-.$$
-    For $n = m = 1$ and $\mathbf H = [1]$ this is $1/P = 1/P^- + 1/R$, the formula of [Chapter 7](ch7_optimal_alpha.md): inverse variances (information) add.
+    For $n = m = 1$ and $\mathbf H = [1]$ this is $1/P = 1/P^- + 1/R$, the formula of [Chapter 7](#ch7-thm-optimal-gain): inverse variances (information) add.
 
     /// admonition | 📐 **Lemma (Schur Complements of Positive Definite Matrices)**
         attrs: {class: lemma, id: appd-lem-schur-complements-of-positive-definite-matrices}
@@ -1491,7 +1491,7 @@ def _(mo):
     Since $\mathbf U$ is invertible, $(\mathbf y, \mathbf w)$ runs over all of $\mathbb R^{p+q}$, and is nonzero exactly when $\mathbf x$ is. If $\mathbf S$ is positive definite and $(\mathbf y, \mathbf w) \ne \mathbf 0$, then either $\mathbf w \ne \mathbf 0$ (second term positive) or $\mathbf y \ne \mathbf 0$ (first term positive), and the other term is $\ge 0$. Conversely, choosing $\mathbf y = \mathbf 0$ shows that $\mathbf M$ positive definite forces $\mathbf w^\top\mathbf S\mathbf w > 0$ for $\mathbf w \ne \mathbf 0$. The semidefinite case is the same with $\ge$. $\blacksquare$
     ///
 
-    So the conditional covariance of [Chapter 12](ch12_vectors_matrices_covariance.md), a Schur complement of a covariance matrix, is again a valid covariance matrix.
+    So the conditional covariance of [Chapter 12](#ch12-thm-conditioning-a-joint-normal-distribution), a Schur complement of a covariance matrix, is again a valid covariance matrix.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The pivot block must be invertible.** $\mathbf M = \begin{bmatrix} 0 & 1 \\ 1 & 0\end{bmatrix}$ is invertible, but its top-left block $0$ is not, so $\mathbf M/\mathbf A$ is undefined; use the other Schur complement (here $\mathbf D = 0$ fails too, and neither formula applies even though $\mathbf M^{-1} = \mathbf M$).
@@ -1627,7 +1627,7 @@ def _(mo):
     <!-- label: appd-sec-the-matrix-exponential -->
     ## The Matrix Exponential
 
-    The scalar model $\dot x = ax$ has the solution $x(t) = e^{at}x(0)$, so its exact discretization is $x_k = e^{a\Delta t}x_{k-1}$ ([Chapter 10](ch10_process_models.md)). A cart moving at constant velocity obeys the vector equation
+    The scalar model $\dot x = ax$ has the solution $x(t) = e^{at}x(0)$, so its exact discretization is $x_k = e^{a\Delta t}x_{k-1}$ ([Chapter 10](#ch10-thm-exact-discretization)). A cart moving at constant velocity obeys the vector equation
 
     $$\frac{d}{dt}\begin{bmatrix} p \\ v\end{bmatrix} = \begin{bmatrix} v \\ 0\end{bmatrix} = \underbrace{\begin{bmatrix} 0 & 1 \\ 0 & 0\end{bmatrix}}_{\mathbf A}\begin{bmatrix} p \\ v\end{bmatrix},$$
 
@@ -1706,9 +1706,9 @@ def _(mo):
     A function with zero derivative everywhere is constant ([Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema)), so $\mathbf g(t) = \mathbf g(0) = \mathbf x_0$, and by property 4, $\mathbf y(t) = \exp(t\mathbf A)\mathbf g(t) = \mathbf x(t)$. The last claim is property 4: $\exp\big((t + \Delta t)\mathbf A\big)\mathbf x_0 = \exp(\Delta t\,\mathbf A)\exp(t\mathbf A)\mathbf x_0$. $\blacksquare$
     ///
 
-    So the exact discrete-time transition matrix of a linear continuous-time model is $\mathbf F = \exp(\mathbf A\Delta t)$; for $n = 1$ this is the $e^{a\Delta t}$ of [Chapter 10](ch10_process_models.md), and for the cart it is $\begin{bmatrix} 1 & \Delta t \\ 0 & 1\end{bmatrix}$.
+    So the exact discrete-time transition matrix of a linear continuous-time model is $\mathbf F = \exp(\mathbf A\Delta t)$; for $n = 1$ this is the $e^{a\Delta t}$ of [Chapter 10](#ch10-thm-exact-discretization), and for the cart it is $\begin{bmatrix} 1 & \Delta t \\ 0 & 1\end{bmatrix}$.
 
-    **Example (an integral for the process noise).** Integrals of matrix-valued functions are taken entry by entry. When the cart's acceleration is white noise of intensity $q$, [Chapter 14](ch14_kalman_filters_in_practice.md) discretizes it with an integral of the form $\mathbf Q = \int_0^{\Delta t}\exp(\mathbf A\tau)\,\mathbf g\,q\,\mathbf g^\top\exp(\mathbf A\tau)^\top\,d\tau$ with $\mathbf g = (0, 1)$. Here $\exp(\mathbf A\tau)\mathbf g = (\tau, 1)$, so the integrand is $q\begin{bmatrix} \tau^2 & \tau \\ \tau & 1\end{bmatrix}$ and
+    **Example (an integral for the process noise).** Integrals of matrix-valued functions are taken entry by entry. When the cart's acceleration is white noise of intensity $q$, [Chapter 14](#ch14-thm-discretized-continuous-white-noise-acceleration) discretizes it with an integral of the form $\mathbf Q = \int_0^{\Delta t}\exp(\mathbf A\tau)\,\mathbf g\,q\,\mathbf g^\top\exp(\mathbf A\tau)^\top\,d\tau$ with $\mathbf g = (0, 1)$. Here $\exp(\mathbf A\tau)\mathbf g = (\tau, 1)$, so the integrand is $q\begin{bmatrix} \tau^2 & \tau \\ \tau & 1\end{bmatrix}$ and
     $$\mathbf Q = q\begin{bmatrix} \Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t\end{bmatrix}.$$
 
     <!-- label: appd-sec-exponentials-of-skew-symmetric-matrices -->
@@ -1724,7 +1724,7 @@ def _(mo):
     By properties 1 and 4, $\exp(\mathbf K)^\top\exp(\mathbf K) = \exp(\mathbf K^\top)\exp(\mathbf K) = \exp(-\mathbf K)\exp(\mathbf K) = \mathbf I$. The same holds for $t\mathbf K$, which is also skew-symmetric, so $f(t) := \det\exp(t\mathbf K) \in \{-1, 1\}$ for every $t$. The determinant is a polynomial in the entries (by its recursive definition), and the entries of $\exp(t\mathbf K)$ are differentiable, hence continuous, in $t$ (property 5); so $f$ is continuous. Since $f(0) = \det\mathbf I = 1$, if $f(1)$ were $-1$ the intermediate value theorem ([Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity)) would give a $t$ with $f(t) = 0$, which is impossible. So $f(1) = 1$. $\blacksquare$
     ///
 
-    For $n = 3$ every skew-symmetric matrix is $[\boldsymbol\theta]_\times$ for some $\boldsymbol\theta \in \mathbb R^3$, and $\exp([\boldsymbol\theta]_\times)$ is the rotation by the angle $\|\boldsymbol\theta\|$ about the axis $\boldsymbol\theta$; [Chapter 17](ch17_rotations.md) derives its closed form (Rodrigues' formula). With a constant body rate $\boldsymbol\omega$, property 5 shows that $\mathbf R(t) = \mathbf R(0)\exp(t[\boldsymbol\omega]_\times)$ solves the attitude kinematics $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ used from Chapter 17 on.
+    For $n = 3$ every skew-symmetric matrix is $[\boldsymbol\theta]_\times$ for some $\boldsymbol\theta \in \mathbb R^3$, and $\exp([\boldsymbol\theta]_\times)$ is the rotation by the angle $\|\boldsymbol\theta\|$ about the axis $\boldsymbol\theta$; [Chapter 17](#ch17-thm-rodrigues-formula) derives its closed form (Rodrigues' formula). With a constant body rate $\boldsymbol\omega$, property 5 shows that $\mathbf R(t) = \mathbf R(0)\exp(t[\boldsymbol\omega]_\times)$ solves the attitude kinematics $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ used from Chapter 17 on.
 
     The code below sums the series directly and checks these facts.
     """)
@@ -1790,7 +1790,7 @@ def _(mo):
     <!-- label: appd-sec-derivatives-with-respect-to-matrices -->
     ## Derivatives with Respect to Matrices
 
-    [Chapter 13](ch13_kalman_filter.md) chooses the gain $\mathbf K$ to minimize $\operatorname{tr}\mathbf P(\mathbf K)$, a real-valued function of a matrix variable. In the scalar case ([Chapter 7](ch7_optimal_alpha.md)) we completed the square. For matrices we can do the same (the last theorem below), or we can set the partial derivative with respect to every entry to zero, which is how the formula is usually found.
+    [Chapter 13](#ch13-sec-the-optimal-gain) chooses the gain $\mathbf K$ to minimize $\operatorname{tr}\mathbf P(\mathbf K)$, a real-valued function of a matrix variable. In the scalar case ([Chapter 7](#ch7-sec-completing-the-square)) we completed the square. For matrices we can do the same (the last theorem below), or we can set the partial derivative with respect to every entry to zero, which is how the formula is usually found.
 
     For $f : \mathbb R^{m\times n} \to \mathbb R$, regard $\mathbf X$ as the point $(x_{11}, x_{12}, \ldots, x_{mn}) \in \mathbb R^{mn}$. The **derivative of $f$ with respect to $\mathbf X$** is the $m\times n$ matrix of partial derivatives ([Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables))
 
@@ -1851,7 +1851,7 @@ def _(mo):
     (1) $(\mathbf X - \mathbf X_\star)\mathbf S(\mathbf X - \mathbf X_\star)^\top$ is positive semidefinite by the Lemma (Building Positive Definite Matrices). (2) Let $\mathbf Y := \mathbf X - \mathbf X_\star$ with rows $\mathbf y_1^\top, \ldots, \mathbf y_m^\top$. Then $\operatorname{tr}(\mathbf Y\mathbf S\mathbf Y^\top) = \sum_i\mathbf y_i^\top\mathbf S\mathbf y_i \ge 0$, with equality only if every $\mathbf y_i = \mathbf 0$. (3) $\operatorname{tr}(\mathbf M\mathbf X^\top) = \operatorname{tr}(\mathbf X\mathbf M^\top)$, so $\operatorname{tr}f(\mathbf X) = \operatorname{tr}\mathbf C - 2\operatorname{tr}(\mathbf X\mathbf M^\top) + \operatorname{tr}(\mathbf X\mathbf S\mathbf X^\top)$, whose derivative is $-2\mathbf M + 2\mathbf X\mathbf S$ by the Trace Derivatives theorem. It vanishes exactly when $\mathbf X = \mathbf M\mathbf S^{-1}$. $\blacksquare$
     ///
 
-    **Example (the Kalman gain).** With $\mathbf C = \mathbf P^-$, $\mathbf M = \mathbf P^-\mathbf H^\top$, and $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$ (so $\mathbf X\mathbf M^\top = \mathbf K\mathbf H\mathbf P^-$, since $\mathbf P^-$ is symmetric), $f(\mathbf K) = \mathbf P^- - \mathbf K\mathbf H\mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf K^\top + \mathbf K\mathbf S\mathbf K^\top$ is the error covariance after an update with an arbitrary gain $\mathbf K$ ([Chapter 13](ch13_kalman_filter.md) derives this). The theorem gives the minimizer $\mathbf K_\star = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ and the minimum $f(\mathbf K_\star) = (\mathbf I - \mathbf K_\star\mathbf H)\mathbf P^-$. For $m = n = 1$, $f(k) = P^- - 2kP^-h + k^2(h^2P^- + R)$ is minimized at $k_\star = P^-h/(h^2P^- + R)$, the gain of [Chapter 11](ch11_measurement_functions.md).
+    **Example (the Kalman gain).** With $\mathbf C = \mathbf P^-$, $\mathbf M = \mathbf P^-\mathbf H^\top$, and $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$ (so $\mathbf X\mathbf M^\top = \mathbf K\mathbf H\mathbf P^-$, since $\mathbf P^-$ is symmetric), $f(\mathbf K) = \mathbf P^- - \mathbf K\mathbf H\mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf K^\top + \mathbf K\mathbf S\mathbf K^\top$ is the error covariance after an update with an arbitrary gain $\mathbf K$ ([Chapter 13](#ch13-thm-update-with-an-arbitrary-gain) derives this). The theorem gives the minimizer $\mathbf K_\star = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ and the minimum $f(\mathbf K_\star) = (\mathbf I - \mathbf K_\star\mathbf H)\mathbf P^-$. For $m = n = 1$, $f(k) = P^- - 2kP^-h + k^2(h^2P^- + R)$ is minimized at $k_\star = P^-h/(h^2P^- + R)$, the gain of [Chapter 11](#ch11-thm-optimal-gain-with-a-measurement-function).
 
     Part 1 resolves the unit problem raised under Vectors: the same $\mathbf K_\star$ minimizes $\mathbf w^\top f(\mathbf K)\mathbf w$, the error variance of every combination $\mathbf w^\top\mathbf e$, and hence also $\operatorname{tr}\big(\mathbf D f(\mathbf K)\mathbf D\big)$ for every diagonal rescaling $\mathbf D$ of the units. Minimizing the trace is a convenient way to find a gain that is optimal in every direction at once.
 

@@ -79,12 +79,12 @@ def display_settings(Path, dedent, mo, np, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 8](ch8_bayesian_view.md): the Bayes filter, likelihoods, and posteriors (for particle filters).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): covariance matrices, multivariate normal distributions, and confidence ellipses.
-    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter, the Covariance Rules, and the Gaussian-conditioning form of the update.
-    - [Chapter 14](ch14_kalman_filters_in_practice.md): NEES consistency tests.
-    - [Chapter 15](ch15_extended_kalman_filter.md): nonlinear systems, linearization, the extended Kalman filter, and the pendulum example, including the Mean Error of the Tangent Line lemma.
-    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): the Lagrange form of the remainder.
+    - [Chapter 8](ch8_bayesian_view.md): [the Bayes filter](#ch8-sec-the-bayes-filter), [likelihoods](#ch8-sec-prior-likelihood-posterior-and-evidence), and [posteriors](#ch8-sec-prior-likelihood-posterior-and-evidence) (for particle filters).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [covariance matrices](#ch12-sec-covariance-matrices), [multivariate normal distributions](#ch12-sec-the-multivariate-normal-distribution), and [confidence ellipses](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
+    - [Chapter 13](ch13_kalman_filter.md): [the Kalman filter](#ch13-sec-the-algorithm), [the Covariance Rules](#ch13-lem-covariance-rules), and [the Gaussian-conditioning form of the update](#ch13-thm-the-update-is-gaussian-conditioning).
+    - [Chapter 14](ch14_kalman_filters_in_practice.md): [NEES consistency tests](#ch14-sec-consistency-tests).
+    - [Chapter 15](ch15_extended_kalman_filter.md): [nonlinear systems](#ch15-sec-nonlinear-systems), [linearization](#ch15-sec-linearization), [the extended Kalman filter](#ch15-sec-the-extended-kalman-filter), and [the pendulum example](#ch15-sec-example-tracking-a-pendulum), including [the Mean Error of the Tangent Line lemma](#ch15-lem-mean-error-of-the-tangent-line).
+    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
     - [Appendix D: Trace](#appd-sec-trace), [Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices), and [Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition).
     ///
     """)
@@ -94,7 +94,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 15](ch15_extended_kalman_filter.md)'s extended Kalman filter approximates each nonlinear *function* by its linearization. It needs Jacobians, it misses the shift in the mean that curvature causes, and on the pendulum it became overconfident and diverged when the initial uncertainty was large.
+    [Chapter 15](#ch15-sec-linearization)'s extended Kalman filter approximates each nonlinear *function* by its linearization. It needs Jacobians, it misses the shift in the mean that curvature causes, and on the pendulum it became overconfident and diverged when the initial uncertainty was large.
 
     This chapter's key concept turns the approximation around: approximate the *distribution* instead of the function. Choose a few points, called **sigma points**, whose weighted mean and covariance equal the distribution's. Push each one through the exact nonlinear function, and compute the weighted mean and covariance of the results. This is the **unscented transform**, and a Kalman filter that uses it in place of linearization is the **unscented Kalman filter** (UKF). It needs no derivatives, and its mean is correct to higher order than the EKF's at about the same cost. At the end of the chapter, **particle filters** drop the Gaussian summary altogether, which is what an ambiguous measurement like the pendulum's fold requires.
 
@@ -306,7 +306,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Let $T$ be the Taylor polynomial of degree 3 of $\phi$ at $\mu$ and $r := \phi - T$. By [Taylor's theorem](appendix_c_calculus.md) with the Lagrange remainder, $|r(t)| \le \frac{M}{24}(t - \mu)^4$ for every $t$, so $\mathbb E[\phi(x)]$ exists. The weighted sum $\bar y = \sum_i W_i^{(m)}\phi(\chi_i)$ is linear in $\phi$, and by Part 2 of the theorem it is exact for $T$, so
+    Let $T$ be the Taylor polynomial of degree 3 of $\phi$ at $\mu$ and $r := \phi - T$. By [Taylor's theorem](#appc-thm-taylors-theorem-with-lagrange-remainder) with the Lagrange remainder, $|r(t)| \le \frac{M}{24}(t - \mu)^4$ for every $t$, so $\mathbb E[\phi(x)]$ exists. The weighted sum $\bar y = \sum_i W_i^{(m)}\phi(\chi_i)$ is linear in $\phi$, and by Part 2 of the theorem it is exact for $T$, so
     $$\bar y - \mathbb E[\phi(x)] = \sum_i W_i^{(m)}r(\chi_i) - \mathbb E[r(x)].$$
     Here $r(\chi_0) = r(\mu) = 0$, and the other two points have the positive weight $\frac{1}{2(1+\lambda)}$ and lie at distance $\sqrt{1 + \lambda}\,\sigma$ from $\mu$, so $\big|\sum_i W_i^{(m)}r(\chi_i)\big| \le 2\cdot\frac{1}{2(1+\lambda)}\cdot\frac{M}{24}(1+\lambda)^2\sigma^4 = \frac{M(1+\lambda)}{24}\sigma^4$. A normal variable has $\mathbb E[(x - \mu)^4] = 3\sigma^4$ ([Wikipedia: Normal distribution, Moments](https://en.wikipedia.org/wiki/Normal_distribution#Moments)), so $\big|\mathbb E[r(x)]\big| \le \frac{3M}{24}\sigma^4$. Add the two bounds. $\blacksquare$
     ///
@@ -734,7 +734,7 @@ def _(mo):
     <!-- label: ch16-sec-the-unscented-kalman-filter -->
     ## The Unscented Kalman Filter
 
-    We use the {term}`nonlinear system` model and the assumptions of [Chapter 15](ch15_extended_kalman_filter.md): $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$ and $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$, with Chapter 13's (A1)–(A5) and Chapter 15's independence assumption (E1). Chapter 15's smoothness assumption (E2) is not needed: the UKF only evaluates $f$ and $h$. The EKF used linearization twice, to compute the mean and covariance of the prediction and to compute the joint moments of state and measurement for the update. The UKF uses the unscented transform for both.
+    We use the {term}`nonlinear system` model and the assumptions of [Chapter 15](#ch15-sec-assumptions): $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$ and $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$, with Chapter 13's (A1)–(A5) and Chapter 15's independence assumption (E1). Chapter 15's smoothness assumption (E2) is not needed: the UKF only evaluates $f$ and $h$. The EKF used linearization twice, to compute the mean and covariance of the prediction and to compute the joint moments of state and measurement for the update. The UKF uses the unscented transform for both.
 
     **Predict.** Suppose that, given $\mathbf z_1, \ldots, \mathbf z_{k-1}$, the state $\mathbf x_{k-1}$ has mean $\hat{\mathbf x}_{k-1}$ and covariance $\mathbf P_{k-1}$. Form sigma points $\boldsymbol\chi_i$ for $\hat{\mathbf x}_{k-1}$ and $\mathbf P_{k-1}$, and apply the unscented transform with $\phi = f(\cdot, \mathbf u_k)$. Since $\mathbf w_k$ is independent of $\mathbf x_{k-1}$, the Covariance Rules of Chapter 13 add $\mathbf Q$ to the covariance:
 
@@ -1049,7 +1049,7 @@ def _(mo):
     <!-- label: ch16-sec-particle-filters -->
     ## Particle Filters
 
-    The EKF and the UKF both summarize the state's distribution by a mean and a covariance. Some distributions are nothing like a Gaussian. Suppose the pendulum's initial estimate is the mirror image of the truth, $\hat\theta_0 = \pi - 1 \approx 2.14$ rad, with $\mathbf P_0 = 0.7^2\,\mathbf I$, so the truth is about 1.6 standard deviations away. The first camera reading, about $0.84$ m, is explained equally well by $\theta \approx 1$ and by $\theta \approx 2.14$. After it, the {term}`posterior` of $\theta$ ([Chapter 8](ch8_bayesian_view.md)) has two separate peaks, and its mean, between them, is a value the state almost certainly does not have. A Gaussian filter has to commit to one peak.
+    The EKF and the UKF both summarize the state's distribution by a mean and a covariance. Some distributions are nothing like a Gaussian. Suppose the pendulum's initial estimate is the mirror image of the truth, $\hat\theta_0 = \pi - 1 \approx 2.14$ rad, with $\mathbf P_0 = 0.7^2\,\mathbf I$, so the truth is about 1.6 standard deviations away. The first camera reading, about $0.84$ m, is explained equally well by $\theta \approx 1$ and by $\theta \approx 2.14$. After it, the {term}`posterior` of $\theta$ ([Chapter 8](#ch8-sec-prior-likelihood-posterior-and-evidence)) has two separate peaks, and its mean, between them, is a value the state almost certainly does not have. A Gaussian filter has to commit to one peak.
 
     A particle filter represents the posterior by many random samples instead of a mean and a covariance. The simplest version is the *bootstrap* filter of @gordon1993. It keeps $N$ particles $\mathbf x_k^{(i)}$ with weights $W_k^{(i)} \ge 0$ that sum to 1:
 
@@ -1060,7 +1060,7 @@ def _(mo):
 
     Any summary of the weighted particles can serve as the estimate; the weighted mean $\sum_i W_k^{(i)}\mathbf x_k^{(i)}$ is the usual one, though for a two-peaked posterior the peaks themselves are more informative.
 
-    Steps 2 and 3 are the two halves of [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter`. If the weighted particles approximate the posterior at step $k-1$, then moving each one by sampling from the process model approximates the predicted density, and multiplying by the likelihood is Bayes' rule applied particle by particle. Resampling discards particles with negligible weight and duplicates heavy ones, without changing the represented distribution on average. Under mild conditions, the weighted particles converge to the exact Bayes-filter posterior as $N \to \infty$ [@crisan2002].
+    Steps 2 and 3 are the two halves of [Chapter 8](#ch8-thm-bayes-filter-recursion)'s {term}`Bayes filter`. If the weighted particles approximate the posterior at step $k-1$, then moving each one by sampling from the process model approximates the predicted density, and multiplying by the likelihood is Bayes' rule applied particle by particle. Resampling discards particles with negligible weight and duplicates heavy ones, without changing the represented distribution on average. Under mild conditions, the weighted particles converge to the exact Bayes-filter posterior as $N \to \infty$ [@crisan2002].
 
     /// note | 📖 **Definition**
     <u>**Particle filter**</u>

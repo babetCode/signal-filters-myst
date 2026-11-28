@@ -105,11 +105,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 4](ch4_probability_spaces.md): {term}`conditional probability`, the law of total probability, and Bayes' theorem for events.
-    - [Chapter 5](ch5_random_variables.md): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and the integral $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, the density of $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and the factorization of their joint density, the continuous convolution formula, and sums of independent normal random variables.
-    - [Chapter 6](ch6_expectation_and_variance.md): {term}`expected value` and the law of the unconscious statistician (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
-    - [Chapter 7](ch7_optimal_alpha.md): the lowercase convention for random quantities, {term}`estimation error`, {term}`error variance`, and the Optimal Gain theorem.
-    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](appendix_c_calculus.md), and [Multiple Integrals](appendix_c_calculus.md) (Fubini's theorem and substitution).
+    - [Chapter 4](ch4_probability_spaces.md): {term}`conditional probability`, [the law of total probability](#ch4-thm-law-of-total-probability), and [Bayes' theorem for events](#ch4-thm-bayes-theorem-for-events).
+    - [Chapter 5](ch5_random_variables.md): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and [the integral](#ch5-thm-the-normal-density-is-a-pdf) $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, [the density of](#ch5-thm-density-of-ax-b) $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and [the factorization of their joint density](#ch5-thm-factorization-criteria), [the continuous convolution formula](#ch5-thm-continuous-convolution), and [sums of independent normal random variables](#ch5-thm-sums-of-independent-normals).
+    - [Chapter 6](ch6_expectation_and_variance.md): {term}`expected value` and [the law of the unconscious statistician](#ch6-thm-lotus) (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
+    - [Chapter 7](ch7_optimal_alpha.md): [the lowercase convention for random quantities](#ch7-sec-random-quantities-in-lowercase), {term}`estimation error`, {term}`error variance`, and [the Optimal Gain theorem](#ch7-thm-optimal-gain).
+    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](#appc-sec-improper-integrals), and [Multiple Integrals](#appc-sec-multiple-integrals) (Fubini's theorem and substitution).
     ///
     """)
     return
@@ -131,7 +131,7 @@ def _(mo):
     <!-- label: ch8-sec-from-events-to-densities -->
     ## From Events to Densities
 
-    In [Chapter 4](ch4_probability_spaces.md), Bayes' theorem for events,
+    In [Chapter 4](#ch4-thm-bayes-theorem-for-events), Bayes' theorem for events,
 
     $$\mathbb P(A \mid B) = \frac{\mathbb P(B \mid A)\,\mathbb P(A)}{\mathbb P(B)},$$
 
@@ -301,7 +301,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Compare with [Chapter 7](ch7_optimal_alpha.md): $K$ is exactly the optimal gain $P^-/(P^- + R)$, the posterior mean $m + K(\zeta - m)$ is exactly the optimal update with prediction $m$ and measurement $\zeta$, and the posterior variance $(1 - K)P^-$ is exactly the optimal error variance. Two different questions get the same answer:
+    Compare with [Chapter 7](#ch7-thm-optimal-gain): $K$ is exactly the optimal gain $P^-/(P^- + R)$, the posterior mean $m + K(\zeta - m)$ is exactly the optimal update with prediction $m$ and measurement $\zeta$, and the posterior variance $(1 - K)P^-$ is exactly the optimal error variance. Two different questions get the same answer:
 
     | | Chapter 7 | Chapter 8 |
     |:---|:---|:---|
@@ -435,7 +435,7 @@ def _(mo):
     The posterior is $\mathcal N(m + K(\zeta - m), (1-K)P^-)$, whose mean is $m + K(\zeta - m)$. By the theorem this is an MMSE estimator, and its mean squared error is $\int f_z(\zeta)\int (\xi - m(\zeta))^2 f_{x\mid z}(\xi\mid\zeta)\,d\xi\,d\zeta = \int f_z(\zeta)\,(1-K)P^-\,d\zeta = (1-K)P^-$, because the posterior variance is the same for every $\zeta$. $\blacksquare$
     ///
 
-    So when the prior and the noise are normal, nothing beats Chapter 7's update: not a cleverer gain, not a nonlinear rule, nothing. [Chapter 12](ch12_vectors_matrices_covariance.md) extends this to vectors, where the conditional mean of a jointly normal pair is again linear.
+    So when the prior and the noise are normal, nothing beats Chapter 7's update: not a cleverer gain, not a nonlinear rule, nothing. [Chapter 12](#ch12-thm-conditioning-a-joint-normal-distribution) extends this to vectors, where the conditional mean of a jointly normal pair is again linear.
     """)
     return
 
@@ -608,7 +608,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The nonlinear estimator needs the exact noise model.** It used $\varepsilon$ and $\sigma_2$. With a wrong outlier model it can do worse than the best gain, which only needs $R$.
     - **The best gain is still the best *linear* estimator**, and its mean squared error formula $P^-R/(P^-+R)$ still holds exactly, as the simulation confirms. Chapter 7's theorem never assumed normality.
-    - **In practice**, outliers are often handled by *gating*, which rejects readings whose innovation is implausibly large ([Chapter 14](ch14_kalman_filters_in_practice.md)); it is a crude version of the posterior-mean curve above.
+    - **In practice**, outliers are often handled by *gating*, which rejects readings whose innovation is implausibly large ([Chapter 14](#ch14-sec-outlier-gating)); it is a crude version of the posterior-mean curve above.
     ///
     """)
     return
@@ -705,7 +705,7 @@ def _(mo):
     - **Finite variance.** Without it the theorem fails. The average of $n$ independent standard [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution) random variables has the same Cauchy distribution for every $n$, so averaging never helps.
     - **Many comparable effects.** If one effect dominates, such as an occasional outlier, a sum of a few terms is far from normal, and the tails converge last: rare large errors are underestimated by a normal model.
     - **Independence.** The basic theorem assumes independent terms. Versions for weakly dependent terms exist, but strongly correlated effects (a slow sway) need not average out.
-    - **A limit, not an equality.** For any finite $n$, normality is an approximation. Whether it is good enough is an empirical question about the sensor, which [Chapter 9](ch9_noise_levels.md) tests with the measurements themselves.
+    - **A limit, not an equality.** For any finite $n$, normality is an approximation. Whether it is good enough is an empirical question about the sensor, which [Chapter 9](#ch9-sec-checking-the-noise-levels) tests with the measurements themselves.
     ///
     """)
     return
@@ -728,7 +728,7 @@ def _(mo):
     - the **prior at step $k$**, $p_k^-$: the conditional density of $x_k$ given $z_1 = \zeta_1, \ldots, z_{k-1} = \zeta_{k-1}$ (for $k = 1$, simply the density of $x_1$);
     - the **posterior at step $k$**, $p_k$: the conditional density of $x_k$ given $z_1 = \zeta_1, \ldots, z_k = \zeta_k$.
 
-    [^w-forward]: Defined precisely in [Chapter 9](ch9_noise_levels.md) as process noise.
+    [^w-forward]: Defined precisely in [Chapter 9](#ch9-sec-process-noise) as process noise.
     """)
     return
 
@@ -785,12 +785,12 @@ def _(mo):
     By induction on $k$; suppose $p_{k-1} = \mathcal N(\hat x_{k-1}, P_{k-1})$ (true for $k = 1$ by assumption). *Predict:* since $\mathcal N(\xi - \Delta x_k - \xi';\, 0, Q) = \mathcal N(\xi - \Delta x_k;\, \xi', Q)$, the predict integral is exactly the evidence integral of the Normal Update theorem, with prior $\mathcal N(\hat x_{k-1}, P_{k-1})$ for $\xi'$, noise variance $Q$, and "observation" $\xi - \Delta x_k$. By item 1 it equals $\mathcal N(\xi - \Delta x_k;\, \hat x_{k-1}, P_{k-1} + Q) = \mathcal N(\xi;\, \hat x_k^-, P_k^-)$. If $w_k = 0$, the shift gives the same result with $Q = 0$. *Update:* the normalized product $\mathcal N(\xi;\, \hat x_k^-, P_k^-)\,\mathcal N(\zeta_k - \xi;\, 0, R)$ is, by the computation in the proof of the Normal Update theorem, $\mathcal N(\xi;\, \hat x_k^- + K_k(\zeta_k - \hat x_k^-),\, (1 - K_k)P_k^-)$. $\blacksquare$
     ///
 
-    These are Chapter 7's update equations, plus one new equation: in the predict step, the variance grows by $Q$. [Chapter 9](ch9_noise_levels.md) derives the same recursion from means and variances alone, without assuming normality, and gives it its name: the Kalman filter.
+    These are Chapter 7's update equations, plus one new equation: in the predict step, the variance grows by $Q$. [Chapter 9](#ch9-sec-the-scalar-kalman-filter) derives the same recursion from means and variances alone, without assuming normality, and gives it its name: the Kalman filter.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Independence (B3)** is what lets the filter forget the past: all the information in $z_1, \ldots, z_{k-1}$ is carried by $p_{k-1}$. If noise terms are correlated over time, the recursion above is no longer exact.
-    - **A correct model.** The filter is exact for the assumed $p_0$, $f_w$, $f_v$, and $\Delta x_k$. A wrong model gives a confidently wrong posterior; [Chapter 9](ch9_noise_levels.md) shows how to detect this.
-    - **Computation.** Outside the normal case, the integrals rarely have a closed form. A grid works in one dimension (next section), but the number of grid points grows exponentially with the number of unknowns. This is why the normal case, the Kalman filter, matters so much, and why approximations such as particle filters ([Chapter 16](ch16_unscented_kalman_filter.md)) exist.
+    - **A correct model.** The filter is exact for the assumed $p_0$, $f_w$, $f_v$, and $\Delta x_k$. A wrong model gives a confidently wrong posterior; [Chapter 9](#ch9-sec-checking-the-noise-levels) shows how to detect this.
+    - **Computation.** Outside the normal case, the integrals rarely have a closed form. A grid works in one dimension (next section), but the number of grid points grows exponentially with the number of unknowns. This is why the normal case, the Kalman filter, matters so much, and why approximations such as particle filters ([Chapter 16](#ch16-sec-particle-filters)) exist.
     ///
     """)
     return

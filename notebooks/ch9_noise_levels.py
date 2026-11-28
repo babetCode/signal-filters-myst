@@ -132,12 +132,12 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the {term}`exponential moving average`, the alpha filter, the expected change $\Delta x_k$, and the bulking data.
-    - [Chapter 5](ch5_random_variables.md): the {term}`uniform distribution` and the theorem that quantization error is nearly uniform, the {term}`normal distribution` and the density of $aX + b$, linear combinations of independent normal random variables, {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and the measurement-noise model.
-    - [Chapter 6](ch6_expectation_and_variance.md): {term}`variance` (including that of the uniform distribution), {term}`covariance` and its linearity in each argument, {term}`uncorrelated` random variables, Bienaymé's corollary, the {term}`sample mean` and its variance $\sigma^2/n$, {term}`unbiased` estimators, and the EMA's variance $\frac{\alpha}{2-\alpha}\sigma^2$ and ramp lag $c\frac{1-\alpha}{\alpha}$.
-    - [Chapter 7](ch7_optimal_alpha.md): {term}`estimation error`, {term}`error variance`, {term}`gain` and {term}`optimal gain`, the Optimal Gain theorem (in particular items 1, 3, and 4), the Error of the Update lemma, the optimality of $1/k$, and the gain $K_k$.
-    - [Chapter 8](ch8_bayesian_view.md): the normal Bayes filter and the central limit theorem.
-    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) (geometric convergence and limit laws), [Derivatives](appendix_c_calculus.md) and [The Fundamental Theorem of Calculus](appendix_c_calculus.md) (for the $\chi^2$ density, including integration by parts), and [Improper Integrals](appendix_c_calculus.md).
+    - [Introduction](introduction.md): the {term}`exponential moving average`, [the alpha filter](#intro-sec-predicting-the-change), [the expected change](#intro-sec-predicting-the-change) $\Delta x_k$, and [the bulking data](#intro-sec-alpha-beta-filter).
+    - [Chapter 5](ch5_random_variables.md): the {term}`uniform distribution` and [the theorem that quantization error is nearly uniform](#ch5-thm-quantization-error-is-nearly-uniform), the {term}`normal distribution` and [the density of](#ch5-thm-density-of-ax-b) $aX + b$, [linear combinations of independent normal random variables](#ch5-cor-linear-combinations-of-independent-normals), {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model).
+    - [Chapter 6](ch6_expectation_and_variance.md): {term}`variance` (including [that of the uniform distribution](#ch6-thm-variances-of-common-distributions)), {term}`covariance` and [its linearity in each argument](#ch6-thm-properties-of-covariance), {term}`uncorrelated` random variables, [Bienaymé's corollary](#ch6-cor-bienayme), the {term}`sample mean` and [its variance](#ch6-thm-mean-and-variance-of-the-sample-mean) $\sigma^2/n$, {term}`unbiased` estimators, and [the EMA's variance](#ch6-thm-ema-of-a-constant-value) $\frac{\alpha}{2-\alpha}\sigma^2$ and [ramp lag](#ch6-thm-ema-on-a-ramp) $c\frac{1-\alpha}{\alpha}$.
+    - [Chapter 7](ch7_optimal_alpha.md): {term}`estimation error`, {term}`error variance`, {term}`gain` and {term}`optimal gain`, [the Optimal Gain theorem](#ch7-thm-optimal-gain) (in particular items 1, 3, and 4), [the Error of the Update lemma](#ch7-lem-error-of-the-update), [the optimality of](#ch7-thm-optimal-gains-for-a-constant) $1/k$, [and the gain](#ch7-sec-from-alpha-to-the-gain-k-k) $K_k$.
+    - [Chapter 8](ch8_bayesian_view.md): [the normal Bayes filter](#ch8-cor-the-normal-bayes-filter) and [the central limit theorem](#ch8-thm-central-limit-theorem).
+    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([geometric convergence](#appc-thm-geometric-series) and [limit laws](#appc-thm-limit-laws-for-sequences)), [Derivatives](#appc-sec-derivatives) and [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (for the $\chi^2$ density, including [integration by parts](#appc-thm-integration-by-parts)), and [Improper Integrals](#appc-sec-improper-integrals).
     ///
     """)
     return
@@ -268,12 +268,12 @@ def _(mo):
     <!-- label: ch9-sec-datasheets -->
     ### Datasheets
 
-    Before any data exist, a sensor's datasheet gives a first estimate. Noise is usually specified either as an RMS value, which for zero-mean noise is the standard deviation $\sigma$, so $R = \sigma^2$, or as a *peak-to-peak* value. For normal noise a common convention takes peak-to-peak $\approx 6.6\,\sigma$, because $\mathbb P(|v| \le 3.3\sigma) \approx 0.999$. Two cautions apply. First, the units must match the filter's: noise quoted in ADC counts or microvolts must be converted to the units of $z_k$ (pounds here; [Chapter 11](ch11_measurement_functions.md) treats this conversion). Second, a datasheet describes only the electronics. For a bathroom scale such as one built on the HX711 ADC [@avia_hx711_datasheet], the person's own movement usually dominates, so the datasheet value is a lower bound on $R$.
+    Before any data exist, a sensor's datasheet gives a first estimate. Noise is usually specified either as an RMS value, which for zero-mean noise is the standard deviation $\sigma$, so $R = \sigma^2$, or as a *peak-to-peak* value. For normal noise a common convention takes peak-to-peak $\approx 6.6\,\sigma$, because $\mathbb P(|v| \le 3.3\sigma) \approx 0.999$. Two cautions apply. First, the units must match the filter's: noise quoted in ADC counts or microvolts must be converted to the units of $z_k$ (pounds here; [Chapter 11](#ch11-sec-from-pounds-to-counts) treats this conversion). Second, a datasheet describes only the electronics. For a bathroom scale such as one built on the HX711 ADC [@avia_hx711_datasheet], the person's own movement usually dominates, so the datasheet value is a lower bound on $R$.
 
     <!-- label: ch9-sec-quantization -->
     ### Quantization
 
-    A digital sensor or display reports values only on a grid. [Chapter 5](ch5_random_variables.md) introduced the rounding function and showed that its error is nearly uniform when the noise is large compared with the grid step; here we name the operation and compute the variance it adds. (Chapter 5 wrote the rounding function as $Q$; in this chapter $Q$ is the process noise variance, so we write $q$.)
+    A digital sensor or display reports values only on a grid. [Chapter 5](#ch5-sec-quantization-noise) introduced the rounding function and showed that its error is nearly uniform when the noise is large compared with the grid step; here we name the operation and compute the variance it adds. (Chapter 5 wrote the rounding function as $Q$; in this chapter $Q$ is the process noise variance, so we write $q$.)
 
     /// note | 📖 **Definition**
     <u>**Quantization**</u>
@@ -383,7 +383,7 @@ def _(mo):
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The expected change must be right on average.** If the true changes have mean $\Delta x_k + b$ rather than $\Delta x_k$ (for example, a bulking rate other than the planned one), then $\mathbb E w_k = b \ne 0$, the prediction is biased, and the bias accumulates step after step. This is the drift of the Introduction's alpha filter.
-    - **The process noise must be white.** A persistent but unknown trend is *not* white: its values are strongly correlated from step to step, so $P_k^- = P_{k-1} + Q$ misdescribes the prediction error. The cure is a better model of the change ([Chapter 10](ch10_process_models.md)), or estimating the trend as part of the state ([Chapter 13](ch13_kalman_filter.md)).
+    - **The process noise must be white.** A persistent but unknown trend is *not* white: its values are strongly correlated from step to step, so $P_k^- = P_{k-1} + Q$ misdescribes the prediction error. The cure is a better model of the change ([Chapter 10](#ch10-sec-linear-process-models)), or estimating the trend as part of the state ([Chapter 13](#ch13-sec-a-second-state-variable)).
     - **$Q$ is a modeling choice.** Unlike $R$, it usually cannot be measured directly, because the true values are never observed. It is tuned, and then checked with the innovation tests at the end of this chapter.
     ///
     """)
@@ -475,7 +475,7 @@ def _(mo):
     *Update.* By the linearity of covariance again, $\operatorname{Cov}(e_k^-, v_k) = 0$, and $\mathbb E v_k = 0$, $\operatorname{Var} v_k = R$. So the pair $(\hat x_k^-, z_k)$ satisfies assumptions (A1)–(A3) of Chapter 7, and the Optimal Gain theorem says that $K_k = P_k^-/(P_k^- + R)$ is the optimal gain, with error variance $(1 - K_k)P_k^- = P_k$. By Chapter 7's Error of the Update lemma, $e_k = (1 - K_k)\,e_k^- + K_k v_k$, a linear combination of $e_0, w_1, \ldots, w_k, v_1, \ldots, v_k$ with mean $0$. $\blacksquare$
     ///
 
-    Two remarks. First, if in addition $e_0$, all $w_k$, and all $v_k$ are independent and normal, then by [Chapter 8](ch8_bayesian_view.md)'s normal Bayes filter $\hat x_k$ is the posterior mean of $x_k$ given $z_1, \ldots, z_k$ (with prior $\mathcal N(\hat x_0, P_0)$ for $x_0$), and therefore the best estimator of any form in the mean-squared-error sense. Second, without normality, the theorem above still holds; it only uses means, variances, and covariances. (A stronger statement is also true: the Kalman filter's estimate has the smallest error variance among *all* linear combinations of $\hat x_0, z_1, \ldots, z_k$; this is the setting of Kalman's 1960 paper.)
+    Two remarks. First, if in addition $e_0$, all $w_k$, and all $v_k$ are independent and normal, then by [Chapter 8](#ch8-cor-the-normal-bayes-filter)'s normal Bayes filter $\hat x_k$ is the posterior mean of $x_k$ given $z_1, \ldots, z_k$ (with prior $\mathcal N(\hat x_0, P_0)$ for $x_0$), and therefore the best estimator of any form in the mean-squared-error sense. Second, without normality, the theorem above still holds; it only uses means, variances, and covariances. (A stronger statement is also true: the Kalman filter's estimate has the smallest error variance among *all* linear combinations of $\hat x_0, z_1, \ldots, z_k$; this is the setting of Kalman's 1960 paper.)
 
     /// admonition | 📐 **Theorem (No Process Noise)**
         attrs: {class: theorem, id: ch9-thm-no-process-noise}
@@ -768,7 +768,7 @@ def _(mo):
     - **Constant $Q$ and $R$.** A steady state exists only if the noise levels do not change. If the sampling rate changes (the HX711 can switch between 10 and 80 SPS), $Q$ per step changes and so does $K_\infty$. Missing measurements also interrupt the steady state.
     - **$Q > 0$.** With $Q = 0$ the gain tends to $0$ (the No Process Noise theorem) and there is no positive steady state: the optimal filter for a truly constant value is the cumulative average, not an EMA.
     - **The transient.** The EMA is optimal only once the Kalman filter has settled. From a poor start, the Kalman filter's larger early gains converge faster; the EMA's first-measurement initialization is a crude substitute.
-    - **A random walk is a model.** The EMA with $\alpha = K_\infty$ is optimal for a random-walk true value. For a deterministic ramp, such as steady bulking, the right model has a nonzero $\Delta x_k$ ([Chapter 10](ch10_process_models.md)) or a second state for the rate ([Chapter 13](ch13_kalman_filter.md)).
+    - **A random walk is a model.** The EMA with $\alpha = K_\infty$ is optimal for a random-walk true value. For a deterministic ramp, such as steady bulking, the right model has a nonzero $\Delta x_k$ ([Chapter 10](#ch10-sec-linear-process-models)) or a second state for the rate ([Chapter 13](#ch13-sec-a-second-state-variable)).
     ///
     """)
     return
@@ -821,7 +821,7 @@ def _(mo):
     3. By symmetry of covariance we may take $j < k$. Write $\tilde y_k = v_k - e_k^- = v_k - e_{k-1} + w_k$. Then $\operatorname{Cov}(\tilde y_k, \tilde y_j) = \operatorname{Cov}(v_k, \tilde y_j) - \operatorname{Cov}(e_{k-1}, \tilde y_j) + \operatorname{Cov}(w_k, \tilde y_j)$. The first and last terms vanish because $\tilde y_j$ is a linear combination of $e_0, w_1, \ldots, w_j, v_1, \ldots, v_j$ with $j < k$; the middle term vanishes by the Orthogonality lemma, since $j \le k - 1$. $\blacksquare$
     ///
 
-    So when the filter's model is right, its innovations are zero-mean, uncorrelated, and have the variances $S_k$ that the filter itself computes. Unlike the errors, the innovations can be computed from the measurements alone, which makes these properties *testable*. Note that item 3 relies on the gains being optimal for the true $Q$ and $R$; a mis-tuned filter produces correlated innovations, which [Chapter 10](ch10_process_models.md) uses as a test of the model.
+    So when the filter's model is right, its innovations are zero-mean, uncorrelated, and have the variances $S_k$ that the filter itself computes. Unlike the errors, the innovations can be computed from the measurements alone, which makes these properties *testable*. Note that item 3 relies on the gains being optimal for the true $Q$ and $R$; a mis-tuned filter produces correlated innovations, which [Chapter 10](#ch10-sec-validating-a-model-are-the-innovations-white) uses as a test of the model.
     """)
     return
 
@@ -871,7 +871,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    $\tilde y_k = v_k - e_k^-$ is a linear combination of the independent normal random variables $e_0, w_1, \ldots, w_k, v_1, \ldots, v_k$ (dropping any with coefficient $0$ or variance $0$), so by [Chapter 5](ch5_random_variables.md)'s corollary on linear combinations of independent normal random variables it is normal, with mean $0$ and variance $S_k$ by the Properties of the Innovations theorem. By Chapter 5's formula for $aX + b$, $\tilde y_k/\sqrt{S_k} \sim \mathcal N(0, 1)$, so $\epsilon_k \sim \chi^2_1$. The innovations are uncorrelated, and uncorrelated random variables that are *jointly* normal (as these are, being linear combinations of the same independent normal variables) are independent; this fact is proven in [Chapter 12](ch12_vectors_matrices_covariance.md). Hence the $\epsilon_k$ are independent, their sum is $\chi^2_N$ by definition, and the mean and variance of $\bar\epsilon$ follow from the previous theorem. $\blacksquare$
+    $\tilde y_k = v_k - e_k^-$ is a linear combination of the independent normal random variables $e_0, w_1, \ldots, w_k, v_1, \ldots, v_k$ (dropping any with coefficient $0$ or variance $0$), so by [Chapter 5](#ch5-cor-linear-combinations-of-independent-normals)'s corollary on linear combinations of independent normal random variables it is normal, with mean $0$ and variance $S_k$ by the Properties of the Innovations theorem. By Chapter 5's formula for $aX + b$, $\tilde y_k/\sqrt{S_k} \sim \mathcal N(0, 1)$, so $\epsilon_k \sim \chi^2_1$. The innovations are uncorrelated, and uncorrelated random variables that are *jointly* normal (as these are, being linear combinations of the same independent normal variables) are independent; this fact is proven in [Chapter 12](#ch12-cor-uncorrelated-jointly-normal-vectors-are-independent). Hence the $\epsilon_k$ are independent, their sum is $\chi^2_N$ by definition, and the mean and variance of $\bar\epsilon$ follow from the previous theorem. $\blacksquare$
     ///
     """)
     return
@@ -1053,7 +1053,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The $\chi^2$ interval assumes normal noise.** With outliers or other heavy-tailed noise, large NIS values occur more often than $\chi^2_1$ predicts even for a well-tuned filter.
     - **The test sees $S_k = P_k^- + R$ only.** It detects a wrong total, not which of $Q$ and $R$ is wrong: a too-small $Q$ and a too-large $R$ can cancel. And when $Q$ is small compared with $R$, the total is dominated by $R$: in the figure above, a $Q$ that is ten times too small raises the average NIS by only about $15\%$. Estimate $R$ separately (sample variance), then tune $Q$ with the NIS and the innovations' correlation.
-    - **Averages hide structure.** A filter can pass the average test while lagging badly during maneuvers. Also look at the innovations over time and at their correlation from step to step ([Chapter 10](ch10_process_models.md)).
+    - **Averages hide structure.** A filter can pass the average test while lagging badly during maneuvers. Also look at the innovations over time and at their correlation from step to step ([Chapter 10](#ch10-sec-validating-a-model-are-the-innovations-white)).
     - **Short records give wide intervals.** With $N = 28$ the 95% interval is roughly $[0.55, 1.59]$; only gross mis-tuning is detectable.
     ///
 

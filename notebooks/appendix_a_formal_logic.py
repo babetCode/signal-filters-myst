@@ -57,8 +57,8 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): connectives, truth tables, quantifiers, and informal proofs.
-    - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): the ZFC axioms used as examples here.
+    - [Chapter 1](ch1_language_of_logic.md): [connectives, truth tables](#ch1-sec-connectives-and-truth-tables), [quantifiers](#ch1-sec-quantifiers), and [informal proofs](#ch1-sec-proof-techniques).
+    - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): [the ZFC axioms](#ch2-sec-the-axioms-of-zfc) used as examples here.
     ///
     """)
     return
@@ -224,7 +224,7 @@ def _(mo):
     | $\existssubseteq{x}{v} \varphi := \exists x\,(x \subseteq v \land \varphi)$ | "there **exists** a **subset** $x$ of $v$ such that $\varphi$" |
     | $\forallsubseteq{x}{v} \varphi := \forall x\,(x \subseteq v \rightarrow \varphi)$ | "**for all subsets** $x$ of $v$, $\varphi$" |
 
-    In each row, the variables shown are distinct, $z$ is not $u$ or $v$, $x$ is not $v$, and in the row for $\exists!$ the variable $y$ does not occur in $\varphi$ (so it is substitutable for $x$). We also drop outer parentheses and use the precedence conventions of [Chapter 1](ch1_language_of_logic.md).
+    In each row, the variables shown are distinct, $z$ is not $u$ or $v$, $x$ is not $v$, and in the row for $\exists!$ the variable $y$ does not occur in $\varphi$ (so it is substitutable for $x$). We also drop outer parentheses and use the precedence conventions of [Chapter 1](#ch1-sec-connectives-and-truth-tables).
     """)
     return
 
@@ -612,7 +612,7 @@ def _(mo):
     <!-- label: appa-sec-derived-rules -->
     ### Derived Rules
 
-    The informal rules of inference in [Chapter 1](ch1_language_of_logic.md) are shortcuts for patterns of formal steps. The two most important are proved here.
+    The informal rules of inference in [Chapter 1](#ch1-sec-rules-of-inference) are shortcuts for patterns of formal steps. The two most important are proved here.
 
     /// admonition | 📐 **Lemma (Deduction)**
         attrs: {class: lemma, id: appa-lem-deduction}
@@ -769,7 +769,7 @@ def _(mo):
     <!-- label: appa-sec-provisos -->
     ### Provisos
 
-    Some notation names an object only under a condition. The main example is function application: in [Chapter 2](ch2_axioms_of_set_theory.md), $f(a)$ names a set only when $f$ is a function and $a$ is in its domain. Another is Replacement notation $\{y : \existsin{x}{A}\, \varphi\}$, which names a set only when $\forallin{x}{A}\, \exists! y\, \varphi$. For such notation we are given a *proviso* $D(x_1, \ldots, x_n)$ and a proof of only
+    Some notation names an object only under a condition. The main example is function application: in [Chapter 2](#ch2-sec-functions), $f(a)$ names a set only when $f$ is a function and $a$ is in its domain. Another is Replacement notation $\{y : \existsin{x}{A}\, \varphi\}$, which names a set only when $\forallin{x}{A}\, \exists! y\, \varphi$. For such notation we are given a *proviso* $D(x_1, \ldots, x_n)$ and a proof of only
 
     $$T \vdash \forall x_1 \cdots \forall x_n\, \big(D \rightarrow \exists! y\, \delta\big).$$
 
@@ -808,7 +808,7 @@ def _(mo):
     2. In any model of $T'$, a defined relation $P(y_1, \ldots, y_n)$ is true exactly when its defining formula is (by its defining axiom). An atomic formula $\alpha$ containing $F(v_1, \ldots, v_n)$ is true exactly when $\alpha'$ is true with $z$ assigned the value of $F(v_1, \ldots, v_n)$, which, by the defining axiom of $F$, is exactly when $\exists z\,(\delta_F \land \alpha')$ is true. So each unpacking step replaces an atomic formula by one with the same truth value in every model of $T'$ under every assignment. Replacing a part of a formula by such an equivalent part preserves truth values (by induction on formulas, using the satisfaction clauses). Hence $\varphi'$ and $\varphi$ have the same truth value in every model of $T'$ under every assignment, and by completeness $T' \vdash \varphi' \leftrightarrow \varphi$. $\blacksquare$
     ///
 
-    Part 2 says every statement written with defined notation means a statement in $\in$ and $=$ alone; part 1 says the notation lets us prove nothing new about $\in$ and $=$. Together they justify [Chapter 1](ch1_language_of_logic.md)'s remark that definitions add convenience but no new assumptions. See also [Extension by definitions (Wikipedia)](https://en.wikipedia.org/wiki/Extension_by_definitions) and [Conservative extension (Wikipedia)](https://en.wikipedia.org/wiki/Conservative_extension).
+    Part 2 says every statement written with defined notation means a statement in $\in$ and $=$ alone; part 1 says the notation lets us prove nothing new about $\in$ and $=$. Together they justify [Chapter 1](#ch1-sec-definitions-and-longleftrightarrow)'s remark that definitions add convenience but no new assumptions. See also [Extension by definitions (Wikipedia)](https://en.wikipedia.org/wiki/Extension_by_definitions) and [Conservative extension (Wikipedia)](https://en.wikipedia.org/wiki/Conservative_extension).
     """)
     return
 
@@ -831,7 +831,7 @@ def _(mo):
     <!-- label: appa-sec-the-intended-structure-is-not-a-set -->
     ### The Intended Structure Is Not a Set
 
-    [Chapter 2](ch2_axioms_of_set_theory.md) proves, from Separation, that there is no set of all sets (the theorem No Set of All Sets, which is Russell's paradox). So the domain of the intended structure, the collection of all sets, is not a set. Collections like it, defined by a formula (here $x = x$) but too large to be sets, are called *proper classes*. Our definition of {term}`structure` says "collection" precisely so that it covers the intended structure informally.
+    [Chapter 2](#ch2-thm-no-set-of-all-sets) proves, from Separation, that there is no set of all sets (the theorem No Set of All Sets, which is Russell's paradox). So the domain of the intended structure, the collection of all sets, is not a set. Collections like it, defined by a formula (here $x = x$) but too large to be sets, are called *proper classes*. Our definition of {term}`structure` says "collection" precisely so that it covers the intended structure informally.
 
     The cost is that "true in the intended structure" cannot be defined inside ZFC: no single formula $\text{True}(x)$ of the language of set theory satisfies $\text{True}(\ulcorner\sigma\urcorner) \leftrightarrow \sigma$ for the code $\ulcorner\sigma\urcorner$ of every sentence $\sigma$ (Tarski's undefinability theorem; see [Tarski's undefinability theorem (Wikipedia)](https://en.wikipedia.org/wiki/Tarski%27s_undefinability_theorem)). For this reason the main path never claims a result is "true" in an absolute sense: it claims that the result is *provable from ZFC*, and hence, by soundness, true in every model of ZFC.
 
@@ -858,7 +858,7 @@ def _(mo):
     <!-- label: appa-sec-countable-models -->
     ### Countable Models
 
-    By the Löwenheim–Skolem theorem, if ZFC has a model, it has one whose domain is {term}`countable` from the metatheory's point of view, even though ZFC proves that $\mathbb R$ is {term}`uncountable` ([Chapter 3](ch3_sets_for_probability.md)). There is no contradiction: inside such a model, "uncountable" means that no bijection with $\mathbb N$ exists *among the objects of the model*, and the bijections the metatheory can see are not in the model. This is *Skolem's paradox*; see [Skolem's paradox (Wikipedia)](https://en.wikipedia.org/wiki/Skolem%27s_paradox). It is one more reason to read the main path's theorems as "provable from ZFC" rather than as facts about one fixed collection of sets.
+    By the Löwenheim–Skolem theorem, if ZFC has a model, it has one whose domain is {term}`countable` from the metatheory's point of view, even though ZFC proves that $\mathbb R$ is {term}`uncountable` ([Chapter 3](#ch3-thm-the-real-numbers-are-uncountable)). There is no contradiction: inside such a model, "uncountable" means that no bijection with $\mathbb N$ exists *among the objects of the model*, and the bijections the metatheory can see are not in the model. This is *Skolem's paradox*; see [Skolem's paradox (Wikipedia)](https://en.wikipedia.org/wiki/Skolem%27s_paradox). It is one more reason to read the main path's theorems as "provable from ZFC" rather than as facts about one fixed collection of sets.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The book assumes ZFC is consistent.** This cannot be proved in ZFC (second incompleteness theorem). If it failed, every statement would be provable, including every theorem of this book and its negation.
@@ -885,7 +885,7 @@ def _(mo):
     <!-- label: appa-sec-whats-next -->
     ## What's Next
 
-    Return to the main path at [Chapter 2](ch2_axioms_of_set_theory.md), where the axioms of ZFC are stated in the language of this appendix and the defined notation it justifies is put to work.
+    Return to the main path at [Chapter 2](#ch2-sec-the-axioms-of-zfc), where the axioms of ZFC are stated in the language of this appendix and the defined notation it justifies is put to work.
     """)
     return
 

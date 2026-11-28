@@ -65,7 +65,7 @@ def _(mo):
     - **Continuous-time models** ([Chapter 10](ch10_process_models.md)) are *differential equations*. Turning them into the recursions that a filter runs requires solving them.
     - **The extended Kalman filter** ([Chapter 15](ch15_extended_kalman_filter.md)) replaces nonlinear functions by first-order *Taylor approximations*, which are built from *Jacobians*.
 
-    This appendix builds all of these from the axioms of the real numbers in [Chapter 3](ch3_sets_for_probability.md). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
+    This appendix builds all of these from the axioms of the real numbers in [Chapter 3](#ch3-sec-the-real-numbers). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
 
     /// attention | 🗝️ **Key Idea**
     A limit is the exact value that a family of approximations approaches: every tolerance, however small, is eventually met. Every concept in this appendix (the sum of a series, the derivative, the integral, the exponential function) is a limit.
@@ -78,8 +78,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): functions, the natural numbers $\mathbb N = \{0, 1, 2, \ldots\}$, induction, and the Recursion Theorem.
-    - [Chapter 3](ch3_sets_for_probability.md): sequences, finite sums $\sum$, countable sets, $\mathbb R$ as a complete ordered field (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), the Archimedean property and the density of $\mathbb Q$, absolute value and the triangle inequality, intervals, and the extended real numbers $[0, \infty]$.
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [functions](#ch2-sec-functions), [the natural numbers](#ch2-sec-natural-numbers) $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
+    - [Chapter 3](ch3_sets_for_probability.md): [sequences](#ch3-sec-indexed-families-and-sequences), [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as [a complete ordered field](#ch3-thm-the-real-numbers) (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), [intervals](#ch3-sec-consequences-of-completeness), and [the extended real numbers](#ch3-sec-extended-real-numbers) $[0, \infty]$.
     ///
 
     <!-- label: appc-sec-how-to-read-this-appendix -->
@@ -107,7 +107,7 @@ def _(mo):
     <!-- label: appc-sec-sequences-and-limits -->
     ## Sequences and Limits
 
-    Recall the {term}`exponential moving average` from the [Introduction](introduction.md): starting from an initial value $\hat x_0$, it computes $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ with a smoothing factor $0 < \alpha < 1$. Suppose there is no noise at all, so every measurement equals the true weight, $z_k = x$, but the initial value $\hat x_0$ is wrong. Subtracting $x$ from both sides of the update shows that the error $e_k := \hat x_k - x$ satisfies
+    Recall the {term}`exponential moving average` from the [Introduction](#intro-sec-exponential-moving-average): starting from an initial value $\hat x_0$, it computes $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ with a smoothing factor $0 < \alpha < 1$. Suppose there is no noise at all, so every measurement equals the true weight, $z_k = x$, but the initial value $\hat x_0$ is wrong. Subtracting $x$ from both sides of the update shows that the error $e_k := \hat x_k - x$ satisfies
 
     $$e_k = (\hat x_{k-1} - x) + \alpha(x - \hat x_{k-1}) = (1 - \alpha)\,e_{k-1}, \qquad\text{so}\qquad e_k = (1-\alpha)^k e_0$$
 
@@ -121,7 +121,7 @@ def _(mo):
     Sequences indexed by $n \ge m$ for some other starting index $m$ are handled the same way.
     ///
 
-    Read the definition as a game. A skeptic names a tolerance $\varepsilon$; we must answer with an index $N$ after which every term stays within $\varepsilon$ of $L$. A smaller $\varepsilon$ may require a larger $N$, but we must be able to answer every $\varepsilon$. The order of the quantifiers matters ([Chapter 1](ch1_language_of_logic.md)): $N$ may depend on $\varepsilon$, but not the other way around.
+    Read the definition as a game. A skeptic names a tolerance $\varepsilon$; we must answer with an index $N$ after which every term stays within $\varepsilon$ of $L$. A smaller $\varepsilon$ may require a larger $N$, but we must be able to answer every $\varepsilon$. The order of the quantifiers matters ([Chapter 1](#ch1-sec-order-matters)): $N$ may depend on $\varepsilon$, but not the other way around.
 
     /// admonition | 📐 **Lemma (Uniqueness of Limits)**
         attrs: {class: lemma, id: appc-lem-uniqueness-of-limits}
@@ -342,7 +342,7 @@ def _(mo):
         attrs: {class: proof}
     Call an index $m$ a *peak* if $a_m \ge a_n$ for every $n > m$.
 
-    *Case 1: there are infinitely many peaks.* Let $m_0$ be the least peak and, recursively, $m_{k+1}$ the least peak greater than $m_k$ (the Recursion Theorem of [Chapter 2](ch2_axioms_of_set_theory.md)). Each $m_k$ is a peak and $m_{k+1} > m_k$, so $a_{m_k} \ge a_{m_{k+1}}$: the subsequence is decreasing.
+    *Case 1: there are infinitely many peaks.* Let $m_0$ be the least peak and, recursively, $m_{k+1}$ the least peak greater than $m_k$ (the Recursion Theorem of [Chapter 2](#ch2-thm-recursion)). Each $m_k$ is a peak and $m_{k+1} > m_k$, so $a_{m_k} \ge a_{m_{k+1}}$: the subsequence is decreasing.
 
     *Case 2: there are finitely many peaks.* Let $n_0$ be larger than every peak. Recursively, since $n_k$ is not a peak, there is an $n > n_k$ with $a_n > a_{n_k}$; let $n_{k+1}$ be the least such $n$. Then $n_{k+1} > n_k$ is again not a peak, and $(a_{n_k})$ is strictly increasing. $\blacksquare$
     ///
@@ -403,7 +403,7 @@ def _(mo):
     <!-- label: appc-sec-series -->
     ## Series
 
-    The EMA's estimate is a weighted sum of every measurement it has seen. Unrolling the recursion ([Introduction](introduction.md)) gives
+    The EMA's estimate is a weighted sum of every measurement it has seen. Unrolling the recursion ([Introduction](#intro-sec-exponential-moving-average)) gives
 
     $$\hat x_k = \sum_{n=0}^{k-1} \alpha(1-\alpha)^n z_{k-n} + (1-\alpha)^k\,\hat x_0,$$
 
@@ -592,7 +592,7 @@ def _(mo):
     - **Terms tending to $0$ is not enough.** The harmonic series diverges although $\frac1n \to 0$.
     - **The geometric series needs $|q| < 1$.** For an EMA-style recursion $e_k = (1-\alpha)e_{k-1}$ with $\alpha \le 0$ or $\alpha \ge 2$, we have $|1 - \alpha| \ge 1$: the weights never decay, and an initial error is never forgotten.
     - **The comparison test needs nonnegative terms.** $-n \le 0$ for every $n$ and $\sum 0$ converges, but $\sum(-n)$ diverges.
-    - **Without absolute convergence, order matters.** The alternating harmonic series $1 - \frac12 + \frac13 - \cdots$ converges (by the [alternating series test](https://en.wikipedia.org/wiki/Alternating_series_test)) but not absolutely, and [Riemann's rearrangement theorem](https://en.wikipedia.org/wiki/Riemann_series_theorem) shows that its terms can be reordered to sum to any real number at all. This is why [Chapter 6](ch6_expectation_and_variance.md) defines an expected value only when the defining sum converges absolutely.
+    - **Without absolute convergence, order matters.** The alternating harmonic series $1 - \frac12 + \frac13 - \cdots$ converges (by the [alternating series test](https://en.wikipedia.org/wiki/Alternating_series_test)) but not absolutely, and [Riemann's rearrangement theorem](https://en.wikipedia.org/wiki/Riemann_series_theorem) shows that its terms can be reordered to sum to any real number at all. This is why [Chapter 6](#ch6-sec-expected-value) defines an expected value only when the defining sum converges absolutely.
     ///
 
     /// attention | 🗝️ **Key Idea**
@@ -608,7 +608,7 @@ def _(mo):
     <!-- label: appc-sec-limits-of-functions-and-continuity -->
     ## Limits of Functions and Continuity
 
-    A scale's display rounds the true weight to a step of $\Delta = 0.1$ lb ([Chapter 4](ch4_probability_spaces.md) starts from this example). The display shows $Q(x) := \Delta\lfloor x/\Delta + \tfrac12\rfloor$, where $\lfloor y\rfloor$ denotes the greatest integer $\le y$ (it exists by the Archimedean property). Near a true weight of $155.02$ lb, small changes in weight don't change the display at all. Near $155.05$ lb, an arbitrarily small increase flips the display from $155.0$ to $155.1$. *Continuity* makes "small changes in the input cause small changes in the output" precise. It is built on the limit of a function.
+    A scale's display rounds the true weight to a step of $\Delta = 0.1$ lb ([Chapter 4](#ch4-sec-motivation-a-scale-reading-to-0-1-lb) starts from this example). The display shows $Q(x) := \Delta\lfloor x/\Delta + \tfrac12\rfloor$, where $\lfloor y\rfloor$ denotes the greatest integer $\le y$ (it exists by the Archimedean property). Near a true weight of $155.02$ lb, small changes in weight don't change the display at all. Near $155.05$ lb, an arbitrarily small increase flips the display from $155.0$ to $155.1$. *Continuity* makes "small changes in the input cause small changes in the output" precise. It is built on the limit of a function.
 
     Limits of functions also let us talk about values a function never takes. The average slope of $x \mapsto x^2$ between $1$ and $1 + h$ is $g(h) := \frac{(1+h)^2 - 1}{h}$ for $h \ne 0$. At $h = 0$ the formula reads $0/0$, which is meaningless, but for $h \ne 0$ we have $g(h) = 2 + h$, which is close to $2$ whenever $h$ is close to $0$.
 
@@ -653,7 +653,7 @@ def _(mo):
     For example, if $f(x) \to A$ and $g(x) \to B$ as $x \to a$, then for every sequence $x_n \to a$ in $D\setminus\{a\}$ we have $f(x_n) \to A$ and $g(x_n) \to B$, so $f(x_n) + g(x_n) \to A + B$ by the sequence laws; by the lemma, $f(x) + g(x) \to A + B$. The other laws follow in the same way. $\blacksquare$
     ///
 
-    [^countable-choice]: Choosing one $x_n$ for every $n$ at once uses the axiom of countable choice, as in [Chapter 3](ch3_sets_for_probability.md). The same remark applies to the proofs of uniform continuity and the extreme value theorem below.
+    [^countable-choice]: Choosing one $x_n$ for every $n$ at once uses the axiom of countable choice, as in [Chapter 3](#ch3-lem-countable-choice). The same remark applies to the proofs of uniform continuity and the extreme value theorem below.
     """)
     return
 
@@ -785,7 +785,7 @@ def _(mo):
 
     $$\frac{p(t+h) - p(t)}{h} = \frac{\frac12 a(t^2 + 2th + h^2) - \frac12 a t^2}{h} = at + \tfrac12 a h \qquad (h \ne 0),$$
 
-    which tends to $at$ as $h \to 0$. That limit is the cart's velocity at time $t$. The alpha–beta filter of the [Introduction](introduction.md) estimates such a rate from differences of noisy positions; the derivative is the exact quantity those differences approximate.
+    which tends to $at$ as $h \to 0$. That limit is the cart's velocity at time $t$. The alpha–beta filter of the [Introduction](#intro-sec-alpha-beta-filter) estimates such a rate from differences of noisy positions; the derivative is the exact quantity those differences approximate.
 
     /// note | 📖 **Definition**
     <u>**Derivative**</u>
@@ -837,7 +837,7 @@ def _(mo):
 
     $$f(a + h) = f(a) + f'(a)\,h + r(h), \qquad \lim_{h\to 0}\frac{r(h)}{h} = 0.$$
 
-    So near $a$, the *tangent line* $h \mapsto f(a) + f'(a)h$ approximates $f(a+h)$ with an error that is small even compared with $h$. This **first-order approximation** is the idea behind the extended Kalman filter ([Chapter 15](ch15_extended_kalman_filter.md)); Taylor's Theorem below bounds the error $r(h)$.
+    So near $a$, the *tangent line* $h \mapsto f(a) + f'(a)h$ approximates $f(a+h)$ with an error that is small even compared with $h$. This **first-order approximation** is the idea behind the extended Kalman filter ([Chapter 15](#ch15-sec-the-extended-kalman-filter)); Taylor's Theorem below bounds the error $r(h)$.
     """)
     return
 
@@ -905,7 +905,7 @@ def _(mo):
     The derivative $f'(a)$ is the limit of the difference quotients $\frac{f(a+h) - f(a)}{h}$. Equivalently, $f(a + h) = f(a) + f'(a)h + r(h)$ with $r(h)/h \to 0$: the tangent line is the best linear approximation near $a$. The sum, product, quotient, and chain rules all follow from writing $f(x) - f(a) = \varphi(x)(x - a)$.
     ///
 
-    [^typical-size]: Used informally here; [Chapter 6](ch6_expectation_and_variance.md) makes "typical size" precise as the standard deviation.
+    [^typical-size]: Used informally here; [Chapter 6](#ch6-sec-variance-and-standard-deviation) makes "typical size" precise as the standard deviation.
     """)
     return
 
@@ -916,7 +916,7 @@ def _(mo):
     <!-- label: appc-sec-the-mean-value-theorem-and-extrema -->
     ## The Mean Value Theorem and Extrema
 
-    [Chapter 7](ch7_optimal_alpha.md) combines a prediction with error variance $P^- > 0$ and a measurement with noise variance $R > 0$, and shows that the gain $\alpha$ produces the error variance[^variance-informal]
+    [Chapter 7](#ch7-sec-setting-up-the-problem) combines a prediction with error variance $P^- > 0$ and a measurement with noise variance $R > 0$, and shows that the gain $\alpha$ produces the error variance[^variance-informal]
 
     $$P(\alpha) = (1 - \alpha)^2 P^- + \alpha^2 R.$$
 
@@ -1000,7 +1000,7 @@ def _(mo):
     Continuous functions on closed bounded intervals attain their extremes, and at an interior extremum the derivative vanishes. The Mean Value Theorem, $f(b) - f(a) = f'(c)(b - a)$, converts knowledge of the derivative into knowledge of the function: its sign gives monotonicity, and a zero derivative on an interval means a constant function.
     ///
 
-    [^variance-informal]: Variance is defined in [Chapter 6](ch6_expectation_and_variance.md). Here $P^-$ and $R$ are simply positive numbers, and nothing in this section depends on what they mean.
+    [^variance-informal]: Variance is defined in [Chapter 6](#ch6-sec-variance-and-standard-deviation). Here $P^-$ and $R$ are simply positive numbers, and nothing in this section depends on what they mean.
     """)
     return
 
@@ -1011,7 +1011,7 @@ def _(mo):
     <!-- label: appc-sec-taylors-theorem -->
     ## Taylor's Theorem
 
-    [Chapter 6](ch6_expectation_and_variance.md) shows that an EMA with smoothing factor $\alpha$, fed constant-plus-noise measurements, ends up with noise {term}`variance` $\sigma^2 g(\alpha)$, where $g(\alpha) := \frac{\alpha}{2 - \alpha}$ (only the function $g$ matters here). For small $\alpha$ engineers use $g(\alpha) \approx \frac{\alpha}{2}$. Where does that come from, and how wrong can it be?
+    [Chapter 6](#ch6-sec-the-ema-as-an-estimator) shows that an EMA with smoothing factor $\alpha$, fed constant-plus-noise measurements, ends up with noise {term}`variance` $\sigma^2 g(\alpha)$, where $g(\alpha) := \frac{\alpha}{2 - \alpha}$ (only the function $g$ matters here). For small $\alpha$ engineers use $g(\alpha) \approx \frac{\alpha}{2}$. Where does that come from, and how wrong can it be?
 
     By the quotient and chain rules, $g'(\alpha) = \frac{2}{(2-\alpha)^2}$ and $g''(\alpha) = \frac{4}{(2-\alpha)^3}$ for $\alpha < 2$. So $g(0) = 0$ and $g'(0) = \frac12$, and $\frac\alpha2$ is the tangent line at $0$. Taylor's Theorem generalizes tangent lines to polynomials of any degree and, crucially, says how large the error is.
 
@@ -1379,7 +1379,7 @@ def _(mo):
 
     **Quantization noise.** A quantizer with step $\Delta$ (like the scale's $0.1$ lb display) makes a rounding error between $-\frac\Delta2$ and $\frac\Delta2$. If the error is spread evenly over that interval, its average square is
     $$\frac{1}{\Delta}\int_{-\Delta/2}^{\Delta/2} x^2\,dx = \frac{1}{\Delta}\Big[\frac{x^3}{3}\Big]_{-\Delta/2}^{\Delta/2} = \frac{1}{\Delta}\Big(\frac{\Delta^3}{24} + \frac{\Delta^3}{24}\Big) = \frac{\Delta^2}{12}.$$
-    For $\Delta = 0.1$ lb this is about $0.00083$ lb$^2$, whose square root is about $0.029$ lb. [Chapter 9](ch9_noise_levels.md) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
+    For $\Delta = 0.1$ lb this is about $0.00083$ lb$^2$, whose square root is about $0.029$ lb. [Chapter 9](#ch9-sec-quantization) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
     """)
     return
 
@@ -1416,7 +1416,7 @@ def _(mo):
 
     In Leibniz notation, substitution is the bookkeeping rule "$x = \varphi(t)$, $dx = \varphi'(t)\,dt$, and the limits move with $x$". The most frequent case in this book is an affine change of scale: for $\mu \in \mathbb R$ and $\sigma > 0$, the substitution $x = \mu + \sigma u$ gives
     $$\int_{s}^{t} f(\mu + \sigma u)\,\sigma\,du = \int_{\mu + \sigma s}^{\mu + \sigma t} f(x)\,dx,$$
-    which [Chapter 5](ch5_random_variables.md) uses to reduce every normal density to the standard one.
+    which [Chapter 5](#ch5-thm-density-of-ax-b) uses to reduce every normal density to the standard one.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Part 1 needs continuity.** For the step function $f = 0$ on $[-1, 0]$ and $f = 1$ on $(0, 1]$, the accumulated integral is $F(x) = \int_{-1}^x f = \max(x, 0)$, which has a corner at $0$: $F'(0)$ does not exist.
@@ -1555,7 +1555,7 @@ def _(mo):
 
     **The small-angle approximation.** Since $\sin''(0) = -\sin 0 = 0$, the degree-$2$ Taylor polynomial of $\sin$ at $0$ is just $x$, and the error bound (with $|\sin'''| = |\cos| \le 1$) gives
     $$|\sin x - x| \le \frac{|x|^3}{6}.$$
-    At $10^\circ \approx 0.1745$ rad the error is at most $0.00089$, about $0.5\%$ of $\sin x$. The pendulum of [Chapter 15](ch15_extended_kalman_filter.md) and the small rotations of [Chapter 17](ch17_rotations.md) rely on this approximation.
+    At $10^\circ \approx 0.1745$ rad the error is at most $0.00089$, about $0.5\%$ of $\sin x$. The pendulum of [Chapter 15](#ch15-sec-example-tracking-a-pendulum) and the small rotations of [Chapter 17](#ch17-sec-small-angles) rely on this approximation.
 
     <!-- label: appc-sec-taylor-polynomials-in-action -->
     ### Taylor Polynomials in Action
@@ -1670,7 +1670,7 @@ def _(mo):
     exist as real numbers, where $s \to a^+$ means $s \to -\infty$ if $a = -\infty$, and $t \to b^-$ means $t \to \infty$ if $b = \infty$. Its value is then the sum of the two limits. Otherwise the improper integral diverges.
     ///
 
-    The choice of $c$ does not matter: replacing $c$ by $c'$ changes the two integrals by $+\int_c^{c'} f$ and $-\int_c^{c'} f$ (additivity), so the limits exist for $c'$ exactly when they exist for $c$, and their sum is the same. Nor does the notation clash with the ordinary integral: if $a$ is finite and $f$ is Riemann integrable on $[a, c]$, then $f$ is bounded there, say by $M$, and $\left|\int_s^c f - \int_a^c f\right| = \left|\int_a^s f\right| \le M(s - a) \to 0$; the same holds at $b$. When only one endpoint is a problem, we simply write, for example, $\int_a^\infty f(x)\,dx = \lim_{t\to\infty}\int_a^t f(x)\,dx$. If $\lim_{s\to a^+}\int_s^c f$ exists, then $x \mapsto \int_a^x f(s)\,ds := \lim_{s\to a^+}\int_s^c f + \int_c^x f$ is continuous on $(a, b)$, by the lemma Integrals Are Continuous in Their Limits; [Chapter 5](ch5_random_variables.md) uses this for cumulative distribution functions $\int_{-\infty}^x f$.
+    The choice of $c$ does not matter: replacing $c$ by $c'$ changes the two integrals by $+\int_c^{c'} f$ and $-\int_c^{c'} f$ (additivity), so the limits exist for $c'$ exactly when they exist for $c$, and their sum is the same. Nor does the notation clash with the ordinary integral: if $a$ is finite and $f$ is Riemann integrable on $[a, c]$, then $f$ is bounded there, say by $M$, and $\left|\int_s^c f - \int_a^c f\right| = \left|\int_a^s f\right| \le M(s - a) \to 0$; the same holds at $b$. When only one endpoint is a problem, we simply write, for example, $\int_a^\infty f(x)\,dx = \lim_{t\to\infty}\int_a^t f(x)\,dx$. If $\lim_{s\to a^+}\int_s^c f$ exists, then $x \mapsto \int_a^x f(s)\,ds := \lim_{s\to a^+}\int_s^c f + \int_c^x f$ is continuous on $(a, b)$, by the lemma Integrals Are Continuous in Their Limits; [Chapter 5](#ch5-sec-cumulative-distribution-functions) uses this for cumulative distribution functions $\int_{-\infty}^x f$.
 
     For **nonnegative** $f$, the integral $\int_c^t f$ increases with $t$ and $\int_s^c f$ increases as $s$ decreases. The next lemma shows that such limits always exist in $(-\infty, \infty]$, so for $f \ge 0$ we may write $\int_a^b f(x)\,dx = \infty$ when the improper integral diverges.
 
@@ -1725,7 +1725,7 @@ def _(mo):
     The value of $\int_{-\infty}^\infty e^{-x^2/2}\,dx$ is computed in Multiple Integrals.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **Both tails must converge separately.** $\int_{-t}^t x\,dx = 0$ for every $t$, yet $\int_{-\infty}^\infty x\,dx$ diverges because $\int_0^t x\,dx = t^2/2 \to \infty$. The same happens for the Cauchy density $\frac{1}{\pi(1 + x^2)}$: by the substitution $u = 1 + x^2$, $\int_0^t \frac{x}{1 + x^2}\,dx = \frac12\ln(1 + t^2) \to \infty$, so $\int |x|/(\pi(1 + x^2))\,dx$ diverges, which is why the Cauchy distribution has no mean ([Chapter 6](ch6_expectation_and_variance.md)).
+    - **Both tails must converge separately.** $\int_{-t}^t x\,dx = 0$ for every $t$, yet $\int_{-\infty}^\infty x\,dx$ diverges because $\int_0^t x\,dx = t^2/2 \to \infty$. The same happens for the Cauchy density $\frac{1}{\pi(1 + x^2)}$: by the substitution $u = 1 + x^2$, $\int_0^t \frac{x}{1 + x^2}\,dx = \frac12\ln(1 + t^2) \to \infty$, so $\int |x|/(\pi(1 + x^2))\,dx$ diverges, which is why the Cauchy distribution has no mean ([Chapter 6](#ch6-sec-expected-value)).
     - **A convergent integral does not force $f(x) \to 0$**, unlike the term test for series. A continuous function made of triangular spikes, one of height $1$ and base width $2/n^2$ centered at each integer $n \ge 2$ and $0$ elsewhere, has $\int_0^\infty f = \sum_{n\ge2}\frac{1}{n^2} < \infty$, but $f(n) = 1$ for every such $n$.
     - **Comparison needs nonnegative integrands**, as for series.
     ///
@@ -1743,11 +1743,11 @@ def _(mo):
     <!-- label: appc-sec-functions-of-several-variables -->
     ## Functions of Several Variables
 
-    The pendulum of [Chapter 15](ch15_extended_kalman_filter.md) has length $L = 1$ m, and its sensor measures the horizontal position of the bob, $h(\theta) = L\sin\theta$, where $\theta$ is the angle from vertical. A Kalman filter needs a *linear* measurement function, so the extended Kalman filter replaces $h$ near its current estimate $\theta_0$ by the tangent line:
+    The pendulum of [Chapter 15](#ch15-sec-the-model) has length $L = 1$ m, and its sensor measures the horizontal position of the bob, $h(\theta) = L\sin\theta$, where $\theta$ is the angle from vertical. A Kalman filter needs a *linear* measurement function, so the extended Kalman filter replaces $h$ near its current estimate $\theta_0$ by the tangent line:
 
     $$L\sin\theta \approx L\sin\theta_0 + L\cos\theta_0\,(\theta - \theta_0).$$
 
-    How good is this? By the Taylor Error Bound with degree $1$ and $|\sin''| = |\sin| \le 1$, the error is at most $L\,\frac{(\theta - \theta_0)^2}{2}$, whatever $\theta_0$ is. The figure shows the tangent line and the actual error over a window $|\theta - \theta_0| \le w$. For comparison, the pendulum's position sensor has noise of typical size $0.05$ m (its {term}`standard deviation`, defined in [Chapter 6](ch6_expectation_and_variance.md)): when the filter's uncertainty in $\theta$ is small, the approximation error is far below the sensor noise, and when it is large, it is not.
+    How good is this? By the Taylor Error Bound with degree $1$ and $|\sin''| = |\sin| \le 1$, the error is at most $L\,\frac{(\theta - \theta_0)^2}{2}$, whatever $\theta_0$ is. The figure shows the tangent line and the actual error over a window $|\theta - \theta_0| \le w$. For comparison, the pendulum's position sensor has noise of typical size $0.05$ m (its {term}`standard deviation`, defined in [Chapter 6](#ch6-sec-variance-and-standard-deviation)): when the filter's uncertainty in $\theta$ is small, the approximation error is far below the sensor noise, and when it is large, it is not.
     """)
     return
 
@@ -1855,7 +1855,7 @@ def _(mo):
     The one-variable function $h \mapsto f(\mathbf a + h\mathbf e_i)$ is defined on an interval around $0$ and has a local extremum at the interior point $0$. Apply the Interior Extremum lemma. $\blacksquare$
     ///
 
-    **Example (least squares).** [Chapter 11](ch11_measurement_functions.md) fits a calibration line $z \approx m x + c$ to data $(x_1, z_1), \ldots, (x_N, z_N)$ by minimizing $S(m, c) := \sum_{i=1}^N (z_i - m x_i - c)^2$. Holding $c$ fixed and differentiating in $m$, and vice versa,
+    **Example (least squares).** [Chapter 11](#ch11-sec-calibration-by-least-squares) fits a calibration line $z \approx m x + c$ to data $(x_1, z_1), \ldots, (x_N, z_N)$ by minimizing $S(m, c) := \sum_{i=1}^N (z_i - m x_i - c)^2$. Holding $c$ fixed and differentiating in $m$, and vice versa,
     $$\frac{\partial S}{\partial m} = -2\sum_{i=1}^N x_i\,(z_i - m x_i - c), \qquad \frac{\partial S}{\partial c} = -2\sum_{i=1}^N (z_i - m x_i - c).$$
     At a minimizer the gradient is $(0, 0)$, which gives two linear equations for $m$ and $c$, the *normal equations*.
 
@@ -1978,7 +1978,7 @@ def _(mo):
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **Linearization is local.** The first-order error is bounded by the second derivatives times the squared distance from the operating point. For the pendulum it is at most $\frac{(\theta - \theta_0)^2}{2}$ m, which is negligible near $\theta_0$ but can exceed the sensor noise once $|\theta - \theta_0|$ is more than about $0.3$ rad (try $\theta_0$ near $\pi/2$ in the figure above). An extended Kalman filter whose uncertainty is that large is linearizing in a region where the approximation fails ([Chapter 15](ch15_extended_kalman_filter.md)).
+    - **Linearization is local.** The first-order error is bounded by the second derivatives times the squared distance from the operating point. For the pendulum it is at most $\frac{(\theta - \theta_0)^2}{2}$ m, which is negligible near $\theta_0$ but can exceed the sensor noise once $|\theta - \theta_0|$ is more than about $0.3$ rad (try $\theta_0$ near $\pi/2$ in the figure above). An extended Kalman filter whose uncertainty is that large is linearizing in a region where the approximation fails ([Chapter 15](#ch15-sec-strong-nonlinearity)).
     - **Partial derivatives alone are not enough.** $\frac{xy}{x^2+y^2}$ has both partial derivatives at the origin but is not continuous there. The theorems above assume continuous partial derivatives, or differentiability.
     - **Jacobians are easy to get wrong** by a sign or a missing factor; a central-difference check like the one above catches most mistakes.
     ///
@@ -1996,7 +1996,7 @@ def _(mo):
     <!-- label: appc-sec-multiple-integrals -->
     ## Multiple Integrals
 
-    [Chapter 5](ch5_random_variables.md) defines the normal density as $c\,e^{-x^2/2}$, where the constant $c$ must make the total probability $1$: $c = 1/\int_{-\infty}^\infty e^{-x^2/2}\,dx$. The Fundamental Theorem cannot compute this integral, because $e^{-x^2/2}$ has no antiderivative that can be written with finitely many elementary functions ([Wikipedia: Nonelementary integral](https://en.wikipedia.org/wiki/Nonelementary_integral)). The classic trick is to square the integral, which turns it into an integral over the plane, and then switch to polar coordinates, where an extra factor $r$ makes an antiderivative appear. Integrals over the plane are needed anyway: the joint density of two random variables is integrated over regions of $\mathbb R^2$.
+    [Chapter 5](#ch5-sec-the-uniform-and-normal-distributions) defines the normal density as $c\,e^{-x^2/2}$, where the constant $c$ must make the total probability $1$: $c = 1/\int_{-\infty}^\infty e^{-x^2/2}\,dx$. The Fundamental Theorem cannot compute this integral, because $e^{-x^2/2}$ has no antiderivative that can be written with finitely many elementary functions ([Wikipedia: Nonelementary integral](https://en.wikipedia.org/wiki/Nonelementary_integral)). The classic trick is to square the integral, which turns it into an integral over the plane, and then switch to polar coordinates, where an extra factor $r$ makes an antiderivative appear. Integrals over the plane are needed anyway: the joint density of two random variables is integrated over regions of $\mathbb R^2$.
 
     <!-- label: appc-sec-integrals-over-boxes -->
     ### Integrals over Boxes
@@ -2054,7 +2054,7 @@ def _(mo):
 
     **Example (exchanging the order over a triangle).** Let $t_0 < t_1$, let $f$ be continuous on the closed triangle $T := \{(s, t) : t_0 \le s \le t \le t_1\}$, and extend it by $0$. It is bounded on $T$ (by the extreme value theorem in two variables, proved like the one-variable version), so $\int_{\mathbb R^2}|f| < \infty$, and integrating in either order gives
     $$\int_{t_0}^{t_1}\left(\int_{t_0}^{t} f(s, t)\,ds\right)dt = \int_{t_0}^{t_1}\left(\int_{s}^{t_1} f(s, t)\,dt\right)ds.$$
-    With $f(s, t) := g(s)$ for a continuous $g$, the inner integral on the right is $(t_1 - s)\,g(s)$, so $\int_{t_0}^{t_1}\int_{t_0}^{t} g(s)\,ds\,dt = \int_{t_0}^{t_1}(t_1 - s)\,g(s)\,ds$. This special case, used in [Chapter 14](ch14_kalman_filters_in_practice.md), also follows from integration by parts with $G(t) := \int_{t_0}^t g(s)\,ds$ and $t \mapsto t - t_1$.
+    With $f(s, t) := g(s)$ for a continuous $g$, the inner integral on the right is $(t_1 - s)\,g(s)$, so $\int_{t_0}^{t_1}\int_{t_0}^{t} g(s)\,ds\,dt = \int_{t_0}^{t_1}(t_1 - s)\,g(s)\,ds$. This special case, used in [Chapter 14](#ch14-sec-continuous-white-noise-acceleration), also follows from integration by parts with $G(t) := \int_{t_0}^t g(s)\,ds$ and $t \mapsto t - t_1$.
 
     /// admonition | 📐 **Theorem (Change of Variables)**
         attrs: {class: theorem, id: appc-thm-change-of-variables}
@@ -2068,7 +2068,7 @@ def _(mo):
     Not proved here. See [Wikipedia: Integration by substitution, substitution for multiple variables](https://en.wikipedia.org/wiki/Integration_by_substitution#Substitution_for_multiple_variables). For $n = 1$ and an increasing $T$ it is the substitution rule of The Fundamental Theorem of Calculus.
     ///
 
-    The factor $|\det\mathbf J_T|$ measures how $T$ stretches volume near $\mathbf u$: a tiny box of volume $v$ around $\mathbf u$ is mapped to a region of volume approximately $|\det\mathbf J_T(\mathbf u)|\,v$. For an affine map $T(\mathbf u) = \mathbf A\mathbf u + \mathbf b$ with an invertible matrix $\mathbf A$, the Jacobian is $\mathbf A$ everywhere, which [Chapter 12](ch12_vectors_matrices_covariance.md) uses for the multivariate normal density.
+    The factor $|\det\mathbf J_T|$ measures how $T$ stretches volume near $\mathbf u$: a tiny box of volume $v$ around $\mathbf u$ is mapped to a region of volume approximately $|\det\mathbf J_T(\mathbf u)|\,v$. For an affine map $T(\mathbf u) = \mathbf A\mathbf u + \mathbf b$ with an invertible matrix $\mathbf A$, the Jacobian is $\mathbf A$ everywhere, which [Chapter 12](#ch12-thm-densities-under-invertible-affine-maps) uses for the multivariate normal density.
 
     /// admonition | 📐 **Corollary (Polar Coordinates)**
         attrs: {class: corollary, id: appc-cor-polar-coordinates}
@@ -2129,7 +2129,7 @@ def _(mo):
     3. Integration by parts with $f(x) = x$ and $g(x) = -e^{-x^2/2}$ (so $g'(x) = x\,e^{-x^2/2}$) gives $\int_0^t x^2 e^{-x^2/2}\,dx = -t\,e^{-t^2/2} + \int_0^t e^{-x^2/2}\,dx$. Since $e^{t^2/2} \ge 1 + \frac{t^2}{2}$, we have $0 \le t\,e^{-t^2/2} \le \frac{t}{1 + t^2/2} \to 0$, and by evenness $\int_0^\infty e^{-x^2/2}\,dx = \frac{\sqrt{2\pi}}{2}$. So $\int_0^\infty x^2 e^{-x^2/2}\,dx = \frac{\sqrt{2\pi}}{2}$, and by evenness the full integral is $\sqrt{2\pi}$. $\blacksquare$
     ///
 
-    Part 1 says that the {term}`normal distribution`'s density integrates to $1$ ([Chapter 5](ch5_random_variables.md)). Dividing parts 2 and 3 by $\sqrt{2\pi}$ shows that the standard normal distribution has mean $0$ and variance $1$ ([Chapter 6](ch6_expectation_and_variance.md)).
+    Part 1 says that the {term}`normal distribution`'s density integrates to $1$ ([Chapter 5](#ch5-thm-the-normal-density-is-a-pdf)). Dividing parts 2 and 3 by $\sqrt{2\pi}$ shows that the standard normal distribution has mean $0$ and variance $1$ ([Chapter 6](#ch6-thm-variances-of-common-distributions)).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Fubini needs absolute integrability.** For $f(x, y) = \frac{x^2 - y^2}{(x^2 + y^2)^2}$ on $(0, 1]^2$, the inner integral is $\int_0^1 f(x, y)\,dy = \big[\frac{y}{x^2 + y^2}\big]_0^1 = \frac{1}{1 + x^2}$, so integrating $y$ first gives $\frac\pi4$, while integrating $x$ first gives $-\frac\pi4$ by the symmetry $f(y, x) = -f(x, y)$. Here $\iint |f| = \infty$.
@@ -2168,7 +2168,7 @@ def _(mo):
 
     The low-pass filter is an instance of the **first-order linear differential equation with constant coefficients**,
     $$\dot x(t) = a\,x(t) + b\,u(t),$$
-    where $a, b \in \mathbb R$ are constants and $u: J \to \mathbb R$ is a given input ([Chapter 10](ch10_process_models.md) calls it a {term}`control input`). Written as $F(t, x, \dot x) := \dot x - a x - b\,u(t) = 0$, it fits the definition with $n = 1$. "Linear" refers to the right side being a linear combination of $x$ and $u$. The case $u = 0$ was solved in Exponential and Logarithm: the only solutions are $x(t) = x(t_0)\,e^{a(t - t_0)}$.
+    where $a, b \in \mathbb R$ are constants and $u: J \to \mathbb R$ is a given input ([Chapter 10](#ch10-sec-systems-states-and-inputs) calls it a {term}`control input`). Written as $F(t, x, \dot x) := \dot x - a x - b\,u(t) = 0$, it fits the definition with $n = 1$. "Linear" refers to the right side being a linear combination of $x$ and $u$. The case $u = 0$ was solved in Exponential and Logarithm: the only solutions are $x(t) = x(t_0)\,e^{a(t - t_0)}$.
 
     /// admonition | 📐 **Theorem (Solution of the Linear Differential Equation)**
         attrs: {class: theorem, id: appc-thm-solution-of-the-linear-differential-equation}
@@ -2209,11 +2209,11 @@ def _(mo):
     Apply the previous theorem on $[t_{k-1}, t_k]$ with the constant input $u_k$: $x_k = e^{a\Delta t}x_{k-1} + \int_{t_{k-1}}^{t_k} e^{a(t_k - s)}\,b\,u_k\,ds$. The substitution $\sigma = t_k - s$ turns the integral into $b\,u_k\int_0^{\Delta t} e^{a\sigma}\,d\sigma$, which equals $b\,u_k\frac{e^{a\Delta t} - 1}{a}$ for $a \ne 0$ (antiderivative $e^{a\sigma}/a$) and $b\,u_k\,\Delta t$ for $a = 0$. $\blacksquare$
     ///
 
-    No approximation is involved: for any $\Delta t$, the recursion reproduces the continuous solution exactly at the sample times. This is the scalar case of the {term}`discretization` of [Chapter 10](ch10_process_models.md).
+    No approximation is involved: for any $\Delta t$, the recursion reproduces the continuous solution exactly at the sample times. This is the scalar case of the {term}`discretization` of [Chapter 10](#ch10-sec-continuous-time-models-and-discretization).
 
     **The low-pass filter is an EMA.** For the RC filter, $a = -\frac1\tau$ and $b = \frac1\tau$, so $a_d = e^{-\Delta t/\tau}$ and $b_d = \frac1\tau\cdot\frac{e^{-\Delta t/\tau} - 1}{-1/\tau} = 1 - e^{-\Delta t/\tau}$. With $\alpha := 1 - e^{-\Delta t/\tau} \in (0, 1)$,
     $$y_k = (1 - \alpha)\,y_{k-1} + \alpha\,u_k = y_{k-1} + \alpha\,(u_k - y_{k-1}),$$
-    which is exactly the {term}`exponential moving average`, with the held input $u_k$ in the role of the measurement $z_k$. Conversely, an EMA with smoothing factor $\alpha$ at sample period $\Delta t$ behaves like an RC filter with time constant $\tau = -\Delta t/\ln(1 - \alpha)$: the [Introduction](introduction.md)'s $\alpha = 0.05$ at 10 samples per second corresponds to $\tau \approx 1.95$ s. For $\Delta t \ll \tau$, Taylor's Theorem gives $\alpha \approx \Delta t/\tau$.
+    which is exactly the {term}`exponential moving average`, with the held input $u_k$ in the role of the measurement $z_k$. Conversely, an EMA with smoothing factor $\alpha$ at sample period $\Delta t$ behaves like an RC filter with time constant $\tau = -\Delta t/\ln(1 - \alpha)$: the [Introduction](#intro-sec-exponential-moving-average)'s $\alpha = 0.05$ at 10 samples per second corresponds to $\tau \approx 1.95$ s. For $\Delta t \ll \tau$, Taylor's Theorem gives $\alpha \approx \Delta t/\tau$.
 
     **Euler's method.** Replacing $\dot x$ on $(t_{k-1}, t_k]$ by the difference quotient $\frac{x_k - x_{k-1}}{\Delta t}$ evaluated with the values at $t_{k-1}$ gives the approximation $x_k \approx (1 + a\Delta t)\,x_{k-1} + b\,\Delta t\,u_k$. Its coefficients are the degree-$1$ Taylor polynomials of $a_d$ and $b_d$ in $\Delta t$, and the Taylor Error Bound gives $|e^{a\Delta t} - (1 + a\Delta t)| \le \frac{(a\Delta t)^2}{2}e^{|a|\Delta t}$ per step. Euler's method is simple and works well for small $\Delta t$. For large $\Delta t$ it can fail badly, as the figure shows for the decay $\dot x = -x/\tau$ with $x(0) = 1$.
     """)

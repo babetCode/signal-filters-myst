@@ -71,13 +71,13 @@ def _(Path):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the cumulative average and the {term}`exponential moving average` with first-measurement initialization.
-    - [Chapter 3](ch3_sets_for_probability.md): finite sums; {term}`absolute value` and the triangle inequality; the Archimedean property.
-    - [Chapter 4](ch4_probability_spaces.md): monotonicity, countable additivity, continuity from below; {term}`independent events`; {term}`almost surely`.
-    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>` and the theorem on building them; {term}`discrete <discrete random variable>` and {term}`continuous <continuous random variable>` random variables, PMFs, densities, and sums over countable sets; the {term}`uniform <uniform distribution>` and {term}`normal <normal distribution>` distributions and the density of $aX + b$; {term}`joint densities <joint density>` and {term}`marginal densities <marginal density>`; {term}`independence <independent random variables>` and the factorization criteria; linear combinations of independent normals; the standard {term}`measurement-noise <measurement noise>` model.
-    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series): limits, absolutely convergent and nonnegative series (rearranging, grouping, and multiplying them), the geometric series.
-    - [Appendix C: Derivatives](#appc-sec-derivatives) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): the extreme value theorem and the fact that the derivative vanishes at an interior extremum.
-    - [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (substitution, integration by parts), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Improper Integrals](#appc-sec-improper-integrals), and [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals) (Fubini's theorem).
+    - [Introduction](introduction.md): [the cumulative average](#intro-sec-a-recursive-average) and the {term}`exponential moving average` with [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-sec-finite-sums-and-products); {term}`absolute value` and [the triangle inequality](#ch3-lem-properties-of-absolute-value); [the Archimedean property](#ch3-thm-archimedean-property).
+    - [Chapter 4](ch4_probability_spaces.md): [monotonicity](#ch4-thm-monotonicity), [countable additivity](#ch4-sec-kolmogorovs-axioms), [continuity from below](#ch4-thm-continuity-from-below); {term}`independent events`; {term}`almost surely`.
+    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>` and [the theorem on building them](#ch5-thm-building-random-variables); {term}`discrete <discrete random variable>` and {term}`continuous <continuous random variable>` random variables, [PMFs](#ch5-sec-discrete-random-variables), [densities](#ch5-sec-continuous-random-variables), and sums over countable sets; the {term}`uniform <uniform distribution>` and {term}`normal <normal distribution>` distributions and [the density of](#ch5-thm-density-of-ax-b) $aX + b$; {term}`joint densities <joint density>` and {term}`marginal densities <marginal density>`; {term}`independence <independent random variables>` and [the factorization criteria](#ch5-thm-factorization-criteria); [linear combinations of independent normals](#ch5-cor-linear-combinations-of-independent-normals); the standard {term}`measurement-noise <measurement noise>` model.
+    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series): limits, [absolutely convergent and nonnegative series](#appc-sec-sums-in-any-order) (rearranging, grouping, and multiplying them), [the geometric series](#appc-thm-geometric-series).
+    - [Appendix C: Derivatives](#appc-sec-derivatives) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): [the extreme value theorem](#appc-thm-extreme-value-theorem) and the fact that [the derivative vanishes at an interior extremum](#appc-lem-interior-extremum).
+    - [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) ([substitution](#appc-thm-integration-by-substitution), [integration by parts](#appc-thm-integration-by-parts)), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Improper Integrals](#appc-sec-improper-integrals), and [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals) ([Fubini's theorem](#appc-thm-tonelli-and-fubini)).
     ///
     """)
     return
@@ -126,7 +126,7 @@ def _(mo):
 
     **Remarks.**
 
-    - *The definition is unambiguous.* No random variable is both discrete and continuous ([Chapter 5](ch5_random_variables.md)). In the discrete case the value does not depend on the choice of $C$, because $p_X(x) = 0$ outside every such $C$. In the continuous case, two densities of the same $X$ can differ only where one of them is discontinuous, which for the densities in this book means at finitely many points in any bounded interval, and that does not change an integral.
+    - *The definition is unambiguous.* No random variable is both discrete and continuous ([Chapter 5](#ch5-sec-continuous-random-variables)). In the discrete case the value does not depend on the choice of $C$, because $p_X(x) = 0$ outside every such $C$. In the continuous case, two densities of the same $X$ can differ only where one of them is discontinuous, which for the densities in this book means at finitely many points in any bounded interval, and that does not change an integral.
     - *Why absolute convergence?* A sum over a countable set has no preferred order. If $\sum |x|\,p_X(x) = \infty$, a series like $\sum x\, p_X(x)$ can converge to different values in different orders (Riemann's rearrangement theorem, [Appendix C: Series](#appc-sec-series)), and an integral $\int_{-\infty}^\infty x f_X(x)\,dx$ needs both $\int_0^\infty$ and $\int_{-\infty}^0$ to converge separately. Absolute convergence rules out both problems.
     - *The general definition.* Some random variables are neither discrete nor continuous (Chapter 5's saturated scale reading). For every random variable, $\mathbb E[X] := \int_\Omega X\,d\mathbb P$, the Lebesgue integral of $X$ with respect to $\mathbb P$, which exists iff $\int_\Omega |X|\,d\mathbb P < \infty$ and agrees with both formulas above ([Wikipedia: Expected value](https://en.wikipedia.org/wiki/Expected_value), [Wikipedia: Lebesgue integration](https://en.wikipedia.org/wiki/Lebesgue_integration)).
 
@@ -156,7 +156,7 @@ def _(mo):
     $$\mathbb E[X] = \int_{-\infty}^\infty (\mu + \sigma z)\,\varphi(z)\,dz = \mu \cdot 1 + \sigma \cdot 0 = \mu. \qquad \blacksquare$$
     ///
 
-    So the parameter $\mu$ of [Chapter 5](ch5_random_variables.md) is the mean of $\mathcal N(\mu, \sigma^2)$, and the standard measurement-noise model's $V_k \sim \mathcal N(0, \sigma^2)$ has mean $0$. This is the "zero-mean noise" assumption the Introduction relied on.
+    So the parameter $\mu$ of [Chapter 5](#ch5-sec-the-uniform-and-normal-distributions) is the mean of $\mathcal N(\mu, \sigma^2)$, and the standard measurement-noise model's $V_k \sim \mathcal N(0, \sigma^2)$ has mean $0$. This is the "zero-mean noise" assumption the Introduction relied on.
 
     **A distribution with no mean.** Let $h(x) := \frac{1}{2(1 + |x|)^2}$. It is a PDF: it is positive and continuous, and $\int_0^\infty (1 + x)^{-2}\,dx = \big[-(1+x)^{-1}\big]_0^\infty = 1$, so $\int_{-\infty}^{\infty} h = 2 \cdot \tfrac12 \cdot 1 = 1$. Let $X$ have density $h$. For $x \ge 1$ we have $1 + x \le 2x$, so $\frac{x}{(1 + x)^2} \ge \frac{1}{4x}$ and
     $$\int_1^M \frac{x}{(1+x)^2}\,dx \ge \frac14 \ln M \to \infty.$$
@@ -185,7 +185,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    *Part 1.* Write $\mathbf X := (X_1, \ldots, X_n)$. The set $C$ is countable ([Chapter 3](ch3_sets_for_probability.md)), and $\mathbb P(\mathbf X \notin C) \le \sum_i \mathbb P(X_i \notin C_i) = 0$ by the union bound. Let $D := g[C]$, the image of $C$. It is countable: enumerate $C$, and send each $y \in D$ to the index of the first element of $C$ that $g$ maps to $y$; this is an injection into $\mathbb N$. Off the null event $\{\mathbf X \notin C\}$, $Y$ takes values in $D$, so $Y$ is discrete. For $y \in D$, the event $\{Y = y\} \cap \{\mathbf X \in C\}$ is the disjoint union of the events $\{\mathbf X = \mathbf c\}$ over the $\mathbf c \in C$ with $g(\mathbf c) = y$, and the rest of $\{Y = y\}$ has probability $0$. By countable additivity,
+    *Part 1.* Write $\mathbf X := (X_1, \ldots, X_n)$. The set $C$ is countable ([Chapter 3](#ch3-sec-countable-and-uncountable-sets)), and $\mathbb P(\mathbf X \notin C) \le \sum_i \mathbb P(X_i \notin C_i) = 0$ by the union bound. Let $D := g[C]$, the image of $C$. It is countable: enumerate $C$, and send each $y \in D$ to the index of the first element of $C$ that $g$ maps to $y$; this is an injection into $\mathbb N$. Off the null event $\{\mathbf X \notin C\}$, $Y$ takes values in $D$, so $Y$ is discrete. For $y \in D$, the event $\{Y = y\} \cap \{\mathbf X \in C\}$ is the disjoint union of the events $\{\mathbf X = \mathbf c\}$ over the $\mathbf c \in C$ with $g(\mathbf c) = y$, and the rest of $\{Y = y\}$ has probability $0$. By countable additivity,
     $$p_Y(y) = \sum_{\mathbf c \in C,\ g(\mathbf c) = y} p(\mathbf c).$$
     The sets $\{\mathbf c \in C : g(\mathbf c) = y\}$, for $y \in D$, partition $C$. A series of nonnegative terms may be grouped arbitrarily ([Appendix C: Series](#appc-sec-series)), so
     $$\sum_{y \in D} |y|\, p_Y(y) = \sum_{y \in D}\ \sum_{g(\mathbf c) = y} |g(\mathbf c)|\, p(\mathbf c) = \sum_{\mathbf c \in C} |g(\mathbf c)|\, p(\mathbf c).$$
@@ -221,7 +221,7 @@ def _(mo):
     $$\sum_{\mathbf c \in C} |g(\mathbf c)|\,p(\mathbf c) \le \sum_{i} |a_i| \sum_{\mathbf c \in C} |c_i|\, p(\mathbf c) + |b| \sum_{\mathbf c \in C} p(\mathbf c) < \infty,$$
     so $\mathbb E[g(\mathbf X)]$ exists by LOTUS. Splitting the absolutely convergent series term by term gives $\sum_i a_i \mathbb E[X_i] + b$.
 
-    *Part 1, density case.* Same computation with LOTUS part 2: integrating $|x_i|\,f(\mathbf x)$ over all variables except $x_i$ first (Fubini) gives $\int |x_i|\, f_{X_i}(x_i)\,dx_i$, by the definition of the marginal density, which is a density of $X_i$ ([Chapter 5](ch5_random_variables.md)).
+    *Part 1, density case.* Same computation with LOTUS part 2: integrating $|x_i|\,f(\mathbf x)$ over all variables except $x_i$ first (Fubini) gives $\int |x_i|\, f_{X_i}(x_i)\,dx_i$, by the definition of the marginal density, which is a density of $X_i$ ([Chapter 5](#ch5-thm-the-marginal-density-is-a-density)).
 
     *Part 2.* If $Y$ is discrete, then $p_Y(y) \le \mathbb P(Y < 0) = 0$ for $y < 0$, so every term of $\sum y\,p_Y(y)$ is $\ge 0$. If $Y$ has a density $f_Y$, then $\int_{-M}^0 f_Y = \mathbb P(-M < Y \le 0) = \mathbb P(Y = 0) = 0$ for every $M > 0$, so $\big|\int_{-M}^0 y\,f_Y(y)\,dy\big| \le M\int_{-M}^0 f_Y = 0$ and $\mathbb E[Y] = \int_0^\infty y\,f_Y(y)\,dy \ge 0$. More generally, if $Y = g(\mathbf X)$ with $g \ge 0$ and $\mathbf X$ as in either case of LOTUS, LOTUS writes $\mathbb E[Y]$ as a sum or integral of nonnegative terms. If $X \le Y$, then $Y - X \ge 0$, so $\mathbb E[Y] - \mathbb E[X] = \mathbb E[Y - X] \ge 0$ by part 1.
 
@@ -592,7 +592,7 @@ def _(mo):
     Each $\mathbf 1_{A_i}$ is Bernoulli with parameter $p$, so it has mean $p$ and variance $p(1 - p)$. For $i \ne j$, $\mathbf 1_{A_i}\mathbf 1_{A_j} = \mathbf 1_{A_i \cap A_j}$, so $\operatorname{Cov}(\mathbf 1_{A_i}, \mathbf 1_{A_j}) = \mathbb P(A_i \cap A_j) - p^2 = 0$ by independence of the events. Apply the weak law to $X_i := \mathbf 1_{A_i}$. Finally, $p(1-p) \le \tfrac14$ because $\tfrac14 - p + p^2 = (p - \tfrac12)^2 \ge 0$. $\blacksquare$
     ///
 
-    This proves what [Chapter 4](ch4_probability_spaces.md)'s coin experiment showed: the fraction of heads converges to the probability of heads. It also explains Chapter 5's histogram widget, in which the fraction of readings falling in each bin approached the bin's probability as $n$ grew.
+    This proves what [Chapter 4](#ch4-sec-experiment-relative-frequencies)'s coin experiment showed: the fraction of heads converges to the probability of heads. It also explains Chapter 5's histogram widget, in which the fraction of readings falling in each bin approached the bin's probability as $n$ grew.
 
     /// admonition | 📐 **Corollary (Zero Variance Means Constant)**
         attrs: {class: corollary, id: ch6-cor-zero-variance-means-constant}

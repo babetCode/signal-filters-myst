@@ -105,7 +105,7 @@ def _(mo):
     (Of a word or symbol) a set of requirements which are necessary and sufficient to be in the category labeled by the word or symbol.
     ///
 
-    [^necessary-sufficient]: Used informally here; *necessary* and *sufficient* conditions are made precise in [Chapter 1](ch1_language_of_logic.md).
+    [^necessary-sufficient]: Used informally here; *necessary* and *sufficient* conditions are made precise in [Chapter 1](#ch1-sec-necessary-and-sufficient-conditions).
     """)
     return
 

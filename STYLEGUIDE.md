@@ -365,7 +365,7 @@ Results and proofs are not numbered (`:enumerated: false`; without it, MyST labe
 ### 6.4 Tables
 
 - Every table's separator row has explicit alignment colons. Left-align columns of text (`:---`); center columns of short entries such as symbols, numbers, or yes/no (`:---:`).
-- Keep cells short. A formula longer than a short expression does not belong in a cell after prose, where it would wrap mid-formula: give it its own column, or move it below the table.
+- Keep cells short. When a cell has prose followed by a formula longer than a short expression, put `<br>` before the formula so that it starts on its own line and does not wrap mid-formula. MyST renders `<br>` in table cells as a line break.
 - Every table is introduced by a sentence saying what it compares.
 
 ### 6.5 Math
@@ -380,6 +380,7 @@ Results and proofs are not numbered (`:enumerated: false`; without it, MyST labe
 
 - A footnote (`[^name]`) is defined in the same `mo.md` cell that references it.
 - Use footnotes for informal first uses of later terms ([§7.4](#74-words-used-before-their-definition)) and for side remarks or fun facts that would interrupt the sentence. Anything the argument depends on belongs in the text.
+- **Standard terms the main path does not need.** If a term is standard in the wider literature (for example *sentence* in formal logic), introduce it in the main text only if the main text uses it. Otherwise mention it in a footnote or in an appendix, so that the reader can connect the book to other texts without the flow being broken.
 
 ---
 

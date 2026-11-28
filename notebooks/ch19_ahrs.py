@@ -139,7 +139,7 @@ def rotation_helpers(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 18](ch18_quaternions.md) integrates *perfect* gyroscope readings exactly. Real readings are not perfect: a gyroscope bias of just $0.01$ rad/s, typical of inexpensive MEMS sensors, makes the integrated attitude $34^\circ$ wrong after one minute. Two other sensors see directions that do not drift: an accelerometer at rest measures gravity, which fixes "down", and a magnetometer measures the Earth's magnetic field, which fixes "north". Both are noisy, and both are corrupted when the body accelerates or a magnetic object comes near. An **attitude and heading reference system** (AHRS) fuses the three into one attitude estimate. This chapter builds two: a *complementary filter*, which turns out to be exactly the Introduction's alpha filter, and an *error-state Kalman filter* that also estimates the gyroscope bias and reports its own uncertainty. The same attitude machinery is the core of the inertial navigation in Chapters 20 and 21.
+    [Chapter 18](#ch18-thm-exact-quaternion-update) integrates *perfect* gyroscope readings exactly. Real readings are not perfect: a gyroscope bias of just $0.01$ rad/s, typical of inexpensive MEMS sensors, makes the integrated attitude $34^\circ$ wrong after one minute. Two other sensors see directions that do not drift: an accelerometer at rest measures gravity, which fixes "down", and a magnetometer measures the Earth's magnetic field, which fixes "north". Both are noisy, and both are corrupted when the body accelerates or a magnetic object comes near. An **attitude and heading reference system** (AHRS) fuses the three into one attitude estimate. This chapter builds two: a *complementary filter*, which turns out to be exactly the Introduction's alpha filter, and an *error-state Kalman filter* that also estimates the gyroscope bias and reports its own uncertainty. The same attitude machinery is the core of the inertial navigation in Chapters 20 and 21.
 
     /// attention | 🗝️ **Key Idea**
     Gyroscopes are accurate over short times but drift; gravity and the magnetic field are accurate over long times but noisy and easily disturbed. Fusing them means trusting the gyroscope for fast changes and the reference directions for slow ones.
@@ -152,13 +152,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the alpha filter $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and first-measurement initialization.
-    - [Chapter 6](ch6_expectation_and_variance.md): variance of sums of independent random variables, and the steady-state variance $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
-    - [Chapter 9](ch9_noise_levels.md): white noise, random walks, and the theorem that the steady-state Kalman filter is an exponential moving average.
-    - [Chapter 11](ch11_measurement_functions.md): sensor bias and calibration.
-    - [Chapters 13](ch13_kalman_filter.md), [14](ch14_kalman_filters_in_practice.md), and [15](ch15_extended_kalman_filter.md): the Kalman filter equations, the Joseph form, sequential updates, gating, and the extended Kalman filter with its Jacobians.
-    - [Chapter 17](ch17_rotations.md): ENU/FLU frames, rotation matrices and their properties, ZYX Euler angles, angular velocity, $\operatorname{Exp}$ and $\operatorname{Log}$, the small-angle approximation, and the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
-    - [Chapter 18](ch18_quaternions.md): unit quaternions, the exact update $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$, and $\operatorname{Exp}_q(\delta\boldsymbol\theta) \approx [1, \tfrac12\delta\boldsymbol\theta]$.
+    - [Introduction](introduction.md): [the alpha filter](#intro-sec-predicting-the-change) $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 6](ch6_expectation_and_variance.md): [variance of sums of independent random variables](#ch6-thm-variance-of-a-linear-combination), and [the steady-state variance](#ch6-thm-ema-of-a-constant-value) $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
+    - [Chapter 9](ch9_noise_levels.md): [white noise](#ch9-sec-process-noise), [random walks](#ch9-sec-process-noise), and the theorem that [the steady-state Kalman filter is an exponential moving average](#ch9-thm-the-steady-state-kalman-filter-is-an-ema).
+    - [Chapter 11](ch11_measurement_functions.md): [sensor bias](#ch11-sec-sensor-bias-and-a-drifting-tare) and [calibration](#ch11-sec-calibration-by-least-squares).
+    - [Chapters 13](ch13_kalman_filter.md), [14](ch14_kalman_filters_in_practice.md), and [15](ch15_extended_kalman_filter.md): [the Kalman filter equations](#ch13-sec-the-algorithm), [the Joseph form](#ch13-sec-update), [sequential updates](#ch14-sec-sequential-updates), [gating](#ch14-sec-outlier-gating), and [the extended Kalman filter with its Jacobians](#ch15-sec-the-extended-kalman-filter).
+    - [Chapter 17](ch17_rotations.md): [ENU/FLU frames](#ch17-sec-reference-frames), [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [angular velocity](#ch17-sec-angular-velocity), $\operatorname{Exp}$ and $\operatorname{Log}$, [the small-angle approximation](#ch17-thm-small-angle-approximation), and the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
+    - [Chapter 18](ch18_quaternions.md): [unit quaternions](#ch18-sec-conjugate-norm-and-inverse), [the exact update](#ch18-thm-exact-quaternion-update) $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$, and $\operatorname{Exp}_q(\delta\boldsymbol\theta) \approx [1, \tfrac12\delta\boldsymbol\theta]$.
     ///
     """)
     return
@@ -178,7 +178,7 @@ def _(mo):
     A gyroscope is a sensor that measures the angular velocity of the body it is attached to, relative to non-rotating space, about one or more axes fixed in the body.
     ///
 
-    Because we treat the navigation frame as non-rotating ([Chapter 17](ch17_rotations.md)), a three-axis gyroscope measures $\boldsymbol\omega^b$, the angular velocity of $b$ relative to $n$ in body coordinates.
+    Because we treat the navigation frame as non-rotating ([Chapter 17](#ch17-sec-reference-frames)), a three-axis gyroscope measures $\boldsymbol\omega^b$, the angular velocity of $b$ relative to $n$ in body coordinates.
 
     An accelerometer does *not* measure acceleration. Inside a MEMS accelerometer, a tiny proof mass $m$ hangs on springs in a case fixed to the body, and the sensor reports the spring force per unit mass along its axes. Once the mass has settled it moves with the case, with acceleration $\mathbf a^n$, so Newton's second law in the (non-rotating) navigation frame reads $m\mathbf a^n = \mathbf F_{\text{spring}} + m\mathbf g^n$. The sensor therefore reports $\mathbf F_{\text{spring}}/m = \mathbf a^n - \mathbf g^n$, in body axes.
 
@@ -233,7 +233,7 @@ def _(mo):
     | gravity $\mathbf g^n$ | $[0, 0, -9.81]^\top$ m/s$^2$ |
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **Calibrated, aligned sensors.** We assume scale factors are calibrated and that the three sensors' axes coincide with the body axes and with each other ([Chapter 11](ch11_measurement_functions.md)). Misalignment of $1^\circ$ turns a fast rotation about one axis into a false rate about another.
+    - **Calibrated, aligned sensors.** We assume scale factors are calibrated and that the three sensors' axes coincide with the body axes and with each other ([Chapter 11](#ch11-sec-calibration-by-least-squares)). Misalignment of $1^\circ$ turns a fast rotation about one axis into a false rate about another.
     - **Earth rotation is neglected.** The Earth turns at $7.3\times 10^{-5}$ rad/s, far below the assumed gyroscope bias. Navigation-grade gyroscopes are good enough to sense it, and then it must be modeled.
     - **Magnetic north.** $\mathbf m^n$ has no East component, so "North" here means *magnetic* north. Geographic north differs by the local magnetic declination, a known correction of a few degrees in most places.
     - **A clean magnetic field.** The model assumes the magnetometer sees only the Earth's field. Iron fixed to the body (*hard-iron* offsets and *soft-iron* distortions) must be calibrated out, and iron near the body (steel furniture, reinforced floors, electronics) changes $\mathbf m^n$ itself, often by tens of percent indoors.
@@ -275,7 +275,7 @@ def _(mo):
     The heading of a body whose forward axis is not vertical is its yaw angle $\psi$: the angle, measured counterclockwise about Up, from East to the horizontal projection of the body's forward axis.
     ///
 
-    The horizontal projection of the forward axis is the first column of $\mathbf R^n_b$ with its third entry dropped, $\cos\theta\,[\cos\psi, \sin\psi]$ ([Chapter 17](ch17_rotations.md), Euler-angle theorem), so for $|\theta| < 90^\circ$ its direction is exactly $\psi$. A compass bearing (clockwise from North) is $90^\circ - \psi$, modulo $360^\circ$. Roll and pitch together are called *tilt*: they say which way is down in body coordinates.
+    The horizontal projection of the forward axis is the first column of $\mathbf R^n_b$ with its third entry dropped, $\cos\theta\,[\cos\psi, \sin\psi]$ ([Chapter 17](#ch17-thm-euler-angles-from-a-rotation-matrix), Euler-angle theorem), so for $|\theta| < 90^\circ$ its direction is exactly $\psi$. A compass bearing (clockwise from North) is $90^\circ - \psi$, modulo $360^\circ$. Roll and pitch together are called *tilt*: they say which way is down in body coordinates.
     """)
     return
 
@@ -375,12 +375,12 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Subtracting $\theta_k = \theta_{k-1} + (\theta_k - \theta_{k-1})$ from the recursion gives $e_k = e_{k-1} + (b + n_k)\Delta t$, so $e_k = e_0 + kb\Delta t + \Delta t\sum_{j=1}^k n_j$. Take expectations, and use that the variance of a sum of independent random variables is the sum of their variances ([Chapter 6](ch6_expectation_and_variance.md)): $\operatorname{Var}(e_k) = k\,\Delta t^2\sigma_g^2 = \sigma_g^2\Delta t\,t_k$. $\blacksquare$
+    Subtracting $\theta_k = \theta_{k-1} + (\theta_k - \theta_{k-1})$ from the recursion gives $e_k = e_{k-1} + (b + n_k)\Delta t$, so $e_k = e_0 + kb\Delta t + \Delta t\sum_{j=1}^k n_j$. Take expectations, and use that the variance of a sum of independent random variables is the sum of their variances ([Chapter 6](#ch6-thm-variance-of-a-linear-combination)): $\operatorname{Var}(e_k) = k\,\Delta t^2\sigma_g^2 = \sigma_g^2\Delta t\,t_k$. $\blacksquare$
     ///
 
     The bias produces an error growing linearly in time; the noise produces a random walk whose standard deviation grows like $\sqrt{t}$. With our defaults, after one minute the bias contributes $0.01 \times 60 = 0.6$ rad $= 34^\circ$ and the noise only $0.01\sqrt{0.01\times 60} = 0.0077$ rad $= 0.44^\circ$. The bias dominates, which is why the Kalman filter below estimates it. The figure shows a body pitching back and forth for a minute: the accelerometer's pitch is noisy and wobbles with linear acceleration but stays centered on the truth, while the gyroscope's pitch is smooth but walks steadily away. This growing error is called *drift*[^drift].
 
-    [^drift]: Used informally here; defined precisely in [Chapter 20](ch20_strapdown_inertial_navigation.md).
+    [^drift]: Used informally here; defined precisely in [Chapter 20](#ch20-sec-how-errors-grow).
     """)
     return
 
@@ -497,7 +497,7 @@ def _(mo):
     This is the recursion defining $\mathcal L[z - G]$, with the same start, so $D = \mathcal L[z - G]$. The map $\mathcal L$ is linear (each $\mathcal L[y]_k$ is a fixed weighted sum of $y_2, \dots, y_k$), so $D = \mathcal L[z] - \mathcal L[G]$. $\blacksquare$
     ///
 
-    The exponential moving average $\mathcal L$ is a *low-pass* filter: it passes slowly varying signals and averages out fast fluctuations ([Chapter 6](ch6_expectation_and_variance.md) showed it shrinks white-noise variance by the factor $\alpha/(2-\alpha)$). Its complement $\mathcal I - \mathcal L$ (identity minus $\mathcal L$) is a *high-pass* filter: it removes constants and slow trends. So the estimate is the accelerometer angle, low-passed, plus the gyroscope angle, high-passed, and the two filters add up to the identity. If both sensors were perfect ($z = G = \theta$), the output would be exactly $\theta$, with no lag and no distortion.
+    The exponential moving average $\mathcal L$ is a *low-pass* filter: it passes slowly varying signals and averages out fast fluctuations ([Chapter 6](#ch6-thm-ema-of-a-constant-value) showed it shrinks white-noise variance by the factor $\alpha/(2-\alpha)$). Its complement $\mathcal I - \mathcal L$ (identity minus $\mathcal L$) is a *high-pass* filter: it removes constants and slow trends. So the estimate is the accelerometer angle, low-passed, plus the gyroscope angle, high-passed, and the two filters add up to the identity. If both sensors were perfect ($z = G = \theta$), the output would be exactly $\theta$, with no lag and no distortion.
 
     /// note | 📖 **Definition**
     <u>**Complementary filter**</u>
@@ -543,7 +543,7 @@ def _(mo):
     $$A = \frac{1}{\sqrt{1 + (2\pi f\tau)^2}},\qquad \varphi = \arctan(2\pi f\tau).$$
     The complementary path $u - y = \tau\dot y$ has amplitude $2\pi f\tau A = 2\pi f\tau/\sqrt{1 + (2\pi f\tau)^2}$. So accelerometer disturbances at frequency $f$ are scaled by $1/\sqrt{1 + (2\pi f\tau)^2}$ (slow ones pass, fast ones are blocked), gyroscope-angle errors by $2\pi f\tau/\sqrt{1 + (2\pi f\tau)^2}$ (slow drift is blocked, fast motion passes), and the two cross at the cutoff frequency $f_c = 1/(2\pi\tau)$.
 
-    **Choosing $\alpha$.** A large $\tau$ (small $\alpha$) suppresses accelerometer noise and linear acceleration better but lets gyroscope bias cause a larger error $b\tau$ and makes recovery slower; a small $\tau$ does the opposite. If the only errors were white noise, [Chapter 9](ch9_noise_levels.md)'s steady-state Kalman gain would give the optimal $\alpha$ (the known increments $\Delta x_k$ shift the estimates but not their variances, so they do not change the gains): with process noise $Q = \sigma_g^2\Delta t^2$ (the gyroscope increment) and measurement noise $R = (\sigma_a/g)^2$ (the accelerometer pitch), $K_\infty \approx 0.019$, i.e. $\tau \approx 0.5$ s. But bias and linear acceleration are not white, and they pull $\tau$ in opposite directions. The way out is to *estimate* the bias, which the Kalman filter below does.
+    **Choosing $\alpha$.** A large $\tau$ (small $\alpha$) suppresses accelerometer noise and linear acceleration better but lets gyroscope bias cause a larger error $b\tau$ and makes recovery slower; a small $\tau$ does the opposite. If the only errors were white noise, [Chapter 9](#ch9-thm-steady-state-gain)'s steady-state Kalman gain would give the optimal $\alpha$ (the known increments $\Delta x_k$ shift the estimates but not their variances, so they do not change the gains): with process noise $Q = \sigma_g^2\Delta t^2$ (the gyroscope increment) and measurement noise $R = (\sigma_a/g)^2$ (the accelerometer pitch), $K_\infty \approx 0.019$, i.e. $\tau \approx 0.5$ s. But bias and linear acceleration are not white, and they pull $\tau$ in opposite directions. The way out is to *estimate* the bias, which the Kalman filter below does.
     """)
     return
 
@@ -629,7 +629,7 @@ def _(
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **Single-axis motion.** $\dot\theta = \omega_y$ holds only when $\phi = 0$; in general $\dot\theta = \cos\phi\,\omega_y - \sin\phi\,\omega_z$ ([Chapter 17](ch17_rotations.md)). Running one scalar filter per Euler angle works for small tilts but inherits gimbal lock and couples errors between axes. The fix is to apply the same idea to the whole rotation, as the Kalman filter below and the Mahony filter at the end of the chapter do.
+    - **Single-axis motion.** $\dot\theta = \omega_y$ holds only when $\phi = 0$; in general $\dot\theta = \cos\phi\,\omega_y - \sin\phi\,\omega_z$ ([Chapter 17](#ch17-thm-euler-angle-kinematics)). Running one scalar filter per Euler angle works for small tilts but inherits gimbal lock and couples errors between axes. The fix is to apply the same idea to the whole rotation, as the Kalman filter below and the Mahony filter at the end of the chapter do.
     - **Gyroscope bias is not removed,** only limited to $b\tau$. Adding an integral term or estimating the bias removes it.
     - **Linear acceleration is not modeled.** It enters as a slowly varying accelerometer error that the low-pass path lets through whenever its frequency is below $f_c$.
     - **Angles wrap.** For heading, the innovation $z_k - \hat\theta_k^-$ must be wrapped into $(-\pi, \pi]$.
@@ -646,7 +646,7 @@ def _(mo):
 
     The complementary filter has two weaknesses: it is scalar, and it cannot remove gyroscope bias. A Kalman filter fixes both, but putting attitude directly into its state is awkward:
 
-    - **Euler angles** have gimbal lock ([Chapter 17](ch17_rotations.md)).
+    - **Euler angles** have gimbal lock ([Chapter 17](#ch17-sec-gimbal-lock)).
     - **A quaternion** has four numbers for three degrees of freedom. Its unit-norm constraint means the "uncertainty" along $q$ itself is meaningless, so the $4\times 4$ covariance is singular (or wrong), and an additive correction $\hat q + \mathbf K\tilde{\mathbf y}$ leaves the unit sphere.
     - **A rotation vector** for the whole attitude jumps at $180^\circ$.
 
@@ -710,7 +710,7 @@ def _(mo):
 
     **Discretization.** Over one sample period $\hat{\boldsymbol\omega} = \hat{\boldsymbol\omega}_k$ is constant. The attitude part $\dot{\delta\boldsymbol\theta} = -[\hat{\boldsymbol\omega}_k]_\times\delta\boldsymbol\theta$ then has the exact solution $\exp(-\Delta t[\hat{\boldsymbol\omega}_k]_\times)\,\delta\boldsymbol\theta = \operatorname{Exp}(\hat{\boldsymbol\omega}_k\Delta t)^\top\delta\boldsymbol\theta$ (Chapter 17's constant-rate argument and $\operatorname{Exp}(-\mathbf a) = \operatorname{Exp}(\mathbf a)^\top$). The bias error and the gyroscope noise sample $\mathbf n_{g,k}$ act over $\Delta t$, adding $-\Delta t\,\delta\mathbf b_g - \Delta t\,\mathbf n_{g,k}$ to first order. So the discrete error model is $\delta\mathbf x_k = \boldsymbol\Phi_k\,\delta\mathbf x_{k-1} + (\text{noise})$ with
     $$\boldsymbol\Phi_k = \begin{bmatrix}\operatorname{Exp}(\hat{\boldsymbol\omega}_k\Delta t)^\top & -\Delta t\,\mathbf I\\ \mathbf 0 & \mathbf I\end{bmatrix},\qquad \mathbf Q = \begin{bmatrix}\sigma_g^2\Delta t^2\,\mathbf I & \mathbf 0\\ \mathbf 0 & \sigma_{bg}^2\Delta t\,\mathbf I\end{bmatrix}.$$
-    The covariance $\sigma_g^2\Delta t^2\mathbf I$ is that of $-\Delta t\,\mathbf n_{g,k}$ for per-sample noise of standard deviation $\sigma_g$; the bias random walk adds variance $\sigma_{bg}^2\Delta t$ per period ([Chapter 9](ch9_noise_levels.md)). $\boldsymbol\Phi_k$ agrees with $\mathbf I + \mathbf F\Delta t$ to first order in $\Delta t$ (Chapter 21 uses that simpler form for its larger state). The covariance prediction is Chapter 13's $\mathbf P_k^- = \boldsymbol\Phi_k\mathbf P_{k-1}\boldsymbol\Phi_k^\top + \mathbf Q$. The error *mean* needs no prediction: it is zero after every reset, and $\boldsymbol\Phi_k\mathbf 0 = \mathbf 0$.
+    The covariance $\sigma_g^2\Delta t^2\mathbf I$ is that of $-\Delta t\,\mathbf n_{g,k}$ for per-sample noise of standard deviation $\sigma_g$; the bias random walk adds variance $\sigma_{bg}^2\Delta t$ per period ([Chapter 9](#ch9-lem-a-random-walk-spreads-out)). $\boldsymbol\Phi_k$ agrees with $\mathbf I + \mathbf F\Delta t$ to first order in $\Delta t$ (Chapter 21 uses that simpler form for its larger state). The covariance prediction is Chapter 13's $\mathbf P_k^- = \boldsymbol\Phi_k\mathbf P_{k-1}\boldsymbol\Phi_k^\top + \mathbf Q$. The error *mean* needs no prediction: it is zero after every reset, and $\boldsymbol\Phi_k\mathbf 0 = \mathbf 0$.
     """)
     return
 
@@ -723,7 +723,7 @@ def _(mo):
 
     **Accelerometer.** Assume for now that the body is not accelerating ($\mathbf a^n \approx \mathbf 0$) and ignore the accelerometer bias. Then the accelerometer measures gravity:
     $$\mathbf f_m = \mathbf R^\top(-\mathbf g^n) + \mathbf v_a,\qquad \mathbf v_a \sim \mathcal N(\mathbf 0, \mathbf R_{\text{acc}}),\quad \mathbf R_{\text{acc}} = \sigma_{\text{acc}}^2\mathbf I.$$
-    (In this chapter the measurement-noise covariance of [Chapter 13](ch13_kalman_filter.md) is written $\mathbf R_{\text{acc}}$ or $\mathbf R_{\text{mag}}$, to keep $\mathbf R$ for attitude.) The filter's $\sigma_{\text{acc}}$ is a tuning choice, usually set well above the sensor's $0.05$ m/s$^2$ to absorb the linear acceleration and bias that the model leaves out.
+    (In this chapter the measurement-noise covariance of [Chapter 13](#ch13-sec-the-state-space-model) is written $\mathbf R_{\text{acc}}$ or $\mathbf R_{\text{mag}}$, to keep $\mathbf R$ for attitude.) The filter's $\sigma_{\text{acc}}$ is a tuning choice, usually set well above the sensor's $0.05$ m/s$^2$ to absorb the linear acceleration and bias that the model leaves out.
 
     /// admonition | 📐 **Theorem (Measurement Jacobians)**
         attrs: {class: theorem, id: ch19-thm-measurement-jacobians}
@@ -737,9 +737,9 @@ def _(mo):
     For any fixed $\mathbf v^n$, $\mathbf R^\top\mathbf v^n = \operatorname{Exp}(\delta\boldsymbol\theta)^\top\hat{\mathbf R}^\top\mathbf v^n = \operatorname{Exp}(-\delta\boldsymbol\theta)\,\hat{\mathbf h} \approx (\mathbf I - [\delta\boldsymbol\theta]_\times)\hat{\mathbf h} = \hat{\mathbf h} - \delta\boldsymbol\theta\times\hat{\mathbf h} = \hat{\mathbf h} + \hat{\mathbf h}\times\delta\boldsymbol\theta$, with $\hat{\mathbf h} := \hat{\mathbf R}^\top\mathbf v^n$. Apply this with $\mathbf v^n = -\mathbf g^n$ and $\mathbf v^n = \mathbf m^n$. Neither measurement depends on $\mathbf b_g$. $\blacksquare$
     ///
 
-    **What each sensor can see.** $[\hat{\mathbf h}_a]_\times\delta\boldsymbol\theta = \hat{\mathbf h}_a\times\delta\boldsymbol\theta$ vanishes exactly when $\delta\boldsymbol\theta$ is parallel to $\hat{\mathbf h}_a$, the body-frame direction of Up. In navigation coordinates such an error is $\hat{\mathbf R}\,\delta\boldsymbol\theta \parallel \mathbf e_z$: a heading error. So, to first order as well as exactly (as shown earlier), gravity observes tilt but not heading. The magnetometer is blind to rotations about $\mathbf m^n$ instead, and since $\mathbf m^n$ is not vertical, the two sensors together observe all three components of $\delta\boldsymbol\theta$ ([Chapter 13](ch13_kalman_filter.md)'s observability). The bias has no direct measurement; it becomes observable through $\boldsymbol\Phi_k$, because a bias error makes the attitude error grow in a recognizable way.
+    **What each sensor can see.** $[\hat{\mathbf h}_a]_\times\delta\boldsymbol\theta = \hat{\mathbf h}_a\times\delta\boldsymbol\theta$ vanishes exactly when $\delta\boldsymbol\theta$ is parallel to $\hat{\mathbf h}_a$, the body-frame direction of Up. In navigation coordinates such an error is $\hat{\mathbf R}\,\delta\boldsymbol\theta \parallel \mathbf e_z$: a heading error. So, to first order as well as exactly (as shown earlier), gravity observes tilt but not heading. The magnetometer is blind to rotations about $\mathbf m^n$ instead, and since $\mathbf m^n$ is not vertical, the two sensors together observe all three components of $\delta\boldsymbol\theta$ ([Chapter 13](#ch13-sec-observability)'s observability). The bias has no direct measurement; it becomes observable through $\boldsymbol\Phi_k$, because a bias error makes the attitude error grow in a recognizable way.
 
-    **Update.** For each available measurement, in turn ({term}`sequential updates <sequential update>`, [Chapter 14](ch14_kalman_filters_in_practice.md); valid because accelerometer and magnetometer noise are independent), apply the extended Kalman filter update of [Chapter 15](ch15_extended_kalman_filter.md) to the error state, whose predicted mean is zero:
+    **Update.** For each available measurement, in turn ({term}`sequential updates <sequential update>`, [Chapter 14](#ch14-thm-sequential-update); valid because accelerometer and magnetometer noise are independent), apply the extended Kalman filter update of [Chapter 15](#ch15-sec-update) to the error state, whose predicted mean is zero:
     $$\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R_{\text{meas}},\quad \mathbf K = \mathbf P^-\mathbf H^\top\mathbf S^{-1},\quad \delta\hat{\mathbf x} = \mathbf K\,(\mathbf z - \hat{\mathbf h}),\quad \mathbf P = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-(\mathbf I - \mathbf K\mathbf H)^\top + \mathbf K\mathbf R_{\text{meas}}\mathbf K^\top,$$
     using the {term}`Joseph form` for numerical robustness.
 
@@ -1092,7 +1092,7 @@ def _(mo):
     mo.md(r"""
     With the default settings (gyroscope bias $0.01$ rad/s, linear acceleration $1$ m/s$^2$, $\sigma_{\text{acc}} = 1$ m/s$^2$, accelerometer bias on), the three approaches compare as follows. Gyroscope integration alone is off by about $34^\circ$ RMS and $50^\circ$ at the end; the accelerometer-and-magnetometer snapshot never drifts but is about $10^\circ$ wrong at any instant, almost entirely because of the linear acceleration; the error-state filter stays below $1^\circ$. Its bias estimates lock onto the truth within about ten seconds; this is what lets it outperform the complementary filter, whose bias error $b\tau$ never goes away. Raising the gyroscope bias to $0.05$ rad/s makes gyroscope-only integration useless (over $130^\circ$ RMS) but barely changes the filter.
 
-    The tilt error about East stays inside its $\pm 2\sigma$ band, but the errors about North and Up sit at a constant offset, outside it, about half the time. The filter is *inconsistent* ({term}`filter consistency`, [Chapter 9](ch9_noise_levels.md)). The cause is the accelerometer bias, which the six-state model does not contain: uncheck "accelerometer bias" and all three components stay inside their bands about 95–99% of the time. The next section explains why the filter cannot simply learn this bias.
+    The tilt error about East stays inside its $\pm 2\sigma$ band, but the errors about North and Up sit at a constant offset, outside it, about half the time. The filter is *inconsistent* ({term}`filter consistency`, [Chapter 9](#ch9-sec-checking-the-noise-levels)). The cause is the accelerometer bias, which the six-state model does not contain: uncheck "accelerometer bias" and all three components stay inside their bands about 95–99% of the time. The next section explains why the filter cannot simply learn this bias.
     """)
     return
 
@@ -1109,7 +1109,7 @@ def _(mo):
 
     1. *Inflate $\mathbf R_{\text{acc}}$.* With $\sigma_{\text{acc}} = 2$ m/s$^2$ the same run has errors around $1.4^\circ$. The cost is slower correction when the body really is still.
     2. *Gate on the magnitude.* At rest $\|\mathbf f\| = g$, so skip the update when $\big|\|\mathbf f_m\| - g\big|$ is large. This catches vertical accelerations but is weak against horizontal ones: a horizontal acceleration $a$ changes the magnitude only to $\sqrt{g^2 + a^2} \approx g + a^2/(2g)$, so $2$ m/s$^2$ sideways changes it by only $0.2$ m/s$^2$. In the simulation, gating alone (with $\sigma_{\text{acc}} = 0.05$) reduces the error only to about $6.5^\circ$. An *adaptive* covariance, for example $\mathbf R_{\text{acc}} = \big(\sigma_{\text{acc}}^2 + c\,(\|\mathbf f_m\| - g)^2\big)\mathbf I$, is a smooth version of the same idea with the same weakness.
-    3. *Gate on the innovation.* [Chapter 14](ch14_kalman_filters_in_practice.md)'s {term}`gating` with the {term}`normalized innovation squared` rejects any accelerometer reading inconsistent with the predicted gravity direction, whatever its magnitude. Foot-mounted systems go further and use gravity only while the foot is detected to be stationary ([Chapter 21](ch21_zero_velocity_updates.md)).
+    3. *Gate on the innovation.* [Chapter 14](#ch14-sec-outlier-gating)'s {term}`gating` with the {term}`normalized innovation squared` rejects any accelerometer reading inconsistent with the predicted gravity direction, whatever its magnitude. Foot-mounted systems go further and use gravity only while the foot is detected to be stationary ([Chapter 21](ch21_zero_velocity_updates.md)).
 
     **Magnetic disturbances.** Check "magnetic disturbance": between 35 and 45 s the field is distorted by $[20, 10, 0]\ \mu$T. Without gating, the heading error reaches about $30^\circ$ and, because the magnetometer update uses the full field vector, the tilt is dragged off by more than $10^\circ$ as well. With gating the disturbed readings are rejected (the field magnitude rises from $47.4$ to $56.5\ \mu$T) and the filter coasts on the gyroscope with almost no penalty. Magnitude gating misses a disturbance that rotates the field without changing its strength, so practical systems also check the *dip angle* between $\mathbf f_m$ and $\mathbf m_m$ (it should be $90^\circ + 62^\circ$ at rest), and many apply the magnetometer only to heading, projecting its innovation onto the horizontal plane so that it cannot corrupt the tilt.
 
@@ -1117,7 +1117,7 @@ def _(mo):
 
     **Accelerometer bias.** For a body at rest, a horizontal accelerometer bias $b$ and a tilt of $b/g$ radians produce identical readings, so no amount of data from the accelerometer alone can separate them; this is a failure of {term}`observability`, not of tuning. Our $0.05$ m/s$^2$ bias becomes a constant tilt error of about $0.3^\circ$. The magnetometer then turns it into a heading error up to about $\tan 62^\circ \approx 1.9$ times larger, because the leveling step misreads part of the steep vertical field as horizontal. Calibration (Chapter 11) is the practical remedy; motion with varying attitude makes the bias weakly observable, which is why Chapter 21's 15-state filter includes it.
 
-    **Large initial errors.** The Jacobians are first-order. Starting from the snapshot attitude keeps the initial error to a few degrees, where linearization is excellent. Starting from an arbitrary attitude with a small $\mathbf P_0$ can make the first corrections point the wrong way ([Chapter 15](ch15_extended_kalman_filter.md)'s failure modes).
+    **Large initial errors.** The Jacobians are first-order. Starting from the snapshot attitude keeps the initial error to a few degrees, where linearization is excellent. Starting from an arbitrary attitude with a small $\mathbf P_0$ can make the first corrections point the wrong way ([Chapter 15](#ch15-sec-large-initial-error)'s failure modes).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The error-state filter of this chapter assumes:

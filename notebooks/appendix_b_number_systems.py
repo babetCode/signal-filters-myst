@@ -73,7 +73,7 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): all of it, especially induction, the Recursion Theorem, Equality of Functions, and the recursive definitions of $+$, $\cdot$, and $<$ on $\mathbb N$.
+    - [Chapter 2](ch2_axioms_of_set_theory.md): all of it, especially [induction](#ch2-thm-induction), [the Recursion Theorem](#ch2-thm-recursion), [Equality of Functions](#ch2-lem-equality-of-functions), and the [recursive definitions](#ch2-sec-arithmetic-and-order) of $+$, $\cdot$, and $<$ on $\mathbb N$.
     - [Chapter 3](ch3_sets_for_probability.md) (optional): the definitions of a {term}`field`, an {term}`ordered field`, an {term}`upper bound`, a {term}`supremum`, a {term}`complete ordered field`, and a {term}`bijective` function. Each is restated here where it is first needed, so this appendix can be read directly after Chapter 2.
     ///
     """)
@@ -83,9 +83,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 3](ch3_sets_for_probability.md) works with the real numbers as a *complete ordered field*: a number system with the familiar arithmetic and order in which every nonempty set with an upper bound has a least upper bound. Every later chapter depends on that property. Limits, infinite sums, and integrals are all defined through least upper bounds ([Appendix C](appendix_c_calculus.md)), and with them the probabilities, expectations, and variances that filters are built from.
+    [Chapter 3](#ch3-sec-the-real-numbers) works with the real numbers as a *complete ordered field*: a number system with the familiar arithmetic and order in which every nonempty set with an upper bound has a least upper bound. Every later chapter depends on that property. Limits, infinite sums, and integrals are all defined through least upper bounds ([Appendix C](appendix_c_calculus.md)), and with them the probabilities, expectations, and variances that filters are built from.
 
-    This appendix shows that the property is not an extra assumption. Inside ZFC, starting from the natural numbers of [Chapter 2](ch2_axioms_of_set_theory.md), we construct the integers $\mathbb Z$, the rational numbers $\mathbb Q$, and the real numbers $\mathbb R$, and prove that $\mathbb R$ is a complete ordered field. Along the way we see exactly what is missing from $\mathbb Q$: the rationals have a hole where $\sqrt 2$ should be.
+    This appendix shows that the property is not an extra assumption. Inside ZFC, starting from the natural numbers of [Chapter 2](#ch2-sec-natural-numbers), we construct the integers $\mathbb Z$, the rational numbers $\mathbb Q$, and the real numbers $\mathbb R$, and prove that $\mathbb R$ is a complete ordered field. Along the way we see exactly what is missing from $\mathbb Q$: the rationals have a hole where $\sqrt 2$ should be.
 
     /// attention | 🗝️ **Key Idea**
     Each number system is built from the previous one by a set-theoretic construction that repairs one defect. Integers are classes of pairs of natural numbers (adding subtraction), rational numbers are classes of pairs of integers (adding division), and real numbers are sets of rational numbers called Dedekind cuts (adding least upper bounds).
@@ -370,7 +370,7 @@ def _(mo):
     <!-- label: appb-sec-the-rational-numbers -->
     ## The Rational Numbers
 
-    **The goal.** We now repeat the construction with multiplication in place of addition, aiming for an ordered field. We use the standard axioms, as in [Chapter 3](ch3_sets_for_probability.md). A {term}`field` is a set $F$ with two functions $+, \cdot : F \times F \to F$ and two elements $0 \neq 1$ of $F$ such that, for all $x, y, z \in F$:
+    **The goal.** We now repeat the construction with multiplication in place of addition, aiming for an ordered field. We use the standard axioms, as in [Chapter 3](#ch3-sec-the-real-numbers). A {term}`field` is a set $F$ with two functions $+, \cdot : F \times F \to F$ and two elements $0 \neq 1$ of $F$ such that, for all $x, y, z \in F$:
 
     | | addition | multiplication |
     |:---|:---:|:---|
@@ -471,7 +471,7 @@ def _(mo):
     <!-- label: appb-sec-incompleteness-of-the-rationals -->
     ## Incompleteness of the Rationals
 
-    $\mathbb Q$ is dense (between any two rationals lies a third), yet it has holes. To say this precisely we need the following notions, restated from [Chapter 3](ch3_sets_for_probability.md), for a subset $S$ of an ordered field $F$ (they use only the order, so they make sense for any set with a relation $<$ satisfying trichotomy and transitivity):
+    $\mathbb Q$ is dense (between any two rationals lies a third), yet it has holes. To say this precisely we need the following notions, restated from [Chapter 3](#ch3-sec-bounds-and-completeness), for a subset $S$ of an ordered field $F$ (they use only the order, so they make sense for any set with a relation $<$ satisfying trichotomy and transitivity):
 
     - $u \in F$ is an {term}`upper bound` of $S$ iff $s \le u$ for every $s \in S$, and $S$ is *bounded above* iff it has an upper bound in $F$;
     - $\sigma \in F$ is a {term}`supremum` (least upper bound) of $S$ iff $\sigma$ is an upper bound of $S$ and $\sigma \le u$ for every upper bound $u$ of $S$.
@@ -639,7 +639,7 @@ def _(mo):
     *Any two cuts are comparable under $\subseteq$:* suppose $\alpha \not\subseteq \beta$, and pick $p \in \alpha \setminus \beta$. Let $q \in \beta$. If $p \le q$, then $p \in \beta$ (by downward closure, or because $p = q$), which is false; so $q < p$, and $q \in \alpha$ by downward closure of $\alpha$. Hence $\beta \subseteq \alpha$. *Trichotomy:* by comparability, at least one of $\alpha \subsetneq \beta$, $\alpha = \beta$, $\beta \subsetneq \alpha$ holds; $\alpha \subsetneq \beta$ and $\beta \subsetneq \alpha$ cannot both hold by Double Inclusion, and neither is compatible with $\alpha = \beta$. *Transitivity:* $\alpha \subseteq \beta \subseteq \gamma$ gives $\alpha \subseteq \gamma$, and $\alpha = \gamma$ would give $\beta \subseteq \alpha$, hence $\alpha = \beta$, which is false. *Rationals:* if $r < s$, then $r^* \subseteq s^*$ (since $q < r$ implies $q < s$) and $r \in s^* \setminus r^*$, so $r^* < s^*$. The converse follows by trichotomy in $\mathbb Q$ and in $\mathbb R$. $\blacksquare$
     ///
 
-    [^cauchy]: The other standard construction takes equivalence classes of Cauchy sequences of rationals ([Appendix C](appendix_c_calculus.md)) under the relation "the difference tends to 0". It uses the quotient construction again and generalizes to completing other spaces. Dedekind cuts need no sequences and make order and suprema immediate. See [Construction of the real numbers](https://en.wikipedia.org/wiki/Construction_of_the_real_numbers).
+    [^cauchy]: The other standard construction takes equivalence classes of Cauchy sequences of rationals ([Appendix C](#appc-sec-subsequences-and-cauchy-sequences)) under the relation "the difference tends to 0". It uses the quotient construction again and generalizes to completing other spaces. Dedekind cuts need no sequences and make order and suprema immediate. See [Construction of the real numbers](https://en.wikipedia.org/wiki/Construction_of_the_real_numbers).
     """)
     return
 
@@ -750,7 +750,7 @@ def _(mo):
     - **Incompleteness:** $\{q \in \mathbb Q : q < 0 \lor q^2 < 2\}$ is bounded above but has no rational supremum.
     - **Real numbers** are Dedekind cuts. The supremum of a bounded nonempty set of cuts is its union, so $\mathbb R$ is a complete ordered field, and it is the only one up to isomorphism.
 
-    [Chapter 3](ch3_sets_for_probability.md) takes it from here, working with $\mathbb R$ through the complete-ordered-field axioms: the Archimedean property, density of $\mathbb Q$ in $\mathbb R$, and the uncountability of $\mathbb R$ all follow from the least-upper-bound property proved in this appendix.
+    [Chapter 3](#ch3-sec-the-real-numbers) takes it from here, working with $\mathbb R$ through the complete-ordered-field axioms: the Archimedean property, density of $\mathbb Q$ in $\mathbb R$, and the uncountability of $\mathbb R$ all follow from the least-upper-bound property proved in this appendix.
     """)
     return
 

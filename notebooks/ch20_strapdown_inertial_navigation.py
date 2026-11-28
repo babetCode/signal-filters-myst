@@ -80,11 +80,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 17](ch17_rotations.md): rotation matrices, ZYX Euler angles, the kinematics $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, the exponential map, and the small-angle approximation.
-    - [Chapter 18](ch18_quaternions.md): the Hamilton product, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and exact integration for a constant rate.
-    - [Chapter 19](ch19_ahrs.md): the IMU sensor models, specific force, tilt from the accelerometer, and the error-state convention $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
-    - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): likelihoods and the multivariate normal density (only for the GLRT detector).
-    - [Chapter 9](ch9_noise_levels.md): white noise, random walks, and the chi-squared distribution.
+    - [Chapter 17](ch17_rotations.md): [rotation matrices](#ch17-sec-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [the kinematics](#ch17-sec-angular-velocity) $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, [the exponential map](#ch17-sec-rotation-vectors-and-the-exponential-map), and [the small-angle approximation](#ch17-thm-small-angle-approximation).
+    - [Chapter 18](ch18_quaternions.md): [the Hamilton product](#ch18-sec-the-quaternions), $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
+    - [Chapter 19](ch19_ahrs.md): [the IMU sensor models](#ch19-sec-measurement-models), [specific force](#ch19-sec-inertial-sensors-and-their-models), [tilt from the accelerometer](#ch19-sec-tilt-from-the-accelerometer), and [the error-state convention](#ch19-sec-state-error-and-nominal-propagation) $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
+    - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): [likelihoods](#ch8-sec-prior-likelihood-posterior-and-evidence) and [the multivariate normal density](#ch12-sec-the-multivariate-normal-distribution) (only for the GLRT detector).
+    - [Chapter 9](ch9_noise_levels.md): [white noise](#ch9-sec-process-noise), [random walks](#ch9-sec-process-noise), and [the chi-squared distribution](#ch9-sec-checking-the-noise-levels).
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) and [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus).
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices) and [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
@@ -156,8 +156,8 @@ def _(mo):
     Three differential equations relate the IMU's outputs to the quantities we want.
 
     - **Position.** The velocity $\mathbf v := \dot{\mathbf p}$ of the IMU relative to the navigation frame is, by definition, the derivative of its position: $\dot{\mathbf p} = \mathbf v$.
-    - **Velocity.** By definition $\dot{\mathbf v} = \mathbf a^n$. Multiply the definition of specific force by $\mathbf R$ and use $\mathbf R\mathbf R^\top = \mathbf I$ (rotation matrices are orthogonal, [Chapter 17](ch17_rotations.md)): $\mathbf R\mathbf f = \mathbf a^n - \mathbf g^n$. Hence $\dot{\mathbf v} = \mathbf R\mathbf f + \mathbf g^n$. The accelerometer cannot sense gravity as an acceleration (a falling IMU reads zero), so we must add $\mathbf g^n$ back, and to add it we must know which way is down in body coordinates. Attitude errors therefore become velocity errors.
-    - **Attitude.** $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, equivalently $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ ([Chapter 18](ch18_quaternions.md)).
+    - **Velocity.** By definition $\dot{\mathbf v} = \mathbf a^n$. Multiply the definition of specific force by $\mathbf R$ and use $\mathbf R\mathbf R^\top = \mathbf I$ (rotation matrices are orthogonal, [Chapter 17](#ch17-thm-properties-of-rotation-matrices)): $\mathbf R\mathbf f = \mathbf a^n - \mathbf g^n$. Hence $\dot{\mathbf v} = \mathbf R\mathbf f + \mathbf g^n$. The accelerometer cannot sense gravity as an acceleration (a falling IMU reads zero), so we must add $\mathbf g^n$ back, and to add it we must know which way is down in body coordinates. Attitude errors therefore become velocity errors.
+    - **Attitude.** $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, equivalently $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ ([Chapter 18](#ch18-thm-quaternion-kinematics)).
 
     $$\boxed{\;\dot q = \tfrac12\, q\otimes[0, \boldsymbol\omega], \qquad \dot{\mathbf v} = \mathbf R(q)\,\mathbf f + \mathbf g^n, \qquad \dot{\mathbf p} = \mathbf v.\;}$$
 
@@ -176,7 +176,7 @@ def _(mo):
 
     1. **Attitude.** With $\bar{\boldsymbol\omega}_k := \tfrac12(\boldsymbol\omega_{k-1} + \boldsymbol\omega_k)$, the time average of the linearly interpolated rate,
     $$q_k = q_{k-1} \otimes \operatorname{Exp}_q(\bar{\boldsymbol\omega}_k\Delta t),$$
-    where $\operatorname{Exp}_q$ maps a rotation vector to its unit quaternion. This is [Chapter 18](ch18_quaternions.md)'s exact update for a rate held constant over the sample period, applied to the averaged rate instead of the latest sample $\boldsymbol\omega_k$; for a rate that changes linearly about a fixed axis, it is exact.[^coning] We renormalize $q_k$ after each step to remove round-off.
+    where $\operatorname{Exp}_q$ maps a rotation vector to its unit quaternion. This is [Chapter 18](#ch18-thm-exact-quaternion-update)'s exact update for a rate held constant over the sample period, applied to the averaged rate instead of the latest sample $\boldsymbol\omega_k$; for a rate that changes linearly about a fixed axis, it is exact.[^coning] We renormalize $q_k$ after each step to remove round-off.
     2. **Velocity.** With $\mathbf a_k := \mathbf R(q_k)\mathbf f_k + \mathbf g^n$, the trapezoidal rule gives $\mathbf v_k = \mathbf v_{k-1} + \tfrac12(\mathbf a_{k-1} + \mathbf a_k)\Delta t$.
     3. **Position.** Likewise $\mathbf p_k = \mathbf p_{k-1} + \tfrac12(\mathbf v_{k-1} + \mathbf v_k)\Delta t$.
 
@@ -259,7 +259,7 @@ def helpers(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The mechanization itself is a short loop. We also need an initial attitude. While the IMU is at rest, $\mathbf f = \mathbf R^\top[0, 0, g]^\top = g\,[-\sin\theta,\ \cos\theta\sin\phi,\ \cos\theta\cos\phi]^\top$, so roll and pitch follow from the mean accelerometer reading exactly as in [Chapter 19](ch19_ahrs.md): $\phi = \operatorname{atan2}(f_y, f_z)$ and $\theta = \operatorname{atan2}\big(-f_x, \sqrt{f_y^2 + f_z^2}\big)$. Gravity says nothing about yaw, so we set $\psi = 0$. This choice is called **leveling**.
+    The mechanization itself is a short loop. We also need an initial attitude. While the IMU is at rest, $\mathbf f = \mathbf R^\top[0, 0, g]^\top = g\,[-\sin\theta,\ \cos\theta\sin\phi,\ \cos\theta\cos\phi]^\top$, so roll and pitch follow from the mean accelerometer reading exactly as in [Chapter 19](#ch19-thm-tilt-from-gravity): $\phi = \operatorname{atan2}(f_y, f_z)$ and $\theta = \operatorname{atan2}\big(-f_x, \sqrt{f_y^2 + f_z^2}\big)$. Gravity says nothing about yaw, so we set $\psi = 0$. This choice is called **leveling**.
     """)
     return
 
@@ -312,9 +312,9 @@ def _(mo):
     <!-- label: ch20-sec-how-errors-grow -->
     ## How Errors Grow
 
-    Feeding $\boldsymbol\omega_m$ and $\mathbf f_m$ into the navigation equations integrates the biases and noise along with the signal. To see how fast the result degrades, we follow [Chapter 19](ch19_ahrs.md)'s error-state convention: an error is what must be *added to the computed value to obtain the true one*,
+    Feeding $\boldsymbol\omega_m$ and $\mathbf f_m$ into the navigation equations integrates the biases and noise along with the signal. To see how fast the result degrades, we follow [Chapter 19](#ch19-sec-state-error-and-nominal-propagation)'s error-state convention: an error is what must be *added to the computed value to obtain the true one*,
     $$\mathbf p = \hat{\mathbf p} + \delta\mathbf p, \qquad \mathbf v = \hat{\mathbf v} + \delta\mathbf v, \qquad \mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta),$$
-    where $\operatorname{Exp}$ is [Chapter 17](ch17_rotations.md)'s exponential map and $\delta\boldsymbol\theta$ is a small rotation vector in body coordinates. So $\delta\mathbf p = -e$ in the notation $e = \hat x - x$ of [Chapter 7](ch7_optimal_alpha.md); only the sign differs, and every growth law below is about magnitudes.
+    where $\operatorname{Exp}$ is [Chapter 17](#ch17-sec-rotation-vectors-and-the-exponential-map)'s exponential map and $\delta\boldsymbol\theta$ is a small rotation vector in body coordinates. So $\delta\mathbf p = -e$ in the notation $e = \hat x - x$ of [Chapter 7](#ch7-sec-setting-up-the-problem); only the sign differs, and every growth law below is about magnitudes.
 
     /// note | 📖 **Definition**
     <u>**Drift**</u>
@@ -343,14 +343,14 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    In every case the true acceleration is zero, so $\delta\mathbf p = -\hat{\mathbf p}$, and $\hat{\mathbf p}$ is the double integral of the computed acceleration $\hat{\mathbf a} = \hat{\mathbf R}\,\mathbf f_m + \mathbf g^n$ (two applications of the [fundamental theorem of calculus](appendix_c_calculus.md)).
+    In every case the true acceleration is zero, so $\delta\mathbf p = -\hat{\mathbf p}$, and $\hat{\mathbf p}$ is the double integral of the computed acceleration $\hat{\mathbf a} = \hat{\mathbf R}\,\mathbf f_m + \mathbf g^n$ (two applications of the [fundamental theorem of calculus](#appc-sec-the-fundamental-theorem-of-calculus)).
 
     1. The attitude is correct, $\hat{\mathbf R} = \mathbf I$, and $\mathbf f_m = [0, 0, g]^\top + \mathbf b_a$, so $\hat{\mathbf a} = \mathbf b_a$. Integrating twice gives $\hat{\mathbf p} = \tfrac12\mathbf b_a t^2$.
-    2. From $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$ and $\mathbf R = \mathbf I$ we get $\hat{\mathbf R} = \operatorname{Exp}(\delta\boldsymbol\theta)^\top = \operatorname{Exp}(-\delta\boldsymbol\theta) = \mathbf R_y(-\varepsilon)$, because the exponential of a rotation vector along a coordinate axis is the elementary rotation about that axis ([Chapter 17](ch17_rotations.md)). Then $\hat{\mathbf a} = \mathbf R_y(-\varepsilon)[0, 0, g]^\top + \mathbf g^n = [-g\sin\varepsilon,\ 0,\ g(\cos\varepsilon - 1)]^\top$, a constant, so $\hat p_x = -\tfrac12 g\sin\varepsilon\, t^2$ and $\hat p_y = 0$. Finally $\sin\varepsilon = \varepsilon + O(\varepsilon^3)$ ([Taylor's theorem](appendix_c_calculus.md)).
+    2. From $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$ and $\mathbf R = \mathbf I$ we get $\hat{\mathbf R} = \operatorname{Exp}(\delta\boldsymbol\theta)^\top = \operatorname{Exp}(-\delta\boldsymbol\theta) = \mathbf R_y(-\varepsilon)$, because the exponential of a rotation vector along a coordinate axis is the elementary rotation about that axis ([Chapter 17](#ch17-thm-rotation-vectors-and-the-matrix-exponential)). Then $\hat{\mathbf a} = \mathbf R_y(-\varepsilon)[0, 0, g]^\top + \mathbf g^n = [-g\sin\varepsilon,\ 0,\ g(\cos\varepsilon - 1)]^\top$, a constant, so $\hat p_x = -\tfrac12 g\sin\varepsilon\, t^2$ and $\hat p_y = 0$. Finally $\sin\varepsilon = \varepsilon + O(\varepsilon^3)$ ([Taylor's theorem](#appc-thm-taylors-theorem-with-lagrange-remainder)).
     3. The computed attitude solves $\dot{\hat{\mathbf R}} = \hat{\mathbf R}[\boldsymbol\omega_m]_\times = \hat{\mathbf R}[b\,\mathbf e_y]_\times$ with $\hat{\mathbf R}(0) = \mathbf I$, whose unique solution is $\hat{\mathbf R}(t) = \exp(t[b\,\mathbf e_y]_\times) = \mathbf R_y(bt)$ ([Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential)). Then $\hat{\mathbf a}(t) = [g\sin bt,\ 0,\ g(\cos bt - 1)]^\top$. Integrating, $\hat v_x(t) = g(1 - \cos bt)/b$ and $\hat p_x(t) = g(bt - \sin bt)/b^2$. Since $\sin x = x - x^3/6 + O(x^5)$, we get $bt - \sin bt = \tfrac16 (bt)^3\big(1 + O((bt)^2)\big)$. $\blacksquare$
     ///
 
-    The three laws share one mechanism with different numbers of integrations. A bias in $\mathbf f$ is integrated twice. A tilt error rotates the $g$ that the accelerometer senses partly into the horizontal, creating a false horizontal acceleration $g\varepsilon$ that is integrated twice. A gyroscope bias makes the tilt itself grow linearly ($\delta\theta_y = -bt$), adding a third integration. [Chapter 21](ch21_zero_velocity_updates.md) derives the general linearized error equations, of which these are special cases.
+    The three laws share one mechanism with different numbers of integrations. A bias in $\mathbf f$ is integrated twice. A tilt error rotates the $g$ that the accelerometer senses partly into the horizontal, creating a false horizontal acceleration $g\varepsilon$ that is integrated twice. A gyroscope bias makes the tilt itself grow linearly ($\delta\theta_y = -bt$), adding a third integration. [Chapter 21](#ch21-thm-linearized-ins-error-model) derives the general linearized error equations, of which these are special cases.
     """)
     return
 
@@ -365,7 +365,7 @@ def _(mo):
 
     One more observation matters for [Chapter 21](ch21_zero_velocity_updates.md). If we level with a biased accelerometer, the computed attitude makes $\hat{\mathbf R}\mathbf f_m$ point straight up. While the IMU stays still in that orientation, the horizontal accelerometer bias and the tilt error it causes therefore cancel *exactly*: the tilt error is $\varepsilon \approx b_{a,x}/g$, and $\tfrac12 g\varepsilon t^2 - \tfrac12 b_{a,x}t^2 = 0$. Only the vertical bias component still drifts. At rest, a horizontal accelerometer bias and a tilt error are indistinguishable.
 
-    [^iwp]: Both results use $\operatorname{Var}\big(\sum_i \mathbf n_i\big) = \sum_i\operatorname{Var}(\mathbf n_i)$ for independent samples ([Chapter 6](ch6_expectation_and_variance.md)), approximated by integrals for small $\Delta t$; for example, the position is a sum of $t/\Delta t$ noise samples weighted by the remaining time, and $\sigma_a^2\Delta t\int_0^t (t-s)^2\,ds = \sigma_a^2\Delta t\,t^3/3$. We checked both formulas by Monte Carlo simulation.
+    [^iwp]: Both results use $\operatorname{Var}\big(\sum_i \mathbf n_i\big) = \sum_i\operatorname{Var}(\mathbf n_i)$ for independent samples ([Chapter 6](#ch6-thm-variance-of-a-linear-combination)), approximated by integrals for small $\Delta t$; for example, the position is a sum of $t/\Delta t$ noise samples weighted by the remaining time, and $\sigma_a^2\Delta t\int_0^t (t-s)^2\,ds = \sigma_a^2\Delta t\,t^3/3$. We checked both formulas by Monte Carlo simulation.
     """)
     return
 
@@ -497,7 +497,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The drift laws assume:
 
-    1. **A motionless, level IMU.** During real motion the specific force is not $[0, 0, g]$ and the attitude changes, so the same errors project differently onto the axes. The mechanisms (and the powers of $t$) survive, but the coefficients change; [Chapter 21](ch21_zero_velocity_updates.md) gives the general equations.
+    1. **A motionless, level IMU.** During real motion the specific force is not $[0, 0, g]$ and the attitude changes, so the same errors project differently onto the axes. The mechanisms (and the powers of $t$) survive, but the coefficients change; [Chapter 21](#ch21-thm-linearized-ins-error-model) gives the general equations.
     2. **Constant biases.** Real biases wander slowly (a random walk) and change with temperature. Over the short intervals that matter here (one stride), constant is a good approximation.
     3. **Small angles.** The $t^3$ law for a gyroscope bias needs $bt \ll 1$. With $b = 0.01$ rad/s, the tilt reaches $0.3$ rad after 30 s, and the simulated curve bends below the law, as the demo shows at long durations.
     4. **One source at a time.** Errors add as vectors and can partially cancel, as the leveling example showed. The laws give the size of each contribution, not the total.
@@ -590,7 +590,7 @@ def _(mo):
     <!-- label: ch20-sec-a-synthetic-gait-simulator -->
     ## A Synthetic Gait Simulator
 
-    To test navigation algorithms we need IMU data *and* the exact trajectory that produced it. Real walking data comes with neither exact truth nor control over the error sources, so we build a simulator: an analytic trajectory of the foot, from which the true $\boldsymbol\omega^b$ and $\mathbf f^b$ follow by differentiation, plus the sensor errors of our IMU model. [Chapter 21](ch21_zero_velocity_updates.md) reuses it unchanged.
+    To test navigation algorithms we need IMU data *and* the exact trajectory that produced it. Real walking data comes with neither exact truth nor control over the error sources, so we build a simulator: an analytic trajectory of the foot, from which the true $\boldsymbol\omega^b$ and $\mathbf f^b$ follow by differentiation, plus the sensor errors of our IMU model. [Chapter 21](#ch21-sec-tools-from-chapter-20) reuses it unchanged.
 
     The model describes the motion of the IMU, strapped to the top of the foot. Each stride has a stationary part (foot flat to heel off) and a **moving window** (heel off to the next foot flat) of duration $T_m$. Within a moving window we use the normalized time $\tau := (t - t_{\text{heel off}})/T_m \in [0, 1]$. All event times are rounded to whole samples.
 
@@ -625,10 +625,10 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    This is [Chapter 17](ch17_rotations.md)'s Euler-rate theorem with $\phi \equiv 0$; directly: by the product rule, $\mathbf R^\top\dot{\mathbf R} = \mathbf R_y^\top(\mathbf R_z^\top\dot{\mathbf R}_z)\mathbf R_y + \mathbf R_y^\top\dot{\mathbf R}_y = \dot\psi\,\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y + \dot\theta\,[\mathbf e_y]_\times$, using Chapter 17's elementary rates $\mathbf R_z^\top\dot{\mathbf R}_z = \dot\psi[\mathbf e_z]_\times$ and $\mathbf R_y^\top\dot{\mathbf R}_y = \dot\theta[\mathbf e_y]_\times$. Chapter 17's identity $\mathbf Q^\top[\mathbf a]_\times\mathbf Q = [\mathbf Q^\top\mathbf a]_\times$ for a rotation matrix $\mathbf Q$ gives $\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y = [\mathbf R_y^\top\mathbf e_z]_\times$, and $\mathbf R_y(\theta)^\top\mathbf e_z = [-\sin\theta, 0, \cos\theta]^\top$ (the third row of $\mathbf R_y$). Adding the two cross-product matrices gives the claim. $\blacksquare$
+    This is [Chapter 17](#ch17-thm-euler-angle-kinematics)'s Euler-rate theorem with $\phi \equiv 0$; directly: by the product rule, $\mathbf R^\top\dot{\mathbf R} = \mathbf R_y^\top(\mathbf R_z^\top\dot{\mathbf R}_z)\mathbf R_y + \mathbf R_y^\top\dot{\mathbf R}_y = \dot\psi\,\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y + \dot\theta\,[\mathbf e_y]_\times$, using Chapter 17's elementary rates $\mathbf R_z^\top\dot{\mathbf R}_z = \dot\psi[\mathbf e_z]_\times$ and $\mathbf R_y^\top\dot{\mathbf R}_y = \dot\theta[\mathbf e_y]_\times$. Chapter 17's identity $\mathbf Q^\top[\mathbf a]_\times\mathbf Q = [\mathbf Q^\top\mathbf a]_\times$ for a rotation matrix $\mathbf Q$ gives $\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y = [\mathbf R_y^\top\mathbf e_z]_\times$, and $\mathbf R_y(\theta)^\top\mathbf e_z = [-\sin\theta, 0, \cos\theta]^\top$ (the third row of $\mathbf R_y$). Adding the two cross-product matrices gives the claim. $\blacksquare$
     ///
 
-    The simulator returns a dictionary with the time stamps, the true trajectory and attitude, the true and measured IMU signals, the biases, the true stationary samples, the event times, and per-stride ground truth for [Chapter 21](ch21_zero_velocity_updates.md)'s gait parameters.
+    The simulator returns a dictionary with the time stamps, the true trajectory and attitude, the true and measured IMU signals, the biases, the true stationary samples, the event times, and per-stride ground truth for [Chapter 21](#ch21-sec-gait-parameters)'s gait parameters.
     """)
     return
 
@@ -891,7 +891,7 @@ def _(mo):
     A function that maps the IMU samples in a time window around sample $k$ to one of two decisions for sample $k$: *stationary* (the IMU's velocity and angular velocity are zero) or *moving*.
     ///
 
-    A detector can err in two ways. A **missed detection** calls a stationary sample moving; it only wastes an opportunity. A **false detection** calls a moving sample stationary; [Chapter 21](ch21_zero_velocity_updates.md) will then tell the filter that a foot moving at several meters per second has zero velocity, which is far more harmful. All our detectors look at the $W = 5$ samples (50 ms) centered on $k$, which we call the window $\Omega_k$, and declare *stationary* when a test statistic $T(k)$ falls below a threshold $\gamma$.
+    A detector can err in two ways. A **missed detection** calls a stationary sample moving; it only wastes an opportunity. A **false detection** calls a moving sample stationary; [Chapter 21](#ch21-sec-zero-velocity-as-a-measurement) will then tell the filter that a foot moving at several meters per second has zero velocity, which is far more harmful. All our detectors look at the $W = 5$ samples (50 ms) centered on $k$, which we call the window $\Omega_k$, and declare *stationary* when a test statistic $T(k)$ falls below a threshold $\gamma$.
 
     If the IMU is stationary throughout the window, then $\boldsymbol\omega = \mathbf 0$ and $\mathbf a^n = \mathbf 0$, so $\mathbf f = \mathbf R^\top[0, 0, g]^\top = g\,\mathbf u$, where $\mathbf u := \mathbf R^\top\mathbf e_z$ is the unit vector pointing up, expressed in body coordinates. It is unknown (it depends on how the foot is resting) but constant. Two simple detectors each test half of this:
 
@@ -919,7 +919,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    A measurement $\mathbf y \sim \mathcal N(\boldsymbol\mu, \sigma^2\mathbf I)$ in $\mathbb R^3$ has density $(2\pi\sigma^2)^{-3/2}\exp\big(-\lVert\mathbf y - \boldsymbol\mu\rVert^2/(2\sigma^2)\big)$: the multivariate normal density of [Chapter 12](ch12_vectors_matrices_covariance.md) with determinant $\sigma^6$ and inverse covariance $\sigma^{-2}\mathbf I$. By independence, $\ell$ is the product of $2W$ such densities, so
+    A measurement $\mathbf y \sim \mathcal N(\boldsymbol\mu, \sigma^2\mathbf I)$ in $\mathbb R^3$ has density $(2\pi\sigma^2)^{-3/2}\exp\big(-\lVert\mathbf y - \boldsymbol\mu\rVert^2/(2\sigma^2)\big)$: the multivariate normal density of [Chapter 12](#ch12-sec-the-multivariate-normal-distribution) with determinant $\sigma^6$ and inverse covariance $\sigma^{-2}\mathbf I$. By independence, $\ell$ is the product of $2W$ such densities, so
     $$\ell = C\exp\Big(-\frac12\sum_{j\in\Omega_k}\Big(\frac{\lVert\mathbf f_{m,j} - \boldsymbol\mu_j\rVert^2}{\sigma_a^2} + \frac{\lVert\boldsymbol\omega_{m,j} - \boldsymbol\nu_j\rVert^2}{\sigma_g^2}\Big)\Big), \qquad C := (2\pi\sigma_a^2)^{-3W/2}(2\pi\sigma_g^2)^{-3W/2}.$$
     Under $H_1$, choosing $\boldsymbol\mu_j = \mathbf f_{m,j}$ and $\boldsymbol\nu_j = \boldsymbol\omega_{m,j}$ makes the exponent zero, its largest possible value, so $\sup_{H_1}\ell = C$. Under $H_0$, we must minimize $\sum_j\lVert\mathbf f_{m,j} - g\mathbf u\rVert^2$ over unit vectors $\mathbf u$. Expanding with $\lVert\mathbf u\rVert = 1$,
     $$\sum_{j}\lVert\mathbf f_{m,j} - g\mathbf u\rVert^2 = \sum_j\lVert\mathbf f_{m,j}\rVert^2 - 2gW\,\mathbf u\cdot\bar{\mathbf f}_k + Wg^2,$$
@@ -1092,7 +1092,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The detectors assume:
 
-    1. **A foot that is truly still for at least a window.** In running, foot flat can last only a few samples, and every window that covers it also covers motion; the statistic never drops below the walking threshold, and stances are missed. Raising $\gamma$ to catch them invites false detections. [Chapter 21](ch21_zero_velocity_updates.md) shows the consequences.
+    1. **A foot that is truly still for at least a window.** In running, foot flat can last only a few samples, and every window that covers it also covers motion; the statistic never drops below the walking threshold, and stances are missed. Raising $\gamma$ to catch them invites false detections. [Chapter 21](#ch21-sec-results-with-and-without-zero-velocity-updates) shows the consequences.
     2. **A threshold matched to the motion.** A threshold tuned for walking is wrong for running, shuffling, or standing while swaying. Adaptive thresholds and motion classification are active research topics.
     3. **White, Gaussian, bias-free noise.** Biases inflate the statistic at rest (here by about 4). Vibration from footwear or the ground looks like motion.
     4. **A stationary ground.** In an elevator or a moving train, a foot can be still relative to the floor while moving relative to the Earth. All three detectors will declare it stationary, and a zero-velocity measurement will then be false.

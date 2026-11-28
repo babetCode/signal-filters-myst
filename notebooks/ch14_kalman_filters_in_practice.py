@@ -63,7 +63,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 13](ch13_kalman_filter.md) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
+    [Chapter 13](#ch13-sec-the-optimal-gain) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
 
     /// attention | 🗝️ **Key Idea**
     A Kalman filter is only as good as its model. Tune $\mathbf Q$, $\mathbf R$, and $\mathbf P_0$ from physical reasoning, then *check* them: when the model is right, the normalized errors $\mathbf e^\top\mathbf P^{-1}\mathbf e$ and normalized innovations $\tilde{\mathbf y}^\top\mathbf S^{-1}\tilde{\mathbf y}$ follow known chi-squared distributions, and departures from those distributions reveal what is wrong.
@@ -76,11 +76,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular the state-space model and its assumptions (A1)–(A6), the Joseph form, the Kalman gain, observability, and the piecewise-constant acceleration model.
-    - [Chapter 9](ch9_noise_levels.md): the normalized innovation squared, the chi-squared distribution, filter consistency, and what $Q = 0$ does to the gain.
-    - [Chapter 10](ch10_process_models.md): discretization of continuous-time models.
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): affine transformations of multivariate normal vectors; Mahalanobis distance.
-    - [Chapter 5](ch5_random_variables.md): independence; the distribution of a sum of independent random variables.
+    - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular [the state-space model](#ch13-sec-the-state-space-model) and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), [the Joseph form](#ch13-sec-update), [the Kalman gain](#ch13-thm-kalman-gain), [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
+    - [Chapter 9](ch9_noise_levels.md): [the normalized innovation squared](#ch9-sec-checking-the-noise-levels), [the chi-squared distribution](#ch9-sec-checking-the-noise-levels), [filter consistency](#ch9-sec-checking-the-noise-levels), and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
+    - [Chapter 10](ch10_process_models.md): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [affine transformations of multivariate normal vectors](#ch12-thm-invertible-affine-maps-preserve-normality); [Mahalanobis distance](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
+    - [Chapter 5](ch5_random_variables.md): [independence](#ch5-sec-independence); [the distribution of a sum of independent random variables](#ch5-sec-sums-of-independent-random-variables).
     - Appendix C: [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus); [Multiple Integrals](#appc-sec-multiple-integrals): only for the derivation of the continuous white-noise acceleration model.
     - Appendix D: [Cholesky Decomposition](#appd-sec-cholesky-decomposition); [The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
@@ -479,7 +479,7 @@ def _(mo):
     Finally, $\mathbf P^{-1}\hat{\mathbf x} = \mathbf P^{-1}\hat{\mathbf x}^- + \mathbf P^{-1}\mathbf K(\mathbf z - \mathbf H\hat{\mathbf x}^-) = (\mathbf A^{-1} + \mathbf H^\top\mathbf R^{-1}\mathbf H)\hat{\mathbf x}^- + \mathbf H^\top\mathbf R^{-1}(\mathbf z - \mathbf H\hat{\mathbf x}^-) = \mathbf A^{-1}\hat{\mathbf x}^- + \mathbf H^\top\mathbf R^{-1}\mathbf z$. $\blacksquare$
     ///
 
-    In words: inverse covariances (*information*) add. The prediction contributes $(\mathbf P^-)^{-1}$, the measurement contributes $\mathbf H^\top\mathbf R^{-1}\mathbf H$. This is the matrix version of [Chapter 7](ch7_optimal_alpha.md)'s $1/P = 1/P^- + 1/R$. The covariance formula is also an instance of the matrix inversion lemma ([Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement)); the direct check above avoids needing it.
+    In words: inverse covariances (*information*) add. The prediction contributes $(\mathbf P^-)^{-1}$, the measurement contributes $\mathbf H^\top\mathbf R^{-1}\mathbf H$. This is the matrix version of [Chapter 7](#ch7-thm-optimal-gain)'s $1/P = 1/P^- + 1/R$. The covariance formula is also an instance of the matrix inversion lemma ([Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement)); the direct check above avoids needing it.
 
     /// admonition | 📐 **Theorem (Sequential Update)**
         attrs: {class: theorem, id: ch14-thm-sequential-update}
@@ -849,7 +849,7 @@ def _(mo):
     <!-- label: ch14-sec-outlier-gating -->
     ## Outlier Gating
 
-    Real sensors occasionally produce readings that have nothing to do with the model: a reflection, a loose connector, a person bumping the scale. Chapter 13's filter has no defense against them. The innovation tells us when a reading is implausible, and under the Gaussian assumption we know exactly how implausible. Recall ([Chapter 9](ch9_noise_levels.md), [Chapter 12](ch12_vectors_matrices_covariance.md)) that the {term}`chi-squared distribution` with $d$ degrees of freedom, $\chi^2_{d}$, is the distribution of the sum of squares of $d$ independent standard normal random variables; its mean is $d$. The {term}`normalized innovation squared` $\epsilon_k = \tilde y_k^2/S_k$ of Chapter 9 generalizes to $\epsilon_k := \tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$.
+    Real sensors occasionally produce readings that have nothing to do with the model: a reflection, a loose connector, a person bumping the scale. Chapter 13's filter has no defense against them. The innovation tells us when a reading is implausible, and under the Gaussian assumption we know exactly how implausible. Recall ([Chapter 9](#ch9-thm-one-degree-of-freedom), [Chapter 12](#ch12-thm-squared-mahalanobis-distance-is-chi-squared)) that the {term}`chi-squared distribution` with $d$ degrees of freedom, $\chi^2_{d}$, is the distribution of the sum of squares of $d$ independent standard normal random variables; its mean is $d$. The {term}`normalized innovation squared` $\epsilon_k = \tilde y_k^2/S_k$ of Chapter 9 generalizes to $\epsilon_k := \tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$.
 
     /// admonition | 📐 **Lemma (Normalized Quadratic Forms Are Chi-Squared)**
         attrs: {class: lemma, id: ch14-lem-normalized-quadratic-forms-are-chi-squared}
@@ -858,7 +858,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Let $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ be the Cholesky decomposition and $\mathbf u := \mathbf L^{-1}\mathbf y$. Since $\mathbf L^{-1}$ is invertible, $\mathbf u$ is normal with mean $\mathbf 0$ and covariance $\mathbf L^{-1}\boldsymbol\Sigma\mathbf L^{-\top} = \mathbf I$ (Chapter 12, Theorem: Invertible Affine Maps Preserve Normality). Its density is therefore a product of $d$ standard normal densities, so its components are independent standard normals ([Chapter 5](ch5_random_variables.md)). Then $\mathbf y^\top\boldsymbol\Sigma^{-1}\mathbf y = \mathbf y^\top\mathbf L^{-\top}\mathbf L^{-1}\mathbf y = \mathbf u^\top\mathbf u = \sum_i u_i^2 \sim \chi^2_{d}$.
+    Let $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ be the Cholesky decomposition and $\mathbf u := \mathbf L^{-1}\mathbf y$. Since $\mathbf L^{-1}$ is invertible, $\mathbf u$ is normal with mean $\mathbf 0$ and covariance $\mathbf L^{-1}\boldsymbol\Sigma\mathbf L^{-\top} = \mathbf I$ (Chapter 12, Theorem: Invertible Affine Maps Preserve Normality). Its density is therefore a product of $d$ standard normal densities, so its components are independent standard normals ([Chapter 5](#ch5-thm-factorization-criteria)). Then $\mathbf y^\top\boldsymbol\Sigma^{-1}\mathbf y = \mathbf y^\top\mathbf L^{-\top}\mathbf L^{-1}\mathbf y = \mathbf u^\top\mathbf u = \sum_i u_i^2 \sim \chi^2_{d}$.
 
     For the innovation: by Chapter 13, $\tilde{\mathbf y}_k$ is a constant matrix $\mathbf A$ times the stacked vector $\boldsymbol\xi$ of the independent normal sources of assumption (A6), and $\boldsymbol\xi$ is multivariate normal (Chapter 12, Corollary: Stacking Independent Normal Vectors). Its covariance $\mathbf A\operatorname{Cov}(\boldsymbol\xi)\mathbf A^\top = \mathbf S_k$ is positive definite, which forces the rows of $\mathbf A$ to be linearly independent (if $\mathbf a^\top\mathbf A = \mathbf 0$ then $\mathbf a^\top\mathbf S_k\mathbf a = 0$, so $\mathbf a = \mathbf 0$). For such $\mathbf A$, Chapter 12 states that $\mathbf A\boldsymbol\xi$ is again normal. So $\tilde{\mathbf y}_k \sim \mathcal N(\mathbf 0, \mathbf S_k)$, and the first part applies. $\blacksquare$
     ///
@@ -978,7 +978,7 @@ def _(mo):
     <!-- label: ch14-sec-consistency-tests -->
     ## Consistency Tests
 
-    A filter reports not only an estimate but also how uncertain it is. [Chapter 9](ch9_noise_levels.md) called a filter *consistent* when its estimation errors have mean zero and the variance it reports ({term}`filter consistency`); for vectors, $\mathbb E\mathbf e_k = \mathbf 0$ and $\operatorname{Cov}(\mathbf e_k) = \mathbf P_k$. Chapter 9 tested this with the normalized innovation squared. With a state vector there are two such tests: one that needs the truth and is therefore available only in simulation, and one that needs only the data.
+    A filter reports not only an estimate but also how uncertain it is. [Chapter 9](#ch9-sec-checking-the-noise-levels) called a filter *consistent* when its estimation errors have mean zero and the variance it reports ({term}`filter consistency`); for vectors, $\mathbb E\mathbf e_k = \mathbf 0$ and $\operatorname{Cov}(\mathbf e_k) = \mathbf P_k$. Chapter 9 tested this with the normalized innovation squared. With a state vector there are two such tests: one that needs the truth and is therefore available only in simulation, and one that needs only the data.
 
     /// note | 📖 **Definition**
     <u>**Normalized estimation error squared**</u>
@@ -1008,7 +1008,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    The distribution of a sum of independent random variables is determined by their individual distributions ([Chapter 5](ch5_random_variables.md)). So we may take $s^{(i)} = \sum_{j=1}^d u_{ij}^2$ with all $Nd$ variables $u_{ij}$ independent standard normal. The total is then a sum of $Nd$ such squares, which has distribution $\chi^2_{Nd}$ by definition. $\blacksquare$
+    The distribution of a sum of independent random variables is determined by their individual distributions ([Chapter 5](#ch5-sec-sums-of-independent-random-variables)). So we may take $s^{(i)} = \sum_{j=1}^d u_{ij}^2$ with all $Nd$ variables $u_{ij}$ independent standard normal. The total is then a sum of $Nd$ such squares, which has distribution $\chi^2_{Nd}$ by definition. $\blacksquare$
     ///
 
     **The test.** Simulate $N$ independent runs, and at each step $k$ average the NEES over the runs: $\bar\epsilon^{\mathbf x}_k := \frac1N\sum_i\epsilon^{\mathbf x,(i)}_k$, where $\epsilon^{\mathbf x,(i)}_k$ is the NEES of run $i$. For a consistent filter, $N\bar\epsilon^{\mathbf x}_k \sim \chi^2_{Nn}$, so $\bar\epsilon^{\mathbf x}_k$ lies in
@@ -1242,7 +1242,7 @@ def _(mo):
     The failure of a Kalman filter in which its actual estimation errors become, and remain, much larger than its reported error covariance $\mathbf P_k$ allows, so that the filter, trusting its small $\mathbf P_k$, keeps its gains too small for the measurements to correct those errors.
     ///
 
-    Divergence is the dynamic form of overconfidence: the NEES is not just above its band but far above it and growing, and the errors do not shrink as more data arrive. The most common cause is a $\mathbf Q$ that is too small. [Chapter 9](ch9_noise_levels.md) showed the scalar version: with $Q = 0$, the gain falls like $1/k$, and the filter stops listening. A small $\mathbf Q$ makes $\mathbf P_k$ small, the small $\mathbf P_k$ makes the gain small, and the small gain lets the error grow unchecked whenever reality departs from the model.
+    Divergence is the dynamic form of overconfidence: the NEES is not just above its band but far above it and growing, and the errors do not shrink as more data arrive. The most common cause is a $\mathbf Q$ that is too small. [Chapter 9](#ch9-thm-no-process-noise) showed the scalar version: with $Q = 0$, the gain falls like $1/k$, and the filter stops listening. A small $\mathbf Q$ makes $\mathbf P_k$ small, the small $\mathbf P_k$ makes the gain small, and the small gain lets the error grow unchecked whenever reality departs from the model.
 
     The demonstration removes the cart's accelerometer. A constant-velocity filter must now track the cart from the 10 Hz position readings alone, with the piecewise-constant acceleration $\mathbf Q$ and a chosen $\sigma_a$. The two maneuvers (gray bands) are what the constant-velocity model leaves out. The slider sets $\sigma_a$; the default is deliberately too small.
     """)

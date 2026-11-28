@@ -76,10 +76,10 @@ def latex_macros(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): connectives, quantifiers and their negations, and the proof techniques (contrapositive, contradiction, cases).
-    - [Chapter 2](ch2_axioms_of_set_theory.md): the axioms of set theory (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), ordered pairs, Cartesian products, functions, the natural numbers, induction, and the Recursion Theorem.
+    - [Chapter 1](ch1_language_of_logic.md): [connectives](#ch1-sec-connectives-and-truth-tables), [quantifiers and their negations](#ch1-sec-negating-quantified-statements), and [the proof techniques](#ch1-sec-proof-techniques) (contrapositive, contradiction, cases).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [the axioms of set theory](#ch2-sec-the-axioms-of-zfc) (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), [ordered pairs](#ch2-sec-ordered-pairs), [Cartesian products](#ch2-sec-cartesian-products), [functions](#ch2-sec-functions), [the natural numbers](#ch2-sec-natural-numbers), [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
     - [Appendix B: Arithmetic on the Natural Numbers](#appb-sec-arithmetic-on-the-natural-numbers) (optional): proofs of the facts about $+$, $\cdot$, and $<$ on $\mathbb N$ listed below, including well-ordering.
-    - [Appendix B: The Integers](#appb-sec-the-integers), [The Rational Numbers](appendix_b_number_systems.md), [The Real Numbers](appendix_b_number_systems.md), and [Uniqueness of the Real Numbers](appendix_b_number_systems.md) (optional): the constructions of $\mathbb Z$, $\mathbb Q$, and $\mathbb R$, whose results this chapter uses.
+    - [Appendix B: The Integers](#appb-sec-the-integers), [The Rational Numbers](#appb-sec-the-rational-numbers), [The Real Numbers](#appb-sec-the-real-numbers), and [Uniqueness of the Real Numbers](#appb-sec-uniqueness-of-the-real-numbers) (optional): the constructions of $\mathbb Z$, $\mathbb Q$, and $\mathbb R$, whose results this chapter uses.
     - **Before [Chapter 4](ch4_probability_spaces.md):** read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series). They are built on the real numbers of this chapter, and Chapter 4 uses their limits.
     ///
     """)
@@ -128,7 +128,7 @@ def _(mo):
 
     The notation $A^c$ hides $\Omega$, so we always say which ambient set is meant. For a die, $\Omega = \{1, 2, 3, 4, 5, 6\}$ and $A = \{2, 4, 6\}$ give $A^c = \{1, 3, 5\}$. With $\Omega = \mathbb N$, the same $A$ has complement $\{0, 1, 3, 5, 7, 8, 9, \ldots\}$. There is no complement without an ambient set, because $\{x : x \notin A\}$ is not a set.[^no-absolute-complement]
 
-    [^no-absolute-complement]: If $C = \{x : x \notin A\}$ were a set, then $C \cup A$ would contain every set, contradicting the No Set of All Sets theorem of [Chapter 2](ch2_axioms_of_set_theory.md).
+    [^no-absolute-complement]: If $C = \{x : x \notin A\}$ were a set, then $C \cup A$ would contain every set, contradicting the No Set of All Sets theorem of [Chapter 2](#ch2-thm-no-set-of-all-sets).
     """)
     return
 
@@ -174,7 +174,7 @@ def _(mo):
         attrs: {class: proof}
     For $x \in \Omega$,
     $$x \in (A \cup B)^c \iff \neg(x \in A \lor x \in B) \iff (x \notin A \land x \notin B) \iff x \in A^c \cap B^c.$$
-    The middle step is De Morgan's law of logic, $\neg(P \lor Q) \leftrightarrow (\neg P \land \neg Q)$ ([Chapter 1](ch1_language_of_logic.md)). The second law follows in the same way from $\neg(P \land Q) \leftrightarrow (\neg P \lor \neg Q)$. $\blacksquare$
+    The middle step is De Morgan's law of logic, $\neg(P \lor Q) \leftrightarrow (\neg P \land \neg Q)$ ([Chapter 1](#ch1-sec-the-laws-used-most)). The second law follows in the same way from $\neg(P \land Q) \leftrightarrow (\neg P \lor \neg Q)$. $\blacksquare$
     ///
 
     In words: "not ($A$ or $B$)" means "not $A$ and not $B$", and "not both $A$ and $B$" means "not $A$ or not $B$". The same laws hold for infinitely many sets, once we have a way to index them.
@@ -261,7 +261,7 @@ def _(mo):
         attrs: {class: proof}
     Here $(A_i^c)_{i \in I}$ is the family $i \mapsto \Omega \setminus A_i$, which exists by Replacement. For $x \in \Omega$,
     $$x \in \Big(\bigcup_{i \in I} A_i\Big)^c \iff \neg\existsin{i}{I} (x \in A_i) \iff \forallin{i}{I} (x \notin A_i) \iff \forallin{i}{I} (x \in A_i^c) \iff x \in \bigcap_{i \in I} A_i^c,$$
-    using the rule for negating a quantifier ([Chapter 1](ch1_language_of_logic.md)) and $x \in \Omega$ in the third step. For the second law, apply the first to the family $(A_i^c)_{i \in I}$ and use $(B^c)^c = B$:
+    using the rule for negating a quantifier ([Chapter 1](#ch1-sec-negating-quantified-statements)) and $x \in \Omega$ in the third step. For the second law, apply the first to the family $(A_i^c)_{i \in I}$ and use $(B^c)^c = B$:
     $$\Big(\bigcup_{i \in I} A_i^c\Big)^c = \bigcap_{i \in I} (A_i^c)^c = \bigcap_{i \in I} A_i.$$
     Taking complements of both sides gives $\bigcup_{i \in I} A_i^c = \big(\bigcap_{i \in I} A_i\big)^c$. $\blacksquare$
     ///
@@ -293,7 +293,7 @@ def _(mo):
     /// note | 📖 **Definition**
     <u>**Disjoint**</u>
 
-    Sets $A$ and $B$ are disjoint if $A \cap B = \emptyset$. A family $(A_i)_{i \in I}$ is *pairwise disjoint* if $A_i \cap A_j = \emptyset$ for all $i, j \in I$ with $i \neq j$. A set $\mathcal A$ of sets is *pairwise disjoint* if any two distinct members of $\mathcal A$ are disjoint.
+    Sets $A$ and $B$ are disjoint if $A \cap B = \emptyset$. A family $(A_i)_{i \in I}$ is *pairwise disjoint* if $A_i \cap A_j = \emptyset$ for all $i, j \in I$ with $i \neq j$. A set $\mathcal A$ of sets is *pairwise disjoint* if every two distinct members of $\mathcal A$ are disjoint.
     ///
 
     The family and set versions differ when members repeat. The family $A_1 = A_2 = \{1\}$ is *not* pairwise disjoint, since $A_1 \cap A_2 = \{1\}$, while the set $\{A_1, A_2\} = \{\{1\}\}$ is pairwise disjoint, because it has no two distinct members. The family $A_1 = A_2 = \emptyset$ is pairwise disjoint. Chapter 4 adds probabilities over pairwise disjoint *sequences*, so the family version is the one that matters there.
@@ -460,7 +460,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Why random variables are defined with preimages.** In [Chapter 5](ch5_random_variables.md) a {term}`random variable` will be a function $X$ from the set of outcomes $\Omega$ to $\mathbb R$; for the scale, it is the noise in a reading as a function of the outcome. A question about its value, "is $X$ in $B$?", is the set of outcomes $X^{-1}[B]$. The lemma says that "$X \in B$ or $X \in B'$" is the set $X^{-1}[B] \cup X^{-1}[B']$, that "not $X \in B$" is the complement $X^{-1}[B]^c$, and likewise for infinitely many conditions. So the logic of questions about the value of $X$ matches the logic of sets of outcomes exactly. Images have no such property, which is why Chapter 5 defines random variables through preimages.
+    **Why random variables are defined with preimages.** In [Chapter 5](#ch5-sec-definition) a {term}`random variable` will be a function $X$ from the set of outcomes $\Omega$ to $\mathbb R$; for the scale, it is the noise in a reading as a function of the outcome. The question "is $X$ in $B$?" has the answer *yes* exactly for the outcomes in $X^{-1}[B]$. By the [Preimages Preserve Set Operations lemma](#ch3-lem-preimages-preserve-set-operations), "$X \in B$ or $X \in B'$" has the answer *yes* exactly for the outcomes in $X^{-1}[B] \cup X^{-1}[B']$, "not $X \in B$" exactly for those in the complement $X^{-1}[B]^c$, and likewise for infinitely many conditions. So combining questions about the value of $X$ with "or", "and", and "not" corresponds exactly to combining their sets of outcomes with $\cup$, $\cap$, and complement. Images have no such property, which is why Chapter 5 defines random variables through preimages.
 
     /// attention | 🗝️ **Key Idea**
     Preimages commute with every set operation; images do not. A condition on a measured value becomes a set of outcomes through a preimage, and combining conditions with "not", "or", and "and" combines those sets in the same way.
@@ -632,7 +632,7 @@ def _(mo):
     <!-- label: ch3-sec-countable-and-uncountable-sets -->
     ## Countable and Uncountable Sets
 
-    A fair die has six equally likely outcomes. Can a "random natural number" have all of its outcomes equally likely? Can a "uniformly random" real number in $[0, 1]$? [Chapter 4](ch4_probability_spaces.md) shows that the answers are *no* and *yes, with care*, and the difference comes down to the kind of infinity involved. Here we make the size of a set precise without counting: two sets have the same size if their elements can be paired off exactly.
+    A fair die has six equally likely outcomes. Can a "random natural number" have all of its outcomes equally likely? Can a "uniformly random" real number in $[0, 1]$? [Chapter 4](#ch4-sec-why-not-every-subset-can-be-an-event) shows that the answers are *no* and *yes, with care*, and the difference comes down to the kind of infinity involved. Here we make the size of a set precise without counting: two sets have the same size if their elements can be paired off exactly.
 
     /// note | 📖 **Definition**
     <u>**Equinumerous**</u>
@@ -1206,12 +1206,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The construction in the proof can be run on an actual list. Below, the list is $\mathbb Q \cap [0, 1]$ ordered by increasing denominator, in lowest terms: $0, 1, \tfrac12, \tfrac13, \tfrac23, \tfrac14, \tfrac34, \ldots$, which contains every rational number in $[0, 1]$. Each row shows the interval $[a_k, b_k]$ and the listed number $x_k$ that the next interval must avoid. Since the point $c$ in every interval differs from every rational number in $[0, 1]$, it is irrational.
+    The construction in the proof of the [Real Numbers Are Uncountable theorem](#ch3-thm-the-real-numbers-are-uncountable) can be run on an actual list. Below, the list is $\mathbb Q \cap [0, 1]$ ordered by increasing denominator, in lowest terms: $x_0, x_1, x_2, \ldots = 0, 1, \tfrac12, \tfrac13, \tfrac23, \tfrac14, \tfrac34, \ldots$. It contains every rational number in $[0, 1]$, and nothing in the construction is random.
 
-    /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **Completeness is essential.** The proof uses completeness exactly once, in the Nested Intervals lemma. It must fail for $\mathbb Q$, which is countable. Indeed, running the construction inside $\mathbb Q$ on the listing below gives nested intervals $[a_n, b_n] \cap \mathbb Q$ that are all nonempty but have no rational number in common. In $\mathbb Q$, nested closed intervals can have empty intersection.
-    - **Countable does not mean sparse.** $\mathbb Q$ is countable, yet it meets every interval $(a, b)$ with $a < b$ (Density of the Rationals). Countable sets are small only in the sense of listing. [Chapter 4](ch4_probability_spaces.md) shows that they are also small in the sense of length: a countable set has length $0$.
-    ///
+    The construction starts from $[a_0, b_0] = [0, 1]$. At step $k$ it splits the current interval $[a_k, b_k]$ into thirds and keeps one of the two outer thirds as the next interval $[a_{k+1}, b_{k+1}]$: the left third, unless $x_k$ lies in the left third, in which case the right third. Either way, the kept third does not contain $x_k$. Usually $x_k$ is not in $[a_k, b_k]$ at all; it is then avoided automatically and the left third is kept. So every interval is a third as long as the one before, however far away the number to avoid is.
+
+    The slider sets the number $n$ of steps. The left panel draws each interval $[a_k, b_k]$ on the whole of $[0, 1]$, where the intervals soon become too short to see. The right panel enlarges each row so that $[a_k, b_k]$ fills the width: it shows the interval's thirds, the position of $x_k$ (or that $x_k$ lies outside), and the kept third. The table lists the same steps.
+
+    What to look for: each interval avoids one more listed number than the one before. By the [Nested Intervals lemma](#ch3-lem-nested-intervals), there is a point $c$ that lies in every interval of the infinite construction, so $c$ differs from every number in the list. Since every rational number in $[0, 1]$ is in the list, $c$ is irrational.
     """)
     return
 
@@ -1248,34 +1249,69 @@ def _(Fraction, graphic, mo, nested_slider, plt):
             _ivals.append((_lo, _lo + _third))
             _kept.append("left")
 
-    _fig, _ax = plt.subplots(figsize=(8, 0.55 * (_n + 1) + 1.5))
-    for _k, (_lo, _hi) in enumerate(_ivals):
+    _fig, (_ax, _zx) = plt.subplots(1, 2, figsize=(10, 0.55 * _n + 2.2), sharey=True)
+
+    # Left: every interval [a_k, b_k] on the whole of [0, 1]
+    for _k in range(_n):
+        _lo, _hi = _ivals[_k]
         _ax.plot([0, 1], [_k, _k], color="lightgray", linewidth=1, zorder=1)
         _ax.plot([float(_lo), float(_hi)], [_k, _k], color="C1", linewidth=7, solid_capstyle="butt", zorder=2)
-        _ax.plot(float(_lo + _hi) / 2, _k, marker="|", color="C1", markersize=14, zorder=2)
-    for _k, _x in enumerate(_xs):
-        _ax.plot(float(_x), _k, marker="x", color="black", markersize=9, markeredgewidth=2, zorder=3)
-    _ax.plot([], [], color="C1", linewidth=7, label=r"interval $[a_k, b_k]$")
-    _ax.plot([], [], marker="x", color="black", linestyle="none", markeredgewidth=2, label=r"listed rational $x_k$ to avoid")
-    _ax.set_yticks(range(_n + 1))
-    _ax.set_yticklabels([f"k = {_k}" for _k in range(_n + 1)])
-    _ax.set_ylim(_n + 0.6, -0.6)
+        _ax.plot(float(_xs[_k]), _k, marker="x", color="black", markersize=9, markeredgewidth=2, zorder=3)
     _ax.set_xlim(-0.02, 1.02)
     _ax.set_xlabel("real number line")
-    _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
-    _ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=2, fontsize=8)
-    _ax.set_title("Nested intervals that avoid the listed rationals", style="italic")
-    _fig.tight_layout()
+    _ax.set_title(r"Intervals $[a_k, b_k]$ on $[0, 1]$", style="italic")
+
+    # Right: row k rescaled so that [a_k, b_k] fills [0, 1]
+    for _k in range(_n):
+        _lo, _hi = _ivals[_k]
+        _keep_lo = 0.0 if _kept[_k] == "left" else 2 / 3
+        _zx.plot([0, 1], [_k, _k], color="lightgray", linewidth=7, solid_capstyle="butt", zorder=1)
+        _zx.plot([_keep_lo, _keep_lo + 1 / 3], [_k, _k], color="C1", linewidth=7, solid_capstyle="butt", zorder=2)
+        for _t in (1 / 3, 2 / 3):
+            _zx.plot([_t, _t], [_k - 0.2, _k + 0.2], color="black", linewidth=0.8, zorder=3)
+        _pos = float((_xs[_k] - _lo) / (_hi - _lo))
+        if 0 <= _pos <= 1:
+            _zx.plot(_pos, _k, marker="x", color="black", markersize=9, markeredgewidth=2, zorder=4)
+        else:
+            _side_x = 1.03 if _pos > 1 else -0.03
+            _zx.text(_side_x, _k, rf"$x_{{{_k}}}$ outside",
+                     ha="left" if _pos > 1 else "right", va="center", fontsize=8)
+    _zx.set_xlim(-0.35, 1.35)
+    _zx.set_xticks([0, 1 / 3, 2 / 3, 1])
+    _zx.set_xticklabels([r"$a_k$", "one third", "two thirds", r"$b_k$"])
+    _zx.set_title(r"Each $[a_k, b_k]$ enlarged: the kept third", style="italic")
+
+    _ax.set_yticks(range(_n))
+    _ax.set_yticklabels([f"k = {_k}" for _k in range(_n)])
+    _ax.set_ylim(_n - 0.4, -0.6)
+    for _a in (_ax, _zx):
+        _a.grid(visible=True, alpha=0.9, linewidth=0.4)
+    _ax.plot([], [], color="C1", linewidth=7, label=r"interval $[a_k, b_k]$ (left) / kept third (right)")
+    _ax.plot([], [], marker="x", color="black", linestyle="none", markeredgewidth=2, label=r"listed rational $x_k$ to avoid")
+    _fig.legend(*_ax.get_legend_handles_labels(), loc="lower center", ncol=2, fontsize=8)
+    _fig.tight_layout(rect=(0, 0.08, 1, 1))
 
     def _tex(_q):
         return str(_q.numerator) if _q.denominator == 1 else rf"\tfrac{{{_q.numerator}}}{{{_q.denominator}}}"
 
-    _rows = ["| $k$ | $x_k$ | kept third | $[a_{k+1}, b_{k+1}]$ |", "|:---|:---:|:---:|:---:|"]
+    _rows = [r"| $k$ | $[a_k, b_k]$ | $x_k$ | $x_k$ in $[a_k, b_k]$? | kept third |", "|:---:|:---:|:---:|:---:|:---:|"]
     for _k, (_x, _side) in enumerate(zip(_xs, _kept)):
-        _lo, _hi = _ivals[_k + 1]
-        _rows.append(f"| {_k} | ${_tex(_x)}$ | {_side} | $[{_tex(_lo)}, {_tex(_hi)}]$ |")
+        _lo, _hi = _ivals[_k]
+        _inside = "yes" if _lo <= _x <= _hi else "no"
+        _rows.append(f"| {_k} | $[{_tex(_lo)}, {_tex(_hi)}]$ | ${_tex(_x)}$ | {_inside} | {_side} |")
     _table = mo.md("\n".join(_rows))
     mo.vstack([nested_slider, graphic(_fig), _table])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// caution | ⚠️ **Assumptions and Failure Modes**
+    - **Completeness is essential.** The proof uses completeness exactly once, in the [Nested Intervals lemma](#ch3-lem-nested-intervals). It must fail for $\mathbb Q$, which is countable. Indeed, running the construction inside $\mathbb Q$ on the listing above gives nested intervals $[a_n, b_n] \cap \mathbb Q$ that are all nonempty but have no rational number in common. In $\mathbb Q$, nested closed intervals can have empty intersection.
+    - **Countable does not mean sparse.** $\mathbb Q$ is countable, yet it meets every interval $(a, b)$ with $a < b$ ([Density of the Rationals](#ch3-thm-density-of-the-rationals)). Countable sets are small only in the sense of listing. [Chapter 4](#ch4-sec-lebesgue-measure) shows that they are also small in the sense of length: a countable set has length $0$.
+    ///
+    """)
     return
 
 
@@ -1285,7 +1321,7 @@ def _(mo):
     <!-- label: ch3-sec-extended-real-numbers -->
     ## Extended Real Numbers
 
-    Probabilities are real numbers in $[0, 1]$. But [Chapter 4](ch4_probability_spaces.md) also needs *lengths*, and $\mathbb R$ has infinite length; and a sum of infinitely many nonnegative numbers can be infinite. To state such facts without special cases, we add two new elements, $\infty$ and $-\infty$.
+    Probabilities are real numbers in $[0, 1]$. But [Chapter 4](#ch4-sec-lebesgue-measure) also needs *lengths*, and $\mathbb R$ has infinite length; and a sum of infinitely many nonnegative numbers can be infinite. To state such facts without special cases, we add two new elements, $\infty$ and $-\infty$.
 
     /// note | 📖 **Definition**
     <u>**Extended real numbers**</u>

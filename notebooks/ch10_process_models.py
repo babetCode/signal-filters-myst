@@ -60,11 +60,11 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the bulking example, the prediction $\hat x_k^-$, and the alpha-beta filter.
-    - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.
-    - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, the variance of a sum, and the fact that independent random variables are uncorrelated.
-    - [Chapter 7](ch7_optimal_alpha.md): the estimation error $e_k = \hat x_k - x_k$ and the optimal gain $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
-    - [Chapter 9](ch9_noise_levels.md): process noise, the random-walk model, white noise, the scalar Kalman filter, the innovation variance $S_k = P_k^- + R$, the fact that innovations are uncorrelated over time, and the normalized innovation squared.
+    - [Introduction](introduction.md): [the bulking example](#intro-sec-alpha-beta-filter), [the prediction](#intro-sec-a-recursive-average) $\hat x_k^-$, and [the alpha-beta filter](#intro-sec-beta-weighting-term).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): [proof by induction](#ch2-thm-induction).
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, [the variance of a sum](#ch6-sec-variance-of-sums), and the fact that [independent random variables are uncorrelated](#ch6-thm-independent-implies-uncorrelated).
+    - [Chapter 7](ch7_optimal_alpha.md): [the estimation error](#ch7-sec-setting-up-the-problem) $e_k = \hat x_k - x_k$ and [the optimal gain](#ch7-thm-optimal-gain) $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
+    - [Chapter 9](ch9_noise_levels.md): [process noise](#ch9-sec-process-noise), [the random-walk model](#ch9-sec-process-noise), [white noise](#ch9-sec-process-noise), [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), [the innovation variance](#ch9-sec-innovations) $S_k = P_k^- + R$, the fact that [innovations are uncorrelated over time](#ch9-thm-properties-of-the-innovations), and [the normalized innovation squared](#ch9-sec-checking-the-noise-levels).
     - [Appendix C: Derivatives](#appc-sec-derivatives), [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema), [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations): only for the section on continuous-time models.
     ///
     """)
@@ -74,7 +74,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In [Chapter 9](ch9_noise_levels.md) the Kalman filter predicted each new weight with the random-walk model: tomorrow's weight is today's weight plus an expected change $\Delta x_k$ plus {term}`process noise`. We never asked where $\Delta x_k$ comes from. When you are bulking, your weight changes *because* you eat more than you burn, and you may well know how much you ate. This chapter shows how to put that knowledge into the prediction.
+    In [Chapter 9](#ch9-sec-process-noise) the Kalman filter predicted each new weight with the random-walk model: tomorrow's weight is today's weight plus an expected change $\Delta x_k$ plus {term}`process noise`. We never asked where $\Delta x_k$ comes from. When you are bulking, your weight changes *because* you eat more than you burn, and you may well know how much you ate. This chapter shows how to put that knowledge into the prediction.
 
     The rule that turns the previous state, and everything we know about outside influences, into a prediction of the next state is called a **process model**. Whatever the model gets wrong becomes process noise. So a better model means a smaller $Q$, a prediction the filter can trust more, and less need to trade noise against lag. A *wrong* model, on the other hand, quietly biases every estimate. We therefore also need a way to tell, from data alone, whether a model is wrong.
 
@@ -125,7 +125,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The most important modeling decision is which numbers to keep track of. We want a summary of the present that is good enough to predict the future, so that the past can be forgotten. That is exactly what makes a recursive filter possible: each new estimate is computed from the previous estimate and the new data only, as in the recursion theorem of [Chapter 2](ch2_axioms_of_set_theory.md).
+    The most important modeling decision is which numbers to keep track of. We want a summary of the present that is good enough to predict the future, so that the past can be forgotten. That is exactly what makes a recursive filter possible: each new estimate is computed from the previous estimate and the new data only, as in the recursion theorem of [Chapter 2](#ch2-thm-recursion).
 
     /// note | 📖 **Definition**
     <u>**System state**</u>
@@ -135,7 +135,7 @@ def _(mo):
 
     Some examples:
 
-    1. **A constant weight on a scale** ([Chapter 7](ch7_optimal_alpha.md)). The weight itself is a state: it never changes, so knowing it now determines it forever.
+    1. **A constant weight on a scale** ([Chapter 7](#ch7-thm-optimal-gains-for-a-constant)). The weight itself is a state: it never changes, so knowing it now determines it forever.
     2. **Bulking with a food log.** Under the energy-balance model built below, today's weight together with the food you will log determines the distribution of every future weight. Weight alone is a state.
     3. **A rolling cart.** Its position alone is *not* a state: two carts at the same position, one moving and one at rest, end up in different places. Position and velocity together are a state.
     4. **Bulking without a food log, but with a steady rate of gain.** Two people who weigh the same today but gain at different rates will weigh different amounts next week, so weight alone is not a state; weight and rate together are. We return to this case at the end of the chapter.
@@ -242,7 +242,7 @@ def _(mo):
     - **(A2)** the process noise $w_k$ has mean $0$ and variance $Q$;
     - **(A3)** $w_k$ is {term}`uncorrelated` with $e_{k-1}$.
 
-    (A3) holds automatically if $w_k$ is independent of the initial state, of the earlier process noise $w_1, \ldots, w_{k-1}$, and of the measurement noise $v_1, \ldots, v_{k-1}$. The reason is that $e_{k-1}$ is computed from exactly those quantities, so it is independent of $w_k$, and independent random variables are uncorrelated ([Chapter 6](ch6_expectation_and_variance.md)). This is what we get when the process noise is {term}`white noise` independent of everything else.
+    (A3) holds automatically if $w_k$ is independent of the initial state, of the earlier process noise $w_1, \ldots, w_{k-1}$, and of the measurement noise $v_1, \ldots, v_{k-1}$. The reason is that $e_{k-1}$ is computed from exactly those quantities, so it is independent of $w_k$, and independent random variables are uncorrelated ([Chapter 6](#ch6-thm-independent-implies-uncorrelated)). This is what we get when the process noise is {term}`white noise` independent of everything else.
 
     We drop the subscripts on $a$ and $b$ only to keep the notation light: the theorem below uses one step at a time, so it holds unchanged for time-varying coefficients.
 
@@ -259,7 +259,7 @@ def _(mo):
         attrs: {class: proof}
     1. Subtracting the process model from the prediction,
     $$e_k^- = a\,\hat x_{k-1} + b\,u_k - (a\,x_{k-1} + b\,u_k + w_k) = a\,e_{k-1} - w_k.$$
-    By linearity of expectation, $\mathbb E[e_k^-] = a\cdot 0 - 0 = 0$. By the rule for the variance of a sum ([Chapter 6](ch6_expectation_and_variance.md)),
+    By linearity of expectation, $\mathbb E[e_k^-] = a\cdot 0 - 0 = 0$. By the rule for the variance of a sum ([Chapter 6](#ch6-thm-variance-of-a-linear-combination)),
     $$\operatorname{Var}(e_k^-) = a^2\operatorname{Var}(e_{k-1}) + \operatorname{Var}(w_k) - 2a\operatorname{Cov}(e_{k-1}, w_k) = a^2 P_{k-1} + Q,$$
     because the covariance is $0$ by (A3).
 
@@ -276,9 +276,9 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **(A1) fails: the coefficients or the input are not known exactly.** Then the prediction uses the wrong numbers. If the error is random and unbiased (for example, an imperfect food log), move it into $w_k$ and increase $Q$ accordingly; the next section does exactly this. If the error is systematic (for example, a wrong value of $a$), the prediction is biased, as in the next bullet.
-    - **(A2) fails: the process noise has a nonzero mean $\mu_w$.** Then $\mathbb E[e_k^-] = a\,\mathbb E[e_{k-1}] - \mu_w \neq 0$. The bias enters at every step, so the estimate lags behind the truth, just like the exponential moving average lags behind a ramp ([Chapter 6](ch6_expectation_and_variance.md)). The last section of this chapter shows how to detect this from the innovations.
+    - **(A2) fails: the process noise has a nonzero mean $\mu_w$.** Then $\mathbb E[e_k^-] = a\,\mathbb E[e_{k-1}] - \mu_w \neq 0$. The bias enters at every step, so the estimate lags behind the truth, just like the exponential moving average lags behind a ramp ([Chapter 6](#ch6-thm-ema-on-a-ramp)). The last section of this chapter shows how to detect this from the innovations.
     - **(A3) fails: the process noise is correlated with past errors.** This happens when the same unmodeled effect pushes the state on several consecutive steps, so that $w_k$ is correlated with $w_{k-1}$. Then $P_k^-$ is wrong (usually too small), and the innovations become correlated in time.
-    - **$Q$ is wrong.** The prediction is still unbiased, but the filter weighs it incorrectly: too small a $Q$ makes the filter overconfident and slow to follow real changes; too large a $Q$ makes it follow the measurement noise ([Chapter 9](ch9_noise_levels.md)).
+    - **$Q$ is wrong.** The prediction is still unbiased, but the filter weighs it incorrectly: too small a $Q$ makes the filter overconfident and slow to follow real changes; too large a $Q$ makes it follow the measurement noise ([Chapter 9](#ch9-sec-the-scale-with-a-shifting-load)).
     ///
     """)
     return
@@ -785,8 +785,8 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Constant input between samples.** The exact discretization assumes $\tilde u$ is constant on each interval (a *zero-order hold*). Meals are not spread evenly over the day, so this is an approximation too. For a linear system it hardly matters when $|\lambda|\Delta t \ll 1$, because then essentially only the total energy eaten during the interval affects $x(t_k)$.
     - **Euler needs $\Delta t \ll \tau$** for accuracy and $\Delta t < 2\tau$ for stability. A model can be correct in continuous time and still produce nonsense after a careless discretization.
-    - **The noise must be discretized too.** If continuous-time disturbances act throughout the interval, the variance $Q$ of the discrete-time process noise depends on $\Delta t$; [Chapter 14](ch14_kalman_filters_in_practice.md) derives it.
-    - **Nonlinear models** generally have no closed-form solution, so they are discretized numerically, for example with the Runge–Kutta method used for the pendulum in [Chapter 15](ch15_extended_kalman_filter.md).
+    - **The noise must be discretized too.** If continuous-time disturbances act throughout the interval, the variance $Q$ of the discrete-time process noise depends on $\Delta t$; [Chapter 14](#ch14-sec-choosing-q) derives it.
+    - **Nonlinear models** generally have no closed-form solution, so they are discretized numerically, for example with the Runge–Kutta method used for the pendulum in [Chapter 15](#ch15-sec-the-model).
     ///
     """)
     return
@@ -813,7 +813,7 @@ def _(mo):
     $$
     Two things stand out. The variance of the weight prediction depends on the *covariance* between the two errors, so keeping track of two variances is not enough. And even if the errors are uncorrelated today, one prediction step makes them correlated, because an error in the rate becomes part of the error in the weight. To run a Kalman filter on this model we must track two variances and a covariance, three numbers that naturally form a $2\times 2$ table, and we need an update rule for all of them.
 
-    That is what Part III provides. [Chapter 12](ch12_vectors_matrices_covariance.md) packages variances and covariances into a covariance matrix, and [Chapter 13](ch13_kalman_filter.md) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
+    That is what Part III provides. [Chapter 12](#ch12-sec-covariance-matrices) packages variances and covariances into a covariance matrix, and [Chapter 13](ch13_kalman_filter.md) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
     """)
     return
 
@@ -850,12 +850,12 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Since $\ell \ge 1$, the two factors of each term $\nu_k\nu_{k+\ell}$ are independent, so $\mathbb E[\nu_k\nu_{k+\ell}] = \mathbb E[\nu_k]\,\mathbb E[\nu_{k+\ell}] = 0$ ([Chapter 6](ch6_expectation_and_variance.md)), and $\mathbb E[C_\ell] = 0$ by linearity. Each term has variance $\mathbb E[\nu_k^2\nu_{k+\ell}^2] = \mathbb E[\nu_k^2]\,\mathbb E[\nu_{k+\ell}^2] = \sigma^4$. Two different terms, with $j < k$, are uncorrelated: the index $j$ is smaller than each of $j + \ell$, $k$, and $k + \ell$, so $\nu_j$ is independent of the product $\nu_{j+\ell}\nu_k\nu_{k+\ell}$ (the $\nu$'s are mutually independent, so $\nu_j$ is independent of any function of the others), and
+    Since $\ell \ge 1$, the two factors of each term $\nu_k\nu_{k+\ell}$ are independent, so $\mathbb E[\nu_k\nu_{k+\ell}] = \mathbb E[\nu_k]\,\mathbb E[\nu_{k+\ell}] = 0$ ([Chapter 6](#ch6-thm-expectation-of-a-product)), and $\mathbb E[C_\ell] = 0$ by linearity. Each term has variance $\mathbb E[\nu_k^2\nu_{k+\ell}^2] = \mathbb E[\nu_k^2]\,\mathbb E[\nu_{k+\ell}^2] = \sigma^4$. Two different terms, with $j < k$, are uncorrelated: the index $j$ is smaller than each of $j + \ell$, $k$, and $k + \ell$, so $\nu_j$ is independent of the product $\nu_{j+\ell}\nu_k\nu_{k+\ell}$ (the $\nu$'s are mutually independent, so $\nu_j$ is independent of any function of the others), and
     $$\mathbb E\big[\nu_j\nu_{j+\ell}\,\nu_k\nu_{k+\ell}\big] = \mathbb E[\nu_j]\;\mathbb E\big[\nu_{j+\ell}\nu_k\nu_{k+\ell}\big] = 0.$$
     The variance of a sum of uncorrelated terms is the sum of their variances, which is $(N - \ell)\sigma^4$. $\blacksquare$
     ///
 
-    The denominator of $r(\ell)$ is close to $N\sigma^2$ for large $N$, by the weak law of large numbers ([Chapter 6](ch6_expectation_and_variance.md)). So $r(\ell)$ has mean close to $0$ and standard deviation close to $\sqrt{N - \ell}/N \le 1/\sqrt N$. More precisely, for independent, identically distributed $\nu_k$ with finite variance, $\sqrt N\,r(\ell)$ converges in distribution to $\mathcal N(0, 1)$ as $N \to \infty$, for each fixed $\ell$; this is a classical result of Bartlett (see [Wikipedia: Correlogram](https://en.wikipedia.org/wiki/Correlogram)). For a correct model with normal noise the normalized innovations are not only uncorrelated but independent: they are linear combinations of the normal initial state and noises, hence jointly normal, and uncorrelated jointly normal random variables are independent ([Chapter 12](ch12_vectors_matrices_covariance.md)). This gives a practical test.
+    The denominator of $r(\ell)$ is close to $N\sigma^2$ for large $N$, by the weak law of large numbers ([Chapter 6](#ch6-thm-weak-law-of-large-numbers)). So $r(\ell)$ has mean close to $0$ and standard deviation close to $\sqrt{N - \ell}/N \le 1/\sqrt N$. More precisely, for independent, identically distributed $\nu_k$ with finite variance, $\sqrt N\,r(\ell)$ converges in distribution to $\mathcal N(0, 1)$ as $N \to \infty$, for each fixed $\ell$; this is a classical result of Bartlett (see [Wikipedia: Correlogram](https://en.wikipedia.org/wiki/Correlogram)). For a correct model with normal noise the normalized innovations are not only uncorrelated but independent: they are linear combinations of the normal initial state and noises, hence jointly normal, and uncorrelated jointly normal random variables are independent ([Chapter 12](#ch12-cor-uncorrelated-jointly-normal-vectors-are-independent)). This gives a practical test.
     """)
     return
 
@@ -867,7 +867,7 @@ def _(mo):
     1. Run the filter and compute the normalized innovations $\nu_k = \tilde y_k/\sqrt{S_k}$.
     2. Compute $r(\ell)$ for the first few lags, say $\ell = 1, \ldots, 20$.
     3. If the model is right, about 95% of these values should lie within $\pm 1.96/\sqrt N$. Many values outside the band, or a run of values with the same sign at small lags, is evidence that the model is wrong.
-    4. Check the mean and the {term}`normalized innovation squared` too: $\bar\nu$ should lie within about $\pm 1.96/\sqrt N$ of $0$, and the average of $\nu_k^2$ should be close to $1$ ([Chapter 9](ch9_noise_levels.md)).
+    4. Check the mean and the {term}`normalized innovation squared` too: $\bar\nu$ should lie within about $\pm 1.96/\sqrt N$ of $0$, and the average of $\nu_k^2$ should be close to $1$ ([Chapter 9](#ch9-sec-checking-the-noise-levels)).
     ///
 
     The test needs data. With $N = 28$ the band is $\pm 1.96/\sqrt{28} \approx \pm 0.37$, so a month of weigh-ins can only reveal gross errors. Below we simulate 26 weeks instead, with the planned intake changing every week. The truth uses the activity multiplier $1.5$; the slider sets the multiplier used by the *filter's* model, so anything other than $1.5$ is a model error of the kind Mifflin–St Jeor makes for individuals.

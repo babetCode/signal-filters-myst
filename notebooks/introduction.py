@@ -128,7 +128,7 @@ def _(mo):
 
     [^loadcell]: A strain gauge load cell is an electronic component that converts force into a proportional change in resistance, using metal foil grids (called strain gauges) whose resistance changes under load: it increases under tension and decreases under compression. Load cells are used in almost all digital bathroom scales because they are thin, relatively accurate, mass-producible, and have no moving parts to wear out.
 
-    [^informal-function]: Used informally here: a function assigns to each input exactly one output. Functions are defined precisely in [Chapter 2](ch2_axioms_of_set_theory.md).
+    [^informal-function]: Used informally here: a function assigns to each input exactly one output. Functions are defined precisely in [Chapter 2](#ch2-sec-functions).
     """)
     return
 
@@ -175,7 +175,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Like the true value, the noise can never be observed directly, since computing $z_k - x_k$ would require knowing $x_k$. To reason about how large it tends to be, [Chapter 5](ch5_random_variables.md) will model it as random.
+    Like the true value, the noise can never be observed directly, since computing $z_k - x_k$ would require knowing $x_k$. To reason about how large it tends to be, [Chapter 5](#ch5-sec-the-measurement-noise-model) will model it as random.
 
     Since the stream of measurements from the ADC constantly fluctuates, we can never know your true weight with 100% precision (remember, it's impossible to measure anything with 100% precision). The best we can do is to compute an **estimate** of it.
     """)
@@ -197,7 +197,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The **error** of an estimate is $\hat x_k - x_k$: positive when we overestimate and negative when we underestimate. Like the noise, it can never be computed, because $x_k$ is unknown; our goal is to keep it small. [Chapter 6](ch6_expectation_and_variance.md) treats the rule that produces estimates as a mathematical object of its own (an *estimator*), and [Chapter 7](ch7_optimal_alpha.md) gives the error a symbol and measures "small" precisely.
+    The **error** of an estimate is $\hat x_k - x_k$: positive when we overestimate and negative when we underestimate. Like the noise, it can never be computed, because $x_k$ is unknown; our goal is to keep it small. [Chapter 6](#ch6-sec-estimators) treats the rule that produces estimates as a mathematical object of its own (an *estimator*), and [Chapter 7](#ch7-sec-setting-up-the-problem) gives the error a symbol and measures "small" precisely.
 
     To keep the error small, we must remove as much of the noise as we can, hence the term **filter**.
     """)
@@ -223,7 +223,7 @@ def _(mo):
 
     In general, a filter used to estimate a real-world value receives a sequence[^informal-sequence] of digital measurements and outputs a sequence of estimates:
 
-    [^informal-sequence]: Used informally here: a list $z_1, z_2, z_3, \ldots$ indexed by the steps. Sequences are defined precisely in [Chapter 3](ch3_sets_for_probability.md).
+    [^informal-sequence]: Used informally here: a list $z_1, z_2, z_3, \ldots$ indexed by the steps. Sequences are defined precisely in [Chapter 3](#ch3-sec-indexed-families-and-sequences).
     """)
     return
 
@@ -365,13 +365,13 @@ def _(mo):
 
     Under these assumptions, averaging measurements makes the noise cancel out in a precise sense. The average of $k$ measurements is centered on the true value, just like a single measurement, but the variance[^informal-variance] of its noise (roughly, the average squared size of the noise) is $1/k$ times as large. Since the typical size of the noise is the square root of its variance, the typical error shrinks like $1/\sqrt{k}$: if a single measurement typically misses by about 1 lb, as our simulated scale does, then the average of 30 measurements typically misses by only about $1/\sqrt{30} \approx 0.18$ lb.
 
-    [^informal-random]: Used informally here: we cannot predict the next fluctuation. Randomness is made precise by probability spaces in [Chapter 4](ch4_probability_spaces.md) and random variables in [Chapter 5](ch5_random_variables.md).
+    [^informal-random]: Used informally here: we cannot predict the next fluctuation. Randomness is made precise by probability spaces in [Chapter 4](#ch4-sec-kolmogorovs-axioms) and random variables in [Chapter 5](#ch5-sec-definition).
 
-    [^zero-mean]: The mean (or *expected value*) is defined in [Chapter 6](ch6_expectation_and_variance.md). This is an assumption about the *mean* of the noise, not its median: the noise may be negative more often than positive, as long as its positive values are correspondingly larger, so that it still averages out to zero.
+    [^zero-mean]: The mean (or *expected value*) is defined in [Chapter 6](#ch6-sec-expected-value). This is an assumption about the *mean* of the noise, not its median: the noise may be negative more often than positive, as long as its positive values are correspondingly larger, so that it still averages out to zero.
 
-    [^unrelated]: [Chapter 5](ch5_random_variables.md) makes this precise as *independence*, and [Chapter 6](ch6_expectation_and_variance.md) shows that the weaker condition of being *uncorrelated* is enough for the variance result. We also assume every measurement is equally noisy, which is reasonable for repeated readings from the same scale.
+    [^unrelated]: [Chapter 5](#ch5-sec-independence) makes this precise as *independence*, and [Chapter 6](#ch6-sec-variance-of-sums) shows that the weaker condition of being *uncorrelated* is enough for the variance result. We also assume every measurement is equally noisy, which is reasonable for repeated readings from the same scale.
 
-    [^informal-variance]: Used informally here. Variance is defined in [Chapter 6](ch6_expectation_and_variance.md), which also proves the result quoted here: the average of $k$ measurements whose noise has mean zero and variance $\sigma^2$, and is uncorrelated between measurements, has mean equal to the true value and variance $\sigma^2/k$.
+    [^informal-variance]: Used informally here. Variance is defined in [Chapter 6](#ch6-thm-mean-and-variance-of-the-sample-mean), which also proves the result quoted here: the average of $k$ measurements whose noise has mean zero and variance $\sigma^2$, and is uncorrelated between measurements, has mean equal to the true value and variance $\sigma^2/k$.
     """)
     return
 
@@ -387,7 +387,7 @@ def _(mo):
     Averaging relies on three assumptions, and each one can fail:
 
     - **The true value is constant.** If it changes while we average (you are still stepping onto the platform, or you pick up a cat), the average mixes old and new values and lags behind the truth. Most of the rest of this chapter deals with this failure.
-    - **The noise has mean zero.** If every reading is 2 lb too high because the scale is miscalibrated, then so is the average of any number of readings: averaging cannot remove an error that every measurement shares. [Chapter 11](ch11_measurement_functions.md) treats such sensor bias.
+    - **The noise has mean zero.** If every reading is 2 lb too high because the scale is miscalibrated, then so is the average of any number of readings: averaging cannot remove an error that every measurement shares. [Chapter 11](#ch11-sec-sensor-bias-and-a-drifting-tare) treats such sensor bias.
     - **The noise in different measurements is unrelated.** If you sway slowly back and forth, neighboring readings err in the same direction, and averaging $k$ of them reduces the variance by much less than a factor of $k$.
     ///
     """)
@@ -512,7 +512,7 @@ def _(mo):
 
     the new estimate is the prediction plus a weight times the innovation. Compared with storing a running sum, this form has three advantages:
 
-    1. **Bounded magnitude.** Rearranged, $\bar x_k = \left(1 - \frac1k\right)\bar x_{k-1} + \frac1k z_k$. This is a weighted combination of $\bar x_{k-1}$ and $z_k$ whose weights lie between 0 and 1 and add up to 1, so $\bar x_k$ lies between $\bar x_{k-1}$ and $z_k$. Starting from $\bar x_1 = z_1$ and repeating this argument one step at a time (a proof by induction, [Chapter 2](ch2_axioms_of_set_theory.md)) shows that every $\bar x_k$ lies between the smallest and the largest measurement so far. The stored estimate therefore fits in any number format that can hold one measurement, and the innovation $z_k - \bar x_{k-1}$, a difference of two such numbers, needs just one extra bit[^fixed-point].
+    1. **Bounded magnitude.** Rearranged, $\bar x_k = \left(1 - \frac1k\right)\bar x_{k-1} + \frac1k z_k$. This is a weighted combination of $\bar x_{k-1}$ and $z_k$ whose weights lie between 0 and 1 and add up to 1, so $\bar x_k$ lies between $\bar x_{k-1}$ and $z_k$. Starting from $\bar x_1 = z_1$ and repeating this argument one step at a time (a proof by induction, [Chapter 2](#ch2-thm-induction)) shows that every $\bar x_k$ lies between the smallest and the largest measurement so far. The stored estimate therefore fits in any number format that can hold one measurement, and the innovation $z_k - \bar x_{k-1}$, a difference of two such numbers, needs just one extra bit[^fixed-point].
     2. **An estimate at every step.** The stored number *is* the current estimate, ready to display after every measurement with no extra work.
     3. **A structure that generalizes.** *Prediction + weight $\times$ innovation* is the shape of every filter we build in this book, up to and including the Kalman filter. Only the prediction and the weight will change.
 
@@ -627,7 +627,7 @@ def _(mo):
 
     $$\hat{x}_k = \hat{x}_{k-1} + \frac{1}{k}(z_k - \hat{x}_{k-1}),$$
 
-    where the $\frac 1k$ term ensures that as each new measurement is added, all the measurements stay weighted equally. If your weight really is constant, that is exactly right: [Chapter 7](ch7_optimal_alpha.md) proves that, under the assumptions above, no other choice of weights in this recursive form gives an error with smaller variance. On a real scale, however, "constant" only holds approximately: the reading ramps up while you step on, you shift your weight, or you pick up your cat. After $k$ measurements, a new measurement gets a weight of only $\frac1k$, so the longer the cumulative average runs, the more slowly it responds to any real change.
+    where the $\frac 1k$ term ensures that as each new measurement is added, all the measurements stay weighted equally. If your weight really is constant, that is exactly right: [Chapter 7](#ch7-thm-optimal-gains-for-a-constant) proves that, under the assumptions above, no other choice of weights in this recursive form gives an error with smaller variance. On a real scale, however, "constant" only holds approximately: the reading ramps up while you step on, you shift your weight, or you pick up your cat. After $k$ measurements, a new measurement gets a weight of only $\frac1k$, so the longer the cumulative average runs, the more slowly it responds to any real change.
 
     In practice, we therefore care more about recent measurements than old ones, and rather than using a weight that decreases as $k$ grows, it's common to use a constant weight $\alpha$:
 
@@ -664,7 +664,7 @@ def _(mo):
     - A **small** $\alpha$ spreads the weight over many past measurements, so more noise is averaged away, but the EMA responds slowly to real changes: it *lags* behind them.
     - A **large** $\alpha$ responds quickly to real changes, but it averages over fewer measurements, so more noise gets through.
 
-    [Chapter 6](ch6_expectation_and_variance.md) quantifies both sides of this trade-off and finds the $\alpha$ that balances them when the true value changes at a constant rate.
+    [Chapter 6](#ch6-sec-the-lagnoise-trade-off) quantifies both sides of this trade-off and finds the $\alpha$ that balances them when the true value changes at a constant rate.
 
     [^ema]: The exponential moving average gets its name from the weights it gives to past measurements. Substituting $\hat x_{k-1} = \alpha z_{k-1} + (1-\alpha)\hat x_{k-2}$ into $\hat x_k = \alpha z_k + (1-\alpha)\hat x_{k-1}$, then substituting for $\hat x_{k-2}$ in the same way, and so on down to $\hat x_0$ (formally, a proof by induction) gives
         $$\hat x_k = \sum_{n=0}^{k-1} \alpha(1-\alpha)^n z_{k-n} + (1-\alpha)^k\,\hat x_0.$$
@@ -813,7 +813,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The EMA works because we've assumed that your true weight changes little between measurements: in a world with no noise, all of our measurements and estimates would equal the same true value $x_k$. Combining them therefore averages the noise, and under the zero-mean and unrelated-noise assumptions, this shrinks its variance. [Chapter 6](ch6_expectation_and_variance.md) shows that for a constant true value, the variance of the EMA's error approaches $\frac{\alpha}{2-\alpha}$ times the variance of a single measurement's noise: about $0.05$ times for $\alpha = 0.1$. Unlike the variance of the cumulative average, which keeps shrinking like $\frac1k$, the variance of the EMA stops shrinking. That is the price of its constant attention to recent measurements.
+    The EMA works because we've assumed that your true weight changes little between measurements: in a world with no noise, all of our measurements and estimates would equal the same true value $x_k$. Combining them therefore averages the noise, and under the zero-mean and unrelated-noise assumptions, this shrinks its variance. [Chapter 6](#ch6-thm-ema-of-a-constant-value) shows that for a constant true value, the variance of the EMA's error approaches $\frac{\alpha}{2-\alpha}$ times the variance of a single measurement's noise: about $0.05$ times for $\alpha = 0.1$. Unlike the variance of the cumulative average, which keeps shrinking like $\frac1k$, the variance of the EMA stops shrinking. That is the price of its constant attention to recent measurements.
     """)
     return
 
@@ -867,7 +867,7 @@ def _(mo):
 
     Notice the difference between the *expected* change $\Delta x_k$, which we choose before seeing $z_k$, and the *actual* change $x_k - x_{k-1}$, which we never observe. In reality the two differ: your weight changes from day to day in ways no diet plan predicts. The gap $(x_k - x_{k-1}) - \Delta x_k$ between the actual and the expected change is called *process noise*[^informal-process-noise], because it is noise in the process we are measuring rather than in the measurement. It makes the prediction $\hat x_k^-$ noisy even when $\hat x_{k-1}$ is perfect, which is one more reason to combine the prediction with the measurement instead of trusting either one alone.
 
-    [^informal-process-noise]: Used informally here. {term}`Process noise` is defined precisely in [Chapter 9](ch9_noise_levels.md), which also shows how to choose $\alpha$ when both kinds of noise are present.
+    [^informal-process-noise]: Used informally here. {term}`Process noise` is defined precisely in [Chapter 9](#ch9-sec-process-noise), which also shows how to choose $\alpha$ when both kinds of noise are present.
     """)
     return
 
@@ -953,7 +953,7 @@ def _(mo):
           $$\text{Weight Gain (lb/day)} = \frac{\text{Energy Balance}}{3{,}500}.$$
           Gaining 0.2 lb per day therefore takes a surplus of $0.2 \times 3{,}500 = 700$ kcal per day, that is, a DEI of about $2{,}530 + 700 = 3{,}230$ kcal per day.
 
-        All of these are rough population averages, so your true rate may well differ from the prediction; the rest of this section shows what happens when $\Delta x_k$ is wrong. Also, TDEE grows with body weight, so the same intake produces slightly less gain as you grow; [Chapter 10](ch10_process_models.md) builds this into the prediction.
+        All of these are rough population averages, so your true rate may well differ from the prediction; the rest of this section shows what happens when $\Delta x_k$ is wrong. Also, TDEE grows with body weight, so the same intake produces slightly less gain as you grow; [Chapter 10](#ch10-sec-the-energy-balance-model) builds this into the prediction.
     """)
     return
 
@@ -1166,7 +1166,7 @@ def _(mo):
 
     [^beta-conventions]: Other texts write the update of the change differently. Some track a rate per unit time, $\hat v_k = \widehat{\Delta x}_k/\Delta t$, and so scale $\beta$ by $1/\Delta t$: $\hat v_{k+1} = \hat v_k + \frac{\beta}{\Delta t}\,\tilde y_k$. Others update from the change in the estimate, $\widehat{\Delta x}_{k+1} = \widehat{\Delta x}_k + \beta'\big[(\hat x_k - \hat x_{k-1}) - \widehat{\Delta x}_k\big]$. Since $\hat x_k - \hat x_{k-1} = \widehat{\Delta x}_k + \alpha\tilde y_k$, the bracket equals $\alpha\tilde y_k$, so this is our form with $\beta = \alpha\beta'$.
 
-    [^informal-alpha-beta]: [Chapter 13](ch13_kalman_filter.md) defines the {term}`alpha-beta filter` formally and shows how to choose its weights $\alpha$ and $\beta$ as those of a steady-state Kalman filter.
+    [^informal-alpha-beta]: [Chapter 13](#ch13-sec-alpha-beta-revisited) defines the {term}`alpha-beta filter` formally and shows how to choose its weights $\alpha$ and $\beta$ as those of a steady-state Kalman filter.
     """)
     return
 
@@ -1340,12 +1340,14 @@ def _(mo):
 
     $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
 
+    The four filters differ only in how they form the prediction and which weights they use:
+
     | Filter | Prediction $\hat x_k^-$ | Weights |
     |:---|:---:|:---|
     | Cumulative average | $\hat x_{k-1}$ | $\frac1k$ |
     | Exponential moving average | $\hat x_{k-1}$ | $\alpha$ |
     | Alpha filter | $\hat x_{k-1} + \Delta x_k$ | $\alpha$ |
-    | Alpha-beta filter | $\hat x_{k-1} + \widehat{\Delta x}_k$ | $\alpha$ for the estimate, $\beta$ for the expected change: $\widehat{\Delta x}_{k+1} = \widehat{\Delta x}_k + \beta\,\tilde y_k$ |
+    | Alpha-beta filter | $\hat x_{k-1} + \widehat{\Delta x}_k$ | $\alpha$ for the estimate, $\beta$ for the expected change:<br>$\widehat{\Delta x}_{k+1} = \widehat{\Delta x}_k + \beta\,\tilde y_k$ |
 
     Smaller weights average away more noise but respond more slowly to real changes. The second weight $\beta$ corrects the expected change using the same innovations, which removes the steady offset that a wrong expected change causes in the alpha filter.
     """)
@@ -1370,7 +1372,7 @@ def _(mo):
 
     > How do we determine the levels of noise in $\hat x_k^-$ and $z_k$?
 
-    (Spoiler: $z_k$ will be pretty simple, but $\hat x_k^-$ will take a bit more work. The answer is the Kalman filter, and [Chapter 9](ch9_noise_levels.md) shows that in the long run it becomes an EMA, which finally tells us how to choose the EMA's $\alpha$.)
+    (Spoiler: $z_k$ will be pretty simple, but $\hat x_k^-$ will take a bit more work. The answer is the Kalman filter, and [Chapter 9](#ch9-thm-the-steady-state-kalman-filter-is-an-ema) shows that in the long run it becomes an EMA, which finally tells us how to choose the EMA's $\alpha$.)
 
     > What is the best way to calculate $\hat x_k^-$?
 
@@ -1384,7 +1386,7 @@ def _(mo):
 
     > What if my real-world value can't be represented as a scalar?
 
-    (Time for state vectors! The alpha-beta filter already tracks two numbers, a weight and its change per day. [Chapter 13](ch13_kalman_filter.md) shows that it is a special case of the multivariate Kalman filter, and [Chapter 14](ch14_kalman_filters_in_practice.md) covers tuning, sensor fusion, and checking that a filter is working.)
+    (Time for state vectors! The alpha-beta filter already tracks two numbers, a weight and its change per day. [Chapter 13](#ch13-thm-the-alpha-beta-filter-is-a-constant-gain-kalman-filter) shows that it is a special case of the multivariate Kalman filter, and [Chapter 14](ch14_kalman_filters_in_practice.md) covers tuning, sensor fusion, and checking that a filter is working.)
 
     **Part IV: Nonlinearity** ([Chapters 15](ch15_extended_kalman_filter.md) and [16](ch16_unscented_kalman_filter.md))
 
