@@ -17,17 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Dead Reckoning a Walking Foot"
-    abbreviations:
-      IMU: inertial measurement unit
-      INS: inertial navigation system
-      ENU: east-north-up
-      FLU: forward-left-up
-      MEMS: micro-electro-mechanical systems
-      GLRT: generalized likelihood ratio test
-      SHOE: stance hypothesis optimal detector
-      ZUPT: zero-velocity update
-    numbering:
-      equations: false
+    description: "Integrating a foot-mounted inertial sensor into attitude, velocity, and position, why the result drifts, and detecting when the foot is still."
+    label: ch20
     -->
     """)
     return
@@ -65,9 +56,9 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 19](ch19_ahrs.md) estimated the {term}`attitude` of an {term}`inertial measurement unit`. An IMU strapped to a shoe can, in principle, do much more: integrate its {term}`gyroscope` once to get attitude, its {term}`accelerometer` twice to get position, and so track every stride a person takes, with no camera, beacon, or satellite in sight. That is **strapdown inertial navigation**, the key concept of this chapter.
+    [Chapter 19](#ch19) estimated the {term}`attitude` of an {term}`inertial measurement unit`. An IMU strapped to a shoe can, in principle, do much more: integrate its {term}`gyroscope` once to get attitude, its {term}`accelerometer` twice to get position, and so track every stride a person takes, with no camera, beacon, or satellite in sight. That is **strapdown inertial navigation**, the key concept of this chapter.
 
-    Its central difficulty is also the reason this chapter belongs in a book about filters. Integration accumulates errors. We will derive exactly how fast: a constant accelerometer error grows into a position error proportional to $t^2$, and a constant gyroscope error into one proportional to $t^3$. With a consumer-grade IMU, the position is off by meters within a few seconds. Walking offers a way out: once per stride, the foot stands still on the ground, so its true velocity is known to be zero. This chapter builds the navigation equations, a synthetic walking simulator with exact ground truth, and detectors that find the stationary moments. [Chapter 21](ch21_zero_velocity_updates.md) turns those moments into Kalman filter measurements.
+    Its central difficulty is also the reason this chapter belongs in a book about filters. Integration accumulates errors. We will derive exactly how fast: a constant accelerometer error grows into a position error proportional to $t^2$, and a constant gyroscope error into one proportional to $t^3$. With a consumer-grade IMU, the position is off by meters within a few seconds. Walking offers a way out: once per stride, the foot stands still on the ground, so its true velocity is known to be zero. This chapter builds the navigation equations, a synthetic walking simulator with exact ground truth, and detectors that find the stationary moments. [Chapter 21](#ch21) turns those moments into Kalman filter measurements.
 
     /// attention | 🗝️ **Key Idea**
     Inertial navigation integrates, and integration turns small constant sensor errors into position errors that grow like $t^2$ and $t^3$. A walking foot is stationary once per stride, which provides a perfect velocity measurement roughly every second, provided we can detect when it happens.
@@ -80,11 +71,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 17](ch17_rotations.md): [rotation matrices](#ch17-sec-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [the kinematics](#ch17-sec-angular-velocity) $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, [the exponential map](#ch17-sec-rotation-vectors-and-the-exponential-map), and [the small-angle approximation](#ch17-thm-small-angle-approximation).
-    - [Chapter 18](ch18_quaternions.md): the {term}`Hamilton product`, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
-    - [Chapter 19](ch19_ahrs.md): [the IMU sensor models](#ch19-sec-measurement-models), {term}`specific force`, [tilt from the accelerometer](#ch19-sec-tilt-from-the-accelerometer), and [the error-state convention](#ch19-sec-state-error-and-nominal-propagation) $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
-    - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`likelihoods <likelihood>` and [the multivariate normal density](#ch12-sec-the-multivariate-normal-distribution) (only for the GLRT detector).
-    - [Chapter 9](ch9_noise_levels.md): {term}`white noise`, {term}`random walks <random walk>`, and the {term}`chi-squared distribution`.
+    - [Chapter 17](#ch17): [rotation matrices](#ch17-sec-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [the kinematics](#ch17-sec-angular-velocity) $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, [the exponential map](#ch17-sec-rotation-vectors-and-the-exponential-map), and [the small-angle approximation](#ch17-thm-small-angle-approximation).
+    - [Chapter 18](#ch18): the {term}`Hamilton product`, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
+    - [Chapter 19](#ch19): [the IMU sensor models](#ch19-sec-measurement-models), {term}`specific force`, [tilt from the accelerometer](#ch19-sec-tilt-from-the-accelerometer), and [the error-state convention](#ch19-sec-state-error-and-nominal-propagation) $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
+    - [Chapter 8](#ch8) and [Chapter 12](#ch12): {term}`likelihoods <likelihood>` and [the multivariate normal density](#ch12-sec-the-multivariate-normal-distribution) (only for the GLRT detector).
+    - [Chapter 9](#ch9): {term}`white noise`, {term}`random walks <random walk>`, and the {term}`chi-squared distribution`.
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) and [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus).
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices) and [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
@@ -117,7 +108,7 @@ def _(mo):
     | accelerometer white noise $\sigma_a$ | 0.05 m/s$^2$ |
     | accelerometer bias, per axis | 0.05 m/s$^2$ |
 
-    These are typical of an inexpensive MEMS IMU. Where no confusion is possible we write $\mathbf R := \mathbf R^n_b$, $q := q^n_b$, $\boldsymbol\omega := \boldsymbol\omega^b$, and $\mathbf f := \mathbf f^b$. A hat marks a computed quantity, as in [Chapter 7](ch7_optimal_alpha.md): $\hat{\mathbf p}$ is the computed position and $\mathbf p$ the true one.
+    These are typical of an inexpensive MEMS IMU. Where no confusion is possible we write $\mathbf R := \mathbf R^n_b$, $q := q^n_b$, $\boldsymbol\omega := \boldsymbol\omega^b$, and $\mathbf f := \mathbf f^b$. A hat marks a computed quantity, as in [Chapter 7](#ch7): $\hat{\mathbf p}$ is the computed position and $\mathbf p$ the true one.
     """)
     return
 
@@ -453,7 +444,7 @@ def _(mo):
 
     White noise drifts too, but more slowly. Summing $t/\Delta t$ independent accelerometer noise samples, each contributing $\mathbf n_a\Delta t$ to the velocity, gives a {term}`random walk` in velocity with per-axis standard deviation $\sigma_a\sqrt{\Delta t\,t}$; integrating it once more gives a position standard deviation of $\sigma_a\sqrt{\Delta t/3}\;t^{3/2}$. Gyroscope noise makes the tilt a random walk with standard deviation $\sigma_g\sqrt{\Delta t\,t}$, and two integrations of $g$ times that tilt give $g\,\sigma_g\sqrt{\Delta t/20}\;t^{5/2}$.[^iwp] The table compares all five sources with the default parameters and an initial tilt of $\varepsilon = 0.005$ rad, which is what leveling produces with a $0.05\ \text{m/s}^2$ accelerometer bias (see below).
 
-    One more observation matters for [Chapter 21](ch21_zero_velocity_updates.md). If we level with a biased accelerometer, the computed attitude makes $\hat{\mathbf R}\mathbf f_m$ point straight up. While the IMU stays still in that orientation, the horizontal accelerometer bias and the tilt error it causes therefore cancel *exactly*: the tilt error is $\varepsilon \approx b_{a,x}/g$, and $\tfrac12 g\varepsilon t^2 - \tfrac12 b_{a,x}t^2 = 0$. Only the vertical bias component still drifts. At rest, a horizontal accelerometer bias and a tilt error are indistinguishable.
+    One more observation matters for [Chapter 21](#ch21). If we level with a biased accelerometer, the computed attitude makes $\hat{\mathbf R}\mathbf f_m$ point straight up. While the IMU stays still in that orientation, the horizontal accelerometer bias and the tilt error it causes therefore cancel *exactly*: the tilt error is $\varepsilon \approx b_{a,x}/g$, and $\tfrac12 g\varepsilon t^2 - \tfrac12 b_{a,x}t^2 = 0$. Only the vertical bias component still drifts. At rest, a horizontal accelerometer bias and a tilt error are indistinguishable.
 
     [^iwp]: Both results use $\operatorname{Var}\big(\sum_i \mathbf n_i\big) = \sum_i\operatorname{Var}(\mathbf n_i)$ for independent samples ([Chapter 6](#ch6-thm-variance-of-a-linear-combination)), approximated by integrals for small $\Delta t$; for example, the position is a sum of $t/\Delta t$ noise samples weighted by the remaining time, and $\sigma_a^2\Delta t\int_0^t (t-s)^2\,ds = \sigma_a^2\Delta t\,t^3/3$. We checked both formulas by Monte Carlo simulation.
     """)
@@ -1509,7 +1500,7 @@ def _(mo):
     <!-- label: ch20-sec-whats-next -->
     ## What's Next
 
-    [Chapter 21](ch21_zero_velocity_updates.md) treats "the foot is stationary" as a measurement of the velocity, $\mathbf v = \mathbf 0$, and feeds it to an error-state extended Kalman filter with fifteen states: errors in position, velocity, attitude, and both sensor biases. We derive how those errors propagate, see which ones the zero-velocity measurements can and cannot correct, and finally turn the corrected trajectory into the numbers a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle.
+    [Chapter 21](#ch21) treats "the foot is stationary" as a measurement of the velocity, $\mathbf v = \mathbf 0$, and feeds it to an error-state extended Kalman filter with fifteen states: errors in position, velocity, attitude, and both sensor biases. We derive how those errors propagate, see which ones the zero-velocity measurements can and cannot correct, and finally turn the corrected trajectory into the numbers a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle.
     """)
     return
 

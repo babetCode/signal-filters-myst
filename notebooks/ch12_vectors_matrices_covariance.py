@@ -17,11 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Uncertainty in Many Dimensions"
-    abbreviations:
-      iff: if and only if
-      diff: null
-    numbering:
-      equations: false
+    description: "Random vectors, covariance matrices, and the multivariate normal distribution, for unknowns whose errors are correlated."
+    label: ch12
     -->
     """)
     return
@@ -60,14 +57,14 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 4](ch4_probability_spaces.md): {term}`almost surely`, and [continuity of probability from below](#ch4-thm-continuity-from-below) (one lemma only).
-    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, [joint and marginal densities](#ch5-sec-joint-distributions), [independence as factorization of the joint density](#ch5-thm-factorization-criteria), and the {term}`normal distribution`.
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance`, the {term}`correlation coefficient`, and [Chebyshev's inequality](#ch6-thm-chebyshevs-inequality).
-    - [Chapter 7](ch7_optimal_alpha.md) and [Chapter 11](ch11_measurement_functions.md): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
-    - [Chapter 8](ch8_bayesian_view.md): {term}`conditional densities <conditional density>` and the {term}`minimum mean squared error estimator`.
-    - [Chapter 9](ch9_noise_levels.md): the {term}`chi-squared distribution` and the {term}`normalized innovation squared`.
+    - [Chapter 4](#ch4): {term}`almost surely`, and [continuity of probability from below](#ch4-thm-continuity-from-below) (one lemma only).
+    - [Chapter 5](#ch5): {term}`random variables <random variable>`, [joint and marginal densities](#ch5-sec-joint-distributions), [independence as factorization of the joint density](#ch5-thm-factorization-criteria), and the {term}`normal distribution`.
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance`, the {term}`correlation coefficient`, and [Chebyshev's inequality](#ch6-thm-chebyshevs-inequality).
+    - [Chapter 7](#ch7) and [Chapter 11](#ch11): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
+    - [Chapter 8](#ch8): {term}`conditional densities <conditional density>` and the {term}`minimum mean squared error estimator`.
+    - [Chapter 9](#ch9): the {term}`chi-squared distribution` and the {term}`normalized innovation squared`.
     - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): [iterated integrals](#appc-thm-tonelli-and-fubini), [the change-of-variables formula](#appc-thm-change-of-variables), and [polar coordinates](#appc-cor-polar-coordinates).
-    - [Appendix D: Linear Algebra](appendix_d_linear_algebra.md): the sections listed in [the toolkit below](#ch12-sec-notation-and-linear-algebra-toolkit).
+    - [Appendix D: Linear Algebra](#appd): the sections listed in [the toolkit below](#ch12-sec-notation-and-linear-algebra-toolkit).
     ///
     """)
     return
@@ -76,7 +73,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 10](ch10_process_models.md) and [Chapter 11](ch11_measurement_functions.md) both ended with two unknowns whose errors are correlated: a weight and its rate of change, and a weight and the scale's offset. In both cases the correlation mattered. An error in the rate becomes an error in tomorrow's weight; a reading that pins down weight plus offset tells us about the offset only to the extent that we know the weight. A single variance per unknown cannot express this. We need the variance of every unknown *and* the covariance of every pair, organized so that the rules of Chapter 6 still apply.
+    [Chapter 10](#ch10) and [Chapter 11](#ch11) both ended with two unknowns whose errors are correlated: a weight and its rate of change, and a weight and the scale's offset. In both cases the correlation mattered. An error in the rate becomes an error in tomorrow's weight; a reading that pins down weight plus offset tells us about the offset only to the extent that we know the weight. A single variance per unknown cannot express this. We need the variance of every unknown *and* the covariance of every pair, organized so that the rules of Chapter 6 still apply.
 
     That organization is the **covariance matrix**, and the distribution built on it is the **multivariate normal distribution**. This chapter develops both. Its payoff is one formula: what a jointly normal vector's distribution becomes once part of it has been observed. That formula turns out to be the Kalman filter's update step.
 
@@ -939,7 +936,7 @@ def _(mo):
     <!-- label: ch12-sec-whats-next -->
     ## What's Next
 
-    We now have every ingredient of the Kalman filter for state vectors: a process model to predict (Chapter 10), a measurement model to compare with (Chapter 11), and the covariance algebra and conditioning formula to combine them (this chapter). [Chapter 13](ch13_kalman_filter.md) assembles them into the multivariate Kalman filter, proves its prediction and update steps without assuming normality, runs it on the two-state bulking model, and makes "can the measurements separate the unknowns?" precise as observability.
+    We now have every ingredient of the Kalman filter for state vectors: a process model to predict (Chapter 10), a measurement model to compare with (Chapter 11), and the covariance algebra and conditioning formula to combine them (this chapter). [Chapter 13](#ch13) assembles them into the multivariate Kalman filter, proves its prediction and update steps without assuming normality, runs it on the two-state bulking model, and makes "can the measurements separate the unknowns?" precise as observability.
     """)
     return
 

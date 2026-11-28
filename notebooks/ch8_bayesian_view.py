@@ -17,16 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Priors, Likelihoods, and Posteriors"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      GPS: Global Positioning System
-      MMSE: minimum mean squared error
-      MAP: maximum a posteriori
-      MSE: mean squared error
-      CLT: central limit theorem
-    numbering:
-      equations: false
+    description: "Bayes' theorem for densities: with a normal prior and normal noise, the posterior is normal and its mean is the optimal update of Chapter 7."
+    label: ch8
     -->
     """)
     return
@@ -89,7 +81,7 @@ def scale_data(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 7](ch7_optimal_alpha.md) treated the true weight as an unknown constant and asked how to combine two noisy estimates of it. This chapter takes a different point of view, the *Bayesian* one: we describe everything we know about the unknown by a probability density, and we update that density with Bayes' theorem whenever a measurement arrives.
+    [Chapter 7](#ch7) treated the true weight as an unknown constant and asked how to combine two noisy estimates of it. This chapter takes a different point of view, the *Bayesian* one: we describe everything we know about the unknown by a probability density, and we update that density with Bayes' theorem whenever a measurement arrives.
 
     Why bother, if Chapter 7 already gave the answer? The Bayesian view delivers four things Chapter 7 could not:
 
@@ -105,10 +97,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 4](ch4_probability_spaces.md): {term}`conditional probability`, [the law of total probability](#ch4-thm-law-of-total-probability), and [Bayes' theorem for events](#ch4-thm-bayes-theorem-for-events).
-    - [Chapter 5](ch5_random_variables.md): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and [the integral](#ch5-thm-the-normal-density-is-a-pdf) $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, [the density of](#ch5-thm-density-of-ax-b) $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and [the factorization of their joint density](#ch5-thm-factorization-criteria), [the continuous convolution formula](#ch5-thm-continuous-convolution), and [sums of independent normal random variables](#ch5-thm-sums-of-independent-normals).
-    - [Chapter 6](ch6_expectation_and_variance.md): {term}`expected value` and [the law of the unconscious statistician](#ch6-thm-lotus) (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
-    - [Chapter 7](ch7_optimal_alpha.md): [the lowercase convention for random quantities](#ch7-sec-random-quantities-in-lowercase), {term}`estimation error`, {term}`error variance`, and [the Optimal Gain theorem](#ch7-thm-optimal-gain).
+    - [Chapter 4](#ch4): {term}`conditional probability`, [the law of total probability](#ch4-thm-law-of-total-probability), and [Bayes' theorem for events](#ch4-thm-bayes-theorem-for-events).
+    - [Chapter 5](#ch5): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and [the integral](#ch5-thm-the-normal-density-is-a-pdf) $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, [the density of](#ch5-thm-density-of-ax-b) $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and [the factorization of their joint density](#ch5-thm-factorization-criteria), [the continuous convolution formula](#ch5-thm-continuous-convolution), and [sums of independent normal random variables](#ch5-thm-sums-of-independent-normals).
+    - [Chapter 6](#ch6): {term}`expected value` and [the law of the unconscious statistician](#ch6-thm-lotus) (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
+    - [Chapter 7](#ch7): [the lowercase convention for random quantities](#ch7-sec-random-quantities-in-lowercase), {term}`estimation error`, {term}`error variance`, and [the Optimal Gain theorem](#ch7-thm-optimal-gain).
     - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](#appc-sec-improper-integrals), and [Multiple Integrals](#appc-sec-multiple-integrals) (Fubini's theorem and substitution).
     ///
     """)
@@ -1013,7 +1005,7 @@ def _(mo):
     <!-- label: ch8-sec-whats-next -->
     ## What's Next
 
-    Part I answered the Introduction's question: given the noise levels $P_k^-$ and $R$, the best gain is $K_k = P_k^-/(P_k^- + R)$. But where do these numbers come from? [Chapter 9](ch9_noise_levels.md) opens Part II by estimating $R$ from data, deriving $P_k^-$ from a model of how the true value changes, and assembling the result into the scalar Kalman filter. It then answers the Introduction's original question about the EMA: in the long run the Kalman filter *becomes* an EMA, with a gain determined by the two noise levels.
+    Part I answered the Introduction's question: given the noise levels $P_k^-$ and $R$, the best gain is $K_k = P_k^-/(P_k^- + R)$. But where do these numbers come from? [Chapter 9](#ch9) opens Part II by estimating $R$ from data, deriving $P_k^-$ from a model of how the true value changes, and assembling the result into the scalar Kalman filter. It then answers the Introduction's original question about the EMA: in the long run the Kalman filter *becomes* an EMA, with a gain determined by the two noise levels.
     """)
     return
 

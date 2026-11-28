@@ -17,14 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Predicting the Next State"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      TDEE: total daily energy expenditure
-      BMR: basal metabolic rate
-      RMSE: root-mean-square error
-    numbering:
-      equations: false
+    description: "Process models with known control inputs, such as daily energy intake, and how they sharpen the Kalman filter's prediction."
+    label: ch10
     -->
     """)
     return
@@ -60,11 +54,11 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the bulking example](#intro-sec-alpha-beta-filter), the {term}`prediction` $\hat x_k^-$, and [the alpha-beta filter](#intro-sec-beta-weighting-term).
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [proof by induction](#ch2-thm-induction).
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, [the variance of a sum](#ch6-sec-variance-of-sums), and the fact that [independent random variables are uncorrelated](#ch6-thm-independent-implies-uncorrelated).
-    - [Chapter 7](ch7_optimal_alpha.md): the {term}`estimation error` $e_k = \hat x_k - x_k$ and the {term}`optimal gain` $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
-    - [Chapter 9](ch9_noise_levels.md): [process noise](#ch9-sec-process-noise), [the random-walk model](#ch9-sec-process-noise), {term}`white noise`, [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), the {term}`innovation variance` $S_k = P_k^- + R$, the fact that [innovations are uncorrelated over time](#ch9-thm-properties-of-the-innovations), and the {term}`normalized innovation squared`.
+    - [Introduction](#intro): [the bulking example](#intro-sec-alpha-beta-filter), the {term}`prediction` $\hat x_k^-$, and [the alpha-beta filter](#intro-sec-beta-weighting-term).
+    - [Chapter 2](#ch2): [proof by induction](#ch2-thm-induction).
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, [the variance of a sum](#ch6-sec-variance-of-sums), and the fact that [independent random variables are uncorrelated](#ch6-thm-independent-implies-uncorrelated).
+    - [Chapter 7](#ch7): the {term}`estimation error` $e_k = \hat x_k - x_k$ and the {term}`optimal gain` $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
+    - [Chapter 9](#ch9): [process noise](#ch9-sec-process-noise), [the random-walk model](#ch9-sec-process-noise), {term}`white noise`, [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), the {term}`innovation variance` $S_k = P_k^- + R$, the fact that [innovations are uncorrelated over time](#ch9-thm-properties-of-the-innovations), and the {term}`normalized innovation squared`.
     - [Appendix C: Derivatives](#appc-sec-derivatives), [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema), [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations): only for the section on continuous-time models.
     ///
     """)
@@ -187,7 +181,7 @@ def _(mo):
     where the coefficients $a_k$ and $b_k$ are known numbers that do not depend on the state, the inputs, or the noise. In continuous time the corresponding form is $\dot x(t) = \lambda(t)\,x(t) + g(t)\,u(t)$ plus noise. (Part III replaces the numbers by matrices.)
     ///
 
-    The random walk is the case $a_k = b_k = 1$ with $u_k = \Delta x_k$. The constant model is $a_k = 1$, $b_k = 0$, $w_k = 0$. A model such as $x_k = x_{k-1}^2 + w_k$ is not linear, because the new state depends on the square of the old one; [Chapter 15](ch15_extended_kalman_filter.md) deals with such models.
+    The random walk is the case $a_k = b_k = 1$ with $u_k = \Delta x_k$. The constant model is $a_k = 1$, $b_k = 0$, $w_k = 0$. A model such as $x_k = x_{k-1}^2 + w_k$ is not linear, because the new state depends on the square of the old one; [Chapter 15](#ch15) deals with such models.
 
     The name comes from the following property, which is what makes linear systems easy to analyze: responses to different causes simply add up.
     """)
@@ -873,7 +867,7 @@ def _(mo):
     $$
     Two things stand out. The variance of the weight prediction depends on the *covariance* between the two errors, so keeping track of two variances is not enough. And even if the errors are uncorrelated today, one prediction step makes them correlated, because an error in the rate becomes part of the error in the weight. To run a Kalman filter on this model we must track two variances and a covariance, three numbers that naturally form a $2\times 2$ table, and we need an update rule for all of them.
 
-    That is what Part III provides. [Chapter 12](#ch12-sec-covariance-matrices) packages variances and covariances into a covariance matrix, and [Chapter 13](ch13_kalman_filter.md) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
+    That is what Part III provides. [Chapter 12](#ch12-sec-covariance-matrices) packages variances and covariances into a covariance matrix, and [Chapter 13](#ch13) derives the Kalman filter for state vectors and shows that its steady state is an alpha-beta filter with optimal gains. Notice also what the energy-balance model bought us: with a food log, the rate is computed from the input instead of estimated, and the state stays one number.
     """)
     return
 
@@ -1120,7 +1114,7 @@ def _(mo):
     <!-- label: ch10-sec-whats-next -->
     ## What's Next
 
-    So far every measurement has been the state plus noise, $z_k = x_k + v_k$. But a scale does not output pounds: its load cell and analog-to-digital converter output a raw number of *counts*, related to your weight through a sensitivity and an offset that must themselves be measured. [Chapter 11](ch11_measurement_functions.md) adds a **measurement function** to the filter, calibrates it by least squares, and finds that a drifting offset is a second unknown that a single reading cannot separate from the weight. That is the second reason, after this chapter's rate model, to move to state vectors.
+    So far every measurement has been the state plus noise, $z_k = x_k + v_k$. But a scale does not output pounds: its load cell and analog-to-digital converter output a raw number of *counts*, related to your weight through a sensitivity and an offset that must themselves be measured. [Chapter 11](#ch11) adds a **measurement function** to the filter, calibrates it by least squares, and finds that a drifting offset is a second unknown that a single reading cannot separate from the weight. That is the second reason, after this chapter's rate model, to move to state vectors.
     """)
     return
 

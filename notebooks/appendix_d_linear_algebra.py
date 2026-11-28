@@ -17,11 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "From Vectors to Matrix Calculus"
-    abbreviations:
-      ODE: ordinary differential equation
-      IMU: inertial measurement unit
-    numbering:
-      equations: false
+    description: "Vectors, matrices, inverses, eigenvalues, and positive definite matrices: the linear algebra behind the multivariate Kalman filter."
+    label: appd
     -->
     """)
     return
@@ -57,8 +54,8 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`functions <function>`, the set $Y^X$ of all functions from $X$ to $Y$, {term}`Cartesian products <cartesian product>`, [induction](#ch2-thm-induction), and [definition by recursion](#ch2-thm-recursion).
-    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-lem-rules-for-finite-sums) $\sum$, {term}`composition` and {term}`inverse functions <inverse function>`, and $\mathbb R$ as a {term}`complete ordered field` (including {term}`absolute value`).
+    - [Chapter 2](#ch2): {term}`functions <function>`, the set $Y^X$ of all functions from $X$ to $Y$, {term}`Cartesian products <cartesian product>`, [induction](#ch2-thm-induction), and [definition by recursion](#ch2-thm-recursion).
+    - [Chapter 3](#ch3): [finite sums](#ch3-lem-rules-for-finite-sums) $\sum$, {term}`composition` and {term}`inverse functions <inverse function>`, and $\mathbb R$ as a {term}`complete ordered field` (including {term}`absolute value`).
     - [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): [square roots of nonnegative numbers](#appc-cor-square-roots).
     - Only for The Matrix Exponential: [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([limit laws](#appc-thm-limit-laws-for-sequences)), [Appendix C: Series](#appc-sec-series) ([comparison test](#appc-thm-comparison-test), [Cauchy product](#appc-cor-cauchy-product)), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity) ([intermediate value theorem](#appc-thm-intermediate-value-theorem)), [Appendix C: Derivatives](#appc-sec-derivatives) ([product rule](#appc-thm-differentiation-rules)), and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema).
     - Only for Derivatives with Respect to Matrices: [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) ({term}`partial derivatives <partial derivative>`) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema) ([interior extrema](#appc-lem-interior-extremum)).
@@ -70,7 +67,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    From [Chapter 12](ch12_vectors_matrices_covariance.md) on, the state of a filter is no longer one number but a list of numbers (the position and velocity of a cart, a weight and its rate of gain, an attitude and a gyro bias), and its uncertainty is a square table of numbers. Every scalar formula from Parts I–II gets a counterpart in which scalars become vectors and matrices:
+    From [Chapter 12](#ch12) on, the state of a filter is no longer one number but a list of numbers (the position and velocity of a cart, a weight and its rate of gain, an attitude and a gyro bias), and its uncertainty is a square table of numbers. Every scalar formula from Parts I–II gets a counterpart in which scalars become vectors and matrices:
 
     | Scalar (Parts I–II) | Vectors and matrices (Part III on) |
     |:---:|:---:|
@@ -714,7 +711,7 @@ def _(mo):
     (1) A $1\times 1$ matrix equals its trace, and $\operatorname{tr}(\mathbf x^\top(\mathbf A\mathbf y)) = \operatorname{tr}((\mathbf A\mathbf y)\mathbf x^\top)$ by the cyclic property with factors $\mathbf x^\top \in \mathbb R^{1\times n}$ and $\mathbf A\mathbf y \in \mathbb R^{n\times 1}$. (2) $\operatorname{tr}(\mathbf V(\mathbf A\mathbf V^{-1})) = \operatorname{tr}(\mathbf A\mathbf V^{-1}\mathbf V) = \operatorname{tr}\mathbf A$. $\blacksquare$
     ///
 
-    Part 1 is how [Chapter 12](ch12_vectors_matrices_covariance.md) computes the expected value of a quadratic form $\mathbf x^\top\mathbf A\mathbf x$: the trace moves the random vector into one outer product.
+    Part 1 is how [Chapter 12](#ch12) computes the expected value of a quadratic form $\mathbf x^\top\mathbf A\mathbf x$: the trace moves the random vector into one outer product.
 
     <!-- label: appd-sec-the-frobenius-norm -->
     ### The Frobenius norm
@@ -1863,7 +1860,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Non-commuting exponents.** $\exp(\mathbf A + \mathbf B) \ne \exp(\mathbf A)\exp(\mathbf B)$ in general. In particular, a time-varying model $\dot{\mathbf x} = \mathbf A(t)\mathbf x$ is *not* solved by $\exp\big(\int\mathbf A(t)\,dt\big)$ unless the matrices $\mathbf A(t)$ commute. For attitude, this means a body whose rotation axis keeps changing (such as a swinging foot) cannot be integrated by exponentiating the summed gyro angles; filters exponentiate one short step at a time.
-    - **Truncation.** Keeping only $\mathbf I + \mathbf K$ for a skew-symmetric $\mathbf K$ (a first-order, or Euler, step) gives $(\mathbf I + \mathbf K)^\top(\mathbf I + \mathbf K) = \mathbf I - \mathbf K^2$. For $\mathbf K = [\mathbf a]_\times$, $-\mathbf K^2 = \|\mathbf a\|^2\mathbf I - \mathbf a\mathbf a^\top$ is positive semidefinite, so every step slightly *stretches* vectors perpendicular to $\mathbf a$. Repeated over many steps, the attitude matrix drifts away from orthogonality ([Chapter 18](ch18_quaternions.md)).
+    - **Truncation.** Keeping only $\mathbf I + \mathbf K$ for a skew-symmetric $\mathbf K$ (a first-order, or Euler, step) gives $(\mathbf I + \mathbf K)^\top(\mathbf I + \mathbf K) = \mathbf I - \mathbf K^2$. For $\mathbf K = [\mathbf a]_\times$, $-\mathbf K^2 = \|\mathbf a\|^2\mathbf I - \mathbf a\mathbf a^\top$ is positive semidefinite, so every step slightly *stretches* vectors perpendicular to $\mathbf a$. Repeated over many steps, the attitude matrix drifts away from orthogonality ([Chapter 18](#ch18)).
     ///
     """)
     return
@@ -2007,7 +2004,7 @@ def _(mo):
     <!-- label: appd-sec-whats-next -->
     ## What's Next
 
-    This appendix has no successor of its own: return to the chapter that sent you here. If you are reading in order, continue with [Chapter 12](ch12_vectors_matrices_covariance.md), which turns these facts about matrices into facts about uncertainty: random vectors, covariance matrices, the multivariate normal distribution, and the Schur-complement formula for conditioning that is the Kalman update in disguise.
+    This appendix has no successor of its own: return to the chapter that sent you here. If you are reading in order, continue with [Chapter 12](#ch12), which turns these facts about matrices into facts about uncertainty: random vectors, covariance matrices, the multivariate normal distribution, and the Schur-complement formula for conditioning that is the Kalman update in disguise.
     """)
     return
 

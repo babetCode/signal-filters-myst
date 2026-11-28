@@ -17,14 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "From Outcomes to Numbers"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      CDF: cumulative distribution function
-      PMF: probability mass function
-      PDF: probability density function
-    numbering:
-      equations: false
+    description: "Random variables, their distributions, and their densities, used to model a measurement as a true value plus noise."
+    label: ch5
     -->
     """)
     return
@@ -70,9 +64,9 @@ def _(Path):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the bathroom-scale example](#intro-sec-measurements-and-definitions), [the notation](#intro-sec-measurements-and-definitions) $x_k$ (true value) and $z_k$ (measurement), and the definitions of {term}`signal` and {term}`noise`.
-    - [Chapter 3](ch3_sets_for_probability.md): {term}`preimages <preimage>` and the [Preimages Preserve Set Operations lemma](#ch3-lem-preimages-preserve-set-operations); {term}`countable` sets, including that $\mathbb Q$ and $\mathbb N \times \mathbb N$ are countable; the [Archimedean property](#ch3-thm-archimedean-property) and the [density of $\mathbb Q$ in $\mathbb R$](#ch3-thm-density-of-the-rationals); {term}`supremum` and {term}`infimum`; {term}`intervals <interval>`.
-    - [Chapter 4](ch4_probability_spaces.md): {term}`probability spaces <probability space>`; the {term}`generated sigma-algebra` and the {term}`Borel sigma-algebra`; [monotonicity](#ch4-thm-monotonicity), [finite and countable additivity](#ch4-thm-finite-additivity), [the union bound](#ch4-thm-union-bound), and [continuity from below and above](#ch4-thm-continuity-from-below); [Lebesgue measure](#ch4-thm-lebesgue-measure) on $[0,1]$; {term}`independent events`; {term}`almost surely`.
+    - [Introduction](#intro): [the bathroom-scale example](#intro-sec-measurements-and-definitions), [the notation](#intro-sec-measurements-and-definitions) $x_k$ (true value) and $z_k$ (measurement), and the definitions of {term}`signal` and {term}`noise`.
+    - [Chapter 3](#ch3): {term}`preimages <preimage>` and the [Preimages Preserve Set Operations lemma](#ch3-lem-preimages-preserve-set-operations); {term}`countable` sets, including that $\mathbb Q$ and $\mathbb N \times \mathbb N$ are countable; the [Archimedean property](#ch3-thm-archimedean-property) and the [density of $\mathbb Q$ in $\mathbb R$](#ch3-thm-density-of-the-rationals); {term}`supremum` and {term}`infimum`; {term}`intervals <interval>`.
+    - [Chapter 4](#ch4): {term}`probability spaces <probability space>`; the {term}`generated sigma-algebra` and the {term}`Borel sigma-algebra`; [monotonicity](#ch4-thm-monotonicity), [finite and countable additivity](#ch4-thm-finite-additivity), [the union bound](#ch4-thm-union-bound), and [continuity from below and above](#ch4-thm-continuity-from-below); [Lebesgue measure](#ch4-thm-lebesgue-measure) on $[0,1]$; {term}`independent events`; {term}`almost surely`.
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): limits, including one-sided limits.
     - [Appendix C: Series](#appc-sec-series): a series of nonnegative terms, or an absolutely convergent series, [may be summed in any order and grouped arbitrarily](#appc-thm-nonnegative-sums-in-any-order).
     - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (including substitution), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Improper Integrals](#appc-sec-improper-integrals).
@@ -87,7 +81,7 @@ def _(mo):
     mo.md(r"""
     In the Introduction we wrote each scale reading as the true weight plus some noise, and claimed that averaging many readings makes the noise smaller. To prove that claim (Chapter 6) and then use it to choose $\alpha$ (Chapter 7), we need a precise mathematical object for "a number whose value depends on chance." That object is a *random variable*: a function that assigns a number to every outcome of a random experiment.
 
-    [Chapter 4](ch4_probability_spaces.md) assigned probabilities to *events*. Random variables let us ask questions about *numbers* instead ("what is the probability that the noise exceeds 1 lb?"), and they let us describe the answers to all such questions at once with a single object, the *distribution*. By the end of this chapter we can state the standard model behind almost every filter in this book: each measurement is the true value plus independent, normally distributed noise. We also see exactly where that model can fail.
+    [Chapter 4](#ch4) assigned probabilities to *events*. Random variables let us ask questions about *numbers* instead ("what is the probability that the noise exceeds 1 lb?"), and they let us describe the answers to all such questions at once with a single object, the *distribution*. By the end of this chapter we can state the standard model behind almost every filter in this book: each measurement is the true value plus independent, normally distributed noise. We also see exactly where that model can fail.
 
     /// attention | 🗝️ **Key Idea**
     A random variable is a function from outcomes to real numbers such that "the value lies in $B$" is an event for every reasonable set $B$. Its distribution records how likely each range of values is; for any question about $X$ alone, that is all we need to know.
@@ -1158,7 +1152,7 @@ def _(mo):
     <!-- label: ch5-sec-whats-next -->
     ## What's Next
 
-    We can now describe the scale's noise completely, but we cannot yet say how *large* it is in a single number, or prove that averaging shrinks it. [Chapter 6](ch6_expectation_and_variance.md) defines the expected value and the variance of a random variable, proves that the average of $k$ readings has variance $\sigma^2/k$, and computes exactly how much noise and how much lag the Introduction's EMA lets through.
+    We can now describe the scale's noise completely, but we cannot yet say how *large* it is in a single number, or prove that averaging shrinks it. [Chapter 6](#ch6) defines the expected value and the variance of a random variable, proves that the average of $k$ readings has variance $\sigma^2/k$, and computes exactly how much noise and how much lag the Introduction's EMA lets through.
     """)
     return
 

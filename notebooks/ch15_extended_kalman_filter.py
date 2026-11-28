@@ -18,15 +18,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Linearization"
-    abbreviations:
-      EKF: extended Kalman filter
-      IEKF: iterated extended Kalman filter
-      UKF: unscented Kalman filter
-      RK4: classical fourth-order Runge–Kutta method
-      NEES: normalized estimation error squared
-      RMSE: root-mean-square error
-    numbering:
-      equations: false
+    description: "The extended Kalman filter, which linearizes nonlinear process and measurement functions around the current estimate."
+    label: ch15
     -->
     """)
     return
@@ -71,13 +64,13 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 5](ch5_random_variables.md): [the distribution of](#ch5-cor-affine-maps-of-normal-and-uniform-random-variables) $aX + b$ when $X$ is normal.
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity and monotonicity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [the law of large numbers](#ch6-thm-weak-law-of-large-numbers).
-    - [Chapter 10](ch10_process_models.md): {term}`process models <process model>` and [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
-    - [Chapter 11](ch11_measurement_functions.md): {term}`measurement functions <measurement function>`.
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`mean vectors <mean vector>`, [covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
-    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's [predict and update equations](#ch13-sec-the-algorithm), and the {term}`Joseph form`.
-    - [Chapter 14](ch14_kalman_filters_in_practice.md): [the continuous white-noise acceleration model](#ch14-sec-continuous-white-noise-acceleration) for $\mathbf Q$, [multi-rate operation](#ch14-sec-missing-measurements-and-multi-rate-data), [NEES consistency tests](#ch14-sec-consistency-tests), and {term}`filter divergence`.
+    - [Chapter 5](#ch5): [the distribution of](#ch5-cor-affine-maps-of-normal-and-uniform-random-variables) $aX + b$ when $X$ is normal.
+    - [Chapter 6](#ch6): [linearity and monotonicity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [the law of large numbers](#ch6-thm-weak-law-of-large-numbers).
+    - [Chapter 10](#ch10): {term}`process models <process model>` and [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 11](#ch11): {term}`measurement functions <measurement function>`.
+    - [Chapter 12](#ch12): {term}`mean vectors <mean vector>`, [covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
+    - [Chapter 13](#ch13): the Kalman filter's [predict and update equations](#ch13-sec-the-algorithm), and the {term}`Joseph form`.
+    - [Chapter 14](#ch14): [the continuous white-noise acceleration model](#ch14-sec-continuous-white-noise-acceleration) for $\mathbf Q$, [multi-rate operation](#ch14-sec-missing-measurements-and-multi-rate-data), [NEES consistency tests](#ch14-sec-consistency-tests), and {term}`filter divergence`.
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
     - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): {term}`partial derivatives <partial derivative>`, the {term}`Jacobian`, [the chain rule](#appc-thm-chain-rule-in-several-variables), and [first-order Taylor approximation](#appc-thm-first-order-taylor-approximation).
     ///
@@ -144,7 +137,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Why does nonlinearity break the Kalman filter? Its derivation in [Chapter 13](ch13_kalman_filter.md) uses three facts from [Chapter 12](ch12_vectors_matrices_covariance.md), and each holds for affine maps $\mathbf x \mapsto \mathbf A\mathbf x + \mathbf b$:
+    Why does nonlinearity break the Kalman filter? Its derivation in [Chapter 13](#ch13) uses three facts from [Chapter 12](#ch12), and each holds for affine maps $\mathbf x \mapsto \mathbf A\mathbf x + \mathbf b$:
 
     1. the mean passes through the map: $\mathbb E[\mathbf A\mathbf x + \mathbf b] = \mathbf A\,\mathbb E[\mathbf x] + \mathbf b$;
     2. the covariance transforms as $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\operatorname{Cov}(\mathbf x)\mathbf A^\top$;
@@ -1347,7 +1340,7 @@ def _(mo):
     <!-- label: ch15-sec-whats-next -->
     ## What's Next
 
-    The EKF approximates the *function*. [Chapter 16](ch16_unscented_kalman_filter.md) approximates the *distribution* instead: it pushes a few carefully chosen points through the exact nonlinear functions and rebuilds the mean and covariance from them. That **unscented Kalman filter** needs no Jacobians, captures the mean shift that the tangent line misses, and, on the same pendulum, tolerates larger initial uncertainty. The chapter closes with particle filters, which can represent the two-sided ambiguity of the fold that defeats every Gaussian filter.
+    The EKF approximates the *function*. [Chapter 16](#ch16) approximates the *distribution* instead: it pushes a few carefully chosen points through the exact nonlinear functions and rebuilds the mean and covariance from them. That **unscented Kalman filter** needs no Jacobians, captures the mean shift that the tangent line misses, and, on the same pendulum, tolerates larger initial uncertainty. The chapter closes with particle filters, which can represent the two-sided ambiguity of the fold that defeats every Gaussian filter.
     """)
     return
 

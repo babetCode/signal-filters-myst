@@ -17,8 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "The Multivariate Filter"
-    numbering:
-      equations: false
+    description: "The Kalman filter for a state vector, derived by choosing the gain that minimizes the estimation error."
+    label: ch13
     -->
     """)
     return
@@ -67,14 +67,14 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the {term}`alpha-beta filter`.
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); {term}`covariance`.
-    - [Chapter 7](ch7_optimal_alpha.md): [the optimal gain by completing the square](#ch7-sec-completing-the-square).
-    - [Chapter 8](ch8_bayesian_view.md): the {term}`minimum mean squared error estimator` and the {term}`Bayes filter` (only for the cross-check section).
-    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), {term}`process noise`, {term}`white noise`, {term}`steady-state gain`, {term}`innovation variance`.
-    - [Chapter 10](ch10_process_models.md): {term}`process models <process model>`, {term}`control inputs <control input>`, [rate models](#ch10-sec-rate-models-when-the-state-needs-two-numbers).
-    - [Chapter 11](ch11_measurement_functions.md): {term}`measurement models <measurement model>`, the gain $P^-h/(h^2P^- + R)$, [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`random vectors <random vector>`, {term}`mean vectors <mean vector>`, [covariance and cross-covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, the {term}`multivariate normal distribution`, [conditioning a joint Gaussian](#ch12-thm-conditioning-a-joint-normal-distribution).
+    - [Introduction](#intro): the {term}`alpha-beta filter`.
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); {term}`covariance`.
+    - [Chapter 7](#ch7): [the optimal gain by completing the square](#ch7-sec-completing-the-square).
+    - [Chapter 8](#ch8): the {term}`minimum mean squared error estimator` and the {term}`Bayes filter` (only for the cross-check section).
+    - [Chapter 9](#ch9): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), {term}`process noise`, {term}`white noise`, {term}`steady-state gain`, {term}`innovation variance`.
+    - [Chapter 10](#ch10): {term}`process models <process model>`, {term}`control inputs <control input>`, [rate models](#ch10-sec-rate-models-when-the-state-needs-two-numbers).
+    - [Chapter 11](#ch11): {term}`measurement models <measurement model>`, the gain $P^-h/(h^2P^- + R)$, [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
+    - [Chapter 12](#ch12): {term}`random vectors <random vector>`, {term}`mean vectors <mean vector>`, [covariance and cross-covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, the {term}`multivariate normal distribution`, [conditioning a joint Gaussian](#ch12-thm-conditioning-a-joint-normal-distribution).
     - [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): [at an interior minimum the derivative vanishes](#appc-lem-interior-extremum).
     - Appendix D: [Matrix Multiplication](#appd-sec-matrix-multiplication); [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse); [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank); [Trace](#appd-sec-trace); [Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices); [Derivatives with Respect to Matrices](#appd-sec-derivatives-with-respect-to-matrices).
     ///
@@ -1186,7 +1186,7 @@ def _(mo):
     <!-- label: ch13-sec-whats-next -->
     ## What's Next
 
-    The derivation assumed that $\mathbf Q$, $\mathbf R$, $\hat{\mathbf x}_0$, and $\mathbf P_0$ are known, that a measurement arrives at every step, and that the arithmetic is exact. [Chapter 14](ch14_kalman_filters_in_practice.md) drops these assumptions one by one: how to initialize the filter and choose $\mathbf Q$, how to handle measurements that are missing, late, or arrive at different rates, how to fuse a 10 Hz position sensor with a 100 Hz accelerometer, how to reject outliers, how to *test* whether a filter's covariance tells the truth, and how to keep it numerically healthy.
+    The derivation assumed that $\mathbf Q$, $\mathbf R$, $\hat{\mathbf x}_0$, and $\mathbf P_0$ are known, that a measurement arrives at every step, and that the arithmetic is exact. [Chapter 14](#ch14) drops these assumptions one by one: how to initialize the filter and choose $\mathbf Q$, how to handle measurements that are missing, late, or arrive at different rates, how to fuse a 10 Hz position sensor with a 100 Hz accelerometer, how to reject outliers, how to *test* whether a filter's covariance tells the truth, and how to keep it numerically healthy.
     """)
     return
 

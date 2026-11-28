@@ -15,17 +15,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Syntax, Semantics, and Proof"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ZFC: Zermelo–Fraenkel set theory with the Axiom of Choice
-    numbering:
-      equations: false
-    math:
-      '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-      '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-      '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-      '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+    description: "An optional, exact account of the formulas, structures, and formal proofs behind the informal logic of Chapter 1."
+    label: appa
     -->
     """)
     return
@@ -57,8 +48,8 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): [connectives, truth tables](#ch1-sec-connectives-and-truth-tables), {term}`quantifiers <quantifier>`, and [informal proofs](#ch1-sec-proof-techniques).
-    - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): [the ZFC axioms](#ch2-sec-the-axioms-of-zfc) used as examples here.
+    - [Chapter 1](#ch1): [connectives, truth tables](#ch1-sec-connectives-and-truth-tables), {term}`quantifiers <quantifier>`, and [informal proofs](#ch1-sec-proof-techniques).
+    - [Chapter 2](#ch2) (optional): [the ZFC axioms](#ch2-sec-the-axioms-of-zfc) used as examples here.
     ///
     """)
     return
@@ -67,7 +58,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 1](ch1_language_of_logic.md) treated logic as a working tool: statements, their meanings, and rules for proving them, all described in English. This appendix makes each of those notions exact, for the language of set theory used in [Chapter 2](ch2_axioms_of_set_theory.md). It is optional: nothing on the main path depends on it. It answers two questions the main path takes on trust: what exactly counts as a statement of set theory, and why the informal proofs of the book establish what they claim.
+    [Chapter 1](#ch1) treated logic as a working tool: statements, their meanings, and rules for proving them, all described in English. This appendix makes each of those notions exact, for the language of set theory used in [Chapter 2](#ch2). It is optional: nothing on the main path depends on it. It answers two questions the main path takes on trust: what exactly counts as a statement of set theory, and why the informal proofs of the book establish what they claim.
 
     /// attention | 🗝️ **Key Idea**
     A formal language has three layers. **Syntax** says which strings of symbols are formulas and which sequences of formulas are proofs, without reference to meaning. **Semantics** says what a formula means in a given structure. The **Soundness and Completeness Theorem** says the two agree: a sentence is provable from a theory iff it is true in every structure in which the theory's axioms are true.
@@ -96,7 +87,7 @@ def _(mo):
     - **Negation** $\lnot$, **conjunction** $\land$, and the **existential quantifier** $\exists$.
     - **Parentheses** $($ and $)$.
 
-    The other symbols of [Chapter 1](ch1_language_of_logic.md) ($\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, and more) are introduced below as abbreviations. Using few primitive symbols keeps every definition and proof by cases in this appendix short. A general first-order language may also have constant symbols, function symbols, and other relation symbols; the language of set theory needs none of them, and Extension by Definitions shows how defined ones are added.
+    The other symbols of [Chapter 1](#ch1) ($\lor$, $\rightarrow$, $\leftrightarrow$, $\forall$, and more) are introduced below as abbreviations. Using few primitive symbols keeps every definition and proof by cases in this appendix short. A general first-order language may also have constant symbols, function symbols, and other relation symbols; the language of set theory needs none of them, and Extension by Definitions shows how defined ones are added.
     """)
     return
 
@@ -294,7 +285,7 @@ def _(mo):
     <!-- label: appa-sec-derived-symbols -->
     ### Derived Symbols
 
-    Unpacking the abbreviations and applying clauses 3–5 recovers exactly the truth tables and quantifier meanings of [Chapter 1](ch1_language_of_logic.md). Fix $\mathfrak A$ and $s$, and say "$\varphi$ is true" for $\mathfrak A \models \varphi[s]$.
+    Unpacking the abbreviations and applying clauses 3–5 recovers exactly the truth tables and quantifier meanings of [Chapter 1](#ch1). Fix $\mathfrak A$ and $s$, and say "$\varphi$ is true" for $\mathfrak A \models \varphi[s]$.
 
     - $\varphi \lor \psi$ is $\lnot(\lnot\varphi \land \lnot\psi)$, which is false iff $\lnot\varphi$ and $\lnot\psi$ are both true, that is, iff $\varphi$ and $\psi$ are both false.
     - $\varphi \rightarrow \psi$ is $\lnot\varphi \lor \psi$, which is false iff $\lnot\varphi$ and $\psi$ are both false, that is, iff $\varphi$ is true and $\psi$ is false.
@@ -698,7 +689,7 @@ def _(mo):
     <!-- label: appa-sec-extension-by-definitions -->
     ## Extension by Definitions
 
-    The only symbols of the language of set theory are $\in$ and $=$, yet [Chapter 2](ch2_axioms_of_set_theory.md) writes $\emptyset \in I$, $\{a, b\}$, and $A \subseteq B$. This section shows that such notation is legitimate shorthand: every statement using it can be rewritten in the original language, and it makes no new statements of the original language provable. Throughout, $T$ is a theory, such as ZFC.
+    The only symbols of the language of set theory are $\in$ and $=$, yet [Chapter 2](#ch2) writes $\emptyset \in I$, $\{a, b\}$, and $A \subseteq B$. This section shows that such notation is legitimate shorthand: every statement using it can be rewritten in the original language, and it makes no new statements of the original language provable. Throughout, $T$ is a theory, such as ZFC.
 
     <!-- label: appa-sec-defined-relations -->
     ### Defined Relations

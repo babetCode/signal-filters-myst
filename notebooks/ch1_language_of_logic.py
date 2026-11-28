@@ -18,17 +18,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "From Statements to Proofs"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ZFC: Zermelo–Fraenkel set theory with the Axiom of Choice
-    numbering:
-      equations: false
-    math:
-      '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-      '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-      '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-      '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+    description: "The language of statements, connectives, quantifiers, and proofs in which every later chapter is written."
+    label: ch1
     -->
     """)
     return
@@ -60,8 +51,8 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the notation](#intro-sec-measurements-and-definitions) $z_k$, $\hat x_k$, $\hat x_k^-$ and [the update](#intro-sec-exponential-moving-average) $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
-    - [Appendix A: Formal Logic](appendix_a_formal_logic.md) (optional; the formal grammar, semantics, and deductive system behind this chapter).
+    - [Introduction](#intro): [the notation](#intro-sec-measurements-and-definitions) $z_k$, $\hat x_k$, $\hat x_k^-$ and [the update](#intro-sec-exponential-moving-average) $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
+    - [Appendix A: Formal Logic](#appa) (optional; the formal grammar, semantics, and deductive system behind this chapter).
     ///
     """)
     return
@@ -76,7 +67,7 @@ def _(mo):
     A mathematical statement has exactly one meaning, and a proof is a chain of steps, each justified by a rule that never leads from true statements to a false one.
     ///
 
-    We discuss mathematics in English, which plays the role of a *metalanguage*: the informal language we use to talk *about* mathematical statements. This chapter treats logic as a working tool: what the logical symbols mean, and how proofs are built. The fully formal version (a precise grammar of formulas, a precise definition of truth, and a mechanical notion of proof) is in [Appendix A](appendix_a_formal_logic.md). Nothing on the main path depends on it.
+    We discuss mathematics in English, which plays the role of a *metalanguage*: the informal language we use to talk *about* mathematical statements. This chapter treats logic as a working tool: what the logical symbols mean, and how proofs are built. The fully formal version (a precise grammar of formulas, a precise definition of truth, and a mechanical notion of proof) is in [Appendix A](#appa). Nothing on the main path depends on it.
     """)
     return
 
@@ -104,7 +95,7 @@ def _(mo):
 
     Whether a statement is true or false is its *truth value*, written $\text{T}$ or $\text{F}$. We do not need to know the truth value for a sentence to be a statement: "the $10^{100}$-th decimal digit of $\pi$ is $7$" is a statement, though nobody knows which truth value it has. We use the letters $P$, $Q$, $R$ (called *statement letters*) to stand for arbitrary statements.
 
-    [^informal-numbers]: Numbers, arithmetic, and inequalities are used informally in this chapter's examples. [Chapter 2](#ch2-sec-natural-numbers) builds the natural numbers from sets, [Appendix B](appendix_b_number_systems.md) builds the integers, rationals, and reals, and [Chapter 3](#ch3-sec-the-real-numbers) lists the properties of the real numbers that we rely on.
+    [^informal-numbers]: Numbers, arithmetic, and inequalities are used informally in this chapter's examples. [Chapter 2](#ch2-sec-natural-numbers) builds the natural numbers from sets, [Appendix B](#appb) builds the integers, rationals, and reals, and [Chapter 3](#ch3-sec-the-real-numbers) lists the properties of the real numbers that we rely on.
     """)
     return
 
@@ -993,7 +984,7 @@ def _(mo):
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **$0 \le \alpha \le 1$.** This is necessary, not just convenient. With $\alpha > 1$ the estimate overshoots past the measurement; with $\alpha < 0$ it moves away from the measurement.
-    - **"Between" is not "accurate".** The theorems say nothing about the true value $x_k$. If $z_k$ is an outlier, $\hat x_k$ is pulled a fraction $\alpha$ of the way toward it. How close estimates are to the truth is a question about noise, answered with probability in [Chapter 6](ch6_expectation_and_variance.md) and [Chapter 7](ch7_optimal_alpha.md).
+    - **"Between" is not "accurate".** The theorems say nothing about the true value $x_k$. If $z_k$ is an outlier, $\hat x_k$ is pulled a fraction $\alpha$ of the way toward it. How close estimates are to the truth is a question about noise, answered with probability in [Chapter 6](#ch6) and [Chapter 7](#ch7).
     ///
     """)
     return
@@ -1016,7 +1007,7 @@ def _(mo):
     <!-- label: ch1-sec-whats-next -->
     ## What's Next
 
-    We can now read and write precise statements, but we have nothing to make statements *about*. [Chapter 2](ch2_axioms_of_set_theory.md) supplies the objects: it states the axioms of ZFC set theory, uses unique existence to define the basic set operations, and builds the natural numbers, where proof by induction and definition by recursion (the logic behind every recursive filter) live.
+    We can now read and write precise statements, but we have nothing to make statements *about*. [Chapter 2](#ch2) supplies the objects: it states the axioms of ZFC set theory, uses unique existence to define the basic set operations, and builds the natural numbers, where proof by induction and definition by recursion (the logic behind every recursive filter) live.
     """)
     return
 

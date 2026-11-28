@@ -17,15 +17,9 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Fusing Gyroscopes, Accelerometers, and Magnetometers"
-    abbreviations:
-      AHRS: attitude and heading reference system
-      IMU: inertial measurement unit
-      MEMS: micro-electro-mechanical systems
-      ENU: east-north-up
-      FLU: forward-left-up
-      RMS: root mean square
-    numbering:
-      equations: false
+    short_title: "19. AHRS"
+    description: "Fusing a drifting gyroscope with an accelerometer and a magnetometer to estimate attitude, with complementary and error-state Kalman filters."
+    label: ch19
     -->
     """)
     return
@@ -152,13 +146,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the alpha filter](#intro-sec-predicting-the-change) $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and [first-measurement initialization](#intro-sec-initialization).
-    - [Chapter 6](ch6_expectation_and_variance.md): [variance of sums of independent random variables](#ch6-thm-variance-of-a-linear-combination), and [the steady-state variance](#ch6-thm-ema-of-a-constant-value) $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
-    - [Chapter 9](ch9_noise_levels.md): {term}`white noise`, {term}`random walks <random walk>`, and the theorem that [the steady-state Kalman filter is an exponential moving average](#ch9-thm-the-steady-state-kalman-filter-is-an-ema).
-    - [Chapter 11](ch11_measurement_functions.md): [sensor bias](#ch11-sec-sensor-bias-and-a-drifting-tare) and [calibration](#ch11-sec-calibration-by-least-squares).
-    - [Chapters 13](ch13_kalman_filter.md), [14](ch14_kalman_filters_in_practice.md), and [15](ch15_extended_kalman_filter.md): [the Kalman filter equations](#ch13-sec-the-algorithm), the {term}`Joseph form`, [sequential updates](#ch14-sec-sequential-updates), {term}`gating`, and [the extended Kalman filter with its Jacobians](#ch15-sec-the-extended-kalman-filter).
-    - [Chapter 17](ch17_rotations.md): [ENU/FLU frames](#ch17-sec-reference-frames), [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [angular velocity](#ch17-sec-angular-velocity), $\operatorname{Exp}$ and $\operatorname{Log}$, [the small-angle approximation](#ch17-thm-small-angle-approximation), and the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
-    - [Chapter 18](ch18_quaternions.md): {term}`unit quaternions <unit quaternion>`, [the exact update](#ch18-thm-exact-quaternion-update) $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$, and $\operatorname{Exp}_q(\delta\boldsymbol\theta) \approx [1, \tfrac12\delta\boldsymbol\theta]$.
+    - [Introduction](#intro): [the alpha filter](#intro-sec-predicting-the-change) $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 6](#ch6): [variance of sums of independent random variables](#ch6-thm-variance-of-a-linear-combination), and [the steady-state variance](#ch6-thm-ema-of-a-constant-value) $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
+    - [Chapter 9](#ch9): {term}`white noise`, {term}`random walks <random walk>`, and the theorem that [the steady-state Kalman filter is an exponential moving average](#ch9-thm-the-steady-state-kalman-filter-is-an-ema).
+    - [Chapter 11](#ch11): [sensor bias](#ch11-sec-sensor-bias-and-a-drifting-tare) and [calibration](#ch11-sec-calibration-by-least-squares).
+    - [Chapters 13](#ch13), [14](#ch14), and [15](#ch15): [the Kalman filter equations](#ch13-sec-the-algorithm), the {term}`Joseph form`, [sequential updates](#ch14-sec-sequential-updates), {term}`gating`, and [the extended Kalman filter with its Jacobians](#ch15-sec-the-extended-kalman-filter).
+    - [Chapter 17](#ch17): [ENU/FLU frames](#ch17-sec-reference-frames), [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [angular velocity](#ch17-sec-angular-velocity), $\operatorname{Exp}$ and $\operatorname{Log}$, [the small-angle approximation](#ch17-thm-small-angle-approximation), and the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
+    - [Chapter 18](#ch18): {term}`unit quaternions <unit quaternion>`, [the exact update](#ch18-thm-exact-quaternion-update) $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$, and $\operatorname{Exp}_q(\delta\boldsymbol\theta) \approx [1, \tfrac12\delta\boldsymbol\theta]$.
     ///
     """)
     return
@@ -1214,7 +1208,7 @@ def _(mo):
 
     1. *Inflate $\mathbf R_{\text{acc}}$.* With $\sigma_{\text{acc}} = 2$ m/s$^2$ the same run has errors around $1.4^\circ$. The cost is slower correction when the body really is still.
     2. *Gate on the magnitude.* At rest $\|\mathbf f\| = g$, so skip the update when $\big|\|\mathbf f_m\| - g\big|$ is large. This catches vertical accelerations but is weak against horizontal ones: a horizontal acceleration $a$ changes the magnitude only to $\sqrt{g^2 + a^2} \approx g + a^2/(2g)$, so $2$ m/s$^2$ sideways changes it by only $0.2$ m/s$^2$. In the simulation, gating alone (with $\sigma_{\text{acc}} = 0.05$) reduces the error only to about $6.5^\circ$. An *adaptive* covariance, for example $\mathbf R_{\text{acc}} = \big(\sigma_{\text{acc}}^2 + c\,(\|\mathbf f_m\| - g)^2\big)\mathbf I$, is a smooth version of the same idea with the same weakness.
-    3. *Gate on the innovation.* [Chapter 14](#ch14-sec-outlier-gating)'s {term}`gating` with the {term}`normalized innovation squared` rejects any accelerometer reading inconsistent with the predicted gravity direction, whatever its magnitude. Foot-mounted systems go further and use gravity only while the foot is detected to be stationary ([Chapter 21](ch21_zero_velocity_updates.md)).
+    3. *Gate on the innovation.* [Chapter 14](#ch14-sec-outlier-gating)'s {term}`gating` with the {term}`normalized innovation squared` rejects any accelerometer reading inconsistent with the predicted gravity direction, whatever its magnitude. Foot-mounted systems go further and use gravity only while the foot is detected to be stationary ([Chapter 21](#ch21)).
 
     **Magnetic disturbances.** Check "magnetic disturbance": between 35 and 45 s the field is distorted by $[20, 10, 0]\ \mu$T. Without gating, the heading error reaches about $30^\circ$ and, because the magnetometer update uses the full field vector, the tilt is dragged off by more than $10^\circ$ as well. With gating the disturbed readings are rejected (the field magnitude rises from $47.4$ to $56.5\ \mu$T) and the filter coasts on the gyroscope with almost no penalty. Magnitude gating misses a disturbance that rotates the field without changing its strength, so practical systems also check the *dip angle* between $\mathbf f_m$ and $\mathbf m_m$ (it should be $90^\circ + 62^\circ$ at rest), and many apply the magnetometer only to heading, projecting its innovation onto the horizontal plane so that it cannot corrupt the tilt.
 
@@ -1273,7 +1267,7 @@ def _(mo):
     <!-- label: ch19-sec-whats-next -->
     ## What's Next
 
-    An AHRS answers "which way is the body pointing?" [Chapter 20](ch20_strapdown_inertial_navigation.md) asks "where is it?" Rotating the specific force into the navigation frame, adding gravity back, and integrating twice gives velocity and position: strapdown inertial navigation. Every error studied here returns there, amplified: a tilt error of $0.3^\circ$ leaks $g\sin(0.3^\circ) \approx 0.05$ m/s$^2$ of gravity into the horizontal acceleration, which integrates to meters of position error within seconds. Chapter 20 derives how fast that happens and builds the walking-foot simulator that [Chapter 21](ch21_zero_velocity_updates.md) then rescues with zero-velocity updates.
+    An AHRS answers "which way is the body pointing?" [Chapter 20](#ch20) asks "where is it?" Rotating the specific force into the navigation frame, adding gravity back, and integrating twice gives velocity and position: strapdown inertial navigation. Every error studied here returns there, amplified: a tilt error of $0.3^\circ$ leaks $g\sin(0.3^\circ) \approx 0.05$ m/s$^2$ of gravity into the horizontal acceleration, which integrates to meters of position error within seconds. Chapter 20 derives how fast that happens and builds the walking-foot simulator that [Chapter 21](#ch21) then rescues with zero-velocity updates.
     """)
     return
 

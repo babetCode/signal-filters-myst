@@ -17,17 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "The Scalar Kalman Filter"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ADC: analog-to-digital converter
-      SPS: samples per second
-      RMS: root mean square
-      EMA: exponential moving average
-      NIS: normalized innovation squared
-      RMSE: root-mean-square error
-    numbering:
-      equations: false
+    description: "Measuring measurement noise, modeling unforeseen change as process noise, and the scalar Kalman filter that results."
+    label: ch9
     -->
     """)
     return
@@ -132,11 +123,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): the {term}`exponential moving average`, [the alpha filter](#intro-sec-predicting-the-change), [the expected change](#intro-sec-predicting-the-change) $\Delta x_k$, and [the bulking data](#intro-sec-alpha-beta-filter).
-    - [Chapter 5](ch5_random_variables.md): the {term}`uniform distribution` and [the theorem that quantization error is nearly uniform](#ch5-thm-quantization-error-is-nearly-uniform), the {term}`normal distribution` and [the density of](#ch5-thm-density-of-ax-b) $aX + b$, [linear combinations of independent normal random variables](#ch5-cor-linear-combinations-of-independent-normals), {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model).
-    - [Chapter 6](ch6_expectation_and_variance.md): {term}`variance` (including [that of the uniform distribution](#ch6-thm-variances-of-common-distributions)), {term}`covariance` and [its linearity in each argument](#ch6-thm-properties-of-covariance), {term}`uncorrelated` random variables, [Bienaymé's corollary](#ch6-cor-bienayme), the {term}`sample mean` and [its variance](#ch6-thm-mean-and-variance-of-the-sample-mean) $\sigma^2/n$, {term}`unbiased` estimators, and [the EMA's variance](#ch6-thm-ema-of-a-constant-value) $\frac{\alpha}{2-\alpha}\sigma^2$ and [ramp lag](#ch6-thm-ema-on-a-ramp) $c\frac{1-\alpha}{\alpha}$.
-    - [Chapter 7](ch7_optimal_alpha.md): {term}`estimation error`, {term}`error variance`, {term}`gain` and {term}`optimal gain`, [the Optimal Gain theorem](#ch7-thm-optimal-gain) (in particular items 1, 3, and 4), [the Error of the Update lemma](#ch7-lem-error-of-the-update), [the optimality of](#ch7-thm-optimal-gains-for-a-constant) $1/k$, [and the gain](#ch7-sec-from-alpha-to-the-gain-k-k) $K_k$.
-    - [Chapter 8](ch8_bayesian_view.md): [the normal Bayes filter](#ch8-cor-the-normal-bayes-filter) and [the central limit theorem](#ch8-thm-central-limit-theorem).
+    - [Introduction](#intro): the {term}`exponential moving average`, [the alpha filter](#intro-sec-predicting-the-change), [the expected change](#intro-sec-predicting-the-change) $\Delta x_k$, and [the bulking data](#intro-sec-alpha-beta-filter).
+    - [Chapter 5](#ch5): the {term}`uniform distribution` and [the theorem that quantization error is nearly uniform](#ch5-thm-quantization-error-is-nearly-uniform), the {term}`normal distribution` and [the density of](#ch5-thm-density-of-ax-b) $aX + b$, [linear combinations of independent normal random variables](#ch5-cor-linear-combinations-of-independent-normals), {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model).
+    - [Chapter 6](#ch6): {term}`variance` (including [that of the uniform distribution](#ch6-thm-variances-of-common-distributions)), {term}`covariance` and [its linearity in each argument](#ch6-thm-properties-of-covariance), {term}`uncorrelated` random variables, [Bienaymé's corollary](#ch6-cor-bienayme), the {term}`sample mean` and [its variance](#ch6-thm-mean-and-variance-of-the-sample-mean) $\sigma^2/n$, {term}`unbiased` estimators, and [the EMA's variance](#ch6-thm-ema-of-a-constant-value) $\frac{\alpha}{2-\alpha}\sigma^2$ and [ramp lag](#ch6-thm-ema-on-a-ramp) $c\frac{1-\alpha}{\alpha}$.
+    - [Chapter 7](#ch7): {term}`estimation error`, {term}`error variance`, {term}`gain` and {term}`optimal gain`, [the Optimal Gain theorem](#ch7-thm-optimal-gain) (in particular items 1, 3, and 4), [the Error of the Update lemma](#ch7-lem-error-of-the-update), [the optimality of](#ch7-thm-optimal-gains-for-a-constant) $1/k$, [and the gain](#ch7-sec-from-alpha-to-the-gain-k-k) $K_k$.
+    - [Chapter 8](#ch8): [the normal Bayes filter](#ch8-cor-the-normal-bayes-filter) and [the central limit theorem](#ch8-thm-central-limit-theorem).
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([geometric convergence](#appc-thm-geometric-series) and [limit laws](#appc-thm-limit-laws-for-sequences)), [Derivatives](#appc-sec-derivatives) and [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (for the $\chi^2$ density, including [integration by parts](#appc-thm-integration-by-parts)), and [Improper Integrals](#appc-sec-improper-integrals).
     ///
     """)
@@ -415,7 +406,7 @@ def _(mo):
     A recursive {term}`filter` for a quantity that follows a linear model of how it changes and is observed through a linear measurement model, both with additive noise of known variance (covariance, for vectors), that alternates two steps: a predict step, which propagates the estimate and its {term}`error variance` through the model of change, and an update step, which combines the resulting prediction with the new measurement using the {term}`optimal gain`. The *scalar Kalman filter* above is the case of a single unknown with the random-walk model.
     ///
 
-    The filter is named after Rudolf Kálmán, who published it for vector-valued states in @kalman1960. [Chapter 10](ch10_process_models.md) generalizes the process model, [Chapter 11](ch11_measurement_functions.md) the measurement model, and [Chapter 13](ch13_kalman_filter.md) handles vectors. Here is a complete implementation. It accepts a single sequence of measurements or many sequences at once (one per row), which we use for simulations; note that `P_pred`, `S`, `K`, and `P` do not depend on the measurements at all.
+    The filter is named after Rudolf Kálmán, who published it for vector-valued states in @kalman1960. [Chapter 10](#ch10) generalizes the process model, [Chapter 11](#ch11) the measurement model, and [Chapter 13](#ch13) handles vectors. Here is a complete implementation. It accepts a single sequence of measurements or many sequences at once (one per row), which we use for simulations; note that `P_pred`, `S`, `K`, and `P` do not depend on the measurements at all.
     """)
     return
 
@@ -538,7 +529,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Correct $Q$ and $R$.** The theorem's "optimal" refers to the variances the filter is given. With wrong values the estimate is still unbiased (Chapter 7's Zero-Mean Error theorem), but the gains are not optimal and the reported $P_k$ is wrong. The innovation tests below detect this.
     - **Uncorrelated noise (K3).** Correlated measurement noise or correlated process noise breaks the induction: $\operatorname{Cov}(e_k^-, v_k)$ is no longer zero, and Chapter 7's *Correlated Errors* section applies.
-    - **Linear models.** Both models are linear with additive noise. Nonlinear models need the extended or unscented Kalman filter ([Chapter 15](ch15_extended_kalman_filter.md), [Chapter 16](ch16_unscented_kalman_filter.md)).
+    - **Linear models.** Both models are linear with additive noise. Nonlinear models need the extended or unscented Kalman filter ([Chapter 15](#ch15), [Chapter 16](#ch16)).
     - **Initialization.** A wrong $\hat x_0$ with a small $P_0$ is trusted as $n_0 = R/P_0$ readings' worth of information. When in doubt, choose $P_0$ large.
     ///
 
@@ -1191,7 +1182,7 @@ def _(mo):
     <!-- label: ch9-sec-whats-next -->
     ## What's Next
 
-    The random-walk model treats every change it does not expect as noise. When the change is partly predictable, as a weight gain driven by a known calorie surplus is, a better prediction $\hat x_k^-$ means a smaller $P_k^-$ and a better estimate. [Chapter 10](ch10_process_models.md) builds such process models, including the bulking energy balance, and shows how to evaluate them with the innovations introduced here.
+    The random-walk model treats every change it does not expect as noise. When the change is partly predictable, as a weight gain driven by a known calorie surplus is, a better prediction $\hat x_k^-$ means a smaller $P_k^-$ and a better estimate. [Chapter 10](#ch10) builds such process models, including the bulking energy balance, and shows how to evaluate them with the innovations introduced here.
     """)
     return
 

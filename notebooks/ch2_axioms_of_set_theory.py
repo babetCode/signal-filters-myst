@@ -17,18 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "From Axioms to Natural Numbers"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ZFC: Zermelo–Fraenkel set theory with the Axiom of Choice
-      EMA: exponential moving average
-    numbering:
-      equations: false
-    math:
-      '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-      '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-      '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-      '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+    description: "The axioms of set theory, the natural numbers, and the Recursion Theorem, which shows that a recursive filter defines an estimate at every step."
+    label: ch2
     -->
     """)
     return
@@ -72,8 +62,8 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): [statements](#ch1-sec-statements) and [predicates](#ch1-sec-predicates-and-variables); [the connectives](#ch1-sec-connectives-and-truth-tables) $\neg, \land, \lor, \rightarrow, \leftrightarrow$; [the quantifiers](#ch1-sec-quantifiers) $\forall$, $\exists$, $\exists!$ and [the bounded forms](#ch1-sec-bounded-quantifiers) $\forallin{x}{A}$, $\existsin{x}{A}$; [the notations](#ch1-sec-definitions-and-longleftrightarrow) $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and [the proof techniques](#ch1-sec-proof-techniques) (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
-    - [Appendix A](appendix_a_formal_logic.md) (optional): the formal language behind the notation of this chapter.
+    - [Chapter 1](#ch1): [statements](#ch1-sec-statements) and [predicates](#ch1-sec-predicates-and-variables); [the connectives](#ch1-sec-connectives-and-truth-tables) $\neg, \land, \lor, \rightarrow, \leftrightarrow$; [the quantifiers](#ch1-sec-quantifiers) $\forall$, $\exists$, $\exists!$ and [the bounded forms](#ch1-sec-bounded-quantifiers) $\forallin{x}{A}$, $\existsin{x}{A}$; [the notations](#ch1-sec-definitions-and-longleftrightarrow) $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and [the proof techniques](#ch1-sec-proof-techniques) (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
+    - [Appendix A](#appa) (optional): the formal language behind the notation of this chapter.
     ///
     """)
     return
@@ -111,7 +101,7 @@ def _(mo):
 
     Informally, a *set* is a collection of objects, called its *elements* (or *members*). We write $x \in A$ for "$x$ is an element of $A$" and $x \notin A$ for $\neg(x \in A)$.
 
-    Neither "set" nor "is an element of" gets a glossary entry. A {term}`definition` is a necessary-and-sufficient test stated in words that were defined earlier, and these are the first words of the theory: there are no earlier words to define them with. They are *primitive notions*. We never say what a set *is*; the axioms below say only how sets behave, and every other term in the book is defined, directly or indirectly, from $\in$ and $=$ using the logic of [Chapter 1](ch1_language_of_logic.md).
+    Neither "set" nor "is an element of" gets a glossary entry. A {term}`definition` is a necessary-and-sufficient test stated in words that were defined earlier, and these are the first words of the theory: there are no earlier words to define them with. They are *primitive notions*. We never say what a set *is*; the axioms below say only how sets behave, and every other term in the book is defined, directly or indirectly, from $\in$ and $=$ using the logic of [Chapter 1](#ch1).
 
     Two conventions follow. First, everything is a set: numbers, ordered pairs, functions, and signals will all be particular sets, and every variable in this chapter stands for a set. Second, $a = b$ means that $a$ and $b$ are the same set, so equal sets have exactly the same properties. That is a law of logic, not an axiom.
 
@@ -1142,7 +1132,7 @@ def _(mo):
     <!-- label: ch2-sec-whats-next -->
     ## What's Next
 
-    [Chapter 3](ch3_sets_for_probability.md) develops the set theory that probability needs: complements and De Morgan's laws, images and preimages (the tools behind the definition of a random variable), sizes of infinite sets, and the real numbers as a complete ordered field. To see the integers, rationals, and real numbers constructed from $\mathbb N$, read [Appendix B](appendix_b_number_systems.md) before or alongside Chapter 3.
+    [Chapter 3](#ch3) develops the set theory that probability needs: complements and De Morgan's laws, images and preimages (the tools behind the definition of a random variable), sizes of infinite sets, and the real numbers as a complete ordered field. To see the integers, rationals, and real numbers constructed from $\mathbb N$, read [Appendix B](#appb) before or alongside Chapter 3.
     """)
     return
 

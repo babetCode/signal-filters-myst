@@ -15,12 +15,14 @@ import time
 
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
+import yaml  # PyYAML, installed with marimo
 
 PROJECT_ROOT = Path(__file__).parent.parent
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 EXPORT_DIR = PROJECT_ROOT / ".marimo-export"  # raw `marimo export md` output; not committed
 CONTENT_DIR = PROJECT_ROOT / "content"        # Jupyter Book project root
 PAGES_DIR = CONTENT_DIR / "nb"                # postprocessed notebook pages
+MYST_YML = CONTENT_DIR / "myst.yml"
 
 # Directories under notebooks/ that should never be treated as notebook sources
 # (e.g. marimo's own session/layout state).
@@ -57,6 +59,38 @@ JB_FRONTMATTER_PATTERN = re.compile(
     re.DOTALL,
 )
 FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
+
+# The keys a page's jb-frontmatter may set, in the order they are written
+# (STYLEGUIDE.md §2.2). `title` comes from `app_title`; everything else is set
+# once for the whole book in content/myst.yml.
+PAGE_FRONTMATTER_KEYS = ["subtitle", "short_title", "description", "label", "abbreviations"]
+PROJECT_FRONTMATTER_KEYS = {"numbering", "math", "license"}
+SHORT_TITLE_MAX = 40
+DESCRIPTION_MAX = 160
+# A description is plain text: markdown, math, and HTML do not render in it.
+DESCRIPTION_MARKUP = re.compile(r"[$`*_\[\]{}<>\\]")
+
+# Everything on an exported page that MyST's abbreviation transform does not
+# touch: frontmatter, code (including `{marimo}` cells), math, inline code and
+# role contents, links (text and target), citations, HTML, directive options,
+# and `(label)=` targets. What is left is the prose that abbreviations apply to.
+NON_PROSE_PATTERN = re.compile(
+    r"""
+      \A---\n.*?\n---\n
+    | ^(`{3,}|~{3,}).*?^\1[ \t]*$
+    | \$\$.*?\$\$
+    | \$[^$\n]+\$
+    | `[^`\n]*`
+    | \[[^\]\n]*\]\([^)\n]*\)
+    | \[@[^\]\n]*\]
+    | @\w+
+    | <!--.*?-->
+    | <[^>\n]+>
+    | ^:[\w-]+:[^\n]*$
+    | ^\([^)\s]+\)=
+    """,
+    re.DOTALL | re.MULTILINE | re.VERBOSE,
+)
 
 # pymdownx-style `/// <kind> | Title` block, optionally followed by an
 # `attrs: {class: ..., id: ...}` line, e.g.
@@ -227,6 +261,127 @@ def apply_jb_frontmatter(content: str, source: str = "") -> str:
         return f"---\n{merged_yaml}\n---\n{rest}"
 
     return f"---\n{extra_yaml}\n---\n\n{stripped.lstrip()}"
+
+
+def expected_page_label(stem: str) -> str:
+    """The page label the style guide's §7.1 prescribes for a notebook:
+    `intro`, `ch7`, `appc`, or the stem itself (`index`)."""
+    if stem == "introduction":
+        return "intro"
+    if match := re.match(r"(ch\d+)_", stem):
+        return match.group(1)
+    if match := re.match(r"appendix_([a-z])_", stem):
+        return f"app{match.group(1)}"
+    return stem
+
+
+def project_abbreviations() -> dict:
+    """`project.abbreviations` from content/myst.yml (read on every call, so
+    the watcher picks up edits)."""
+    try:
+        config = yaml.safe_load(MYST_YML.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as error:
+        warn(f"could not read abbreviations: {error}", str(MYST_YML))
+        return {}
+    return (config.get("project") or {}).get("abbreviations") or {}
+
+
+def check_page_frontmatter(content: str, stem: str, source: str = "") -> dict:
+    """Check a raw export's jb-frontmatter against STYLEGUIDE.md §2.2 and
+    return its parsed contents."""
+    match = JB_FRONTMATTER_PATTERN.search(content)
+    if not match:
+        warn("no `<!-- jb-frontmatter ... -->` comment", source)
+        return {}
+    try:
+        page = yaml.safe_load(match.group("content")) or {}
+    except yaml.YAMLError as error:
+        warn(f"jb-frontmatter is not valid YAML: {error}", source)
+        return {}
+    if not isinstance(page, dict):
+        warn("jb-frontmatter is not a mapping of keys to values", source)
+        return {}
+
+    for key in page:
+        if key == "title":
+            warn("`title` comes from `app_title`; remove it from jb-frontmatter", source)
+        elif key in PROJECT_FRONTMATTER_KEYS:
+            warn(f"`{key}` is set for the whole book in content/myst.yml; remove it from jb-frontmatter", source)
+        elif key not in PAGE_FRONTMATTER_KEYS:
+            warn(f"jb-frontmatter key `{key}` is not allowed", source)
+    order = [key for key in page if key in PAGE_FRONTMATTER_KEYS]
+    if order != sorted(order, key=PAGE_FRONTMATTER_KEYS.index):
+        warn(f"jb-frontmatter keys should be in the order {', '.join(PAGE_FRONTMATTER_KEYS)}", source)
+
+    required = ["description", "label"] + ([] if stem == "index" else ["subtitle"])
+    for key in required:
+        if not page.get(key):
+            warn(f"jb-frontmatter has no `{key}`", source)
+
+    label = page.get("label")
+    if label and label != expected_page_label(stem):
+        warn(f"page label `{label}` should be `{expected_page_label(stem)}`", source)
+
+    title = ""
+    if fm_match := FRONTMATTER_PATTERN.match(content):
+        try:
+            title = str((yaml.safe_load(fm_match.group(1)) or {}).get("title") or "")
+        except yaml.YAMLError:
+            pass
+    short_title = page.get("short_title")
+    if len(title) > SHORT_TITLE_MAX and not short_title:
+        warn(f"title '{title}' is longer than {SHORT_TITLE_MAX} characters; add a `short_title`", source)
+    if short_title and len(str(short_title)) > SHORT_TITLE_MAX:
+        warn(f"`short_title` is longer than {SHORT_TITLE_MAX} characters", source)
+
+    description = str(page.get("description") or "")
+    if len(description) > DESCRIPTION_MAX:
+        warn(f"`description` is {len(description)} characters; the limit is {DESCRIPTION_MAX}", source)
+    if DESCRIPTION_MARKUP.search(description):
+        warn("`description` is plain text: no markdown, math, or HTML", source)
+
+    shared = project_abbreviations()
+    for key in page.get("abbreviations") or {}:
+        if key in shared:
+            warn(f"abbreviation `{key}` is already in content/myst.yml; remove it from jb-frontmatter", source)
+    return page
+
+
+def check_abbreviation_matches(content: str, page_abbreviations: dict, source: str = "") -> None:
+    """Warn about every abbreviation MyST would mark inside a longer word,
+    such as `iff` in "Mifflin". This mirrors MyST's transform: each key is a
+    case-sensitive substring, longer keys claim their text first, and a `null`
+    key claims its text without adding a tooltip. A trailing plural `s`
+    ("IMUs") is fine."""
+    abbreviations = {**project_abbreviations(), **(page_abbreviations or {})}
+    text = NON_PROSE_PATTERN.sub(lambda m: " " * len(m.group(0)), content)
+    claimed = bytearray(len(text))
+    found: dict[tuple[str, str], int] = {}
+    for key in sorted((k for k in abbreviations if len(str(k)) > 1), key=lambda k: (-len(str(k)), str(k))):
+        for match in re.finditer(re.escape(str(key)), text):
+            start, end = match.span()
+            if any(claimed[start:end]):
+                continue
+            claimed[start:end] = b"\x01" * (end - start)
+            if abbreviations[key] is None:
+                continue
+            before = text[start - 1] if start else " "
+            after = text[end:end + 1]
+            plural = after == "s" and not text[end + 1:end + 2].isalpha()
+            if before.isalpha() or (after.isalpha() and not plural):
+                word_start, word_end = start, end
+                while word_start and text[word_start - 1].isalpha():
+                    word_start -= 1
+                while word_end < len(text) and text[word_end].isalpha():
+                    word_end += 1
+                word = text[word_start:word_end]
+                found[(str(key), word)] = found.get((str(key), word), 0) + 1
+    for (key, word), count in found.items():
+        warn(
+            f"abbreviation `{key}` matches inside '{word}' ({count}x); "
+            f"add `{word}: null` to the abbreviations in content/myst.yml",
+            source,
+        )
 
 
 def comment_out_marimo_version(content: str) -> str:
@@ -405,6 +560,7 @@ def postprocess_file(export_path: Path):
     except (FileNotFoundError, UnicodeDecodeError):
         return
 
+    page_frontmatter = check_page_frontmatter(content, export_path.stem, source=str(export_path))
     updated = apply_jb_options(content, source=str(export_path))
     updated = apply_jb_frontmatter(updated, source=str(export_path))
     updated = apply_label_comments(updated, source=str(export_path))
@@ -414,6 +570,7 @@ def postprocess_file(export_path: Path):
     updated = comment_out_marimo_version(updated)
     if disable_eval:
         updated = set_eval_false(updated)
+    check_abbreviation_matches(updated, page_frontmatter.get("abbreviations"), source=str(export_path))
 
     write_if_changed(content_path_for(export_path), updated)
 

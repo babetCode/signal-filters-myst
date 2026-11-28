@@ -18,17 +18,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Building Intuition"
-    abbreviations:
-      ADC: analog-to-digital converter
-      AHRS: attitude and heading reference system
-      BMR: basal metabolic rate
-      DEI: daily energy intake
-      EMA: exponential moving average
-      IMU: inertial measurement unit
-      SPS: samples per second
-      TDEE: total daily energy expenditure
-    numbering:
-      equations: false
+    description: "Builds a sequence of simple filters for noisy bathroom-scale readings, ending with the predict-and-update structure of the Kalman filter."
+    label: intro
     -->
     """)
     return
@@ -1455,11 +1446,11 @@ def _(mo):
 
     > Given some amounts of noise in our prediction ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?
 
-    **Part I: Choosing Alpha** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](ch1_language_of_logic.md), sets in [Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md), and probability in [Chapters 4](ch4_probability_spaces.md) through [6](ch6_expectation_and_variance.md). [Chapter 7](ch7_optimal_alpha.md) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](ch8_bayesian_view.md) reinterprets the answer using Bayes' theorem.
+    **Part I: Choosing Alpha** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](#ch1), sets in [Chapters 2](#ch2) and [3](#ch3), and probability in [Chapters 4](#ch4) through [6](#ch6). [Chapter 7](#ch7) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](#ch8) reinterprets the answer using Bayes' theorem.
 
     Once we know the optimal $\alpha$ for given levels of noise in $\hat x_k^-$ and $z_k$, the remaining parts answer the following questions.
 
-    **Part II: The Scalar Kalman Filter** ([Chapters 9](ch9_noise_levels.md) through [11](ch11_measurement_functions.md))
+    **Part II: The Scalar Kalman Filter** ([Chapters 9](#ch9) through [11](#ch11))
 
     > How do we determine the levels of noise in $\hat x_k^-$ and $z_k$?
 
@@ -1467,39 +1458,39 @@ def _(mo):
 
     > What is the best way to calculate $\hat x_k^-$?
 
-    (There are endless ways to do this, and we will not cover them all. [Chapter 10](ch10_process_models.md) shows how to build a model of how the true value changes, and how to judge whether it is a good one.)
+    (There are endless ways to do this, and we will not cover them all. [Chapter 10](#ch10) shows how to build a model of how the true value changes, and how to judge whether it is a good one.)
 
     > What if my sensor doesn't measure the real-world value I want to know?
 
-    (Time for measurement functions in [Chapter 11](ch11_measurement_functions.md)!)
+    (Time for measurement functions in [Chapter 11](#ch11)!)
 
-    **Part III: State Vectors** ([Chapters 12](ch12_vectors_matrices_covariance.md) through [14](ch14_kalman_filters_in_practice.md))
+    **Part III: State Vectors** ([Chapters 12](#ch12) through [14](#ch14))
 
     > What if my real-world value can't be represented as a scalar?
 
-    (Time for state vectors! The alpha-beta filter already tracks two numbers, a weight and its change per day. [Chapter 13](#ch13-thm-the-alpha-beta-filter-is-a-constant-gain-kalman-filter) shows that it is a special case of the multivariate Kalman filter, and [Chapter 14](ch14_kalman_filters_in_practice.md) covers tuning, sensor fusion, and checking that a filter is working.)
+    (Time for state vectors! The alpha-beta filter already tracks two numbers, a weight and its change per day. [Chapter 13](#ch13-thm-the-alpha-beta-filter-is-a-constant-gain-kalman-filter) shows that it is a special case of the multivariate Kalman filter, and [Chapter 14](#ch14) covers tuning, sensor fusion, and checking that a filter is working.)
 
-    **Part IV: Nonlinearity** ([Chapters 15](ch15_extended_kalman_filter.md) and [16](ch16_unscented_kalman_filter.md))
+    **Part IV: Nonlinearity** ([Chapters 15](#ch15) and [16](#ch16))
 
     > What if I expect my real-world value to change in super weird, nonlinear ways?
 
     (Linear approximation techniques in the extended Kalman filter, then sigma points in the unscented Kalman filter.)
 
-    **Part V: Orientation** ([Chapters 17](ch17_rotations.md) through [19](ch19_ahrs.md))
+    **Part V: Orientation** ([Chapters 17](#ch17) through [19](#ch19))
 
     > What if I need to avoid singularities in my state representation?
 
     (Quaternion time! We represent orientation with rotation matrices and quaternions, then build an AHRS that fuses gyroscopes, accelerometers, and magnetometers.)
 
-    **Part VI: Inertial Navigation for Gait** ([Chapters 20](ch20_strapdown_inertial_navigation.md) and [21](ch21_zero_velocity_updates.md))
+    **Part VI: Inertial Navigation for Gait** ([Chapters 20](#ch20) and [21](#ch21))
 
     > Can a single IMU strapped to a shoe measure how someone walks?
 
     (We put everything together: we integrate the IMU's measurements to track the foot, and correct the resulting drift every time the foot is flat on the ground, to measure stride length, cadence, and gait speed.)
 
-    **Optional appendices.** Four appendices build foundational material from the ground up: [Appendix A: Formal Logic](appendix_a_formal_logic.md), [Appendix B: Constructing the Number Systems](appendix_b_number_systems.md), [Appendix C: Calculus](appendix_c_calculus.md), and [Appendix D: Linear Algebra](appendix_d_linear_algebra.md). You don't need to read them front to back. Every chapter after this one opens with a Prerequisites box that lists exactly which appendix sections it relies on, so read a section when a chapter points to it and the material is new to you. In particular, if they are unfamiliar, read Appendix C's sections on sequences and series before Chapter 4, and Appendix D before Part III.
+    **Optional appendices.** Four appendices build foundational material from the ground up: [Appendix A: Formal Logic](#appa), [Appendix B: Constructing the Number Systems](#appb), [Appendix C: Calculus](#appc), and [Appendix D: Linear Algebra](#appd). You don't need to read them front to back. Every chapter after this one opens with a Prerequisites box that lists exactly which appendix sections it relies on, so read a section when a chapter points to it and the material is new to you. In particular, if they are unfamiliar, read Appendix C's sections on sequences and series before Chapter 4, and Appendix D before Part III.
 
-    We begin with [Chapter 1: Language of Logic](ch1_language_of_logic.md).
+    We begin with [Chapter 1: Language of Logic](#ch1).
     """)
     return
 

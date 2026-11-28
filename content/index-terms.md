@@ -1,10 +1,6 @@
 ---
 title: Index
-abbreviations:
-  iff: if and only if
-  diff: null
-numbering:
-  equations: false
+description: "Every term the book defines, with a link to its definition."
 ---
 
 ```{show-index}

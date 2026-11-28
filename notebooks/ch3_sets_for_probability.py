@@ -17,16 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Complements, Preimages, and Infinity"
-    abbreviations:
-      iff: if and only if
-      diff: null
-    numbering:
-      equations: false
-    math:
-      '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-      '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-      '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-      '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+    description: "Complements, indexed families, preimages, countable and uncountable sets, and the real numbers: the set theory that probability needs."
+    label: ch3
     -->
     """)
     return
@@ -76,11 +68,11 @@ def latex_macros(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): [connectives](#ch1-sec-connectives-and-truth-tables), [quantifiers and their negations](#ch1-sec-negating-quantified-statements), and [the proof techniques](#ch1-sec-proof-techniques) (contrapositive, contradiction, cases).
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [the axioms of set theory](#ch2-sec-the-axioms-of-zfc) (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), [ordered pairs](#ch2-sec-ordered-pairs), [Cartesian products](#ch2-sec-cartesian-products), [functions](#ch2-sec-functions), [the natural numbers](#ch2-sec-natural-numbers), [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
+    - [Chapter 1](#ch1): [connectives](#ch1-sec-connectives-and-truth-tables), [quantifiers and their negations](#ch1-sec-negating-quantified-statements), and [the proof techniques](#ch1-sec-proof-techniques) (contrapositive, contradiction, cases).
+    - [Chapter 2](#ch2): [the axioms of set theory](#ch2-sec-the-axioms-of-zfc) (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), [ordered pairs](#ch2-sec-ordered-pairs), [Cartesian products](#ch2-sec-cartesian-products), [functions](#ch2-sec-functions), [the natural numbers](#ch2-sec-natural-numbers), [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
     - [Appendix B: Arithmetic on the Natural Numbers](#appb-sec-arithmetic-on-the-natural-numbers) (optional): proofs of the facts about $+$, $\cdot$, and $<$ on $\mathbb N$ listed below, including well-ordering.
     - [Appendix B: The Integers](#appb-sec-the-integers), [The Rational Numbers](#appb-sec-the-rational-numbers), [The Real Numbers](#appb-sec-the-real-numbers), and [Uniqueness of the Real Numbers](#appb-sec-uniqueness-of-the-real-numbers) (optional): the constructions of $\mathbb Z$, $\mathbb Q$, and $\mathbb R$, whose results this chapter uses.
-    - **Before [Chapter 4](ch4_probability_spaces.md):** read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series). They are built on the real numbers of this chapter, and Chapter 4 uses their limits.
+    - **Before [Chapter 4](#ch4):** read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series). They are built on the real numbers of this chapter, and Chapter 4 uses their limits.
     ///
     """)
     return
@@ -89,14 +81,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Probability theory assigns numbers to *sets* of outcomes.[^informal-probability] The question "does the scale read above 156 lb?" is not a number. It is the set of all situations in which the reading exceeds 156 lb, and its probability is a number attached to that set. Before [Chapter 4](ch4_probability_spaces.md) can define probability, we need four tools from set theory:
+    Probability theory assigns numbers to *sets* of outcomes.[^informal-probability] The question "does the scale read above 156 lb?" is not a number. It is the set of all situations in which the reading exceeds 156 lb, and its probability is a number attached to that set. Before [Chapter 4](#ch4) can define probability, we need four tools from set theory:
 
     1. **Complements, and unions and intersections of infinitely many sets.** These are "not", "or", and "and" for questions, including questions with infinitely many conditions, such as "every future reading is within 1 lb of the truth".
     2. **Preimages.** They translate a condition on a measured number into the set of situations that produce it.
     3. **Countable versus uncountable infinity.** Probabilities add up over a *list* of disjoint events, but the possible values of a noisy reading cannot be listed. This mismatch is why Chapter 4 cannot give every set a probability.
     4. **The real numbers and the extended real numbers $[0, \infty]$**, where measurements, probabilities, and infinite sums live.
 
-    [^informal-probability]: "Probability", "outcome", and "event" are used informally in this chapter. They are defined precisely in [Chapter 4](ch4_probability_spaces.md).
+    [^informal-probability]: "Probability", "outcome", and "event" are used informally in this chapter. They are defined precisely in [Chapter 4](#ch4).
     """)
     return
 
@@ -1407,7 +1399,7 @@ def _(mo):
     <!-- label: ch3-sec-whats-next -->
     ## What's Next
 
-    [Chapter 4](ch4_probability_spaces.md) uses all of this to define probability. Events are subsets of a sample space $\Omega$, and the collection of events is closed under complements and countable unions, where De Morgan's laws and indexed unions do the work. A probability measure adds up over sequences of disjoint events, with values in $[0, 1] \subseteq [0, \infty]$. Countability returns in two impossibility results: no probability treats all natural numbers equally, and, using the Axiom of Choice and the countability of $\mathbb Q$, no probability treats all subsets of $[0, 1)$ "uniformly". Before Chapter 4, read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series).
+    [Chapter 4](#ch4) uses all of this to define probability. Events are subsets of a sample space $\Omega$, and the collection of events is closed under complements and countable unions, where De Morgan's laws and indexed unions do the work. A probability measure adds up over sequences of disjoint events, with values in $[0, 1] \subseteq [0, \infty]$. Countability returns in two impossibility results: no probability treats all natural numbers equally, and, using the Axiom of Choice and the countability of $\mathbb Q$, no probability treats all subsets of $[0, 1)$ "uniformly". Before Chapter 4, read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series).
     """)
     return
 

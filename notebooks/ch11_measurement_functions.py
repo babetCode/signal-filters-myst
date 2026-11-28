@@ -17,13 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "When Sensors Measure Something Else"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ADC: analog-to-digital converter
-      SPS: samples per second
-    numbering:
-      equations: false
+    description: "Measurement functions that relate a sensor's raw readings to the state, and calibrating them by least squares."
+    label: ch11
     -->
     """)
     return
@@ -62,11 +57,11 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 5](ch5_random_variables.md): {term}`measurement noise` and the {term}`normal distribution`.
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b)$, [variances and covariances of sums](#ch6-sec-variance-of-sums), and [unbiased estimators](#ch6-sec-estimators).
-    - [Chapter 7](ch7_optimal_alpha.md): [the optimal gain by completing the square](#ch7-sec-completing-the-square), and [what correlated errors do to an average](#ch7-sec-correlated-errors).
-    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter) and the {term}`innovation variance`.
-    - [Chapter 10](ch10_process_models.md): {term}`system state`, {term}`process model`, and {term}`control input`.
+    - [Chapter 5](#ch5): {term}`measurement noise` and the {term}`normal distribution`.
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b)$, [variances and covariances of sums](#ch6-sec-variance-of-sums), and [unbiased estimators](#ch6-sec-estimators).
+    - [Chapter 7](#ch7): [the optimal gain by completing the square](#ch7-sec-completing-the-square), and [what correlated errors do to an average](#ch7-sec-correlated-errors).
+    - [Chapter 9](#ch9): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter) and the {term}`innovation variance`.
+    - [Chapter 10](#ch10): {term}`system state`, {term}`process model`, and {term}`control input`.
     - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) (optional; only for the partial-derivative route to the normal equations) and [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) (only for the preview of nonlinear measurement functions).
     ///
     """)
@@ -252,7 +247,7 @@ def _(mo):
     The error is $(\hat h - h)x + (\hat c - c)$, with mean $0$ and variance $x^2\operatorname{Var}(\hat h) + \operatorname{Var}(\hat c) + 2x\operatorname{Cov}(\hat h, \hat c) = R\big(x^2 + \bar x^2 - 2x\bar x\big)/S_{xx} + R/n$. $\blacksquare$
     ///
 
-    Three lessons follow. More readings (larger $n$) help, but so do plates that are far apart (larger $S_{xx}$). The line is most accurate in the middle of the plates, at $x = \bar x$, and gets worse the farther we extrapolate: a 155 lb person is beyond our heaviest plate. And $\hat h$ and $\hat c$ are negatively correlated when $\bar x > 0$: a line that is too steep must start too low to pass through the middle of the data. With our plates the correlation coefficient is $-\bar x/\sqrt{S_{xx}/n + \bar x^2} \approx -0.80$, whatever $m$ is. Uncertainties that are correlated like this are the subject of [Chapter 12](ch12_vectors_matrices_covariance.md).
+    Three lessons follow. More readings (larger $n$) help, but so do plates that are far apart (larger $S_{xx}$). The line is most accurate in the middle of the plates, at $x = \bar x$, and gets worse the farther we extrapolate: a 155 lb person is beyond our heaviest plate. And $\hat h$ and $\hat c$ are negatively correlated when $\bar x > 0$: a line that is too steep must start too low to pass through the middle of the data. With our plates the correlation coefficient is $-\bar x/\sqrt{S_{xx}/n + \bar x^2} \approx -0.80$, whatever $m$ is. Uncertainties that are correlated like this are the subject of [Chapter 12](#ch12).
 
     The plot below simulates a calibration. The left panel shows each reading's deviation from the true line, converted to pounds, together with the fitted line's deviation; the shaded band is $\pm 2$ standard deviations from the corollary. The right panel repeats the calibration 1000 times and plots the errors of $\hat h$ and $\hat c$.
     """)
@@ -712,7 +707,7 @@ def _(mo):
     <!-- label: ch11-sec-whats-next -->
     ## What's Next
 
-    Twice now one number has not been enough: Chapter 10's weight and rate, and this chapter's weight and offset. In both cases the uncertainties of the two unknowns are correlated, and the correlation is exactly what lets a filter learn about one unknown from a reading of the other. [Chapter 12](ch12_vectors_matrices_covariance.md) introduces the tools for this: random vectors, covariance matrices, and the multivariate normal distribution. It ends by showing that conditioning a joint normal distribution on a measurement is the Kalman update in disguise.
+    Twice now one number has not been enough: Chapter 10's weight and rate, and this chapter's weight and offset. In both cases the uncertainties of the two unknowns are correlated, and the correlation is exactly what lets a filter learn about one unknown from a reading of the other. [Chapter 12](#ch12) introduces the tools for this: random vectors, covariance matrices, and the multivariate normal distribution. It ends by showing that conditioning a joint normal distribution on a measurement is the Kalman update in disguise.
     """)
     return
 

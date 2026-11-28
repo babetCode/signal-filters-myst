@@ -20,11 +20,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Measuring Uncertainty"
-    abbreviations:
-      iff: if and only if
-      diff: null
-    numbering:
-      equations: false
+    description: "Sample spaces, sigma-algebras, and Kolmogorov's axioms: a precise model of the uncertainty in noisy measurements."
+    label: ch4
     -->
     """)
     return
@@ -60,8 +57,8 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`power sets <power set>`, [the intersection](#ch2-lem-general-intersection) $\bigcap F$ of a nonempty set of sets, [sets of functions](#ch2-sec-functions) $Y^X$, and [the Axiom of Choice](#ch2-sec-10-choice) (used once, for the Vitali set).
-    - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and [De Morgan's laws](#ch3-thm-de-morgans-laws), {term}`indexed families <indexed family>` and [the Disjointification lemma](#ch3-lem-disjointification), {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including [the Listing theorem](#ch3-thm-listing-countable-sets) and [the countability of](#ch3-thm-the-integers-and-the-rationals-are-countable) $\mathbb Q$), [the Archimedean property](#ch3-thm-archimedean-property), {term}`intervals <interval>`, and the {term}`extended real numbers`.
+    - [Chapter 2](#ch2): {term}`power sets <power set>`, [the intersection](#ch2-lem-general-intersection) $\bigcap F$ of a nonempty set of sets, [sets of functions](#ch2-sec-functions) $Y^X$, and [the Axiom of Choice](#ch2-sec-10-choice) (used once, for the Vitali set).
+    - [Chapter 3](#ch3): {term}`complements <complement>` and [De Morgan's laws](#ch3-thm-de-morgans-laws), {term}`indexed families <indexed family>` and [the Disjointification lemma](#ch3-lem-disjointification), {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including [the Listing theorem](#ch3-thm-listing-countable-sets) and [the countability of](#ch3-thm-the-integers-and-the-rationals-are-countable) $\mathbb Q$), [the Archimedean property](#ch3-thm-archimedean-property), {term}`intervals <interval>`, and the {term}`extended real numbers`.
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits): limits, [the limit laws](#appc-thm-limit-laws-for-sequences), and [Monotone Convergence](#appc-thm-monotone-convergence) (for the continuity of probability).
     - [Appendix C: Series](#appc-sec-series): [series of nonnegative terms](#appc-sec-series-with-nonnegative-terms), their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped ([Nonnegative Sums in Any Order](#appc-thm-nonnegative-sums-in-any-order)).
     ///
@@ -72,7 +69,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The Introduction claimed that averaging noisy measurements makes the noise "cancel out". To turn that claim into theorems ([Chapter 6](ch6_expectation_and_variance.md)) and use them to choose $\alpha$ ([Chapter 7](ch7_optimal_alpha.md)), we need a precise model of uncertainty. This chapter builds it. A **probability space** $(\Omega, \mathcal F, \mathbb P)$ consists of a set $\Omega$ of possible outcomes, a collection $\mathcal F$ of *events* (the sets of outcomes we are allowed to ask about), and a function $\mathbb P$ that assigns each event its probability. Every later statement, such as "the measurement noise has variance $R$" or "the estimate is unbiased", is a statement about a probability space.
+    The Introduction claimed that averaging noisy measurements makes the noise "cancel out". To turn that claim into theorems ([Chapter 6](#ch6)) and use them to choose $\alpha$ ([Chapter 7](#ch7)), we need a precise model of uncertainty. This chapter builds it. A **probability space** $(\Omega, \mathcal F, \mathbb P)$ consists of a set $\Omega$ of possible outcomes, a collection $\mathcal F$ of *events* (the sets of outcomes we are allowed to ask about), and a function $\mathbb P$ that assigns each event its probability. Every later statement, such as "the measurement noise has variance $R$" or "the estimate is unbiased", is a statement about a probability space.
 
     We write $\mathbb P$ (blackboard-bold P) for probabilities because $P_k$ will denote the Kalman filter's error variance.
 
@@ -959,7 +956,7 @@ def _(mo):
     <!-- label: ch4-sec-whats-next -->
     ## What's Next
 
-    So far, events are sets of outcomes. Filters, however, work with *numbers*: readings, noise values, and estimates. [Chapter 5](ch5_random_variables.md) introduces **random variables**, functions from $\Omega$ to $\mathbb R$ whose preimages of Borel sets are events. Chapter 3's lemma that preimages preserve set operations makes every question about a random variable's value an event, and the probabilities of those events form its **distribution**. That is the language in which we finally write the measurement model $z_k = x_k + v_k$ precisely.
+    So far, events are sets of outcomes. Filters, however, work with *numbers*: readings, noise values, and estimates. [Chapter 5](#ch5) introduces **random variables**, functions from $\Omega$ to $\mathbb R$ whose preimages of Borel sets are events. Chapter 3's lemma that preimages preserve set operations makes every question about a random variable's value an event, and the probabilities of those events form its **distribution**. That is the language in which we finally write the measurement model $z_k = x_k + v_k$ precisely.
     """)
     return
 

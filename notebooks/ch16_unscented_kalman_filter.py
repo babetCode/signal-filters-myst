@@ -18,16 +18,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Sigma Points"
-    abbreviations:
-      UT: unscented transform
-      UKF: unscented Kalman filter
-      EKF: extended Kalman filter
-      KF: Kalman filter
-      PF: particle filter
-      RK4: classical fourth-order Runge–Kutta method
-      NEES: normalized estimation error squared
-    numbering:
-      equations: false
+    description: "The unscented Kalman filter, which pushes sigma points through the exact nonlinear functions instead of linearizing them."
+    label: ch16
     -->
     """)
     return
@@ -79,11 +71,11 @@ def display_settings(Path, dedent, mo, np, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 8](ch8_bayesian_view.md): the {term}`Bayes filter`, {term}`likelihoods <likelihood>`, and {term}`posteriors <posterior>` (for particle filters).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [covariance matrices](#ch12-sec-covariance-matrices), {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
-    - [Chapter 13](ch13_kalman_filter.md): [the Kalman filter](#ch13-sec-the-algorithm), [the Covariance Rules](#ch13-lem-covariance-rules), and [the Gaussian-conditioning form of the update](#ch13-thm-the-update-is-gaussian-conditioning).
-    - [Chapter 14](ch14_kalman_filters_in_practice.md): [NEES consistency tests](#ch14-sec-consistency-tests).
-    - [Chapter 15](ch15_extended_kalman_filter.md): {term}`nonlinear systems <nonlinear system>`, {term}`linearization`, the {term}`extended Kalman filter`, and [the pendulum example](#ch15-sec-example-tracking-a-pendulum), including [the Mean Error of the Tangent Line lemma](#ch15-lem-mean-error-of-the-tangent-line).
+    - [Chapter 8](#ch8): the {term}`Bayes filter`, {term}`likelihoods <likelihood>`, and {term}`posteriors <posterior>` (for particle filters).
+    - [Chapter 12](#ch12): [covariance matrices](#ch12-sec-covariance-matrices), {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
+    - [Chapter 13](#ch13): [the Kalman filter](#ch13-sec-the-algorithm), [the Covariance Rules](#ch13-lem-covariance-rules), and [the Gaussian-conditioning form of the update](#ch13-thm-the-update-is-gaussian-conditioning).
+    - [Chapter 14](#ch14): [NEES consistency tests](#ch14-sec-consistency-tests).
+    - [Chapter 15](#ch15): {term}`nonlinear systems <nonlinear system>`, {term}`linearization`, the {term}`extended Kalman filter`, and [the pendulum example](#ch15-sec-example-tracking-a-pendulum), including [the Mean Error of the Tangent Line lemma](#ch15-lem-mean-error-of-the-tangent-line).
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
     - [Appendix D: Trace](#appd-sec-trace), [Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices), and [Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition).
     ///
@@ -1395,7 +1387,7 @@ def _(mo):
     <!-- label: ch16-sec-whats-next -->
     ## What's Next
 
-    Part V turns to the nonlinearity that matters most in navigation: orientation. [Chapter 17](ch17_rotations.md) develops rotation matrices, Euler angles, and the angular velocity, and shows why every three-number description of orientation has singularities. Those singularities, and the fact that orientations cannot be averaged like vectors, are the reason Parts V and VI use quaternions and error-state Kalman filters.
+    Part V turns to the nonlinearity that matters most in navigation: orientation. [Chapter 17](#ch17) develops rotation matrices, Euler angles, and the angular velocity, and shows why every three-number description of orientation has singularities. Those singularities, and the fact that orientations cannot be averaged like vectors, are the reason Parts V and VI use quaternions and error-state Kalman filters.
     """)
     return
 

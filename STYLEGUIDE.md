@@ -52,7 +52,7 @@ graph LR
 | `make preview` | Serve the last static build at `http://localhost:8000` |
 | `make clean` | Delete build output |
 
-**Agent scope.** An agent assigned to a notebook may edit that `notebooks/*.py` file (its `notebooks/public/*.svg` figures are regenerated whenever it runs, and are git-ignored), and may add entries to `content/refs.bib`. Leave `content/myst.yml`, `scripts/`, other notebooks, and the rest of `content/` untouched unless asked.
+**Agent scope.** An agent assigned to a notebook may edit that `notebooks/*.py` file (its `notebooks/public/*.svg` figures are regenerated whenever it runs, and are git-ignored), and may add entries to `content/refs.bib` and to the `abbreviations` in `content/myst.yml` ([§2.2](#22-frontmatter)). Leave the rest of `content/myst.yml`, `scripts/`, other notebooks, and the rest of `content/` untouched unless asked.
 
 ---
 
@@ -60,7 +60,7 @@ graph LR
 
 ### 2.1 Skeleton
 
-Copy this exactly, changing only the title, subtitle, abbreviations, and dependencies.
+Copy this exactly, changing only the title, the frontmatter values ([§2.2](#22-frontmatter)), and the dependencies.
 
 ```python
 # /// script
@@ -82,11 +82,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Combining Two Noisy Estimates"
-    abbreviations:
-      iff: if and only if
-      diff: null
-    numbering:
-      equations: false
+    description: "Derives the gain that minimizes the error variance when a noisy prediction and a noisy measurement are combined."
+    label: ch7
     -->
     """)
     return
@@ -132,11 +129,54 @@ if __name__ == "__main__":
 ```
 
 - **Title:** `app_title` is the page title shown on the site. Chapters use `"<n>. <Title>"`, appendices `"Appendix <L>: <Title>"` (see [§10.1](#101-book-structure)). Do not repeat the title as a `#` heading.
-- **Frontmatter:** the first `<!-- jb-frontmatter ... -->` comment is merged into the page's YAML frontmatter by the sync script. Keep `numbering: equations: false`.
+- **Frontmatter:** the first `<!-- jb-frontmatter ... -->` comment is merged into the page's YAML frontmatter by the sync script ([§2.2](#22-frontmatter)).
 - **Dependencies:** list only what the notebook imports. Allowed: `marimo>=0.25.1`, `matplotlib==3.11.2`, `numpy==2.5.3`, `pandas==3.0.6`, `schemdraw==0.23`, `scipy==1.18.1`.
 - **CSS:** keep `css_file="notebook-styles.css"`; the sync script comments it out of the exported frontmatter.
 
-### 2.2 Named Cells
+### 2.2 Frontmatter
+
+A page's [frontmatter](https://mystmd.org/guide/frontmatter) comes from three places. Each key is set in exactly one of them.
+
+| Source | Keys |
+|:---|:---|
+| `app_title` ([§2.1](#21-skeleton)) | `title` |
+| `content/myst.yml`, under `project:` | `numbering`, `math`, `abbreviations`, `license`, and the book's own `title`, `authors`, and `abstract` |
+| The `jb-frontmatter` comment | `subtitle`, `short_title`, `description`, `label`, and rarely `abbreviations` (table below) |
+
+MyST merges `numbering`, `math`, and `abbreviations` from `content/myst.yml` into every page key by key, so a page never repeats them.
+
+**Page keys.** Write them in this order:
+
+| Key | Required | Rule |
+|:---|:---:|:---|
+| `subtitle` | every page except Home | Title case. Listed in [§10.1](#101-book-structure). |
+| `short_title` | when the title is longer than 40 characters | At most 40 characters. The sidebar and the previous/next links show it instead of the title. |
+| `description` | every page | One plain-text sentence of at most 160 characters saying what the page covers. Link previews and search results show it. No markdown, math, or HTML; spell symbols in words ([§6.5](#65-math)). |
+| `label` | every page | The page's `<page>` label from [§7.1](#71-labels): `index`, `intro`, `ch1` … `ch21`, `appa` … `appd`. Links to the whole page use it ([§7.2](#72-cross-references)). |
+| `abbreviations` | no | Only for an abbreviation that must not apply on other pages. The Home page's demonstration is the only one. |
+
+- Quote every string value with double quotes; indent nested keys by 2 spaces.
+- Never set any other key on a page without the author's approval. In particular, never set `title`, `numbering`, or `math` on a page.
+
+**Abbreviations.** On the site, hovering over an abbreviation shows its expansion.
+
+- Every abbreviation is defined once, in `content/myst.yml`, and applies on every page. Keep the list alphabetical (ignoring case) with one expansion per abbreviation.
+- MyST matches each abbreviation as a case-sensitive string anywhere in the prose, including headings, admonition titles, and the inside of longer words. It skips code, math, link text, and citations. Longer keys are matched first, and a key whose value is `null` claims its text without showing anything. That is why `diff: null`, `Diff: null`, and `Mifflin: null` are in the list: they keep `iff` from matching inside "different", "Differentiable", and "Mifflin".
+- After adding an abbreviation, run `make sync-notebooks`. The script warns about every word the abbreviation would match inside; add a `null` entry for that word. A trailing plural *s* ("IMUs") is fine.
+
+**Checks.** The sync script warns about:
+
+- a key not in the table above;
+- a missing required key;
+- a page label that differs from [§7.1](#71-labels);
+- a title longer than 40 characters without a `short_title`;
+- a description over 160 characters or with markup;
+- a page abbreviation already in `content/myst.yml`;
+- an abbreviation matched inside a longer word.
+
+Fix every warning.
+
+### 2.3 Named Cells
 
 Every notebook has these named cells, in this order, at the top:
 
@@ -144,11 +184,11 @@ Every notebook has these named cells, in this order, at the top:
 |:---|:---|:---:|
 | `frontmatter` | The `jb-frontmatter` comment | none |
 | `imports` | Every import in the notebook, and nothing else | `include=false` |
-| `display_settings` | `plt.style.use`, the `graphic` helper, and any other display-only setup (for example the LaTeX-macro cell in [§2.6](#26-latex-macros)) | `include=false` |
+| `display_settings` | `plt.style.use`, the `graphic` helper, and any other display-only setup (for example the LaTeX-macro cell in [§2.7](#27-latex-macros)) | `include=false` |
 
 Hidden setup that later cells depend on (generated data, constants, helper functions the reader does not need to read) goes in `include=false` cells with descriptive names such as `data`, `simulator`, or `plot_helpers`. Prefer one `data` cell for a page's generated data.
 
-### 2.3 `# jb:` Options
+### 2.4 `# jb:` Options
 
 The sync script turns cells into `{marimo}` directives. marimo-native settings (`hide_code`, cell name, `disabled`, column) are exported automatically. The others are set with a comment on the first line of the cell:
 
@@ -170,7 +210,7 @@ The sync script turns cells into `{marimo}` directives. marimo-native settings (
 
 Apart from the uses above, avoid `# jb:` comments.
 
-### 2.4 marimo Rules
+### 2.5 marimo Rules
 
 - Every global name is defined in exactly one cell.
 - Use `_`-prefixed names for cell-local variables (`_fig`, `_ax`).
@@ -181,18 +221,18 @@ Apart from the uses above, avoid `# jb:` comments.
 - **Computed markdown:** an `mo.md` cell whose text depends on other variables (an `rf"""` string with live values) is exported as a marimo code cell and rendered by marimo, not MyST. In such cells, `{term}` references, `[@cite]` citations, footnotes, labels, and cross-reference links do not work on the site. Keep computed cells to plain text and math, keep them small, and put everything else in static cells whose only parameter is `mo`.
 - **Interactive widgets:** create the `mo.ui` element in one cell and read `.value` in a different cell. Display the element with its output, e.g. `mo.vstack([slider, graphic(fig)])`.
 
-### 2.5 Determinism, Speed, and Safety
+### 2.6 Determinism, Speed, and Safety
 
 - Seed every random generator: `rng = np.random.default_rng(<fixed seed>)`. Use the seeds in [§10.3](#103-running-examples) for the running examples.
 - Keep each notebook's total run time under about 20 s: vectorize, and keep Monte Carlo sizes modest.
 - Never call `eval` or `exec` on user input. Parse it with a small purpose-built parser.
 
-### 2.6 LaTeX Macros
+### 2.7 LaTeX Macros
 
-For chapters which use custom macros (such as Chapters 1–3 and Appendices A–B, which use `\existsin`, `\forallin`, `\existssubseteq`, `\forallsubseteq`), the macros should be defined in both the frontmatter (to be exported to by `sync_notebooks.py`) and in a `mo.latex()` call (in the `display_settings` cell, for rendering in the notebook during development), copying the pattern in `notebooks/ch1_language_of_logic.py`:
+The book has four custom macros: `\existsin`, `\forallin`, `\existssubseteq`, and `\forallsubseteq`. Chapters 1–3 and Appendices A–B use them.
 
-- a `math:` block in the `jb-frontmatter` comment (for MyST), and
-- an `include=false` cell in `display_settings` that calls `mo.latex(...)` with the `\newcommand` definitions, then `mo.output.clear()` (for the marimo editor).
+- **On the site:** they are defined once, in the `math:` block of `content/myst.yml`, for every page ([§2.2](#22-frontmatter)).
+- **In the marimo editor:** a notebook that uses them also needs an `include=false` cell in `display_settings` that calls `mo.latex(...)` with the `\newcommand` definitions, then `mo.output.clear()`. Copy the pattern in `notebooks/ch1_language_of_logic.py`.
 
 Do not add new macros.
 
@@ -441,12 +481,13 @@ A label is a name for a heading or a result that links can point to. Labels are 
 
   marimo hides the comment, and the sync script converts it to MyST's `(ch4-sec-kolmogorovs-axioms)=`. The first time you label a new kind of block (for example an `<img>` figure), confirm that the strict build resolves a link to it. (Headings and results are confirmed to resolve across pages.)
 - **Results:** the `id` in the `attrs` line ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)).
-- Every `##` and `###` heading in a prose cell has a label, and every result has an `id`. Labels work only in static prose cells (`def _(mo):` with a single `mo.md(r"""...""")`), not in computed markdown ([§2.4](#24-marimo-rules)).
+- **Pages:** the `label` frontmatter key ([§2.2](#22-frontmatter)) is the bare `<page>`, e.g. `ch7`.
+- Every `##` and `###` heading in a prose cell has a label, and every result has an `id`. Labels work only in static prose cells (`def _(mo):` with a single `mo.md(r"""...""")`), not in computed markdown ([§2.5](#25-marimo-rules)).
 - A label is derived once from the heading or result name and then never changes, even if the name is later edited, because other pages may link to it. Before removing a label, grep `notebooks/*.py` for links to it.
 
 ### 7.2 Cross-References
 
-- **Link to the most specific target** that contains what is referenced: the theorem, definition, or section, not its page. Link to a whole page (`[Chapter 7](ch7_optimal_alpha.md)`) only when the whole page is meant.
+- **Link to the most specific target** that contains what is referenced: the theorem, definition, or section, not its page. Link to a whole page (`[Chapter 7](#ch7)`) only when the whole page is meant. Link to a page by its label, never by its file name.
 - **Syntax:** `[link text](#label)`, which works across pages. Always give link text; never `[](#label)`, which renders a page-relative number such as "Theorem 3".
 - **Link text.** Between them, the link text and its sentence name both the target and, if it is on another page, that page. Three forms are used:
   - the link text names the target: "by the [Closure Properties lemma](#ch4-lem-closure-properties)", or "the [Recursion Theorem](#ch2-thm-recursion) of Chapter 2";
@@ -454,7 +495,7 @@ A label is a name for a heading or a result that links can point to. Labels are 
   - a parenthetical citation, where the sentence names the target and the link text names the page: "by linearity of expectation ([Chapter 6](#ch6-thm-linearity-and-positivity-of-expectation))".
 - **Prerequisites items** link each listed concept to its target (a `{term}` for a defined term, a label otherwise). The leading "Chapter N" link points at the whole page when the item lists several concepts from it.
 - **Definitions:** link to a defined term with `{term}`, not with a label.
-- Until a target has a label, link to its page and name the section in the link text: `[Appendix C: Series](appendix_c_calculus.md)`.
+- Until a target has a label, link to its page and name the section in the link text: `[Appendix C: Series](#appc)`.
 
 ### 7.3 Glossary Terms
 
@@ -608,7 +649,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
 
 ### 10.1 Book Structure
 
-`content/myst.yml` is the source of truth for the order and the part titles. Titles and subtitles come from each notebook's `app_title` and `subtitle`.
+`content/myst.yml` is the source of truth for the order and the part titles. Titles and subtitles come from each notebook's `app_title` and `subtitle`; when you change either, update this table in the same change. Two pages also have a `short_title` ([§2.2](#22-frontmatter)): Chapter 19 ("19. AHRS") and Appendix B ("Appendix B: Number Systems").
 
 | File | Title | Subtitle |
 |:---|:---|:---|
@@ -745,4 +786,7 @@ A record of settled questions, so they are not reopened by accident.
 - **Results are not numbered** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)), because they are always referred to by name.
 - **Theorems and proofs use `/// admonition` with role classes**, which leaves `important` free for Prerequisites ([§6.1](#61-admonitions)).
 - **Fenced copies of running code** are allowed when kept identical to the running cell ([§3](#3-code-the-reader-sees)).
+- **Shared frontmatter lives in `content/myst.yml`.** Equation numbering, the LaTeX macros, and every abbreviation are set once for the book, not per page ([§2.2](#22-frontmatter)). This keeps one expansion per abbreviation and removes the per-page copies that had drifted apart.
+- **Every page has a `label`, and links to whole pages use it** rather than the file name ([§7.2](#72-cross-references)), so that every cross-reference has the same form.
+- **Licenses:** code is MIT, and text and figures are CC-BY-4.0 (set in `content/myst.yml`). Both let anyone reuse the work for any purpose with attribution.
 - **`editor=true` is reserved for code the reader is invited to edit** and that shows its own output. Reference implementations and other definitions are shown as fenced copies of an `include=false` cell ([§3](#3-code-the-reader-sees)).

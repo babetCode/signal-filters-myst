@@ -17,13 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Combining Two Noisy Estimates"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      EMA: exponential moving average
-      MSE: mean squared error
-    numbering:
-      equations: false
+    description: "Derives the gain that minimizes the error variance when a noisy prediction and a noisy measurement are combined."
+    label: ch7
     -->
     """)
     return
@@ -114,10 +109,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, [the cumulative average](#intro-sec-a-recursive-average), and the {term}`exponential moving average` (EMA) with [first-measurement initialization](#intro-sec-initialization).
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [proof by induction](#ch2-thm-induction).
-    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, the {term}`normal distribution`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model) $z_k = x_k + v_k$.
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance` and [its properties](#ch6-thm-properties-of-covariance) (including linearity in each argument and [the Cauchy–Schwarz inequality](#ch6-thm-cauchyschwarz-inequality)), {term}`uncorrelated` random variables, [the variance of a linear combination](#ch6-thm-variance-of-a-linear-combination), in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, [Bienaymé's corollary](#ch6-cor-bienayme), {term}`unbiased` estimators, {term}`mean squared error` and [the bias–variance decomposition](#ch6-thm-biasvariance-decomposition), the variance $\sigma^2/k$ of the {term}`sample mean`, and [the EMA's error variance](#ch6-thm-ema-of-a-constant-value), including [the corollary that for a constant value averaging beats the EMA](#ch6-cor-for-a-constant-value-averaging-beats-the-ema).
+    - [Introduction](#intro): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, [the cumulative average](#intro-sec-a-recursive-average), and the {term}`exponential moving average` (EMA) with [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 2](#ch2): [proof by induction](#ch2-thm-induction).
+    - [Chapter 5](#ch5): {term}`random variables <random variable>`, the {term}`normal distribution`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model) $z_k = x_k + v_k$.
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance` and [its properties](#ch6-thm-properties-of-covariance) (including linearity in each argument and [the Cauchy–Schwarz inequality](#ch6-thm-cauchyschwarz-inequality)), {term}`uncorrelated` random variables, [the variance of a linear combination](#ch6-thm-variance-of-a-linear-combination), in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, [Bienaymé's corollary](#ch6-cor-bienayme), {term}`unbiased` estimators, {term}`mean squared error` and [the bias–variance decomposition](#ch6-thm-biasvariance-decomposition), the variance $\sigma^2/k$ of the {term}`sample mean`, and [the EMA's error variance](#ch6-thm-ema-of-a-constant-value), including [the corollary that for a constant value averaging beats the EMA](#ch6-cor-for-a-constant-value-averaging-beats-the-ema).
     - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation in one tip).
     ///
     """)
@@ -930,7 +925,7 @@ def _(mo):
     P_k &= (1 - K_k)\,P_k^- && \text{(update the error variance)}
     \end{aligned}$$
 
-    Notice that $K_k$ and $P_k$ depend only on variances, not on the measured values, so they could be computed before any data arrive. The Introduction's EMA is the special case $K_k = \alpha$ for every $k$, and for a constant weight we proved that the optimal choice is instead $K_k = 1/k$. What is still missing is how to obtain $P_k^-$ from $P_{k-1}$ when the true value *changes* between steps. That is the subject of [Chapter 9](ch9_noise_levels.md).
+    Notice that $K_k$ and $P_k$ depend only on variances, not on the measured values, so they could be computed before any data arrive. The Introduction's EMA is the special case $K_k = \alpha$ for every $k$, and for a constant weight we proved that the optimal choice is instead $K_k = 1/k$. What is still missing is how to obtain $P_k^-$ from $P_{k-1}$ when the true value *changes* between steps. That is the subject of [Chapter 9](#ch9).
 
     /// attention | 🗝️ **Key Idea**
     The optimal gain is the fraction of the total variance that belongs to the prediction: $K_k = P_k^-/(P_k^- + R)$. It is close to $1$ when the prediction is much less certain than the measurement, close to $0$ when it is much more certain, and after the update the error variance shrinks by the factor $1 - K_k$.
@@ -955,7 +950,7 @@ def _(mo):
     <!-- label: ch7-sec-whats-next -->
     ## What's Next
 
-    This chapter described the prediction and the measurement only through means, variances, and a covariance, and it optimized only over gains. [Chapter 8](ch8_bayesian_view.md) takes a different view: it treats the unknown weight itself as a random variable, describes what we know about it by a probability density, and updates that density with Bayes' theorem. The same gain reappears, and we learn when it is the best of *all* possible estimators, not just the best gain.
+    This chapter described the prediction and the measurement only through means, variances, and a covariance, and it optimized only over gains. [Chapter 8](#ch8) takes a different view: it treats the unknown weight itself as a random variable, describes what we know about it by a probability density, and updates that density with Bayes' theorem. The same gain reappears, and we learn when it is the best of *all* possible estimators, not just the best gain.
     """)
     return
 

@@ -7,11 +7,11 @@ The generated file looks like:
     title: Table of Contents
     ---
 
-    ## [Home](index.md)
+    ## [Home](#index)
 
     ## Part I: Choosing Alpha
 
-    ### [4. Probability Spaces](ch4_probability_spaces.md)
+    ### [4. Probability Spaces](#ch4)
 
     - [Sigma-Algebras](#ch4-sec-sigma-algebras)
       - 📖 {term}`Sigma-algebra`
@@ -25,7 +25,8 @@ such as Home, is a `##` heading beside the parts). Under each page heading is
 a nested list of its headings (nested by level), and under each heading the
 glossary terms, results (theorems, lemmas, corollaries), and other labeled
 blocks it contains, in the order the page presents them. Every entry is a
-cross-reference: pages link to their file, headings and results to their
+cross-reference: pages link to their frontmatter `label` (or, without one,
+to their file), headings and results to their
 label, and glossary terms use `{term}`.
 
 Pages are read from the postprocessed MyST in content/nb/, so run
@@ -53,6 +54,7 @@ INDENT = "  "
 # The page's leading YAML frontmatter, and its `title:` key.
 FRONTMATTER = re.compile(r"\A---[ \t]*\r?\n(?P<yaml>[\s\S]*?)\r?\n---[ \t]*(?:\r?\n|\Z)")
 FRONTMATTER_TITLE = re.compile(r"^title:[ \t]*(?P<value>.+?)[ \t]*$", re.M)
+FRONTMATTER_LABEL = re.compile(r"^label:[ \t]*(?P<value>.+?)[ \t]*$", re.M)
 
 # Everything on a page the TOC cares about, plus the blocks it must step over
 # (code fences, HTML comments) so `#` lines inside them aren't read as headings.
@@ -292,6 +294,10 @@ def render(toc: list[dict], out: list[str], depth: int = 0) -> int:
                 warn(f"{file} not found (run scripts/sync_notebooks.py first)")
                 out.append(f"{hashes} [{title or path.stem}]({link})\n")
                 continue
+            frontmatter = FRONTMATTER.match(text)
+            label = frontmatter and FRONTMATTER_LABEL.search(frontmatter.group("yaml"))
+            if label:
+                link = f"#{unquote(label.group('value'))}"
             page_title, entries = scan_page(text, link, file)
             out.append(f"{hashes} [{title or page_title or path.stem}]({link})\n")
             if entries:

@@ -19,17 +19,9 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "From Natural Numbers to Real Numbers"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      ZFC: Zermelo–Fraenkel set theory with the Axiom of Choice
-    numbering:
-      equations: false
-    math:
-      '\existsin': '\exists #1 \!\!\in\!\! #2\,'
-      '\forallin': '\forall #1 \!\!\in\!\! #2\,'
-      '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
-      '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+    short_title: "Appendix B: Number Systems"
+    description: "Constructs the integers, rationals, and reals from the natural numbers, so that the completeness of the reals is a theorem, not an assumption."
+    label: appb
     -->
     """)
     return
@@ -73,8 +65,8 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): all of it, especially [induction](#ch2-thm-induction), [the Recursion Theorem](#ch2-thm-recursion), [Equality of Functions](#ch2-lem-equality-of-functions), and the [recursive definitions](#ch2-sec-arithmetic-and-order) of $+$, $\cdot$, and $<$ on $\mathbb N$.
-    - [Chapter 3](ch3_sets_for_probability.md) (optional): the definitions of a {term}`field`, an {term}`ordered field`, an {term}`upper bound`, a {term}`supremum`, a {term}`complete ordered field`, and a {term}`bijective` function. Each is restated here where it is first needed, so this appendix can be read directly after Chapter 2.
+    - [Chapter 2](#ch2): all of it, especially [induction](#ch2-thm-induction), [the Recursion Theorem](#ch2-thm-recursion), [Equality of Functions](#ch2-lem-equality-of-functions), and the [recursive definitions](#ch2-sec-arithmetic-and-order) of $+$, $\cdot$, and $<$ on $\mathbb N$.
+    - [Chapter 3](#ch3) (optional): the definitions of a {term}`field`, an {term}`ordered field`, an {term}`upper bound`, a {term}`supremum`, a {term}`complete ordered field`, and a {term}`bijective` function. Each is restated here where it is first needed, so this appendix can be read directly after Chapter 2.
     ///
     """)
     return
@@ -83,7 +75,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 3](#ch3-sec-the-real-numbers) works with the real numbers as a *complete ordered field*: a number system with the familiar arithmetic and order in which every nonempty set with an upper bound has a least upper bound. Every later chapter depends on that property. Limits, infinite sums, and integrals are all defined through least upper bounds ([Appendix C](appendix_c_calculus.md)), and with them the probabilities, expectations, and variances that filters are built from.
+    [Chapter 3](#ch3-sec-the-real-numbers) works with the real numbers as a *complete ordered field*: a number system with the familiar arithmetic and order in which every nonempty set with an upper bound has a least upper bound. Every later chapter depends on that property. Limits, infinite sums, and integrals are all defined through least upper bounds ([Appendix C](#appc)), and with them the probabilities, expectations, and variances that filters are built from.
 
     This appendix shows that the property is not an extra assumption. Inside ZFC, starting from the natural numbers of [Chapter 2](#ch2-sec-natural-numbers), we construct the integers $\mathbb Z$, the rational numbers $\mathbb Q$, and the real numbers $\mathbb R$, and prove that $\mathbb R$ is a complete ordered field. Along the way we see exactly what is missing from $\mathbb Q$: the rationals have a hole where $\sqrt 2$ should be.
 
@@ -738,7 +730,7 @@ def _(mo):
     Not proved here; see Spivak, *Calculus*, Chapters 29–30, or [Real number: Axiomatic approach](https://en.wikipedia.org/wiki/Real_number). The idea: $\phi$ is forced on $\mathbb N$ by $\phi(1) = 1$ and additivity, then on $\mathbb Z$ by $\phi(-x) = -\phi(x)$, and on $\mathbb Q$ by $\phi(x^{-1}) = \phi(x)^{-1}$. For a general $x$, order preservation forces $\phi(x) = \sup\{\phi(q) : q \in \mathbb Q,\ q < x\}$, and completeness of $F$ guarantees that this supremum exists. One then checks that this $\phi$ is a bijection that preserves $+$, $\cdot$, and $<$.
     ///
 
-    So, up to renaming elements by $\phi$, there is only one complete ordered field. Every construction (Dedekind cuts, Cauchy sequences, infinite decimals) produces "the same" $\mathbb R$, and any theorem proved from the complete-ordered-field axioms alone holds for all of them. This is why [Chapter 3](ch3_sets_for_probability.md) and the rest of the book work from those axioms and never mention cuts again.
+    So, up to renaming elements by $\phi$, there is only one complete ordered field. Every construction (Dedekind cuts, Cauchy sequences, infinite decimals) produces "the same" $\mathbb R$, and any theorem proved from the complete-ordered-field axioms alone holds for all of them. This is why [Chapter 3](#ch3) and the rest of the book work from those axioms and never mention cuts again.
 
     <!-- label: appb-sec-summary -->
     ## Summary

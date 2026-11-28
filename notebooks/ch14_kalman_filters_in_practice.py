@@ -18,12 +18,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Tuning, Fusion, and Consistency"
-    abbreviations:
-      NEES: normalized estimation error squared
-      NIS: normalized innovation squared
-      RTS: Rauch–Tung–Striebel
-    numbering:
-      equations: false
+    description: "Initializing a Kalman filter, choosing its noise covariances, fusing sensors, handling missing data, and testing whether it is consistent."
+    label: ch14
     -->
     """)
     return
@@ -76,11 +72,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular the {term}`state-space model` and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), the {term}`Joseph form`, the {term}`Kalman gain`, [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
-    - [Chapter 9](ch9_noise_levels.md): the {term}`normalized innovation squared`, the {term}`chi-squared distribution`, {term}`filter consistency`, and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
-    - [Chapter 10](ch10_process_models.md): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [affine transformations of multivariate normal vectors](#ch12-thm-invertible-affine-maps-preserve-normality); [Mahalanobis distance](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
-    - [Chapter 5](ch5_random_variables.md): [independence](#ch5-sec-independence); [the distribution of a sum of independent random variables](#ch5-sec-sums-of-independent-random-variables).
+    - [Chapter 13](#ch13): the whole chapter, in particular the {term}`state-space model` and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), the {term}`Joseph form`, the {term}`Kalman gain`, [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
+    - [Chapter 9](#ch9): the {term}`normalized innovation squared`, the {term}`chi-squared distribution`, {term}`filter consistency`, and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
+    - [Chapter 10](#ch10): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 12](#ch12): [affine transformations of multivariate normal vectors](#ch12-thm-invertible-affine-maps-preserve-normality); [Mahalanobis distance](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
+    - [Chapter 5](#ch5): [independence](#ch5-sec-independence); [the distribution of a sum of independent random variables](#ch5-sec-sums-of-independent-random-variables).
     - Appendix C: [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus); [Multiple Integrals](#appc-sec-multiple-integrals): only for the derivation of the continuous white-noise acceleration model.
     - Appendix D: [Cholesky Decomposition](#appd-sec-cholesky-decomposition); [The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
@@ -1554,7 +1550,7 @@ def _(mo):
     <!-- label: ch14-sec-whats-next -->
     ## What's Next
 
-    Every model in Parts II and III was linear: $\mathbf F\mathbf x$, $\mathbf H\mathbf x$. A pendulum's acceleration depends on the *sine* of its angle, a range sensor measures a square root, and an orientation is not a vector at all. [Chapter 15](ch15_extended_kalman_filter.md) begins Part IV by linearizing such models around the current estimate. That gives the extended Kalman filter, and with it a new set of failure modes that the consistency tests of this chapter will help detect.
+    Every model in Parts II and III was linear: $\mathbf F\mathbf x$, $\mathbf H\mathbf x$. A pendulum's acceleration depends on the *sine* of its angle, a range sensor measures a square root, and an orientation is not a vector at all. [Chapter 15](#ch15) begins Part IV by linearizing such models around the current estimate. That gives the extended Kalman filter, and with it a new set of failure modes that the consistency tests of this chapter will help detect.
     """)
     return
 

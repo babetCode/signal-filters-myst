@@ -17,15 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Why Averaging Works"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      EMA: exponential moving average
-      MSE: mean squared error
-      LOTUS: law of the unconscious statistician
-      PMF: probability mass function
-    numbering:
-      equations: false
+    description: "Expected value and variance, and the theorems that show why averaging noisy readings works and how a moving average trades noise against lag."
+    label: ch6
     -->
     """)
     return
@@ -71,10 +64,10 @@ def _(Path):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the cumulative average](#intro-sec-a-recursive-average) and the {term}`exponential moving average` with [first-measurement initialization](#intro-sec-initialization).
-    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-sec-finite-sums-and-products); {term}`absolute value` and [the triangle inequality](#ch3-lem-properties-of-absolute-value); [the Archimedean property](#ch3-thm-archimedean-property).
-    - [Chapter 4](ch4_probability_spaces.md): [monotonicity](#ch4-thm-monotonicity), [countable additivity](#ch4-sec-kolmogorovs-axioms), [continuity from below](#ch4-thm-continuity-from-below); {term}`independent events`; {term}`almost surely`.
-    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>` and [the theorem on building them](#ch5-thm-building-random-variables); {term}`discrete <discrete random variable>` and {term}`continuous <continuous random variable>` random variables, [PMFs](#ch5-sec-discrete-random-variables), [densities](#ch5-sec-continuous-random-variables), and sums over countable sets; the {term}`uniform <uniform distribution>` and {term}`normal <normal distribution>` distributions and [the density of](#ch5-thm-density-of-ax-b) $aX + b$; {term}`joint densities <joint density>` and {term}`marginal densities <marginal density>`; {term}`independence <independent random variables>` and [the factorization criteria](#ch5-thm-factorization-criteria); [linear combinations of independent normals](#ch5-cor-linear-combinations-of-independent-normals); the standard {term}`measurement-noise <measurement noise>` model.
+    - [Introduction](#intro): [the cumulative average](#intro-sec-a-recursive-average) and the {term}`exponential moving average` with [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 3](#ch3): [finite sums](#ch3-sec-finite-sums-and-products); {term}`absolute value` and [the triangle inequality](#ch3-lem-properties-of-absolute-value); [the Archimedean property](#ch3-thm-archimedean-property).
+    - [Chapter 4](#ch4): [monotonicity](#ch4-thm-monotonicity), [countable additivity](#ch4-sec-kolmogorovs-axioms), [continuity from below](#ch4-thm-continuity-from-below); {term}`independent events`; {term}`almost surely`.
+    - [Chapter 5](#ch5): {term}`random variables <random variable>` and [the theorem on building them](#ch5-thm-building-random-variables); {term}`discrete <discrete random variable>` and {term}`continuous <continuous random variable>` random variables, [PMFs](#ch5-sec-discrete-random-variables), [densities](#ch5-sec-continuous-random-variables), and sums over countable sets; the {term}`uniform <uniform distribution>` and {term}`normal <normal distribution>` distributions and [the density of](#ch5-thm-density-of-ax-b) $aX + b$; {term}`joint densities <joint density>` and {term}`marginal densities <marginal density>`; {term}`independence <independent random variables>` and [the factorization criteria](#ch5-thm-factorization-criteria); [linear combinations of independent normals](#ch5-cor-linear-combinations-of-independent-normals); the standard {term}`measurement-noise <measurement noise>` model.
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series): limits, [absolutely convergent and nonnegative series](#appc-sec-sums-in-any-order) (rearranging, grouping, and multiplying them), [the geometric series](#appc-thm-geometric-series).
     - [Appendix C: Derivatives](#appc-sec-derivatives) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): [the extreme value theorem](#appc-thm-extreme-value-theorem) and the fact that [the derivative vanishes at an interior extremum](#appc-lem-interior-extremum).
     - [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) ([substitution](#appc-thm-integration-by-substitution), [integration by parts](#appc-thm-integration-by-parts)), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Improper Integrals](#appc-sec-improper-integrals), and [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals) ([Fubini's theorem](#appc-thm-tonelli-and-fubini)).
@@ -1051,7 +1044,7 @@ def _(mo):
     <!-- label: ch6-sec-whats-next -->
     ## What's Next
 
-    The EMA blends the previous estimate and the new reading with a *fixed* weight. Both inputs are noisy, and their noise levels change from step to step: early on, the previous estimate is based on few readings, later on many. [Chapter 7](ch7_optimal_alpha.md) asks for the weight that minimizes the mean squared error of the blend, given the variance of each input. The answer is a simple formula, it reproduces the $1/k$ gains of the cumulative average for a constant value, and it is the heart of the Kalman filter.
+    The EMA blends the previous estimate and the new reading with a *fixed* weight. Both inputs are noisy, and their noise levels change from step to step: early on, the previous estimate is based on few readings, later on many. [Chapter 7](#ch7) asks for the weight that minimizes the mean squared error of the blend, given the variance of each input. The answer is a simple formula, it reproduces the $1/k$ gains of the cumulative average for a constant value, and it is the heart of the Kalman filter.
     """)
     return
 

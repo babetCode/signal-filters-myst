@@ -1,10 +1,5 @@
 ---
 title: Glossary
-abbreviations:
-  iff: if and only if
-  diff: null
-numbering:
-  equations: false
 ---
 
 :::{index}

@@ -17,14 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Singularity-Free Attitude"
-    abbreviations:
-      ENU: east-north-up
-      FLU: forward-left-up
-      NED: north-east-down
-      JPL: Jet Propulsion Laboratory
-      IMU: inertial measurement unit
-    numbering:
-      equations: false
+    description: "Unit quaternions for attitude: composing rotations, quaternion kinematics, and the exact update from gyroscope readings."
+    label: ch18
     -->
     """)
     return
@@ -76,10 +70,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 17](ch17_rotations.md): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), {term}`rotation vectors <rotation vector>` and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
+    - [Chapter 17](#ch17): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), {term}`rotation vectors <rotation vector>` and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
     - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
-    - [Chapter 3](ch3_sets_for_probability.md): the definition of a {term}`field`, for one remark.
+    - [Chapter 3](#ch3): the definition of a {term}`field`, for one remark.
     ///
     """)
     return
@@ -807,7 +801,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The rate is held constant over each sample.** The exact update is exact only for a zero-order-hold rate. If the axis of rotation changes within a sample (vibration, fast oscillation), the true increment differs from $\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$ at second order; high-end systems add *coning* corrections that use several consecutive samples.
-    - **The gyroscope measures $\boldsymbol\omega^b$ perfectly.** It does not: bias and noise are integrated along with the motion. No integrator can remove them, which is why [Chapter 19](ch19_ahrs.md) fuses other sensors.
+    - **The gyroscope measures $\boldsymbol\omega^b$ perfectly.** It does not: bias and noise are integrated along with the motion. No integrator can remove them, which is why [Chapter 19](#ch19) fuses other sensors.
     - **Unit norm.** Formulas such as the component form of $\mathbf R(q)$ and the Euler-angle extraction assume $\|q\| = 1$. Normalize before using them.
     ///
     """)
@@ -992,7 +986,7 @@ def _(mo):
     <!-- label: ch18-sec-whats-next -->
     ## What's Next
 
-    We can now propagate attitude exactly from *perfect* gyroscope readings. Real gyroscopes have bias and noise, so integrated attitude drifts away from the truth. [Chapter 19](ch19_ahrs.md) fixes this by fusing the gyroscope with two sensors that see fixed directions, gravity through an accelerometer and the Earth's magnetic field through a magnetometer: first with a complementary filter that is exactly the Introduction's alpha filter, then with an error-state Kalman filter built on the quaternion machinery of this chapter.
+    We can now propagate attitude exactly from *perfect* gyroscope readings. Real gyroscopes have bias and noise, so integrated attitude drifts away from the truth. [Chapter 19](#ch19) fixes this by fusing the gyroscope with two sensors that see fixed directions, gravity through an accelerometer and the Earth's magnetic field through a magnetometer: first with a complementary filter that is exactly the Introduction's alpha filter, then with an error-state Kalman filter built on the quaternion machinery of this chapter.
     """)
     return
 

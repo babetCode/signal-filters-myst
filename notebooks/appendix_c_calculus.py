@@ -17,12 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Limits, Derivatives, and Integrals"
-    abbreviations:
-      iff: if and only if
-      diff: null
-      EMA: exponential moving average
-    numbering:
-      equations: false
+    description: "Limits, series, derivatives, integrals, and the exponential function, with the results the main chapters use."
+    label: appc
     -->
     """)
     return
@@ -60,10 +56,10 @@ def _(mo):
     mo.md(r"""
     Calculus is built on a single idea: the **limit**, which makes "gets as close as we like" precise. Infinite sums, instantaneous rates of change, areas, and exponential decay are all limits, and a filter designer meets every one of them:
 
-    - **Probability** ([Chapter 4](ch4_probability_spaces.md)) adds up infinitely many probabilities. Such a sum is a *series*, and the continuity of probability is a statement about limits of sequences.
-    - **Densities and expectations** ([Chapter 5](ch5_random_variables.md) and [Chapter 6](ch6_expectation_and_variance.md)) are *integrals*. The normal density only makes sense once we know that $\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}$.
-    - **Continuous-time models** ([Chapter 10](ch10_process_models.md)) are *differential equations*. Turning them into the recursions that a filter runs requires solving them.
-    - **The extended Kalman filter** ([Chapter 15](ch15_extended_kalman_filter.md)) replaces nonlinear functions by first-order *Taylor approximations*, which are built from *Jacobians*.
+    - **Probability** ([Chapter 4](#ch4)) adds up infinitely many probabilities. Such a sum is a *series*, and the continuity of probability is a statement about limits of sequences.
+    - **Densities and expectations** ([Chapter 5](#ch5) and [Chapter 6](#ch6)) are *integrals*. The normal density only makes sense once we know that $\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}$.
+    - **Continuous-time models** ([Chapter 10](#ch10)) are *differential equations*. Turning them into the recursions that a filter runs requires solving them.
+    - **The extended Kalman filter** ([Chapter 15](#ch15)) replaces nonlinear functions by first-order *Taylor approximations*, which are built from *Jacobians*.
 
     This appendix builds all of these from the axioms of the real numbers in [Chapter 3](#ch3-sec-the-real-numbers). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
 
@@ -78,8 +74,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`functions <function>`, the {term}`natural numbers` $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
-    - [Chapter 3](ch3_sets_for_probability.md): {term}`sequences <sequence>`, [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as a {term}`complete ordered field` (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), {term}`intervals <interval>`, and the {term}`extended real numbers` $[0, \infty]$.
+    - [Chapter 2](#ch2): {term}`functions <function>`, the {term}`natural numbers` $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
+    - [Chapter 3](#ch3): {term}`sequences <sequence>`, [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as a {term}`complete ordered field` (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), {term}`intervals <interval>`, and the {term}`extended real numbers` $[0, \infty]$.
     ///
 
     <!-- label: appc-sec-how-to-read-this-appendix -->
@@ -1094,7 +1090,7 @@ def _(mo):
     <!-- label: appc-sec-the-riemann-integral -->
     ## The Riemann Integral
 
-    A foot-mounted inertial sensor ([Chapter 20](ch20_strapdown_inertial_navigation.md)) knows its velocity $v(t)$ but not its position. If the velocity were constant on each short time interval $[t_{i-1}, t_i]$, the distance traveled would be exactly $\sum_i v(t_i)\,(t_i - t_{i-1})$: the total area of rectangles under the graph of $v$. For a velocity that varies continuously, these sums approach a single number as the intervals shrink, and that number is the distance. The *integral* is this limit.
+    A foot-mounted inertial sensor ([Chapter 20](#ch20)) knows its velocity $v(t)$ but not its position. If the velocity were constant on each short time interval $[t_{i-1}, t_i]$, the distance traveled would be exactly $\sum_i v(t_i)\,(t_i - t_{i-1})$: the total area of rectangles under the graph of $v$. For a velocity that varies continuously, these sums approach a single number as the intervals shrink, and that number is the distance. The *integral* is this limit.
 
     For a first example, take $f(x) = x^2$ on $[0, 1]$, cut into $n$ equal pieces, and use the height at each right endpoint. Using $\sum_{i=1}^n i^2 = \frac{n(n+1)(2n+1)}{6}$ (proved by induction on $n$),
 
@@ -2311,7 +2307,7 @@ def _(mo):
     <!-- label: appc-sec-whats-next -->
     ## What's Next
 
-    If you came here from a main-path chapter, return to it now: [Chapter 4](ch4_probability_spaces.md) uses Sequences and Limits and Series for countable additivity and the continuity of probability; [Chapter 5](ch5_random_variables.md) and [Chapter 6](ch6_expectation_and_variance.md) use the integrals and the Gaussian integral for densities and expectations; [Chapter 10](ch10_process_models.md) uses Linear Differential Equations; and [Chapter 15](ch15_extended_kalman_filter.md) uses Functions of Several Variables. The vector and matrix versions of these ideas, including the matrix exponential for $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf B\mathbf u$ and derivatives with respect to matrices for the Kalman gain, are in [Appendix D: Linear Algebra](appendix_d_linear_algebra.md).
+    If you came here from a main-path chapter, return to it now: [Chapter 4](#ch4) uses Sequences and Limits and Series for countable additivity and the continuity of probability; [Chapter 5](#ch5) and [Chapter 6](#ch6) use the integrals and the Gaussian integral for densities and expectations; [Chapter 10](#ch10) uses Linear Differential Equations; and [Chapter 15](#ch15) uses Functions of Several Variables. The vector and matrix versions of these ideas, including the matrix exponential for $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf B\mathbf u$ and derivatives with respect to matrices for the Kalman gain, are in [Appendix D: Linear Algebra](#appd).
     """)
     return
 

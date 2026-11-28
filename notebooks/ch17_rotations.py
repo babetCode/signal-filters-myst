@@ -17,12 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Frames, Matrices, and Singularities"
-    abbreviations:
-      ENU: east-north-up
-      FLU: forward-left-up
-      NED: north-east-down
-    numbering:
-      equations: false
+    description: "Reference frames, rotation matrices, Euler angles, and gimbal lock: converting vectors between body axes and navigation axes."
+    label: ch17
     -->
     """)
     return
@@ -61,7 +57,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](ch18_quaternions.md).
+    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](#ch18).
 
     /// attention | 🗝️ **Key Idea**
     The orientation of a body is a rotation matrix $\mathbf R^n_b$ that converts body coordinates into navigation coordinates. It evolves according to $\dot{\mathbf R}^n_b = \mathbf R^n_b[\boldsymbol\omega^b]_\times$, where $\boldsymbol\omega^b$ is what a gyroscope measures. Every description of orientation by only three numbers, such as yaw, pitch, and roll, is singular somewhere.
@@ -74,7 +70,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [bold lowercase vectors and bold uppercase matrices](#ch12-sec-notation-and-linear-algebra-toolkit).
+    - [Chapter 12](#ch12): [bold lowercase vectors and bold uppercase matrices](#ch12-sec-notation-and-linear-algebra-toolkit).
     - [Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse), and [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank): a matrix is determined by its action on a basis, and [a square matrix with a left inverse is invertible](#appd-thm-invertible-matrix-theorem).
     - [Appendix D: Determinants](#appd-sec-determinants): $\det(\mathbf A\mathbf B) = \det\mathbf A\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and cofactor expansion of a $3\times 3$ determinant.
     - [Appendix D: Trace](#appd-sec-trace), [Orthogonal Matrices](#appd-sec-orthogonal-matrices), and [Eigenvalues and Eigenvectors](#appd-sec-eigenvalues-and-eigenvectors).
@@ -100,7 +96,7 @@ def _(mo):
     A reference frame $a$ is a point $O_a$ (its *origin*) together with an ordered triple $(\mathbf a_1, \mathbf a_2, \mathbf a_3)$ of mutually perpendicular unit vectors (its *axes*) that is right-handed: $\mathbf a_1\times\mathbf a_2 = \mathbf a_3$.
     ///
 
-    Because the axes are perpendicular unit vectors, every vector $\mathbf v$ in space can be written in exactly one way as $\mathbf v = v_1\mathbf a_1 + v_2\mathbf a_2 + v_3\mathbf a_3$, with $v_i = \mathbf v\cdot\mathbf a_i$ (take the dot product of both sides with $\mathbf a_i$). The column $\mathbf v^a := [v_1, v_2, v_3]^\top \in \mathbb R^3$ is the **coordinate vector of $\mathbf v$ in frame $a$**. A superscript always names the frame. The arrow $\mathbf v$ is the same physical object in every frame; only its coordinates change. Dot and cross products of arrows can be computed from coordinates in any right-handed frame with the usual formulas of [Appendix D](appendix_d_linear_algebra.md), so we use the two interchangeably.
+    Because the axes are perpendicular unit vectors, every vector $\mathbf v$ in space can be written in exactly one way as $\mathbf v = v_1\mathbf a_1 + v_2\mathbf a_2 + v_3\mathbf a_3$, with $v_i = \mathbf v\cdot\mathbf a_i$ (take the dot product of both sides with $\mathbf a_i$). The column $\mathbf v^a := [v_1, v_2, v_3]^\top \in \mathbb R^3$ is the **coordinate vector of $\mathbf v$ in frame $a$**. A superscript always names the frame. The arrow $\mathbf v$ is the same physical object in every frame; only its coordinates change. Dot and cross products of arrows can be computed from coordinates in any right-handed frame with the usual formulas of [Appendix D](#appd), so we use the two interchangeably.
 
     This book uses two frames from here on:
 
@@ -1014,7 +1010,7 @@ def _(mo):
     2. **Small Euler angles are a rotation vector.** Rodrigues' formula with $\mathbf u = \mathbf e_x$ reproduces $\mathbf R_x(\phi)$, so $\mathbf R_x(\phi) = \operatorname{Exp}(\phi\,\mathbf e_x)$, and likewise for $y$ and $z$. By consequence 1, $\mathbf R_z(\psi)\mathbf R_y(\theta)\mathbf R_x(\phi) = \mathbf I + \big[[\phi, \theta, \psi]^\top\big]_\times + (\text{second order})$.
     3. **The error-state convention.** If $\hat{\mathbf R}$ is an estimate of the true attitude $\mathbf R$, we describe the error by the small rotation vector $\delta\boldsymbol\theta := \operatorname{Log}(\hat{\mathbf R}^\top\mathbf R)$, so that
     $$\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta) \approx \hat{\mathbf R}\big(\mathbf I + [\delta\boldsymbol\theta]_\times\big).$$
-    Because $\operatorname{Exp}(\delta\boldsymbol\theta)$ multiplies on the right, $\delta\boldsymbol\theta$ is expressed in body coordinates (a *right* or *body-frame* perturbation). By the conjugation property of $\operatorname{Exp}$, the same error in navigation coordinates is $\hat{\mathbf R}\,\delta\boldsymbol\theta$, since $\hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta) = \operatorname{Exp}(\hat{\mathbf R}\,\delta\boldsymbol\theta)\hat{\mathbf R}$. [Chapter 19](ch19_ahrs.md) and [Chapter 21](ch21_zero_velocity_updates.md) use exactly this convention.
+    Because $\operatorname{Exp}(\delta\boldsymbol\theta)$ multiplies on the right, $\delta\boldsymbol\theta$ is expressed in body coordinates (a *right* or *body-frame* perturbation). By the conjugation property of $\operatorname{Exp}$, the same error in navigation coordinates is $\hat{\mathbf R}\,\delta\boldsymbol\theta$, since $\hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta) = \operatorname{Exp}(\hat{\mathbf R}\,\delta\boldsymbol\theta)\hat{\mathbf R}$. [Chapter 19](#ch19) and [Chapter 21](#ch21) use exactly this convention.
     """)
     return
 
@@ -1078,7 +1074,7 @@ def _(mo):
 
     In practice the failure shows up in one of two ways: a jump (Euler angles wrapping at $\pm 180^\circ$, the rotation vector flipping at $\vartheta = \pi$) or a singular kinematic equation (gimbal lock, where angle rates become infinite). There are two ways out, and the next two chapters use one each:
 
-    - **Use more than three numbers.** The matrix $\mathbf R$ itself uses nine numbers with six constraints. A *unit quaternion* uses four numbers with one constraint, has no singularities, and has a kinematic equation that is linear in the attitude. That is [Chapter 18](ch18_quaternions.md).
+    - **Use more than three numbers.** The matrix $\mathbf R$ itself uses nine numbers with six constraints. A *unit quaternion* uses four numbers with one constraint, has no singularities, and has a kinematic equation that is linear in the attitude. That is [Chapter 18](#ch18).
     - **Use three numbers only locally.** A small rotation vector $\delta\boldsymbol\theta$ measured from a reference attitude is perfectly well behaved near $\mathbf 0$, far from its jump at $\pi$. If the reference is updated after every step, the three numbers never get large. That is the error-state filter of [Chapter 19](#ch19-sec-an-error-state-kalman-filter).
 
     [^compact]: A subset of $\mathbb R^m$ is *open* if every point has a small ball around it inside the set, *closed* if its complement is open, and *compact* if it is closed and bounded (equivalent to the general definition by the [Heine–Borel theorem](https://en.wikipedia.org/wiki/Heine%E2%80%93Borel_theorem)).
@@ -1104,7 +1100,7 @@ def _(mo):
     <!-- label: ch17-sec-whats-next -->
     ## What's Next
 
-    [Chapter 18](ch18_quaternions.md) introduces quaternions: four numbers on a unit sphere whose product composes rotations, whose kinematic equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$ is linear and never singular, and whose only quirk is that $q$ and $-q$ describe the same rotation. They are the attitude representation used in every filter for the rest of the book.
+    [Chapter 18](#ch18) introduces quaternions: four numbers on a unit sphere whose product composes rotations, whose kinematic equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$ is linear and never singular, and whose only quirk is that $q$ and $-q$ describe the same rotation. They are the attitude representation used in every filter for the rest of the book.
     """)
     return
 

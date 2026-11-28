@@ -4,6 +4,67 @@ project:
   authors:
     - name: Adrien Babet
   abstract: An introductory guide to signal filtering.
+  license:
+    content: CC-BY-4.0
+    code: MIT
+  # Settings every page inherits. Pages never repeat these (STYLEGUIDE.md §2.2).
+  numbering:
+    equations: false
+  math:
+    '\existsin': '\exists #1 \!\!\in\!\! #2\,'
+    '\forallin': '\forall #1 \!\!\in\!\! #2\,'
+    '\existssubseteq': '\exists #1 \!\!\subseteq\!\! #2\,'
+    '\forallsubseteq': '\forall #1 \!\!\subseteq\!\! #2\,'
+  # MyST matches each key as a case-sensitive substring, longest key first, so
+  # `iff` would also match inside "different" or "Mifflin". A `null` key claims
+  # its text first and adds no tooltip. Alphabetical, ignoring case.
+  abbreviations:
+    ADC: analog-to-digital converter
+    AHRS: attitude and heading reference system
+    BMR: basal metabolic rate
+    CDF: cumulative distribution function
+    CLT: central limit theorem
+    DEI: daily energy intake
+    diff: null
+    Diff: null
+    EKF: extended Kalman filter
+    EMA: exponential moving average
+    ENU: east-north-up
+    FLU: forward-left-up
+    GLRT: generalized likelihood ratio test
+    GPS: Global Positioning System
+    HDE: heuristic drift elimination
+    IEKF: iterated extended Kalman filter
+    iff: if and only if
+    IMU: inertial measurement unit
+    INS: inertial navigation system
+    JPL: Jet Propulsion Laboratory
+    KF: Kalman filter
+    LOTUS: law of the unconscious statistician
+    MAP: maximum a posteriori
+    MEMS: micro-electro-mechanical systems
+    Mifflin: null
+    MMSE: minimum mean squared error
+    MSE: mean squared error
+    NED: north-east-down
+    NEES: normalized estimation error squared
+    NIS: normalized innovation squared
+    ODE: ordinary differential equation
+    PDF: probability density function
+    PF: particle filter
+    PMF: probability mass function
+    RK4: classical fourth-order Runge–Kutta method
+    RMS: root mean square
+    RMSE: root-mean-square error
+    RTS: Rauch–Tung–Striebel
+    SHOE: stance hypothesis optimal detector
+    SPS: samples per second
+    TDEE: total daily energy expenditure
+    UKF: unscented Kalman filter
+    UT: unscented transform
+    ZARU: zero angular rate update
+    ZFC: Zermelo–Fraenkel set theory with the Axiom of Choice
+    ZUPT: zero-velocity update
   plugins:
     - type: executable
       path: ../.venv/bin/jupyter-book-marimo # on Windows, see scripts/link_plugin.py

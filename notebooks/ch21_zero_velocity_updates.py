@@ -17,18 +17,8 @@ def frontmatter(mo):
     mo.md(r"""
     <!-- jb-frontmatter
     subtitle: "Gait Analysis with a Foot-Mounted IMU"
-    abbreviations:
-      IMU: inertial measurement unit
-      INS: inertial navigation system
-      ZUPT: zero-velocity update
-      ZARU: zero angular rate update
-      EKF: extended Kalman filter
-      SHOE: stance hypothesis optimal detector
-      ENU: east-north-up
-      FLU: forward-left-up
-      HDE: heuristic drift elimination
-    numbering:
-      equations: false
+    description: "Zero-velocity updates: treating a stationary foot as a Kalman filter measurement, which bounds inertial drift and measures gait."
+    label: ch21
     -->
     """)
     return
@@ -66,7 +56,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 20](ch20_strapdown_inertial_navigation.md) left us with two facts. A foot-mounted IMU integrated on its own drifts hundreds of meters in half a minute. Yet once per stride the foot stands still, and a detector can tell us when. This chapter combines them. Its key concept is the **zero-velocity update**: treating "the velocity is zero" as a *measurement* in a Kalman filter.
+    [Chapter 20](#ch20) left us with two facts. A foot-mounted IMU integrated on its own drifts hundreds of meters in half a minute. Yet once per stride the foot stands still, and a detector can tell us when. This chapter combines them. Its key concept is the **zero-velocity update**: treating "the velocity is zero" as a *measurement* in a Kalman filter.
 
     The payoff is larger than it looks. A velocity measurement corrects more than the velocity, because the filter's covariance matrix records how attitude errors and sensor biases *produced* the velocity error during the preceding swing. One update therefore corrects all of them. The result is a trajectory accurate to millimeters per stride, from which we compute the quantities a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle. We will also meet a hard limit: no number of zero-velocity updates can tell the filter which way it is facing.
 
@@ -81,12 +71,12 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 20](ch20_strapdown_inertial_navigation.md): [the navigation equations](#ch20-sec-the-navigation-equations) and their [discrete mechanization](#ch20-sec-discrete-implementation-at-100-hz), [the drift laws](#ch20-thm-drift-laws), the {term}`gait cycle`, [the gait simulator](#ch20-sec-a-synthetic-gait-simulator), and [the SHOE detector](#ch20-thm-glrt-for-a-stationary-imu).
-    - [Chapter 19](ch19_ahrs.md): the {term}`error-state Kalman filter` with the right (body-frame) attitude perturbation $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, [its injection and reset steps](#ch19-sec-injection-and-reset), and the {term}`magnetometer`.
-    - [Chapter 13](ch13_kalman_filter.md): [the Kalman filter](#ch13-sec-the-algorithm), the {term}`Joseph form`, [observability](#ch13-sec-observability), and [the rank test](#ch13-thm-rank-test-for-observability).
-    - [Chapter 15](ch15_extended_kalman_filter.md): [linearization](#ch15-sec-linearization) and the {term}`extended Kalman filter`.
-    - [Chapter 10](ch10_process_models.md): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
-    - [Chapter 17](ch17_rotations.md) and [Chapter 18](ch18_quaternions.md): $\operatorname{Exp}$, $\operatorname{Exp}_q$, $\operatorname{Log}_q$, [the small-angle approximation](#ch17-thm-small-angle-approximation) $\operatorname{Exp}(\delta\boldsymbol\theta) \approx \mathbf I + [\delta\boldsymbol\theta]_\times$, and the identity $[\mathbf R\mathbf a]_\times = \mathbf R[\mathbf a]_\times\mathbf R^\top$.
+    - [Chapter 20](#ch20): [the navigation equations](#ch20-sec-the-navigation-equations) and their [discrete mechanization](#ch20-sec-discrete-implementation-at-100-hz), [the drift laws](#ch20-thm-drift-laws), the {term}`gait cycle`, [the gait simulator](#ch20-sec-a-synthetic-gait-simulator), and [the SHOE detector](#ch20-thm-glrt-for-a-stationary-imu).
+    - [Chapter 19](#ch19): the {term}`error-state Kalman filter` with the right (body-frame) attitude perturbation $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, [its injection and reset steps](#ch19-sec-injection-and-reset), and the {term}`magnetometer`.
+    - [Chapter 13](#ch13): [the Kalman filter](#ch13-sec-the-algorithm), the {term}`Joseph form`, [observability](#ch13-sec-observability), and [the rank test](#ch13-thm-rank-test-for-observability).
+    - [Chapter 15](#ch15): [linearization](#ch15-sec-linearization) and the {term}`extended Kalman filter`.
+    - [Chapter 10](#ch10): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 17](#ch17) and [Chapter 18](#ch18): $\operatorname{Exp}$, $\operatorname{Exp}_q$, $\operatorname{Log}_q$, [the small-angle approximation](#ch17-thm-small-angle-approximation) $\operatorname{Exp}(\delta\boldsymbol\theta) \approx \mathbf I + [\delta\boldsymbol\theta]_\times$, and the identity $[\mathbf R\mathbf a]_\times = \mathbf R[\mathbf a]_\times\mathbf R^\top$.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices), [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential), and [Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement).
     ///
     """)
@@ -99,7 +89,7 @@ def _(mo):
     <!-- label: ch21-sec-tools-from-chapter-20 -->
     ## Tools from Chapter 20
 
-    We use Chapter 20's conventions (ENU navigation frame, FLU body frame, $\mathbf R := \mathbf R^n_b$, specific force $\mathbf f = \mathbf R^\top(\mathbf a^n - \mathbf g^n)$, IMU model $\boldsymbol\omega_m = \boldsymbol\omega + \mathbf b_g + \mathbf n_g$, $\mathbf f_m = \mathbf f + \mathbf b_a + \mathbf n_a$ at 100 Hz) and its code. Notebooks are self-contained, so the quaternion helpers, the mechanization with leveling, the gait simulator, and the detectors are copied verbatim into hidden cells of this notebook; see [Chapter 20](ch20_strapdown_inertial_navigation.md) for the code and its derivations. Our running example is again the U-turn walk with the default sensor errors, and SHOE with threshold $\gamma = 10^3$ decides which samples are stationary.
+    We use Chapter 20's conventions (ENU navigation frame, FLU body frame, $\mathbf R := \mathbf R^n_b$, specific force $\mathbf f = \mathbf R^\top(\mathbf a^n - \mathbf g^n)$, IMU model $\boldsymbol\omega_m = \boldsymbol\omega + \mathbf b_g + \mathbf n_g$, $\mathbf f_m = \mathbf f + \mathbf b_a + \mathbf n_a$ at 100 Hz) and its code. Notebooks are self-contained, so the quaternion helpers, the mechanization with leveling, the gait simulator, and the detectors are copied verbatim into hidden cells of this notebook; see [Chapter 20](#ch20) for the code and its derivations. Our running example is again the U-turn walk with the default sensor errors, and SHOE with threshold $\gamma = 10^3$ decides which samples are stationary.
     """)
     return
 
@@ -1523,7 +1513,7 @@ def _(mo):
     <!-- label: ch21-sec-whats-next -->
     ## What's Next
 
-    This chapter ends the main path. We started in the [Introduction](introduction.md) with a bathroom scale and the question of how much to trust a new measurement, and we end with a fifteen-state filter that tracks a walking foot. It runs on the same predict-and-update structure, and its gain answers the same question. Natural next steps go beyond this book. An offline gait analysis can smooth each stride with the Rauch–Tung–Striebel smoother mentioned in [Chapter 14](#ch14-sec-smoothing), using measurements on both sides of every swing. Real recordings bring the effects our simulator leaves out: impacts, soft tissue, and walkers who shuffle, stop, and turn on the spot. If any foundation along the way felt thin, the [appendices](appendix_c_calculus.md) build it from the ground up.
+    This chapter ends the main path. We started in the [Introduction](#intro) with a bathroom scale and the question of how much to trust a new measurement, and we end with a fifteen-state filter that tracks a walking foot. It runs on the same predict-and-update structure, and its gain answers the same question. Natural next steps go beyond this book. An offline gait analysis can smooth each stride with the Rauch–Tung–Striebel smoother mentioned in [Chapter 14](#ch14-sec-smoothing), using measurements on both sides of every swing. Real recordings bring the effects our simulator leaves out: impacts, soft tissue, and walkers who shuffle, stop, and turn on the spot. If any foundation along the way felt thin, the [appendices](#appc) build it from the ground up.
     """)
     return
 
