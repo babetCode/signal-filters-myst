@@ -722,6 +722,8 @@ uv run python notebooks/<file>.py                  # runs every cell; must finis
 make book-build                                    # exports all notebooks and runs a strict HTML build
 ```
 
+**Exception: MF007 on fenced copies.** `marimo check --strict` reports `warning[markdown-indentation]` (MF007) on every fenced-copy cell whose code contains `"""` ([§3](#3-code-the-reader-sees)). This warning is expected and is the only one allowed. marimo's editor writes `"""` inside a markdown cell as `"\"\"`, but `marimo check` compares the cell with a canonical form that writes it as `"\""`. Both render as `"""`. Do not run `marimo check --fix` on a notebook with fenced copies, because it rewrites them to the other form. Every other warning must be fixed.
+
 On Windows, set `PYTHONUTF8=1` first (the Makefile sets it for `make` targets), because the notebooks contain non-ASCII characters. The strict build fails on unresolved `{term}` references, cross-reference labels, and citations. Running a notebook rewrites its SVGs in `notebooks/public/`; that is expected.
 
 Then read the rendered page (`make preview`) and check, by eye:
