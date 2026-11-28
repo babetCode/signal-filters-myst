@@ -2,7 +2,7 @@
   <img src="static/filter-book-icon.svg" alt="Image description" width="100" />
 </p>
 
-<h1 align="center">Signal Filter Guidebook</h1>
+<h1 align="center"><a href="https://babetcode.github.io/signal-filters-myst/">Signal Filter Guidebook</a></h1>
 
 An intuitive (and mostly rigorous) guide to Kalman filtering, built with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-marimo) so that the code is interactive in the browser, with no downloads or configuration needed.
 
