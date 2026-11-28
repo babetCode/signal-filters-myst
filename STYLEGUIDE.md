@@ -149,7 +149,7 @@ Every notebook has these named cells, in this order, at the top:
 | `imports` | Every import in the notebook, and nothing else | `include=false` |
 | `display_settings` | `plt.style.use`, the `graphic` helper, and any other display-only setup (for example the LaTeX-macro cell in [§2.6](#26-latex-macros)) | `include=false` |
 
-Hidden setup that later cells depend on (generated data, constants, helper functions the reader does not need to read) goes in `include=false` cells with descriptive names such as `data`, `simulator`, or `plot_helpers`. Prefer one `data` cell for a page's generated data. Some existing notebooks name their display cell `display_format`; rename it to `display_settings` when you next edit the notebook.
+Hidden setup that later cells depend on (generated data, constants, helper functions the reader does not need to read) goes in `include=false` cells with descriptive names such as `data`, `simulator`, or `plot_helpers`. Prefer one `data` cell for a page's generated data.
 
 ### 2.3 `# jb:` Options
 
@@ -163,7 +163,7 @@ The sync script turns cells into `{marimo}` directives. marimo-native settings (
 |:---|:---:|:---|:---|
 | `include` | `true` | Keep this cell's node in the page | `include=false` for imports, display settings, data, and figure-saving cells |
 | `editor` | `false` | Show the source in an editable marimo editor | Reference implementations and editable examples ([§3](#3-code-the-reader-sees)) |
-| `server-output` | `true` | Include build-time output in the island | `server-output=false` together with `editor=true` on cells that produce output, to avoid duplicated output when the reader re-runs the cell |
+| `server-output` | `true` | Include build-time output in the island | `server-output=false` together with `editor=true` on cells the user is invited to edit, to avoid duplicated output when the reader re-runs the cell |
 | `echo` | `false` | Show the source as static text | **Do not use** ([§3](#3-code-the-reader-sees)) |
 | `eval` | `true` | Run the cell during the build | Leave at the default |
 | `output` | `true` | Render the output island | Leave at the default |
@@ -192,12 +192,12 @@ Apart from the uses above, avoid `# jb:` comments.
 
 ### 2.6 LaTeX Macros
 
-Only Chapters 1–3 and Appendices A–B use custom macros (`\existsin`, `\forallin`, `\existssubseteq`, `\forallsubseteq`). A page that uses them defines them in both places, copying the pattern in `notebooks/ch1_language_of_logic.py`:
+For chapters which use custom macros (such as Chapters 1–3 and Appendices A–B, which use `\existsin`, `\forallin`, `\existssubseteq`, `\forallsubseteq`), the macros should be defined in both the frontmatter (to be exported to by `sync_notebooks.py`) and in a `mo.latex()` call (in the `display_settings` cell, for rendering in the notebook during development), copying the pattern in `notebooks/ch1_language_of_logic.py`:
 
 - a `math:` block in the `jb-frontmatter` comment (for MyST), and
 - an `include=false` cell in `display_settings` that calls `mo.latex(...)` with the `\newcommand` definitions, then `mo.output.clear()` (for the marimo editor).
 
-Every other page writes `\operatorname{Var}`, `\mathbb E`, and so on explicitly. Do not add new macros.
+Do not add new macros.
 
 ---
 
@@ -363,7 +363,7 @@ Statement...
 ### 6.6 Footnotes
 
 - A footnote (`[^name]`) is defined in the same `mo.md` cell that references it.
-- Use footnotes for informal first uses of later terms ([§7.4](#74-words-used-before-their-definition)) and for side remarks that would interrupt the sentence. Anything the argument depends on belongs in the text.
+- Use footnotes for informal first uses of later terms ([§7.4](#74-words-used-before-their-definition)) and for side remarks or fun facts that would interrupt the sentence. Anything the argument depends on belongs in the text.
 
 ---
 
@@ -442,7 +442,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
 1. **Use quantifier words that cannot be misread.** Write "every" or "each" for "for all", and "some" or "at least one" for "there exists". Do not use "any", which can be read either way.
    - Unclear: "pairwise disjoint if any two distinct members of $\mathcal A$ are disjoint"
    - Clear: "pairwise disjoint if every two distinct members of $\mathcal A$ are disjoint"
-2. **Name every result you refer to.** Do not write "the lemma", "the next theorem", "the result above", or "this". Write the result's name, and link it ([§7.2](#72-cross-references)).
+2. **Name every result you refer to.** Unless continuing a thought from the previous sentence, do not write "the lemma", "the next theorem", "the result above", or "this". Write the result's name, and link it ([§7.2](#72-cross-references)).
    - Unclear: "the next theorem does this once for all models of this kind"
    - Clear: "the Discrete Probability Measures theorem below does this once for all models of this kind"
 3. **Give every pronoun and abstract noun a clear antecedent.** "It", "this", "the connection", or "the result" must refer to something named in the same sentence or the one before. When a sentence asserts a relationship, it names both sides.
@@ -672,10 +672,9 @@ Then read the rendered page (`make preview`) and check, by eye:
 
 These are changes to `scripts/sync_notebooks.py`. Until each is made, follow the interim rule in the section it belongs to.
 
-1. **Prerequisites** ([§6.1](#61-admonitions)): convert `/// info` blocks to `:::{seealso icon=false}`, then change the existing `/// seealso` Prerequisites boxes to `/// info` so they render in the marimo editor.
-2. **Labels in `attrs`** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): accept `attrs: {class: no-icon, id: <label>}` in both admonition regexes. The current regexes match only `attrs: {class: no-icon}` exactly, so adding an `id` now silently breaks the conversion.
-3. **Results** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): convert `/// important | 📐 **Theorem (Name)**` to `:::{prf:theorem} Name` (and likewise `Lemma` to `prf:lemma`, `Corollary` to `prf:corollary`), with `:label:` taken from the `attrs` id.
-4. **Proofs** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): convert `/// admonition | ✍️ **Proof**` to `:::{prf:proof}`. Check whether MyST draws its own end-of-proof mark; if it does, strip the trailing `$\blacksquare$` during export.
+1. **Labels in `attrs`** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): accept `attrs: {class: no-icon, id: <label>}` in both admonition regexes. The current regexes match only `attrs: {class: no-icon}` exactly, so adding an `id` now silently breaks the conversion.
+2. **Results** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): convert `/// important | 📐 **Theorem (Name)**` to `:::{prf:theorem} Name` (and likewise `Lemma` to `prf:lemma`, `Corollary` to `prf:corollary`), with `:label:` taken from the `attrs` id.
+3. **Proofs** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)): convert `/// admonition | ✍️ **Proof**` to `:::{prf:proof}`. Check whether MyST draws its own end-of-proof mark; if it does, strip the trailing `$\blacksquare$` during export.
 
 ### 12.2 Open Decisions
 
