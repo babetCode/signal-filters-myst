@@ -66,7 +66,6 @@ def _(mo):
     [Chapter 17](ch17_rotations.md) ended with a negative result: no description of every rotation by three numbers is free of jumps and singularities. Quaternions get around it with one extra number. A unit quaternion is a point on the unit sphere in $\mathbb R^4$; multiplying quaternions composes rotations; and the attitude kinematics become the *linear* equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$, whose coefficients never blow up. Quaternions are also cheap: four numbers instead of nine, and restoring unit length after rounding is a single division. Every attitude filter in the rest of this book stores the attitude as a unit quaternion.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The unit quaternion $q = [\cos\tfrac\vartheta2,\ \sin\tfrac\vartheta2\,\mathbf u]$ represents the rotation by $\vartheta$ about $\mathbf u$. Vectors rotate as $q\otimes[0, \mathbf v]\otimes q^*$, rotations compose by the Hamilton product $\otimes$, and attitude evolves by the singularity-free linear equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$. The one price is that $q$ and $-q$ represent the same rotation.
     ///
     """)
@@ -77,10 +76,9 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 17](ch17_rotations.md): rotation matrices and their properties (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), ZYX Euler angles and their extraction, Rodrigues' formula, Euler's rotation theorem, rotation vectors and $\operatorname{Exp}$, angular velocity, and the constant-angular-velocity theorem. The rotation angle is written $\vartheta$ because $\theta$ is pitch.
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
-    - [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
+    - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
     - [Chapter 3](ch3_sets_for_probability.md): the definition of a {term}`field`, for one remark.
     ///
     """)
@@ -90,12 +88,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-the-quaternions -->
     ## The Quaternions
 
     Complex numbers multiply points of the plane, and multiplying by a unit complex number rotates the plane. In 1843 William Rowan Hamilton found the analog for three dimensions: it needs a four-dimensional number system ([Wikipedia: Quaternion](https://en.wikipedia.org/wiki/Quaternion)).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Quaternion**</u>
 
     A quaternion is an element $q = [q_w, q_x, q_y, q_z]$ of $\mathbb H := \mathbb R^4$, also written $q = q_w + q_x\,i + q_y\,j + q_z\,k$. Its *scalar part* is $q_w$ and its *vector part* is $\mathbf q_v := [q_x, q_y, q_z]^\top \in \mathbb R^3$; we write $q = [q_w, \mathbf q_v]$. Quaternions are added and multiplied by real numbers as vectors of $\mathbb R^4$, and multiplied with each other by the Hamilton product.
@@ -104,7 +102,6 @@ def _(mo):
     We identify a real number $a$ with the quaternion $[a, \mathbf 0]$ and a vector $\mathbf v \in \mathbb R^3$ with the *pure* quaternion $[0, \mathbf v]$; in particular $i$, $j$, $k$ are $[0, \mathbf e_x]$, $[0, \mathbf e_y]$, $[0, \mathbf e_z]$. Quaternions are plain (not bold) because they are not elements of $\mathbb R^3$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Hamilton product**</u>
 
     The Hamilton product of quaternions $p = [p_w, \mathbf p_v]$ and $q = [q_w, \mathbf q_v]$ is
@@ -124,13 +121,13 @@ def _(mo):
     - **Products of pure quaternions** combine the dot and cross products: $[0, \mathbf u]\otimes[0, \mathbf v] = [-\mathbf u\cdot\mathbf v,\ \mathbf u\times\mathbf v]$.
     - **Non-commutativity:** $p\otimes q - q\otimes p = [0,\ 2\,\mathbf p_v\times\mathbf q_v]$, because every other term is symmetric in $p$ and $q$. So $p$ and $q$ commute exactly when their vector parts are parallel.
 
-    /// important | 📐 **Theorem (Associativity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Associativity)**
+        attrs: {class: theorem, id: ch18-thm-associativity}
     For all quaternions $p, q, r$: $(p\otimes q)\otimes r = p\otimes(q\otimes r)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $p = [a, \mathbf u]$, $q = [b, \mathbf v]$, $r = [c, \mathbf w]$. Expanding with the definition,
     $$(p\otimes q)\otimes r = \big[abc - c\,\mathbf u\cdot\mathbf v - a\,\mathbf v\cdot\mathbf w - b\,\mathbf u\cdot\mathbf w - (\mathbf u\times\mathbf v)\cdot\mathbf w,\ \ \mathbf s - (\mathbf u\cdot\mathbf v)\mathbf w + (\mathbf u\times\mathbf v)\times\mathbf w\big],$$
     $$p\otimes(q\otimes r) = \big[abc - c\,\mathbf u\cdot\mathbf v - a\,\mathbf v\cdot\mathbf w - b\,\mathbf u\cdot\mathbf w - \mathbf u\cdot(\mathbf v\times\mathbf w),\ \ \mathbf s - (\mathbf v\cdot\mathbf w)\mathbf u + \mathbf u\times(\mathbf v\times\mathbf w)\big],$$
@@ -149,10 +146,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-conjugate-norm-and-inverse -->
     ## Conjugate, Norm, and Inverse
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Quaternion conjugate**</u>
 
     The conjugate of a quaternion $q = [q_w, \mathbf q_v]$ is $q^* := [q_w, -\mathbf q_v]$.
@@ -160,23 +157,23 @@ def _(mo):
 
     The *norm* of a quaternion is its Euclidean norm as a vector of $\mathbb R^4$, $\|q\| := \sqrt{q_w^2 + q_x^2 + q_y^2 + q_z^2} = \sqrt{q_w^2 + \|\mathbf q_v\|^2}$.
 
-    /// important | 📐 **Lemma (Conjugates)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Conjugates)**
+        attrs: {class: lemma, id: ch18-lem-conjugates}
     For all quaternions $p, q$: (1) $(q^*)^* = q$; (2) $(p\otimes q)^* = q^*\otimes p^*$; (3) $q\otimes q^* = q^*\otimes q = \|q\|^2$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     (1) is immediate. (2) Write $p = [a, \mathbf u]$, $q = [b, \mathbf v]$. Then $(p\otimes q)^* = [ab - \mathbf u\cdot\mathbf v,\ -a\mathbf v - b\mathbf u - \mathbf u\times\mathbf v]$, and $q^*\otimes p^* = [b, -\mathbf v]\otimes[a, -\mathbf u] = [ab - \mathbf v\cdot\mathbf u,\ -b\mathbf u - a\mathbf v + \mathbf v\times\mathbf u]$; these agree because $\mathbf v\times\mathbf u = -\mathbf u\times\mathbf v$. (3) $[b, \mathbf v]\otimes[b, -\mathbf v] = [b^2 + \mathbf v\cdot\mathbf v,\ -b\mathbf v + b\mathbf v - \mathbf v\times\mathbf v] = [\|q\|^2, \mathbf 0]$, and the same computation with $\mathbf v$ replaced by $-\mathbf v$ gives $q^*\otimes q$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (The Norm Is Multiplicative)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Norm Is Multiplicative)**
+        attrs: {class: theorem, id: ch18-thm-the-norm-is-multiplicative}
     For all quaternions $p, q$: $\ \|p\otimes q\| = \|p\|\,\|q\|$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the lemma and associativity,
     $$\|p\otimes q\|^2 = (p\otimes q)\otimes(p\otimes q)^* = p\otimes(q\otimes q^*)\otimes p^* = p\otimes\|q\|^2\otimes p^* = \|q\|^2\,(p\otimes p^*) = \|q\|^2\|p\|^2,$$
     where we used that the real number $\|q\|^2$ acts as a scalar. Take square roots. $\blacksquare$
@@ -185,7 +182,6 @@ def _(mo):
     For $q \ne 0$, the lemma shows that $q^{-1} := q^*/\|q\|^2$ satisfies $q\otimes q^{-1} = q^{-1}\otimes q = 1$, and it is the only such quaternion (if $r\otimes q = 1$ then $r = r\otimes q\otimes q^{-1} = q^{-1}$). So every nonzero quaternion has a multiplicative inverse: $\mathbb H$ satisfies every axiom of a {term}`field` except commutativity of multiplication.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Unit quaternion**</u>
 
     A unit quaternion is a quaternion $q$ with $\|q\| = 1$.
@@ -199,6 +195,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-rotating-vectors-with-unit-quaternions -->
     ## Rotating Vectors with Unit Quaternions
 
     Start with a concrete case. Let $q = [\cos 45^\circ, 0, 0, \sin 45^\circ] = \tfrac{1}{\sqrt2}[1, 0, 0, 1]$ and $\mathbf v = \mathbf e_x$ (East). Then
@@ -206,15 +203,15 @@ def _(mo):
     $$q\otimes[0, \mathbf e_x]\otimes q^* = \tfrac12\,[0, \mathbf e_x + \mathbf e_y]\otimes[1, -\mathbf e_z] = \tfrac12\big[(\mathbf e_x + \mathbf e_y)\cdot\mathbf e_z,\ \mathbf e_x + \mathbf e_y - (\mathbf e_x + \mathbf e_y)\times\mathbf e_z\big] = \tfrac12[0,\ \mathbf e_x + \mathbf e_y + \mathbf e_y - \mathbf e_x] = [0, \mathbf e_y].$$
     The "sandwich" turned East into North: a $90^\circ$ rotation about Up, with $q = [\cos\tfrac{\vartheta}{2}, \sin\tfrac{\vartheta}{2}\,\mathbf e_z]$ for $\vartheta = 90^\circ$. Note the half angle. The general statement:
 
-    /// important | 📐 **Theorem (Quaternion Rotation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Quaternion Rotation)**
+        attrs: {class: theorem, id: ch18-thm-quaternion-rotation}
     Let $q = [s, \mathbf w]$ be a unit quaternion. For every $\mathbf v \in \mathbb R^3$,
     $$q\otimes[0, \mathbf v]\otimes q^* = [0,\ \mathbf R(q)\mathbf v],\qquad \mathbf R(q) := (s^2 - \|\mathbf w\|^2)\,\mathbf I + 2\,\mathbf w\mathbf w^\top + 2s\,[\mathbf w]_\times.$$
     Every unit quaternion can be written $q = [\cos\tfrac\vartheta2,\ \sin\tfrac\vartheta2\,\mathbf u]$ with $\mathbf u$ a unit vector and $\vartheta \in [0, 2\pi]$, and then $\mathbf R(q) = \mathbf R(\mathbf u, \vartheta) = \operatorname{Exp}(\vartheta\mathbf u)$. In particular, $\mathbf R(q) \in SO(3)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     First, $q\otimes[0, \mathbf v] = [-\mathbf w\cdot\mathbf v,\ s\mathbf v + \mathbf w\times\mathbf v]$. Multiplying on the right by $q^* = [s, -\mathbf w]$, the scalar part is $-s\,\mathbf w\cdot\mathbf v + (s\mathbf v + \mathbf w\times\mathbf v)\cdot\mathbf w = 0$ (because $(\mathbf w\times\mathbf v)\cdot\mathbf w = 0$), and the vector part is
     $$(\mathbf w\cdot\mathbf v)\mathbf w + s(s\mathbf v + \mathbf w\times\mathbf v) - (s\mathbf v + \mathbf w\times\mathbf v)\times\mathbf w = (\mathbf w\cdot\mathbf v)\mathbf w + s^2\mathbf v + 2s\,\mathbf w\times\mathbf v - (\mathbf w\times\mathbf v)\times\mathbf w.$$
     By the triple-product expansion, $(\mathbf w\times\mathbf v)\times\mathbf w = -\mathbf w\times(\mathbf w\times\mathbf v) = \|\mathbf w\|^2\mathbf v - (\mathbf w\cdot\mathbf v)\mathbf w$, so the vector part is $(s^2 - \|\mathbf w\|^2)\mathbf v + 2(\mathbf w\cdot\mathbf v)\mathbf w + 2s\,\mathbf w\times\mathbf v = \mathbf R(q)\mathbf v$.
@@ -230,13 +227,13 @@ def _(mo):
     **Our convention.** The attitude quaternion $q^n_b$ is the unit quaternion with $\mathbf R(q^n_b) = \mathbf R^n_b$, so it rotates body coordinates into navigation coordinates:
     $$[0, \mathbf v^n] = q^n_b\otimes[0, \mathbf v^b]\otimes(q^n_b)^*.$$
 
-    /// important | 📐 **Theorem (Composition)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Composition)**
+        attrs: {class: theorem, id: ch18-thm-composition}
     For unit quaternions $p, q$: $\ \mathbf R(p\otimes q) = \mathbf R(p)\,\mathbf R(q)$ and $\mathbf R(q^*) = \mathbf R(q)^\top$. Hence $q^n_c = q^n_b\otimes q^b_c$, in the same order as $\mathbf R^n_c = \mathbf R^n_b\mathbf R^b_c$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By associativity and the conjugate lemma, $(p\otimes q)\otimes[0, \mathbf v]\otimes(p\otimes q)^* = p\otimes\big(q\otimes[0, \mathbf v]\otimes q^*\big)\otimes p^* = p\otimes[0, \mathbf R(q)\mathbf v]\otimes p^* = [0, \mathbf R(p)\mathbf R(q)\mathbf v]$ for every $\mathbf v$. Next, $\mathbf R(q^*)\mathbf R(q) = \mathbf R(q^*\otimes q) = \mathbf R(1) = \mathbf I$, so $\mathbf R(q^*) = \mathbf R(q)^{-1} = \mathbf R(q)^\top$. $\blacksquare$
     ///
 
@@ -248,31 +245,32 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-the-double-cover -->
     ## The Double Cover
 
     $\mathbf R(q)$ is quadratic in $q$, so $\mathbf R(-q) = \mathbf R(q)$: a rotation has (at least) two quaternions. There are no others.
 
-    /// important | 📐 **Theorem (Two Quaternions per Rotation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Two Quaternions per Rotation)**
+        attrs: {class: theorem, id: ch18-thm-two-quaternions-per-rotation}
     For unit quaternions $p, q$: $\ \mathbf R(p) = \mathbf R(q)$ if and only if $p = q$ or $p = -q$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     "If" was just shown. Conversely, suppose $\mathbf R(p) = \mathbf R(q)$, and let $r := q^*\otimes p = [s, \mathbf w]$, a unit quaternion with $\mathbf R(r) = \mathbf R(q)^\top\mathbf R(p) = \mathbf I$. Suppose $\mathbf w \ne \mathbf 0$ and pick a unit vector $\mathbf v \perp \mathbf w$. Then $\mathbf v = \mathbf R(r)\mathbf v = (s^2 - \|\mathbf w\|^2)\mathbf v + 2s\,\mathbf w\times\mathbf v$. The vector $\mathbf w\times\mathbf v$ is nonzero and perpendicular to $\mathbf v$, so comparing components gives $s = 0$ and then $-\|\mathbf w\|^2 = 1$, which is impossible. Hence $\mathbf w = \mathbf 0$, $s = \pm 1$, and $p = q\otimes r = \pm q$. $\blacksquare$
     ///
 
     In practice we also need to go back from a matrix to its two quaternions.
 
-    /// important | 📐 **Theorem (Quaternion from a Rotation Matrix)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Quaternion from a Rotation Matrix)**
+        attrs: {class: theorem, id: ch18-thm-quaternion-from-a-rotation-matrix}
     If $q$ is a unit quaternion and $\mathbf R(q) = \mathbf R$ has entries $r_{ij}$, then
     $$4q_w^2 = 1 + r_{11} + r_{22} + r_{33},\quad 4q_x^2 = 1 + r_{11} - r_{22} - r_{33},\quad 4q_y^2 = 1 - r_{11} + r_{22} - r_{33},\quad 4q_z^2 = 1 - r_{11} - r_{22} + r_{33},$$
     $$4q_wq_x = r_{32} - r_{23},\quad 4q_wq_y = r_{13} - r_{31},\quad 4q_wq_z = r_{21} - r_{12},\quad 4q_xq_y = r_{12} + r_{21},\quad 4q_xq_z = r_{13} + r_{31},\quad 4q_yq_z = r_{23} + r_{32}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Read off the component form of $\mathbf R(q)$. For example, $r_{11} + r_{22} + r_{33} = 3 - 4(q_x^2 + q_y^2 + q_z^2) = 4q_w^2 - 1$, $\ 1 + r_{11} - r_{22} - r_{33} = 4q_x^2$ after using $q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1$, $\ r_{32} - r_{23} = 2(q_yq_z + q_wq_x) - 2(q_yq_z - q_wq_x) = 4q_wq_x$, and $r_{12} + r_{21} = 4q_xq_y$. The others are identical. $\blacksquare$
     ///
 
@@ -281,19 +279,18 @@ def _(mo):
     The two theorems together say that unit quaternions cover the rotations exactly twice, and smoothly. The precise name for this is the following.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Double cover**</u>
 
     A continuous surjective function $f: X \to Y$ between subsets of Euclidean spaces is a double cover if every $y \in Y$ has exactly two preimages, and every $y \in Y$ has an open ball $B$ around it such that $f^{-1}[B\cap Y]$ is the union of two disjoint sets, on each of which $f$ is a bijection onto $B\cap Y$ with a continuous inverse.
     ///
 
-    /// important | 📐 **Theorem (Unit Quaternions Doubly Cover the Rotations)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Unit Quaternions Doubly Cover the Rotations)**
+        attrs: {class: theorem, id: ch18-thm-unit-quaternions-doubly-cover-the-rotations}
     The function $q \mapsto \mathbf R(q)$ from the unit quaternions to $SO(3)$ is a double cover.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The entries of $\mathbf R(q)$ are polynomials in $q$, so the map is continuous. It is surjective by Euler's rotation theorem and the quaternion-rotation theorem ($\mathbf R(\mathbf u, \vartheta) = \mathbf R([\cos\tfrac\vartheta2, \sin\tfrac\vartheta2\mathbf u])$). Each rotation has exactly the two preimages $\pm q$, which are distinct because $q \ne 0$. For the local condition, fix $\mathbf R_0 \in SO(3)$ and let $i$ be the index of the largest of the four expressions $1 + r_{11} + r_{22} + r_{33}$, $1 + r_{11} - r_{22} - r_{33}$, ... at $\mathbf R_0$, which is at least $1$. These expressions are continuous in the entries, so on a small enough ball $B$ around $\mathbf R_0$ the $i$-th one stays positive. On $B\cap SO(3)$ the algorithm above with index $i$ defines a continuous $g_+$ with $\mathbf R(g_+(\mathbf R)) = \mathbf R$ and $i$-th component positive; $g_- := -g_+$ is a second one. Every preimage of $\mathbf R \in B$ is $\pm g_+(\mathbf R)$, so $f^{-1}[B\cap SO(3)]$ is the union of the images of $g_+$ and $g_-$, which are disjoint (the sign of the $i$-th component differs), and $f$ is a bijection from each onto $B\cap SO(3)$ with continuous inverse $g_\pm$. $\blacksquare$
     ///
     """)
@@ -334,7 +331,7 @@ def make_double_cover_fig(IMAGES_DIR, np, plt):
     _ax.set_ylim(-1.25, 1.3)
     _ax.set_xlabel(r"rotation angle $\vartheta$ about Up (deg)")
     _ax.set_ylabel("component value")
-    _ax.set_title("A full turn takes q to −q", style="italic")
+    _ax.set_title(r"A full turn takes $q$ to $-q$", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(loc="lower left", fontsize=9)
     _fig.tight_layout()
@@ -346,6 +343,7 @@ def make_double_cover_fig(IMAGES_DIR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-conversions -->
     ## Conversions
 
     **Axis–angle and rotation vector.** By the quaternion-rotation theorem, the rotation vector $\boldsymbol\theta = \vartheta\mathbf u$ corresponds to
@@ -369,9 +367,9 @@ def _(mo):
 
 @app.cell
 def quaternion_library(np):
-    # jb: echo=true
+    # jb: editor=true
     def qmul(p, q):
-        """Hamilton product p ⊗ q of scalar-first quaternions [w, x, y, z]."""
+        """Hamilton product of scalar-first quaternions p and q, each [w, x, y, z]."""
         pw, px, py, pz = p
         qw, qx, qy, qz = q
         return np.array([pw * qw - px * qx - py * qy - pz * qz,
@@ -437,7 +435,7 @@ def quaternion_library(np):
                          np.arctan2(2 * (x * y + w * z), 1 - 2 * (y * y + z * z))])
 
     def q_rotate(q, v):
-        """Rotate a 3-vector: the vector part of q ⊗ [0, v] ⊗ q*."""
+        """Rotate a 3-vector v: the vector part of the Hamilton product q [0, v] q*."""
         return qmul(qmul(q, np.array([0.0, *v])), qconj(q))[1:]
 
     return R_to_q, euler_to_q, q_exp, q_log, q_rotate, q_to_R, q_to_euler, qconj, qmul
@@ -521,7 +519,7 @@ def _(
         _rows[_keys[7]].append(np.abs(q_to_R(euler_to_q(*_ang)) - euler_to_R(*_ang)).max())
         _rows[_keys[8]].append(np.abs(q_to_euler(euler_to_q(*_ang)) - _ang).max())
     check_table = "\n".join(
-        ["| check (1000 random cases) | largest entry difference |", "|---|---|"]
+        ["| check (1000 random cases) | largest entry difference |", "|:---|:---:|"]
         + [f"| {_k} | {max(_v):.1e} |" for _k, _v in _rows.items()]
     )
     return (check_table,)
@@ -540,18 +538,19 @@ def _(check_table, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-quaternion-kinematics -->
     ## Quaternion Kinematics
 
     Chapter 17 described a turning body by $\dot{\mathbf R}^n_b = \mathbf R^n_b[\boldsymbol\omega^b]_\times$. Here is the same law for the attitude quaternion.
 
-    /// important | 📐 **Theorem (Quaternion Kinematics)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Quaternion Kinematics)**
+        attrs: {class: theorem, id: ch18-thm-quaternion-kinematics}
     Let $t \mapsto q(t)$ be a differentiable path of unit quaternions with $\mathbf R(q(t)) = \mathbf R^n_b(t)$, and let $\boldsymbol\omega^b$ be the body's angular velocity. Then
     $$\dot q = \tfrac12\,q\otimes[0, \boldsymbol\omega^b] = \tfrac12\,[0, \boldsymbol\omega^n]\otimes q.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Step 1: $q^*\otimes\dot q$ is pure.* Let $\Omega := q^*\otimes\dot q$. Differentiating $q^*\otimes q = 1$ with the product rule gives $\dot q^*\otimes q + q^*\otimes\dot q = 0$, and $\dot q^*\otimes q = (q^*\otimes\dot q)^* = \Omega^*$ by the conjugate lemma. So $\Omega^* = -\Omega$, meaning the scalar part of $\Omega$ is zero: $\Omega = [0, \mathbf a]$ for some $\mathbf a \in \mathbb R^3$. Multiplying $\Omega = q^*\otimes\dot q$ on the left by $q$ gives $\dot q = q\otimes\Omega$.
 
     *Step 2: identify $\mathbf a$.* Fix $\mathbf v \in \mathbb R^3$ and write $v := [0, \mathbf v]$. Differentiating $[0, \mathbf R(q)\mathbf v] = q\otimes v\otimes q^*$,
@@ -575,17 +574,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-exact-integration-with-the-exponential-map -->
     ## Exact Integration with the Exponential Map
 
     An IMU delivers $\boldsymbol\omega^b$ as samples $\boldsymbol\omega_k$ every $\Delta t$. Treating the rate as constant within each sample period, as in Chapter 17, the quaternion equation can be solved exactly.
 
-    /// important | 📐 **Theorem (Exact Quaternion Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Exact Quaternion Update)**
+        attrs: {class: theorem, id: ch18-thm-exact-quaternion-update}
     If $\boldsymbol\omega^b = \boldsymbol\omega$ is constant on $[t_0, t_0 + \Delta t]$, then $q(t_0 + \Delta t) = q(t_0)\otimes\operatorname{Exp}_q(\boldsymbol\omega\,\Delta t)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Uniqueness.* With $\mathbf A := \tfrac12\boldsymbol\Omega(\boldsymbol\omega)$ constant, any solution of $\dot q = \mathbf A q$ satisfies $\tfrac{d}{dt}\big(\exp(-(t - t_0)\mathbf A)\,q(t)\big) = \exp(-(t - t_0)\mathbf A)(-\mathbf A q + \dot q) = 0$, so $q(t) = \exp((t - t_0)\mathbf A)\,q(t_0)$: there is exactly one solution with a given $q(t_0)$.
 
     *The candidate solves the equation.* If $\boldsymbol\omega = \mathbf 0$ there is nothing to prove. Otherwise let $\alpha := \|\boldsymbol\omega\|$, $\hat{\boldsymbol\omega} := \boldsymbol\omega/\alpha$, and $e(\tau) := \operatorname{Exp}_q(\boldsymbol\omega\tau) = [\cos\tfrac{\alpha\tau}2, \sin\tfrac{\alpha\tau}2\,\hat{\boldsymbol\omega}]$. Then
@@ -597,23 +597,25 @@ def _(mo):
     $$q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t).$$
     The increment multiplies on the right because $\boldsymbol\omega_k$ is in body coordinates. Floating-point rounding still nudges $\|q_k\|$ away from 1 by about $10^{-16}$ per step, so implementations divide by $\|q_k\|$ every step or every few steps; that costs almost nothing.
 
+    <!-- label: ch18-sec-why-not-just-use-eulers-method -->
     ### Why Not Just Use Euler's Method?
 
     The simplest numerical method for $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega]$ is the forward Euler step $q_k = q_{k-1} + \Delta t\,\dot q_{k-1}$, that is,
     $$q_k = q_{k-1}\otimes\big[1,\ \tfrac12\boldsymbol\omega_k\Delta t\big].$$
 
-    /// important | 📐 **Theorem (Euler Steps Inflate the Norm)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Euler Steps Inflate the Norm)**
+        attrs: {class: theorem, id: ch18-thm-euler-steps-inflate-the-norm}
     The forward Euler step satisfies $\|q_k\|^2 = \|q_{k-1}\|^2\,\big(1 + \tfrac14\|\boldsymbol\omega_k\|^2\Delta t^2\big)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The norm is multiplicative and $\|[1, \tfrac12\boldsymbol\omega_k\Delta t]\|^2 = 1 + \tfrac14\|\boldsymbol\omega_k\|^2\Delta t^2$. $\blacksquare$
     ///
 
     So the norm grows geometrically, without bound. With a turn rate of 2 rad/s at 100 Hz, $\|q\|$ grows by $35\%$ in one minute. A non-unit $q$ is not just "slightly off": the general formula $\mathbf R(q) = (s^2 - \|\mathbf w\|^2)\mathbf I + 2\mathbf w\mathbf w^\top + 2s[\mathbf w]_\times$ scales every vector by $\|q\|^2$, and the simplified component formula (which assumed $\|q\| = 1$) is not even orthogonal. Normalizing after every Euler step fixes the norm, but not the direction: the normalized increment $[1, \tfrac12\boldsymbol\omega\Delta t]/\|\cdot\|$ is a rotation by $2\arctan(\tfrac12\|\boldsymbol\omega\|\Delta t) = \|\boldsymbol\omega\|\Delta t - \tfrac1{12}(\|\boldsymbol\omega\|\Delta t)^3 + \dots$ instead of $\|\boldsymbol\omega\|\Delta t$, a systematic under-rotation that accumulates.
 
+    <!-- label: ch18-sec-interactive-normalization-drift -->
     ### Interactive: Normalization Drift
 
     A body turns at a constant rate about a fixed oblique axis for 60 s. Three integrators process the same exact gyroscope samples: forward Euler without normalization, forward Euler with normalization after every step, and the exact exponential update. The left panel shows how far $\|q_k\|$ is from 1; the right panel shows the attitude error, the rotation angle of $q_{\text{true}}^*\otimes(q_k/\|q_k\|)$. (Normalization does not change the direction of $q_k$, so the two Euler variants have identical attitude error.)
@@ -643,7 +645,7 @@ def _(np):
                                 pw * qz + px * qy - py * qx + pz * qw])
 
     def attitude_error_deg(Q_true, Q_est):
-        """Rotation angle (deg) of q_true* ⊗ (q_est / |q_est|), row-wise."""
+        """Rotation angle (deg) of the Hamilton product q_true* (q_est / |q_est|), row-wise."""
         _qn = Q_est / np.linalg.norm(Q_est, axis=1, keepdims=True)
         _conj = Q_true * np.array([1.0, -1.0, -1.0, -1.0])
         _r = qmul_arr(_conj, _qn)
@@ -726,7 +728,6 @@ def _(drift_summary, mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The rate is held constant over each sample.** The exact update is exact only for a zero-order-hold rate. If the axis of rotation changes within a sample (vibration, fast oscillation), the true increment differs from $\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$ at second order; high-end systems add *coning* corrections that use several consecutive samples.
     - **The gyroscope measures $\boldsymbol\omega^b$ perfectly.** It does not: bias and noise are integrated along with the motion. No integrator can remove them, which is why [Chapter 19](ch19_ahrs.md) fuses other sensors.
     - **Unit norm.** Formulas such as the component form of $\mathbf R(q)$ and the Euler-angle extraction assume $\|q\| = 1$. Normalize before using them.
@@ -738,6 +739,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-gimbal-lock-avoided -->
     ## Gimbal Lock, Avoided
 
     Chapter 17's simulation turned a body at a steady $0.5$ rad/s about its own $y$ axis, passing close to pitch $90^\circ$, and its Euler angles misbehaved violently. Below, the same motion is integrated with the exact quaternion update. Move the time slider to animate the body; the dropdown sets how close the path comes to gimbal lock. The quaternion components (top right) trace smooth sinusoids however close the path comes, while the Euler angles extracted from them (bottom right) swing by $180^\circ$ in an instant. The singularity was never in the attitude, only in its description.
@@ -747,8 +749,8 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    gl_miss = mo.ui.dropdown(options={"3°": 3.0, "0.5°": 0.5, "0° (straight through)": 0.0},
-                             value="3°", label="closest approach to gimbal lock")
+    gl_miss = mo.ui.dropdown(options={"3 degrees": 3.0, "0.5 degrees": 0.5, "0 degrees (straight through)": 0.0},
+                             value="3 degrees", label="closest approach to gimbal lock")
     gl_time = mo.ui.slider(0.0, 6.0, 0.05, value=2.5, label="time $t$ (s)", show_value=True)
     return gl_miss, gl_time
 
@@ -861,6 +863,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-interpolating-attitudes-slerp -->
     ## Interpolating Attitudes (Slerp)
 
     This section is optional; nothing later depends on it. To move smoothly from attitude $q_0$ to attitude $q_1$ (for animation, or to resample attitude between two time stamps), turn at a constant angular velocity. The relative rotation is $q_0^*\otimes q_1$, with rotation vector $\boldsymbol\theta := \operatorname{Log}_q(q_0^*\otimes q_1)$; by the exact-update theorem, turning at the body rate $\boldsymbol\theta$ per unit time for a time $\tau \in [0, 1]$ gives the *spherical linear interpolation*
@@ -873,12 +876,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-hamilton-versus-jpl-conventions -->
     ## Hamilton versus JPL Conventions
 
     Two incompatible quaternion conventions are in wide use, and formulas from one silently give wrong answers in the other. This book uses the **Hamilton** convention throughout. Much of the older spacecraft and robotics literature (for example, many error-state Kalman filter papers) uses the **JPL** convention.
 
     | | Hamilton (this book) | JPL |
-    |---|---|---|
+    |:---|:---|:---|
     | Product rule | $i\otimes j = k$ | $i\otimes j = -k$ |
     | Storage order | scalar first, $[q_w, q_x, q_y, q_z]$ | scalar last, $[q_x, q_y, q_z, q_w]$ |
     | Attitude quaternion | rotates body to navigation, $\mathbf R(q^n_b) = \mathbf R^n_b$ | usually rotates navigation to body |
@@ -887,7 +891,6 @@ def _(mo):
     Flipping the sign of $i\otimes j$ flips the sign of the cross-product term in the product, so the JPL product of $p$ and $q$ equals the Hamilton product $q\otimes p$ of the same four numbers in the opposite order. As a consequence, the same four numbers that represent $\mathbf R$ in the Hamilton sandwich formula represent $\mathbf R^\top$ in the JPL one. @sommer2018 explain the history and argue for Hamilton; @sola2017 uses Hamilton and tabulates the differences. Storage order is a separate trap: SciPy's `Rotation.from_quat`, for instance, expects scalar-last order by default even though its product is Hamilton's.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     Before using a quaternion formula, data file, or library from elsewhere, check four things: the product rule ($i\otimes j = \pm k$), the storage order (scalar first or last), the direction of the attitude quaternion (body-to-navigation or the reverse), and the frame conventions (ENU/FLU here; NED/forward-right-down is common). Getting any one of them wrong typically produces attitudes that look plausible at rest and go wrong as soon as the body turns.
     ///
     """)
@@ -897,6 +900,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch18-sec-summary -->
     ## Summary
 
     - A {term}`quaternion` is an element of $\mathbb H = \mathbb R^4$, $q = [q_w, \mathbf q_v]$. The {term}`Hamilton product` $p\otimes q = [p_wq_w - \mathbf p_v\cdot\mathbf q_v,\ p_w\mathbf q_v + q_w\mathbf p_v + \mathbf p_v\times\mathbf q_v]$ is associative and bilinear but not commutative.
@@ -907,6 +911,7 @@ def _(mo):
     - Kinematics: $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b] = \tfrac12\boldsymbol\Omega(\boldsymbol\omega^b)q$, linear and singularity-free. For a rate held constant over each sample, $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$ is exact; forward Euler inflates the norm by $\sqrt{1 + \|\boldsymbol\omega\|^2\Delta t^2/4}$ per step and under-rotates even when normalized.
     - This book uses the Hamilton convention; the JPL convention reverses the product and usually the direction of the attitude quaternion.
 
+    <!-- label: ch18-sec-whats-next -->
     ## What's Next
 
     We can now propagate attitude exactly from *perfect* gyroscope readings. Real gyroscopes have bias and noise, so integrated attitude drifts away from the truth. [Chapter 19](ch19_ahrs.md) fixes this by fusing the gyroscope with two sensors that see fixed directions, gravity through an accelerometer and the Earth's magnetic field through a magnetometer: first with a complementary filter that is exactly the Introduction's alpha filter, then with an error-state Kalman filter built on the quaternion machinery of this chapter.

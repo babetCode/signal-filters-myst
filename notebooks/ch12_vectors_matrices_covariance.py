@@ -60,14 +60,13 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 4](ch4_probability_spaces.md): almost surely, and continuity of probability from below (one lemma only).
     - [Chapter 5](ch5_random_variables.md): random variables, joint and marginal densities, independence as factorization of the joint density, and the normal distribution.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, variance, covariance, the correlation coefficient, and Chebyshev's inequality.
     - [Chapter 7](ch7_optimal_alpha.md) and [Chapter 11](ch11_measurement_functions.md): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and the tare-offset example.
     - [Chapter 8](ch8_bayesian_view.md): conditional densities and the minimum mean squared error estimator.
     - [Chapter 9](ch9_noise_levels.md): the chi-squared distribution and the normalized innovation squared.
-    - [Appendix C: Multiple Integrals](appendix_c_calculus.md): iterated integrals, the change-of-variables formula, and polar coordinates.
+    - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): iterated integrals, the change-of-variables formula, and polar coordinates.
     - [Appendix D: Linear Algebra](appendix_d_linear_algebra.md): the sections listed in the toolkit below.
     ///
     """)
@@ -82,8 +81,7 @@ def _(mo):
     That organization is the **covariance matrix**, and the distribution built on it is the **multivariate normal distribution**. This chapter develops both. Its payoff is one formula: what a jointly normal vector's distribution becomes once part of it has been observed. That formula turns out to be the Kalman filter's update step.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
-    A covariance matrix records the variance of every component of a random vector and the covariance of every pair. When jointly normal quantities are partly observed, the mean of the rest moves by (cross-covariance) × (covariance of the observed part)⁻¹ × (surprise), and their covariance shrinks by a Schur complement. That is the Kalman update.
+    A covariance matrix records the variance of every component of a random vector and the covariance of every pair. When jointly normal quantities are partly observed, the mean of the rest moves by (cross-covariance) $\times$ (covariance of the observed part)$^{-1}$ $\times$ (surprise), and their covariance shrinks by a Schur complement. That is the Kalman update.
     ///
     """)
     return
@@ -92,22 +90,23 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-notation-and-linear-algebra-toolkit -->
     ## Notation and Linear-Algebra Toolkit
 
     From now on, **bold lowercase letters are column vectors** ($\mathbf x \in \mathbb R^n$), **bold uppercase letters are matrices** ($\mathbf A \in \mathbb R^{m\times n}$ has $m$ rows and $n$ columns), and plain letters are scalars. $\mathbf A^\top$ is the {term}`transpose`, $\mathbf I$ the {term}`identity matrix`, and $\mathbf 0$ a vector or matrix of zeros. The facts below are proven or precisely cited in Appendix D:
 
-    - Matrix products are associative and distribute over sums; $(\mathbf A\mathbf B)^\top = \mathbf B^\top\mathbf A^\top$ ([Appendix D: Matrix Multiplication](appendix_d_linear_algebra.md), [Appendix D: Transpose, Identity, and Inverse](appendix_d_linear_algebra.md)).
-    - For {term}`invertible <invertible matrix>` $\mathbf A, \mathbf B$: $(\mathbf A\mathbf B)^{-1} = \mathbf B^{-1}\mathbf A^{-1}$ and $(\mathbf A^\top)^{-1} = (\mathbf A^{-1})^\top$ ([Appendix D: Transpose, Identity, and Inverse](appendix_d_linear_algebra.md)). A square matrix is invertible iff the only vector it maps to $\mathbf 0$ is $\mathbf 0$ ([Appendix D: Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md)).
-    - {term}`Determinants <determinant>`: $\det(\mathbf A\mathbf B) = \det\mathbf A\,\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and a square $\mathbf A$ is invertible iff $\det\mathbf A \neq 0$ ([Appendix D: Determinants](appendix_d_linear_algebra.md)).
-    - A {term}`symmetric matrix` $\mathbf A$ is {term}`positive semidefinite` if $\mathbf a^\top\mathbf A\mathbf a \ge 0$ for every $\mathbf a$, and {term}`positive definite` if $\mathbf a^\top\mathbf A\mathbf a > 0$ for every $\mathbf a \neq \mathbf 0$ ([Appendix D: Symmetric and Positive Definite Matrices](appendix_d_linear_algebra.md)).
-    - **Spectral theorem:** every symmetric $\mathbf A$ can be written $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, with $\mathbf Q$ an {term}`orthogonal matrix` ($\mathbf Q^\top\mathbf Q = \mathbf Q\mathbf Q^\top = \mathbf I$) whose columns are {term}`eigenvectors <eigenvector>` and $\boldsymbol\Lambda$ diagonal with the corresponding {term}`eigenvalues <eigenvalue>` ([Appendix D: Symmetric and Positive Definite Matrices](appendix_d_linear_algebra.md); see also [Appendix D: Eigenvalues and Eigenvectors](appendix_d_linear_algebra.md) and [Appendix D: Orthogonal Matrices](appendix_d_linear_algebra.md)).
-    - **Cholesky:** every positive definite $\boldsymbol\Sigma$ can be written $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ with $\mathbf L$ lower triangular with positive diagonal entries ([Appendix D: Cholesky Decomposition](appendix_d_linear_algebra.md)).
-    - Block matrices multiply block by block, like numbers, as long as the block sizes match and the order of factors is kept ([Appendix D: Block Matrices and the Schur Complement](appendix_d_linear_algebra.md)).
+    - Matrix products are associative and distribute over sums; $(\mathbf A\mathbf B)^\top = \mathbf B^\top\mathbf A^\top$ ([Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Appendix D: Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse)).
+    - For {term}`invertible <invertible matrix>` $\mathbf A, \mathbf B$: $(\mathbf A\mathbf B)^{-1} = \mathbf B^{-1}\mathbf A^{-1}$ and $(\mathbf A^\top)^{-1} = (\mathbf A^{-1})^\top$ ([Appendix D: Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse)). A square matrix is invertible iff the only vector it maps to $\mathbf 0$ is $\mathbf 0$ ([Appendix D: Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank)).
+    - {term}`Determinants <determinant>`: $\det(\mathbf A\mathbf B) = \det\mathbf A\,\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and a square $\mathbf A$ is invertible iff $\det\mathbf A \neq 0$ ([Appendix D: Determinants](#appd-sec-determinants)).
+    - A {term}`symmetric matrix` $\mathbf A$ is {term}`positive semidefinite` if $\mathbf a^\top\mathbf A\mathbf a \ge 0$ for every $\mathbf a$, and {term}`positive definite` if $\mathbf a^\top\mathbf A\mathbf a > 0$ for every $\mathbf a \neq \mathbf 0$ ([Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices)).
+    - **Spectral theorem:** every symmetric $\mathbf A$ can be written $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, with $\mathbf Q$ an {term}`orthogonal matrix` ($\mathbf Q^\top\mathbf Q = \mathbf Q\mathbf Q^\top = \mathbf I$) whose columns are {term}`eigenvectors <eigenvector>` and $\boldsymbol\Lambda$ diagonal with the corresponding {term}`eigenvalues <eigenvalue>` ([Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices); see also [Appendix D: Eigenvalues and Eigenvectors](#appd-sec-eigenvalues-and-eigenvectors) and [Appendix D: Orthogonal Matrices](#appd-sec-orthogonal-matrices)).
+    - **Cholesky:** every positive definite $\boldsymbol\Sigma$ can be written $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ with $\mathbf L$ lower triangular with positive diagonal entries ([Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition)).
+    - Block matrices multiply block by block, like numbers, as long as the block sizes match and the order of factors is kept ([Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement)).
 
     Two small consequences are used repeatedly.
 
-    /// important | 📐 **Lemma (Positive Definite Matrices)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Positive Definite Matrices)**
+        attrs: {class: lemma, id: ch12-lem-positive-definite-matrices}
     Let $\boldsymbol\Sigma \in \mathbb R^{n\times n}$ be positive definite.
 
     1. $\boldsymbol\Sigma$ is invertible, and $\boldsymbol\Sigma^{-1}$ is positive definite.
@@ -116,7 +115,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. If $\boldsymbol\Sigma\mathbf a = \mathbf 0$ then $\mathbf a^\top\boldsymbol\Sigma\mathbf a = 0$, so $\mathbf a = \mathbf 0$; hence $\boldsymbol\Sigma$ is invertible. Its inverse is symmetric, since $(\boldsymbol\Sigma^{-1})^\top = (\boldsymbol\Sigma^\top)^{-1} = \boldsymbol\Sigma^{-1}$. For $\mathbf a \neq \mathbf 0$, let $\mathbf b := \boldsymbol\Sigma^{-1}\mathbf a \neq \mathbf 0$; then $\mathbf a^\top\boldsymbol\Sigma^{-1}\mathbf a = \mathbf b^\top\boldsymbol\Sigma\mathbf b > 0$.
     2. $\mathbf A\boldsymbol\Sigma\mathbf A^\top$ is symmetric, and for $\mathbf a \neq \mathbf 0$ the vector $\mathbf A^\top\mathbf a$ is nonzero (because $\mathbf A^\top$ is invertible), so $\mathbf a^\top\mathbf A\boldsymbol\Sigma\mathbf A^\top\mathbf a = (\mathbf A^\top\mathbf a)^\top\boldsymbol\Sigma(\mathbf A^\top\mathbf a) > 0$.
     3. With the Cholesky factor, $\det\boldsymbol\Sigma = \det\mathbf L\,\det\mathbf L^\top = (\det\mathbf L)^2$, and $\det\mathbf L \neq 0$ because $\mathbf L$ is invertible (if $\mathbf L$ were not, neither would $\mathbf L\mathbf L^\top = \boldsymbol\Sigma$ be). $\blacksquare$
@@ -128,12 +127,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-random-vectors-and-mean-vectors -->
     ## Random Vectors and Mean Vectors
 
     In the bulking example of Chapter 10, after a prediction step we are uncertain about two numbers: the error $e^x$ in the predicted weight and the error $e^r$ in the predicted rate. It is natural to stack them.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Random vector**</u>
 
     A list $\mathbf x = [x_1, \ldots, x_n]^\top$ of {term}`random variables <random variable>` defined on the same probability space. Equivalently, a function $\mathbf x: \Omega \to \mathbb R^n$ each of whose components is a random variable.
@@ -144,7 +143,6 @@ def _(mo):
     The expected value of a vector or matrix whose entries are random variables is taken entry by entry.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Mean vector**</u>
 
     For a random vector $\mathbf x = [x_1, \ldots, x_n]^\top$ whose components all have finite {term}`expected values <expected value>`, the vector
@@ -153,13 +151,13 @@ def _(mo):
 
     Linearity of expectation carries over to matrices.
 
-    /// important | 📐 **Lemma (Linearity for Random Matrices)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Linearity for Random Matrices)**
+        attrs: {class: lemma, id: ch12-lem-linearity-for-random-matrices}
     Let $\mathbf X$ be an $m\times n$ matrix of random variables with finite expected values, and let $\mathbf A \in \mathbb R^{p\times m}$, $\mathbf B \in \mathbb R^{n\times q}$, $\mathbf C \in \mathbb R^{p\times q}$ be constant. Then $\mathbb E[\mathbf A\mathbf X\mathbf B + \mathbf C] = \mathbf A\,\mathbb E[\mathbf X]\,\mathbf B + \mathbf C$ and $\mathbb E[\mathbf X^\top] = \mathbb E[\mathbf X]^\top$. In particular, $\mathbb E[\mathbf A\mathbf x + \mathbf b] = \mathbf A\boldsymbol\mu + \mathbf b$ for a random vector $\mathbf x$ with mean $\boldsymbol\mu$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Entry $(i, j)$ of $\mathbf A\mathbf X\mathbf B + \mathbf C$ is $\sum_{k=1}^m\sum_{l=1}^n A_{ik}X_{kl}B_{lj} + C_{ij}$, a linear combination of entries of $\mathbf X$ plus a constant. By linearity of expectation ([Chapter 6](ch6_expectation_and_variance.md)) its expected value is $\sum_{k,l} A_{ik}\,\mathbb E[X_{kl}]\,B_{lj} + C_{ij}$, which is entry $(i, j)$ of $\mathbf A\,\mathbb E[\mathbf X]\,\mathbf B + \mathbf C$. Transposition only relabels entries. $\blacksquare$
     ///
     """)
@@ -169,10 +167,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-covariance-matrices -->
     ## Covariance Matrices
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Covariance matrix**</u>
 
     For a random vector $\mathbf x \in \mathbb R^n$ with mean $\boldsymbol\mu$ whose components all have finite {term}`variances <variance>`, the $n \times n$ matrix
@@ -183,15 +181,15 @@ def _(mo):
     The diagonal entries are the variances $\operatorname{Var}(x_i)$. We often write $\boldsymbol\Sigma$ for a covariance matrix, and $\mathbf P$ for the covariance of an estimation error. For two components with standard deviations $\sigma_x, \sigma_y$ and {term}`correlation coefficient` $\rho$,
     $$\boldsymbol\Sigma = \begin{bmatrix}\sigma_x^2 & \rho\,\sigma_x\sigma_y\\ \rho\,\sigma_x\sigma_y & \sigma_y^2\end{bmatrix}.$$
 
-    /// important | 📐 **Theorem (Covariance Matrices Are Symmetric and Positive Semidefinite)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Covariance Matrices Are Symmetric and Positive Semidefinite)**
+        attrs: {class: theorem, id: ch12-thm-covariance-matrices-are-symmetric-and-positive-semidefinite}
     Let $\boldsymbol\Sigma = \operatorname{Cov}(\mathbf x)$. Then $\boldsymbol\Sigma$ is symmetric, and for every $\mathbf a \in \mathbb R^n$
     $$\mathbf a^\top\boldsymbol\Sigma\,\mathbf a = \operatorname{Var}(\mathbf a^\top\mathbf x) \ge 0.$$
     So $\boldsymbol\Sigma$ is positive semidefinite.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Symmetry: $\operatorname{Cov}(x_i, x_j) = \operatorname{Cov}(x_j, x_i)$. For the quadratic form, the linearity lemma gives $\mathbb E[\mathbf a^\top\mathbf x] = \mathbf a^\top\boldsymbol\mu$ and
     $$\mathbf a^\top\boldsymbol\Sigma\,\mathbf a = \mathbb E\big[\mathbf a^\top(\mathbf x - \boldsymbol\mu)(\mathbf x - \boldsymbol\mu)^\top\mathbf a\big] = \mathbb E\big[(\mathbf a^\top\mathbf x - \mathbf a^\top\boldsymbol\mu)^2\big] = \operatorname{Var}(\mathbf a^\top\mathbf x),$$
     because $(\mathbf x - \boldsymbol\mu)^\top\mathbf a$ is the same number as $\mathbf a^\top(\mathbf x - \boldsymbol\mu)$. A variance is never negative. $\blacksquare$
@@ -199,36 +197,36 @@ def _(mo):
 
     When is a covariance matrix positive *definite*? The answer needs one fact about variances.
 
-    /// important | 📐 **Lemma (Zero Variance)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Zero Variance)**
+        attrs: {class: lemma, id: ch12-lem-zero-variance}
     A random variable $y$ with finite variance has $\operatorname{Var}(y) = 0$ iff $y = \mathbb E[y]$ {term}`almost surely`.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Leftarrow$) If $y = \mathbb E[y]$ almost surely, then $(y - \mathbb E[y])^2$ has the same distribution as the constant $0$, so its expected value, $\operatorname{Var}(y)$, is $0$.
     ($\Rightarrow$) By Chebyshev's inequality ([Chapter 6](ch6_expectation_and_variance.md)), the events $A_j := \{|y - \mathbb E[y]| \ge 1/j\}$ have $\mathbb P(A_j) \le j^2\operatorname{Var}(y) = 0$ for every $j \in \mathbb N^+$. They increase with $j$, and their union is $\{y \neq \mathbb E[y]\}$, so by continuity from below ([Chapter 4](ch4_probability_spaces.md)) $\mathbb P(y \neq \mathbb E[y]) = \lim_{j\to\infty}\mathbb P(A_j) = 0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (When a Covariance Matrix Is Positive Definite)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (When a Covariance Matrix Is Positive Definite)**
+        attrs: {class: theorem, id: ch12-thm-when-a-covariance-matrix-is-positive-definite}
     $\operatorname{Cov}(\mathbf x)$ is positive definite iff no linear combination $\mathbf a^\top\mathbf x$ with $\mathbf a \neq \mathbf 0$ is almost surely constant.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\operatorname{Cov}(\mathbf x)$ is positive semidefinite, so it is positive definite iff $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a \neq 0$ for every $\mathbf a \neq \mathbf 0$. By the theorem above and the lemma, $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a = \operatorname{Var}(\mathbf a^\top\mathbf x) = 0$ iff $\mathbf a^\top\mathbf x$ is almost surely constant. $\blacksquare$
     ///
 
     For example, if $x$ is a weight, $c$ an offset, and $y = x + c$ a noise-free reading, then $[1, 1, -1]\,[x, c, y]^\top = 0$ always, so $\operatorname{Cov}([x, c, y]^\top)$ is singular. Measurement noise prevents this for a state and its measurement. For two components the condition is easy to read off.
 
-    /// important | 📐 **Corollary (Two Components)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Two Components)**
+        attrs: {class: corollary, id: ch12-cor-two-components}
     Let $\sigma_x, \sigma_y > 0$. The matrix $\begin{bmatrix}\sigma_x^2 & \rho\sigma_x\sigma_y\\ \rho\sigma_x\sigma_y & \sigma_y^2\end{bmatrix}$ is positive semidefinite iff $|\rho| \le 1$, and positive definite iff $|\rho| < 1$. In particular, every correlation coefficient lies in $[-1, 1]$, which gives a second proof of Chapter 6's bound.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Expanding shows that for $\mathbf a = [a_1, a_2]^\top$,
     $$\mathbf a^\top\boldsymbol\Sigma\,\mathbf a = \sigma_x^2a_1^2 + 2\rho\sigma_x\sigma_y a_1a_2 + \sigma_y^2a_2^2 = (\sigma_x a_1 + \rho\sigma_y a_2)^2 + (1 - \rho^2)\,\sigma_y^2a_2^2.$$
     If $|\rho| \le 1$ both terms are $\ge 0$. If $|\rho| < 1$ the sum is $0$ only if $a_2 = 0$ and then $\sigma_x a_1 = 0$, that is, only if $\mathbf a = \mathbf 0$. For $\mathbf a = [-\rho\sigma_y, \sigma_x]^\top \neq \mathbf 0$ the first term is $0$ and the second is $(1 - \rho^2)\sigma_y^2\sigma_x^2$, which is $< 0$ if $|\rho| > 1$ and $= 0$ if $|\rho| = 1$. The last claim follows because every covariance matrix is positive semidefinite. $\blacksquare$
@@ -242,14 +240,14 @@ def _(mo):
     mo.md(r"""
     The most important rule is how a covariance matrix changes under a linear map. It is the matrix version of $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$.
 
-    /// important | 📐 **Theorem (Affine Transformation of Mean and Covariance)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Affine Transformation of Mean and Covariance)**
+        attrs: {class: theorem, id: ch12-thm-affine-transformation-of-mean-and-covariance}
     Let $\mathbf x \in \mathbb R^n$ have mean $\boldsymbol\mu$ and covariance $\boldsymbol\Sigma$, and let $\mathbf A \in \mathbb R^{m\times n}$ and $\mathbf b \in \mathbb R^m$ be constant. Then $\mathbf y := \mathbf A\mathbf x + \mathbf b$ has
     $$\mathbb E[\mathbf y] = \mathbf A\boldsymbol\mu + \mathbf b, \qquad \operatorname{Cov}(\mathbf y) = \mathbf A\boldsymbol\Sigma\mathbf A^\top.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The mean follows from the linearity lemma. Then $\mathbf y - \mathbb E[\mathbf y] = \mathbf A(\mathbf x - \boldsymbol\mu)$, so
     $$\operatorname{Cov}(\mathbf y) = \mathbb E\big[\mathbf A(\mathbf x - \boldsymbol\mu)(\mathbf x - \boldsymbol\mu)^\top\mathbf A^\top\big] = \mathbf A\,\mathbb E\big[(\mathbf x - \boldsymbol\mu)(\mathbf x - \boldsymbol\mu)^\top\big]\,\mathbf A^\top = \mathbf A\boldsymbol\Sigma\mathbf A^\top. \;\blacksquare$$
     ///
@@ -261,7 +259,6 @@ def _(mo):
     Between two different random vectors we need the covariance of every component of one with every component of the other.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Cross-covariance matrix**</u>
 
     For random vectors $\mathbf x \in \mathbb R^n$ and $\mathbf y \in \mathbb R^m$ on the same probability space, with means $\boldsymbol\mu_x, \boldsymbol\mu_y$ and components of finite variance, the $n\times m$ matrix
@@ -271,8 +268,8 @@ def _(mo):
 
     We call $\mathbf x$ and $\mathbf y$ *uncorrelated* if $\operatorname{Cov}(\mathbf x, \mathbf y) = \mathbf 0$.
 
-    /// important | 📐 **Lemma (Rules for Cross-Covariances)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rules for Cross-Covariances)**
+        attrs: {class: lemma, id: ch12-lem-rules-for-cross-covariances}
     For random vectors $\mathbf x, \mathbf y$ as above and constant $\mathbf A, \mathbf B, \mathbf a, \mathbf b$ of compatible sizes:
 
     1. $\operatorname{Cov}(\mathbf x, \mathbf x) = \operatorname{Cov}(\mathbf x)$ and $\operatorname{Cov}(\mathbf y, \mathbf x) = \operatorname{Cov}(\mathbf x, \mathbf y)^\top$.
@@ -283,7 +280,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. The first is the definition; for the second, transpose the matrix inside the expectation, using $(\mathbf u\mathbf v^\top)^\top = \mathbf v\mathbf u^\top$.
     2. The centered vectors are $\mathbf A(\mathbf x - \boldsymbol\mu_x)$ and $\mathbf B(\mathbf y - \boldsymbol\mu_y)$; pull $\mathbf A$ and $\mathbf B^\top$ out of the expectation with the linearity lemma.
     3. Expand $\mathbb E\big[(\mathbf u + \mathbf v)(\mathbf u + \mathbf v)^\top\big]$ for the centered vectors $\mathbf u = \mathbf x - \boldsymbol\mu_x$, $\mathbf v = \mathbf y - \boldsymbol\mu_y$ into four terms and use linearity.
@@ -298,7 +295,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Finite variances.** Covariance matrices exist only when every component has a finite variance. Some heavy-tailed noise models (the Cauchy distribution, for example) have none, and then nothing in this chapter applies.
     - **Positive semidefinite, not always definite.** A covariance matrix is singular exactly when some combination of the components is constant. In a filter this happens when a quantity is known exactly (for example, a state with zero initial uncertainty that never receives process noise); formulas that invert such a matrix then fail.
     - **Numerically computed covariances** can lose symmetry or positive semidefiniteness through rounding. A covariance estimated from fewer samples than its dimension is always singular. Chapter 13 and [Chapter 14](ch14_kalman_filters_in_practice.md) discuss remedies.
@@ -310,6 +306,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-the-multivariate-normal-distribution -->
     ## The Multivariate Normal Distribution
 
     Chapter 5's normal density has the variance in the denominator of the exponent. The multivariate version puts the inverse covariance matrix there. We first build the simplest example from scalar normals. Let $y_1, \ldots, y_n$ be independent standard normal random variables and $\mathbf y := [y_1, \ldots, y_n]^\top$. By independence ([Chapter 5](ch5_random_variables.md)), the joint density is the product of the marginal densities:
@@ -317,7 +314,6 @@ def _(mo):
     Its mean is $\mathbf 0$ and its covariance is $\mathbf I$ (unit variances, and independent components are uncorrelated). This is the case $\boldsymbol\mu = \mathbf 0$, $\boldsymbol\Sigma = \mathbf I$ of the following definition.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Multivariate normal distribution**</u>
 
     Let $\boldsymbol\mu \in \mathbb R^n$ and let $\boldsymbol\Sigma \in \mathbb R^{n\times n}$ be positive definite. A random vector $\mathbf x$ has the multivariate normal distribution $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$ iff it has the joint density
@@ -329,15 +325,15 @@ def _(mo):
 
     Two questions arise at once: is $f$ really a density (does it integrate to $1$?), and are $\boldsymbol\mu$ and $\boldsymbol\Sigma$ really the mean and covariance? Both answers come from transforming the standard normal vector $\mathbf y$, for which we need the change-of-variables formula for multiple integrals.
 
-    /// important | 📐 **Theorem (Densities Under Invertible Affine Maps)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Densities Under Invertible Affine Maps)**
+        attrs: {class: theorem, id: ch12-thm-densities-under-invertible-affine-maps}
     Let $\mathbf y$ have joint density $f_{\mathbf y}$ on $\mathbb R^n$, let $\mathbf A \in \mathbb R^{n\times n}$ be invertible, and $\mathbf b \in \mathbb R^n$. Then $\mathbf x := \mathbf A\mathbf y + \mathbf b$ has the joint density
     $$f_{\mathbf x}(\mathbf x) = \frac{f_{\mathbf y}\big(\mathbf A^{-1}(\mathbf x - \mathbf b)\big)}{|\det\mathbf A|}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Not proven here. For every Borel set $B \subseteq \mathbb R^n$, $\mathbb P(\mathbf x \in B) = \mathbb P\big(\mathbf y \in \mathbf A^{-1}(B - \mathbf b)\big) = \int_{\mathbf A^{-1}(B - \mathbf b)} f_{\mathbf y}(\mathbf y)\,d\mathbf y$. The change-of-variables theorem for multiple integrals, applied to the invertible map $\mathbf y = \mathbf A^{-1}(\mathbf x - \mathbf b)$ whose Jacobian determinant is the constant $\det\mathbf A^{-1} = 1/\det\mathbf A$, turns this into $\int_B f_{\mathbf y}\big(\mathbf A^{-1}(\mathbf x - \mathbf b)\big)\,|\det\mathbf A|^{-1}\,d\mathbf x$. See [Appendix C: Multiple Integrals](appendix_c_calculus.md) and [Wikipedia: Integration by substitution (substitution for multiple variables)](https://en.wikipedia.org/wiki/Integration_by_substitution#Substitution_for_multiple_variables). $\blacksquare$
+        attrs: {class: proof}
+    Not proven here. For every Borel set $B \subseteq \mathbb R^n$, $\mathbb P(\mathbf x \in B) = \mathbb P\big(\mathbf y \in \mathbf A^{-1}(B - \mathbf b)\big) = \int_{\mathbf A^{-1}(B - \mathbf b)} f_{\mathbf y}(\mathbf y)\,d\mathbf y$. The change-of-variables theorem for multiple integrals, applied to the invertible map $\mathbf y = \mathbf A^{-1}(\mathbf x - \mathbf b)$ whose Jacobian determinant is the constant $\det\mathbf A^{-1} = 1/\det\mathbf A$, turns this into $\int_B f_{\mathbf y}\big(\mathbf A^{-1}(\mathbf x - \mathbf b)\big)\,|\det\mathbf A|^{-1}\,d\mathbf x$. See [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals) and [Wikipedia: Integration by substitution (substitution for multiple variables)](https://en.wikipedia.org/wiki/Integration_by_substitution#Substitution_for_multiple_variables). $\blacksquare$
     ///
     """)
     return
@@ -346,8 +342,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Existence, Mean, and Covariance of the Multivariate Normal)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Existence, Mean, and Covariance of the Multivariate Normal)**
+        attrs: {class: theorem, id: ch12-thm-existence-mean-and-covariance-of-the-multivariate-normal}
     Let $\boldsymbol\mu \in \mathbb R^n$, let $\boldsymbol\Sigma$ be positive definite with Cholesky factor $\mathbf L$ ($\boldsymbol\Sigma = \mathbf L\mathbf L^\top$), and let $\mathbf y$ be a standard normal vector as above. Then:
 
     1. $\mathbf x := \mathbf L\mathbf y + \boldsymbol\mu$ has the distribution $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$; in particular, the density in the definition integrates to $1$;
@@ -355,7 +351,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $\mathbf L$ is invertible (lemma above), so by the previous theorem $\mathbf x$ has density
     $$f_{\mathbf x}(\mathbf x) = \frac{(2\pi)^{-n/2}}{|\det\mathbf L|}\exp\Big(-\tfrac12\big(\mathbf L^{-1}(\mathbf x - \boldsymbol\mu)\big)^\top\big(\mathbf L^{-1}(\mathbf x - \boldsymbol\mu)\big)\Big).$$
     The exponent is $-\tfrac12(\mathbf x - \boldsymbol\mu)^\top(\mathbf L^{-1})^\top\mathbf L^{-1}(\mathbf x - \boldsymbol\mu) = -\tfrac12(\mathbf x - \boldsymbol\mu)^\top(\mathbf L\mathbf L^\top)^{-1}(\mathbf x - \boldsymbol\mu)$, and $|\det\mathbf L| = (\det\boldsymbol\Sigma)^{1/2}$ because $\det\boldsymbol\Sigma = (\det\mathbf L)^2$. So $f_{\mathbf x}$ is exactly the density in the definition. Being the density of a random vector, it integrates to $1$.
@@ -364,23 +360,23 @@ def _(mo):
 
     Part 1 is also how simulations draw samples from $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$: draw independent standard normals and compute $\mathbf L\mathbf y + \boldsymbol\mu$ with `np.linalg.cholesky`. The next lemma lets us recognize a multivariate normal density from the shape of its exponent alone, without computing determinants.
 
-    /// important | 📐 **Lemma (Normalization)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Normalization)**
+        attrs: {class: lemma, id: ch12-lem-normalization}
     Let $f$ be a joint density on $\mathbb R^n$, $\mathbf m \in \mathbb R^n$, and $\boldsymbol\Sigma$ positive definite. If there is a constant $\kappa$ such that $f(\mathbf x) = \kappa\exp\big(-\tfrac12(\mathbf x - \mathbf m)^\top\boldsymbol\Sigma^{-1}(\mathbf x - \mathbf m)\big)$ for all $\mathbf x$, then $f$ is the $\mathcal N(\mathbf m, \boldsymbol\Sigma)$ density.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $g$ be the $\mathcal N(\mathbf m, \boldsymbol\Sigma)$ density and $\kappa_{\boldsymbol\Sigma} := (2\pi)^{-n/2}(\det\boldsymbol\Sigma)^{-1/2}$ its constant. Then $f = (\kappa/\kappa_{\boldsymbol\Sigma})\,g$. Both $f$ and $g$ integrate to $1$ (the latter by the previous theorem), so $\kappa/\kappa_{\boldsymbol\Sigma} = 1$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Invertible Affine Maps Preserve Normality)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Invertible Affine Maps Preserve Normality)**
+        attrs: {class: theorem, id: ch12-thm-invertible-affine-maps-preserve-normality}
     If $\mathbf x \sim \mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$, $\mathbf A \in \mathbb R^{n\times n}$ is invertible, and $\mathbf b \in \mathbb R^n$, then $\mathbf A\mathbf x + \mathbf b \sim \mathcal N(\mathbf A\boldsymbol\mu + \mathbf b,\ \mathbf A\boldsymbol\Sigma\mathbf A^\top)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathbf m := \mathbf A\boldsymbol\mu + \mathbf b$. By the change-of-variables theorem, $\mathbf y := \mathbf A\mathbf x + \mathbf b$ has density $f_{\mathbf x}\big(\mathbf A^{-1}(\mathbf y - \mathbf b)\big)/|\det\mathbf A|$. Since $\mathbf A^{-1}(\mathbf y - \mathbf b) - \boldsymbol\mu = \mathbf A^{-1}(\mathbf y - \mathbf m)$, the exponent is
     $$-\tfrac12(\mathbf y - \mathbf m)^\top(\mathbf A^{-1})^\top\boldsymbol\Sigma^{-1}\mathbf A^{-1}(\mathbf y - \mathbf m) = -\tfrac12(\mathbf y - \mathbf m)^\top(\mathbf A\boldsymbol\Sigma\mathbf A^\top)^{-1}(\mathbf y - \mathbf m).$$
     So the density of $\mathbf y$ is a constant times $\exp\big(-\tfrac12(\mathbf y - \mathbf m)^\top(\mathbf A\boldsymbol\Sigma\mathbf A^\top)^{-1}(\mathbf y - \mathbf m)\big)$, where $\mathbf A\boldsymbol\Sigma\mathbf A^\top$ is positive definite (lemma above). By the normalization lemma, $\mathbf y \sim \mathcal N(\mathbf m, \mathbf A\boldsymbol\Sigma\mathbf A^\top)$. $\blacksquare$
@@ -390,14 +386,14 @@ def _(mo):
 
     Finally, independent normal pieces stack into a normal vector.
 
-    /// important | 📐 **Corollary (Stacking Independent Normal Vectors)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Stacking Independent Normal Vectors)**
+        attrs: {class: corollary, id: ch12-cor-stacking-independent-normal-vectors}
     If $\mathbf x \sim \mathcal N(\boldsymbol\mu_x, \boldsymbol\Sigma_x)$ and $\mathbf v \sim \mathcal N(\boldsymbol\mu_v, \boldsymbol\Sigma_v)$ are independent (their joint density is the product of their densities), then
     $$\begin{bmatrix}\mathbf x\\ \mathbf v\end{bmatrix} \sim \mathcal N\left(\begin{bmatrix}\boldsymbol\mu_x\\ \boldsymbol\mu_v\end{bmatrix}, \begin{bmatrix}\boldsymbol\Sigma_x & \mathbf 0\\ \mathbf 0 & \boldsymbol\Sigma_v\end{bmatrix}\right).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathbf D$ be the block-diagonal matrix above. It is positive definite, since $[\mathbf a; \mathbf b]^\top\mathbf D[\mathbf a; \mathbf b] = \mathbf a^\top\boldsymbol\Sigma_x\mathbf a + \mathbf b^\top\boldsymbol\Sigma_v\mathbf b > 0$ unless $\mathbf a$ and $\mathbf b$ are both $\mathbf 0$, and multiplying block by block shows that its inverse is block diagonal with blocks $\boldsymbol\Sigma_x^{-1}$ and $\boldsymbol\Sigma_v^{-1}$. So the product of the two densities is a constant times
     $$\exp\Big(-\tfrac12\big[(\mathbf x - \boldsymbol\mu_x)^\top\boldsymbol\Sigma_x^{-1}(\mathbf x - \boldsymbol\mu_x) + (\mathbf v - \boldsymbol\mu_v)^\top\boldsymbol\Sigma_v^{-1}(\mathbf v - \boldsymbol\mu_v)\big]\Big) = \exp\Big(-\tfrac12\,\mathbf d^\top\mathbf D^{-1}\mathbf d\Big),$$
     with $\mathbf d$ the stacked deviation from the stacked mean. Apply the normalization lemma. $\blacksquare$
@@ -409,12 +405,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-mahalanobis-distance-and-confidence-ellipses -->
     ## Mahalanobis Distance and Confidence Ellipses
 
     How far is a point from the center of a multivariate normal distribution? Plain distance is the wrong measure: a deviation of 2 lb is ordinary along a direction with a standard deviation of 5 lb and extraordinary along one with 0.1 lb. The right measure counts standard deviations, direction by direction.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Mahalanobis distance**</u>
 
     For $\boldsymbol\mu \in \mathbb R^n$ and a positive definite $\boldsymbol\Sigma \in \mathbb R^{n\times n}$, the Mahalanobis distance of $\mathbf x \in \mathbb R^n$ from $\boldsymbol\mu$ with respect to $\boldsymbol\Sigma$ is
@@ -423,35 +419,34 @@ def _(mo):
 
     The square root is of a nonnegative number because $\boldsymbol\Sigma^{-1}$ is positive definite. For $n = 1$ it is $|x - \mu|/\sigma$, the number of standard deviations. In general, with the Cholesky factor $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ and $\mathbf y := \mathbf L^{-1}(\mathbf x - \boldsymbol\mu)$, we have $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)^2 = \mathbf y^\top\mathbf y$: the Mahalanobis distance is the ordinary length after transforming to coordinates in which the distribution is standard normal.
 
-    /// important | 📐 **Theorem (Squared Mahalanobis Distance Is Chi-Squared)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Squared Mahalanobis Distance Is Chi-Squared)**
+        attrs: {class: theorem, id: ch12-thm-squared-mahalanobis-distance-is-chi-squared}
     If $\mathbf x \sim \mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$ in $\mathbb R^n$, then $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)^2$ has the {term}`chi-squared distribution` with $n$ degrees of freedom, the distribution of a sum of squares of $n$ independent standard normal random variables.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the invertible-affine-map theorem, $\mathbf y := \mathbf L^{-1}(\mathbf x - \boldsymbol\mu) \sim \mathcal N\big(\mathbf 0, \mathbf L^{-1}\boldsymbol\Sigma(\mathbf L^{-1})^\top\big) = \mathcal N(\mathbf 0, \mathbf I)$. The $\mathcal N(\mathbf 0, \mathbf I)$ density is the product of $n$ standard normal densities, so $y_1, \ldots, y_n$ are independent standard normal random variables ([Chapter 5](ch5_random_variables.md)). And $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)^2 = (\mathbf x - \boldsymbol\mu)^\top(\mathbf L^{-1})^\top\mathbf L^{-1}(\mathbf x - \boldsymbol\mu) = \mathbf y^\top\mathbf y = \sum_{i=1}^n y_i^2$. $\blacksquare$
     ///
 
     For $n = 1$ this is [Chapter 9](ch9_noise_levels.md)'s normalized innovation squared, $\tilde y_k^2/S_k$. In two dimensions the distribution has a simple closed form.
 
-    /// important | 📐 **Theorem (Two Dimensions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Two Dimensions)**
+        attrs: {class: theorem, id: ch12-thm-two-dimensions}
     If $\mathbf x \sim \mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$ in $\mathbb R^2$, then for every $r \ge 0$
     $$\mathbb P\big(d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu) \le r\big) = 1 - e^{-r^2/2}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    With $\mathbf y$ as in the previous proof, the probability is the integral of the $\mathcal N(\mathbf 0, \mathbf I)$ density over the disk $y_1^2 + y_2^2 \le r^2$. In polar coordinates $y_1 = s\cos\theta$, $y_2 = s\sin\theta$, whose area element is $s\,ds\,d\theta$ ([Appendix C: Multiple Integrals](appendix_c_calculus.md)),
+        attrs: {class: proof}
+    With $\mathbf y$ as in the previous proof, the probability is the integral of the $\mathcal N(\mathbf 0, \mathbf I)$ density over the disk $y_1^2 + y_2^2 \le r^2$. In polar coordinates $y_1 = s\cos\theta$, $y_2 = s\sin\theta$, whose area element is $s\,ds\,d\theta$ ([Appendix C: Multiple Integrals](#appc-sec-multiple-integrals)),
     $$\int_0^{2\pi}\!\!\int_0^r \frac{1}{2\pi}e^{-s^2/2}\,s\,ds\,d\theta = \int_0^r s\,e^{-s^2/2}\,ds = \Big[-e^{-s^2/2}\Big]_0^r = 1 - e^{-r^2/2},$$
-    using the fundamental theorem of calculus ([Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md)). $\blacksquare$
+    using the fundamental theorem of calculus ([Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus)). $\blacksquare$
     ///
 
     So the probability $p$ is captured within Mahalanobis distance $r_p := \sqrt{-2\ln(1 - p)}$. Two surprises for anyone used to one dimension: within one "standard deviation" ($r = 1$) lies only $1 - e^{-1/2} \approx 39\%$ of the probability, not $68\%$; within $r = 2$, about $86\%$; and 95% needs $r_{0.95} = \sqrt{-2\ln 0.05} \approx 2.45$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Confidence ellipse**</u>
 
     For $\mathbf x \sim \mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$ in $\mathbb R^2$ and a probability $p \in (0, 1)$, the $p$ confidence ellipse is the set
@@ -463,8 +458,8 @@ def _(mo):
 
     Why an ellipse? Because it is the smallest region with probability $p$, and because its shape is easy to compute.
 
-    /// important | 📐 **Theorem (Shape and Optimality of the Confidence Ellipse)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Shape and Optimality of the Confidence Ellipse)**
+        attrs: {class: theorem, id: ch12-thm-shape-and-optimality-of-the-confidence-ellipse}
     Let $\boldsymbol\Sigma = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$ with $\mathbf Q = [\mathbf q_1\ \mathbf q_2]$ orthogonal and $\boldsymbol\Lambda = \operatorname{diag}(\lambda_1, \lambda_2)$ (spectral theorem), and let $r_p := \sqrt{-2\ln(1-p)}$.
 
     1. $\lambda_1, \lambda_2 > 0$, and in the rotated coordinates $\mathbf u := \mathbf Q^\top(\mathbf x - \boldsymbol\mu)$,
@@ -474,7 +469,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Since $\boldsymbol\Sigma\mathbf q_i = \lambda_i\mathbf q_i$ and $\mathbf q_i^\top\mathbf q_i = 1$, we get $\lambda_i = \mathbf q_i^\top\boldsymbol\Sigma\mathbf q_i > 0$. Next, $\boldsymbol\Sigma^{-1} = \mathbf Q\boldsymbol\Lambda^{-1}\mathbf Q^\top$, because $\mathbf Q\boldsymbol\Lambda\mathbf Q^\top\mathbf Q\boldsymbol\Lambda^{-1}\mathbf Q^\top = \mathbf Q\mathbf Q^\top = \mathbf I$. Hence $(\mathbf x - \boldsymbol\mu)^\top\boldsymbol\Sigma^{-1}(\mathbf x - \boldsymbol\mu) = \mathbf u^\top\boldsymbol\Lambda^{-1}\mathbf u = u_1^2/\lambda_1 + u_2^2/\lambda_2$, and $\mathbf x = \boldsymbol\mu + \mathbf Q\mathbf u$. The map $\mathbf u \mapsto \boldsymbol\mu + \mathbf Q\mathbf u$ preserves lengths and angles (it is a rotation, possibly with a reflection, followed by a shift), so it carries the axis-aligned ellipse onto $E_p$ with the coordinate axes going to the directions $\mathbf q_i$.
     2. The density $f$ of $\mathbf x$ is a decreasing function of $d_{\boldsymbol\Sigma}(\mathbf x, \boldsymbol\mu)$, so with $t := (2\pi)^{-1}(\det\boldsymbol\Sigma)^{-1/2}e^{-r_p^2/2} > 0$ we have $f \ge t$ on $E_p$ and $f < t$ outside it. If $B$ has infinite area there is nothing to prove. Otherwise
     $$0 = \mathbb P(\mathbf x \in B) - \mathbb P(\mathbf x \in E_p) = \int_{B\setminus E_p} f - \int_{E_p\setminus B} f \le t\,\big(\operatorname{area}(B\setminus E_p) - \operatorname{area}(E_p\setminus B)\big) = t\,\big(\operatorname{area}(B) - \operatorname{area}(E_p)\big),$$
@@ -488,7 +483,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def confidence_ellipse(mu, Sigma, p, n_points=200):
         """Boundary of the p confidence ellipse of N(mu, Sigma) in 2-D (2 x n_points)."""
         r = np.sqrt(-2 * np.log(1 - p))        # Mahalanobis radius
@@ -583,7 +578,6 @@ def _(
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Normality.** The probability $1 - e^{-r^2/2}$ and the chi-squared law hold for normal vectors. For other distributions with the same covariance, the ellipse still has the same shape, but the probability inside it can be quite different (heavy tails put more mass outside).
     - **The dimension matters.** In $n$ dimensions the radius for probability $p$ is the square root of the chi-squared quantile with $n$ degrees of freedom, which grows with $n$. Using the two-dimensional radius for a higher-dimensional state undercovers.
     - **Estimated covariances.** An ellipse drawn from a covariance matrix that was itself estimated, or computed by a mis-tuned filter, inherits those errors. Checking whether true errors actually fall inside the filter's ellipses at the advertised rate is the consistency test of [Chapter 14](ch14_kalman_filters_in_practice.md).
@@ -595,14 +589,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-marginals-and-conditioning -->
     ## Marginals and Conditioning
 
     Now split a jointly normal vector into two parts: $\mathbf x \in \mathbb R^n$, which we want to know, and $\mathbf z \in \mathbb R^m$, which we will observe. Write
     $$\begin{bmatrix}\mathbf x\\ \mathbf z\end{bmatrix} \sim \mathcal N\left(\begin{bmatrix}\boldsymbol\mu_x\\ \boldsymbol\mu_z\end{bmatrix}, \boldsymbol\Sigma\right), \qquad \boldsymbol\Sigma = \begin{bmatrix}\boldsymbol\Sigma_{xx} & \boldsymbol\Sigma_{xz}\\ \boldsymbol\Sigma_{zx} & \boldsymbol\Sigma_{zz}\end{bmatrix},$$
     with $\boldsymbol\Sigma$ positive definite, $\boldsymbol\Sigma_{xz} = \operatorname{Cov}(\mathbf x, \mathbf z)$, and $\boldsymbol\Sigma_{zx} = \boldsymbol\Sigma_{xz}^\top$. Two questions: what is the distribution of $\mathbf z$ alone, and what is the distribution of $\mathbf x$ once we know $\mathbf z$? Both answers come from rewriting the quadratic form in the exponent, which is completing the square with matrices.
 
-    /// important | 📐 **Lemma (Completing the Square with a Schur Complement)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Completing the Square with a Schur Complement)**
+        attrs: {class: lemma, id: ch12-lem-completing-the-square-with-a-schur-complement}
     With $\boldsymbol\Sigma$ as above:
 
     1. $\boldsymbol\Sigma_{zz}$ is positive definite, hence invertible;
@@ -612,7 +607,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. For $\mathbf a \neq \mathbf 0$, $\mathbf a^\top\boldsymbol\Sigma_{zz}\mathbf a = [\mathbf 0; \mathbf a]^\top\boldsymbol\Sigma\,[\mathbf 0; \mathbf a] > 0$.
 
     2. Let $\mathbf T := \begin{bmatrix}\mathbf I & -\mathbf G\\ \mathbf 0 & \mathbf I\end{bmatrix}$. Multiplying block by block and using $\mathbf G\boldsymbol\Sigma_{zz} = \boldsymbol\Sigma_{xz}$,
@@ -638,25 +633,25 @@ def _(mo):
     $$f(\mathbf x, \mathbf z) = \kappa\,\exp\Big(-\tfrac12\,\mathbf d_z^\top\boldsymbol\Sigma_{zz}^{-1}\mathbf d_z\Big)\,\exp\Big(-\tfrac12\big(\mathbf x - \mathbf m(\mathbf z)\big)^\top\boldsymbol\Sigma_{x\mid z}^{-1}\big(\mathbf x - \mathbf m(\mathbf z)\big)\Big), \qquad (\ast)$$
     where $\kappa$ is the constant of the joint density.
 
-    /// important | 📐 **Theorem (Marginals of a Multivariate Normal)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Marginals of a Multivariate Normal)**
+        attrs: {class: theorem, id: ch12-thm-marginals-of-a-multivariate-normal}
     $\mathbf z \sim \mathcal N(\boldsymbol\mu_z, \boldsymbol\Sigma_{zz})$ and $\mathbf x \sim \mathcal N(\boldsymbol\mu_x, \boldsymbol\Sigma_{xx})$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The marginal density of $\mathbf z$ is $f_{\mathbf z}(\mathbf z) = \int_{\mathbb R^n} f(\mathbf x, \mathbf z)\,d\mathbf x$ ([Chapter 5](ch5_random_variables.md), with $n$ variables integrated out). In $(\ast)$, for fixed $\mathbf z$ the last factor is $1/\kappa_{x\mid z}$ times the $\mathcal N(\mathbf m(\mathbf z), \boldsymbol\Sigma_{x\mid z})$ density in $\mathbf x$, so its integral over $\mathbf x$ is $1/\kappa_{x\mid z}$, whatever $\mathbf z$ is. Hence
     $$f_{\mathbf z}(\mathbf z) = \frac{\kappa}{\kappa_{x\mid z}}\exp\Big(-\tfrac12(\mathbf z - \boldsymbol\mu_z)^\top\boldsymbol\Sigma_{zz}^{-1}(\mathbf z - \boldsymbol\mu_z)\Big),$$
     and the normalization lemma gives $\mathbf z \sim \mathcal N(\boldsymbol\mu_z, \boldsymbol\Sigma_{zz})$. For $\mathbf x$, note that $[\mathbf z; \mathbf x]$ is obtained from $[\mathbf x; \mathbf z]$ by an invertible linear map (a reordering of components), so it is normal with mean $[\boldsymbol\mu_z; \boldsymbol\mu_x]$ and the blocks of $\boldsymbol\Sigma$ rearranged accordingly; apply the first part with the roles exchanged. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Uncorrelated Jointly Normal Vectors Are Independent)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Uncorrelated Jointly Normal Vectors Are Independent)**
+        attrs: {class: corollary, id: ch12-cor-uncorrelated-jointly-normal-vectors-are-independent}
     If $\mathbf x$ and $\mathbf z$ are jointly normal and $\operatorname{Cov}(\mathbf x, \mathbf z) = \mathbf 0$, then $\mathbf x$ and $\mathbf z$ are independent: their joint density is the product of their marginal densities.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     With $\boldsymbol\Sigma_{xz} = \mathbf 0$ we have $\mathbf G = \mathbf 0$, $\mathbf m(\mathbf z) = \boldsymbol\mu_x$, and $\boldsymbol\Sigma_{x\mid z} = \boldsymbol\Sigma_{xx}$, so by $(\ast)$ the joint density is a constant times the product of the exponentials of the $\mathcal N(\boldsymbol\mu_z, \boldsymbol\Sigma_{zz})$ and $\mathcal N(\boldsymbol\mu_x, \boldsymbol\Sigma_{xx})$ densities. By the theorem these are the marginal densities, so $f(\mathbf x, \mathbf z) = c\,f_{\mathbf x}(\mathbf x)f_{\mathbf z}(\mathbf z)$ for a constant $c$; integrating both sides over $\mathbb R^{n+m}$ gives $c = 1$. $\blacksquare$
     ///
 
@@ -668,16 +663,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Now the main result. The {term}`conditional density <conditional density>` of $\mathbf x$ given $\mathbf z = \mathbf z$ is $f(\mathbf x, \mathbf z)/f_{\mathbf z}(\mathbf z)$, exactly as in [Chapter 8](ch8_bayesian_view.md) but with joint densities of vectors.
+    Now the main result. The {term}`conditional density` of $\mathbf x$ given $\mathbf z = \mathbf z$ is $f(\mathbf x, \mathbf z)/f_{\mathbf z}(\mathbf z)$, exactly as in [Chapter 8](ch8_bayesian_view.md) but with joint densities of vectors.
 
-    /// important | 📐 **Theorem (Conditioning a Joint Normal Distribution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Conditioning a Joint Normal Distribution)**
+        attrs: {class: theorem, id: ch12-thm-conditioning-a-joint-normal-distribution}
     For every $\mathbf z \in \mathbb R^m$, the conditional distribution of $\mathbf x$ given $\mathbf z = \mathbf z$ is
     $$\mathcal N\Big(\boldsymbol\mu_x + \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}(\mathbf z - \boldsymbol\mu_z),\ \ \boldsymbol\Sigma_{xx} - \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Divide $(\ast)$ by the formula for $f_{\mathbf z}$ in the proof of the marginal theorem. The factors depending only on $\mathbf z$ cancel, leaving
     $$\frac{f(\mathbf x, \mathbf z)}{f_{\mathbf z}(\mathbf z)} = \kappa_{x\mid z}\exp\Big(-\tfrac12\big(\mathbf x - \mathbf m(\mathbf z)\big)^\top\boldsymbol\Sigma_{x\mid z}^{-1}\big(\mathbf x - \mathbf m(\mathbf z)\big)\Big),$$
     which is the $\mathcal N(\mathbf m(\mathbf z), \boldsymbol\Sigma_{x\mid z})$ density, and $\mathbf m(\mathbf z) = \boldsymbol\mu_x + \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}(\mathbf z - \boldsymbol\mu_z)$. $\blacksquare$
@@ -749,19 +744,19 @@ def _(IMAGES_DIR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Here $\operatorname{Cov}(x, z) = \operatorname{Var}(x) = 4$ and $\operatorname{Var}(z) = 4 + 1 = 5$, so the reading $z = 157$ moves the mean by $\tfrac45 \cdot 2 = 1.6$ lb to $156.6$ lb and shrinks the variance from $4$ to $4 - \tfrac{16}{5} = 0.8$ lb². That is precisely Chapter 7's update with gain $4/5$.
+    Here $\operatorname{Cov}(x, z) = \operatorname{Var}(x) = 4$ and $\operatorname{Var}(z) = 4 + 1 = 5$, so the reading $z = 157$ moves the mean by $\tfrac45 \cdot 2 = 1.6$ lb to $156.6$ lb and shrinks the variance from $4$ to $4 - \tfrac{16}{5} = 0.8$ lb$^2$. That is precisely Chapter 7's update with gain $4/5$.
 
     The conditional mean also has a meaning that does not depend on normality: it is the best *linear* estimate for any distribution with these means and covariances. For jointly normal vectors it is moreover the conditional expectation $\mathbb E[\mathbf x \mid \mathbf z]$, which [Chapter 8](ch8_bayesian_view.md) showed is the best estimate of all.
 
-    /// important | 📐 **Theorem (Best Linear Estimator)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Best Linear Estimator)**
+        attrs: {class: theorem, id: ch12-thm-best-linear-estimator}
     Let $\mathbf x, \mathbf z$ be random vectors (not necessarily normal) with finite variances, means $\boldsymbol\mu_x, \boldsymbol\mu_z$, covariances $\boldsymbol\Sigma_{xx}, \boldsymbol\Sigma_{xz}, \boldsymbol\Sigma_{zz}$, and $\boldsymbol\Sigma_{zz}$ positive definite. For every matrix $\mathbf A \in \mathbb R^{n\times m}$ and vector $\mathbf b \in \mathbb R^n$, the error $\mathbf e := \mathbf x - (\mathbf A\mathbf z + \mathbf b)$ satisfies
     $$\mathbb E[\mathbf e\mathbf e^\top] = \boldsymbol\Sigma_{x\mid z} + (\mathbf G - \mathbf A)\boldsymbol\Sigma_{zz}(\mathbf G - \mathbf A)^\top + \mathbf c\,\mathbf c^\top, \qquad \mathbf c := \boldsymbol\mu_x - \mathbf A\boldsymbol\mu_z - \mathbf b.$$
     Hence every component's mean squared error $\mathbb E[e_i^2]$ is at least the $i$-th diagonal entry of $\boldsymbol\Sigma_{x\mid z}$, with equality for all components iff $\mathbf A = \mathbf G$ and $\mathbf b = \boldsymbol\mu_x - \mathbf G\boldsymbol\mu_z$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathbf e^* := \mathbf x - \boldsymbol\mu_x - \mathbf G(\mathbf z - \boldsymbol\mu_z)$. It has mean $\mathbf 0$, and by the cross-covariance rules
     $$\operatorname{Cov}(\mathbf e^*, \mathbf z) = \boldsymbol\Sigma_{xz} - \mathbf G\boldsymbol\Sigma_{zz} = \mathbf 0, \qquad \operatorname{Cov}(\mathbf e^*) = \boldsymbol\Sigma_{xx} - \mathbf G\boldsymbol\Sigma_{zx} - \boldsymbol\Sigma_{xz}\mathbf G^\top + \mathbf G\boldsymbol\Sigma_{zz}\mathbf G^\top = \boldsymbol\Sigma_{x\mid z},$$
     because $\mathbf G\boldsymbol\Sigma_{zz}\mathbf G^\top = \boldsymbol\Sigma_{xz}\mathbf G^\top = \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx} = \mathbf G\boldsymbol\Sigma_{zx}$. Rearranging, $\mathbf e = \mathbf e^* + \mathbf g$ with $\mathbf g := (\mathbf G - \mathbf A)(\mathbf z - \boldsymbol\mu_z) + \mathbf c$. The cross terms vanish: $\mathbb E[\mathbf e^*\mathbf g^\top] = \operatorname{Cov}(\mathbf e^*, \mathbf z)(\mathbf G - \mathbf A)^\top + \mathbb E[\mathbf e^*]\,\mathbf c^\top = \mathbf 0$. And $\mathbb E[\mathbf g\mathbf g^\top] = (\mathbf G - \mathbf A)\boldsymbol\Sigma_{zz}(\mathbf G - \mathbf A)^\top + \mathbf c\mathbf c^\top$, because $\mathbf z - \boldsymbol\mu_z$ has mean $\mathbf 0$. This proves the formula. Both added matrices are positive semidefinite, so their diagonal entries are $\ge 0$. They are all $0$ iff $\mathbf c = \mathbf 0$ and every row $\mathbf r$ of $\mathbf G - \mathbf A$ has $\mathbf r\boldsymbol\Sigma_{zz}\mathbf r^\top = 0$, that is, $\mathbf r = \mathbf 0$ since $\boldsymbol\Sigma_{zz}$ is positive definite. $\blacksquare$
@@ -776,7 +771,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Joint normality, not just normal components.** Let $x \sim \mathcal N(0, 1)$ and let $s = \pm 1$ with probability $\tfrac12$ each, independent of $x$. Then $z := s\,x$ is also $\mathcal N(0, 1)$ and $\operatorname{Cov}(x, z) = \mathbb E[s]\,\mathbb E[x^2] = 0$, yet $|z| = |x|$, so they are far from independent. By the corollary, $[x; z]$ cannot be jointly normal. The conditioning theorem needs the *joint* distribution to be normal.
     - **Without normality** the formula still gives the best linear estimate, but it is no longer the conditional distribution. With outliers or multimodal errors the best nonlinear estimate can be much better ([Chapter 8](ch8_bayesian_view.md)), and the reported covariance $\boldsymbol\Sigma_{x\mid z}$ no longer describes the actual spread given the observed value.
     - **The covariances must be right.** The update uses $\boldsymbol\Sigma_{xz}$ and $\boldsymbol\Sigma_{zz}$ as given. If they are wrong (a mis-tuned filter), the mean moves by the wrong amount and the reported covariance is wrong, even though the formula is applied perfectly.
@@ -789,6 +783,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-the-kalman-update-in-disguise -->
     ## The Kalman Update in Disguise
 
     Now apply the conditioning theorem to filtering. Before a measurement, the filter's knowledge of the state $\mathbf x \in \mathbb R^n$ is a prediction $\hat{\mathbf x}^-$ with error covariance $\mathbf P^-$; in the language of [Chapter 8](ch8_bayesian_view.md), the {term}`prior` is $\mathbf x \sim \mathcal N(\hat{\mathbf x}^-, \mathbf P^-)$, with $\mathbf P^-$ positive definite. The measurement is
@@ -806,14 +801,14 @@ def _(mo):
 
     [Chapter 13](ch13_kalman_filter.md) derives the same gain without assuming normality, by minimizing the error variance over all gains, and adds the prediction step. The best-linear-estimator theorem above already tells us why the two derivations agree: the conditional mean of jointly normal vectors is the best linear update.
 
-    **Example: weight and offset.** Return to Chapter 11's scale, with the offset converted to pounds using the calibrated sensitivity (so $c = 85{,}000/20{,}000 = 4.25$ lb nominally). The state is $\mathbf x = [x, c]^\top$ (weight, offset). Before anyone steps on, the filter believes $x \sim \mathcal N(150, 5^2)$ and, from the last tare, $c \sim \mathcal N(4.25, \sigma_c^2)$, independently, so $\mathbf P^- = \operatorname{diag}(25, \sigma_c^2)$. Actually, the person weighs 155 lb and the offset has drifted to $5.25$ lb. A 3-second standing measurement averages 30 readings, $z_1 = x + c + v_1$ with $\operatorname{Var}(v_1) = 1/30$ lb², so $\mathbf H = [1\ \ 1]$. An empty-platform measurement, also an average of 30 readings, is $z_0 = c + v_0$, with row $[0\ \ 1]$. Conditioning on both measurements at once uses the stacked $\mathbf H = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$ and $\mathbf R = \operatorname{diag}(1/30, 1/30)$.
+    **Example: weight and offset.** Return to Chapter 11's scale, with the offset converted to pounds using the calibrated sensitivity (so $c = 85{,}000/20{,}000 = 4.25$ lb nominally). The state is $\mathbf x = [x, c]^\top$ (weight, offset). Before anyone steps on, the filter believes $x \sim \mathcal N(150, 5^2)$ and, from the last tare, $c \sim \mathcal N(4.25, \sigma_c^2)$, independently, so $\mathbf P^- = \operatorname{diag}(25, \sigma_c^2)$. Actually, the person weighs 155 lb and the offset has drifted to $5.25$ lb. A 3-second standing measurement averages 30 readings, $z_1 = x + c + v_1$ with $\operatorname{Var}(v_1) = 1/30$ lb$^2$, so $\mathbf H = [1\ \ 1]$. An empty-platform measurement, also an average of 30 readings, is $z_0 = c + v_0$, with row $[0\ \ 1]$. Conditioning on both measurements at once uses the stacked $\mathbf H = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$ and $\mathbf R = \operatorname{diag}(1/30, 1/30)$.
     """)
     return
 
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def condition_on_measurement(x_prior, P_prior, H, R, z):
         """Mean and covariance of x given z = H x + v, for x ~ N(x_prior, P_prior), v ~ N(0, R)."""
         S = H @ P_prior @ H.T + R                # covariance of z (Sigma_zz)
@@ -875,8 +870,8 @@ def _(
 
     def _describe(_m, _P):
         _r = _P[0, 1] / np.sqrt(_P[0, 0] * _P[1, 1])
-        return (f"weight {_m[0]:.2f} ± {2 * np.sqrt(_P[0, 0]):.2f} lb, offset {_m[1]:.2f} ± {2 * np.sqrt(_P[1, 1]):.2f} lb "
-                f"(±2 s.d.), correlation {_r:+.2f}")
+        return (rf"weight {_m[0]:.2f} $\pm$ {2 * np.sqrt(_P[0, 0]):.2f} lb, offset {_m[1]:.2f} $\pm$ {2 * np.sqrt(_P[1, 1]):.2f} lb "
+                rf"($\pm 2$ s.d.), correlation {_r:+.2f}")
 
     _lines = [f"Given the standing measurement: {_describe(_x1, _P1)}."]
     if use_empty.value:
@@ -898,6 +893,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch12-sec-summary -->
     ## Summary
 
     - From here on, bold lowercase letters are vectors and bold uppercase letters are matrices.
@@ -908,6 +904,7 @@ def _(mo):
     - **Conditioning** a joint normal: mean $\boldsymbol\mu_x + \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}(\mathbf z - \boldsymbol\mu_z)$, covariance the Schur complement $\boldsymbol\Sigma_{xx} - \boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}$. Without normality the same formula is the best linear estimator.
     - With $\boldsymbol\Sigma_{xz} = \mathbf P^-\mathbf H^\top$ and $\boldsymbol\Sigma_{zz} = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$, conditioning is the Kalman update $\hat{\mathbf x} = \hat{\mathbf x}^- + \mathbf K(\mathbf z - \mathbf H\hat{\mathbf x}^-)$, $\mathbf P = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-$.
 
+    <!-- label: ch12-sec-whats-next -->
     ## What's Next
 
     We now have every ingredient of the Kalman filter for state vectors: a process model to predict (Chapter 10), a measurement model to compare with (Chapter 11), and the covariance algebra and conditioning formula to combine them (this chapter). [Chapter 13](ch13_kalman_filter.md) assembles them into the multivariate Kalman filter, proves its prediction and update steps without assuming normality, runs it on the two-state bulking model, and makes "can the measurements separate the unknowns?" precise as observability.

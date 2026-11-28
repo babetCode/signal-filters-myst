@@ -79,14 +79,13 @@ def display_settings(Path, dedent, mo, np, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 8](ch8_bayesian_view.md): the Bayes filter, likelihoods, and posteriors (for particle filters).
     - [Chapter 12](ch12_vectors_matrices_covariance.md): covariance matrices, multivariate normal distributions, and confidence ellipses.
     - [Chapter 13](ch13_kalman_filter.md): the Kalman filter, the Covariance Rules, and the Gaussian-conditioning form of the update.
     - [Chapter 14](ch14_kalman_filters_in_practice.md): NEES consistency tests.
     - [Chapter 15](ch15_extended_kalman_filter.md): nonlinear systems, linearization, the extended Kalman filter, and the pendulum example, including the Mean Error of the Tangent Line lemma.
-    - [Appendix C: Taylor's Theorem](appendix_c_calculus.md): the Lagrange form of the remainder.
-    - [Appendix D: Trace](appendix_d_linear_algebra.md), [Appendix D: Symmetric and Positive Definite Matrices](appendix_d_linear_algebra.md), and [Appendix D: Cholesky Decomposition](appendix_d_linear_algebra.md).
+    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): the Lagrange form of the remainder.
+    - [Appendix D: Trace](#appd-sec-trace), [Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices), and [Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition).
     ///
     """)
     return
@@ -100,7 +99,6 @@ def _(mo):
     This chapter's key concept turns the approximation around: approximate the *distribution* instead of the function. Choose a few points, called **sigma points**, whose weighted mean and covariance equal the distribution's. Push each one through the exact nonlinear function, and compute the weighted mean and covariance of the results. This is the **unscented transform**, and a Kalman filter that uses it in place of linearization is the **unscented Kalman filter** (UKF). It needs no derivatives, and its mean is correct to higher order than the EKF's at about the same cost. At the end of the chapter, **particle filters** drop the Gaussian summary altogether, which is what an ambiguous measurement like the pendulum's fold requires.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     It is easier to approximate a probability distribution than an arbitrary nonlinear function. A handful of deterministically chosen points that share the distribution's mean and covariance, pushed through the exact function, capture the mean and covariance of the result more accurately than a linearization does.
     ///
     """)
@@ -110,8 +108,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-sigma-points -->
     ## Sigma Points
 
+    <!-- label: ch16-sec-a-scalar-example -->
     ### A Scalar Example
 
     Let $x \sim \mathcal N(\mu, \sigma^2)$ and fix any $s > 0$. The three points and weights
@@ -128,22 +128,23 @@ def _(mo):
 
     That is exactly $\mathbb E[x^2] = \mu^2 + \sigma^2$, for every $s$. The tangent line of Chapter 15 gives $\mu^2$ and misses the $\sigma^2$ entirely. Three function evaluations captured the curvature that a derivative at one point cannot see.
 
+    <!-- label: ch16-sec-matrix-square-roots -->
     ### Matrix Square Roots
 
     In $n$ dimensions we need points spread "one standard deviation" along enough directions to reproduce a covariance matrix $\boldsymbol\Sigma$. In this chapter a **matrix square root** of $\boldsymbol\Sigma$ means any $n \times n$ matrix $\mathbf A$ with $\mathbf A\mathbf A^\top = \boldsymbol\Sigma$. (Some texts instead use the symmetric $\mathbf A$ with $\mathbf A^2 = \boldsymbol\Sigma$; any $\mathbf A$ with $\mathbf A\mathbf A^\top = \boldsymbol\Sigma$ works below.) Its columns $\mathbf a_1, \ldots, \mathbf a_n$ carry the covariance in the following sense.
 
-    /// important | 📐 **Lemma (Outer-Product Expansion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Outer-Product Expansion)**
+        attrs: {class: lemma, id: ch16-lem-outer-product-expansion}
     For every $n \times n$ matrix $\mathbf A$ with columns $\mathbf a_1, \ldots, \mathbf a_n$,
     $$\mathbf A\mathbf A^\top = \sum_{j=1}^n \mathbf a_j\mathbf a_j^\top.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Entry $(r, s)$ of $\mathbf A\mathbf A^\top$ is $\sum_j A_{rj}(\mathbf A^\top)_{js} = \sum_j A_{rj}A_{sj}$. Entry $(r, s)$ of $\mathbf a_j\mathbf a_j^\top$ is $(\mathbf a_j)_r(\mathbf a_j)_s = A_{rj}A_{sj}$; summing over $j$ gives the same number. $\blacksquare$
     ///
 
-    For a symmetric {term}`positive definite` $\boldsymbol\Sigma$, the {term}`Cholesky decomposition` ([Appendix D: Cholesky Decomposition](appendix_d_linear_algebra.md)) provides one: the unique lower-triangular $\mathbf L$ with positive diagonal and $\mathbf L\mathbf L^\top = \boldsymbol\Sigma$. It costs about $n^3/3$ multiplications, and `np.linalg.cholesky` computes it. We use $\mathbf A = \mathbf L$.
+    For a symmetric {term}`positive definite` $\boldsymbol\Sigma$, the {term}`Cholesky decomposition` ([Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition)) provides one: the unique lower-triangular $\mathbf L$ with positive diagonal and $\mathbf L\mathbf L^\top = \boldsymbol\Sigma$. It costs about $n^3/3$ multiplications, and `np.linalg.cholesky` computes it. We use $\mathbf A = \mathbf L$.
     """)
     return
 
@@ -151,10 +152,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-sigma-points-in-general -->
     ### Sigma Points in General
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sigma points**</u>
 
     For a vector $\boldsymbol\mu \in \mathbb R^n$ and a {term}`covariance matrix` $\boldsymbol\Sigma \in \mathbb R^{n \times n}$, a finite list of points $\boldsymbol\chi_0, \ldots, \boldsymbol\chi_{N-1} \in \mathbb R^n$ together with *mean weights* $W_0^{(m)}, \ldots, W_{N-1}^{(m)}$ and *covariance weights* $W_0^{(c)}, \ldots, W_{N-1}^{(c)}$ such that
@@ -173,13 +174,13 @@ def _(mo):
 
     For $n = 1$ these are the scalar example with $s = \sqrt{1 + \lambda}$. The subscript UT keeps $\alpha_{\text{UT}}$ and $\beta_{\text{UT}}$ apart from the gains $\alpha$ and $\beta$ of the alpha-beta filter.
 
-    /// important | 📐 **Lemma (Scaled Sigma Points)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Scaled Sigma Points)**
+        attrs: {class: lemma, id: ch16-lem-scaled-sigma-points}
     For every $\boldsymbol\mu$, every symmetric positive definite $\boldsymbol\Sigma$, and all parameters with $n + \kappa > 0$, the scaled points and weights above are sigma points for $\boldsymbol\mu$ and $\boldsymbol\Sigma$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $c := \sqrt{n + \lambda}$. The mean weights sum to $\frac{\lambda}{n + \lambda} + \frac{2n}{2(n + \lambda)} = \frac{\lambda + n}{n + \lambda} = 1$. In $\sum_i W_i^{(m)}\boldsymbol\chi_i$, the terms $\pm c\,\mathbf a_j$ of each pair $\boldsymbol\chi_j, \boldsymbol\chi_{n+j}$ have equal weights and cancel, leaving $\boldsymbol\mu\sum_i W_i^{(m)} = \boldsymbol\mu$. In the covariance sum the $i = 0$ term vanishes because $\boldsymbol\chi_0 - \boldsymbol\mu = \mathbf 0$, whatever $W_0^{(c)}$ is; each pair contributes $2 \cdot \frac{1}{2c^2}\,c^2\,\mathbf a_j\mathbf a_j^\top = \mathbf a_j\mathbf a_j^\top$. By the Outer-Product Expansion, the total is $\sum_j\mathbf a_j\mathbf a_j^\top = \mathbf L\mathbf L^\top = \boldsymbol\Sigma$. $\blacksquare$
     ///
 
@@ -198,7 +199,7 @@ def _(mo):
 
 @app.cell
 def sigma_points_impl(np):
-    # jb: echo=true
+    # jb: editor=true
     def merwe_sigma_points(mu, Sigma, alpha=1.0, beta=0.0, kappa=None):
         """Scaled sigma points for mean mu and covariance Sigma.
 
@@ -225,10 +226,10 @@ def sigma_points_impl(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-the-unscented-transform -->
     ## The Unscented Transform
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Unscented transform**</u>
 
     Given a random vector $\mathbf x$ with mean $\boldsymbol\mu$ and covariance $\boldsymbol\Sigma$, a function $\phi: \mathbb R^n \to \mathbb R^m$, and {term}`sigma points` $(\boldsymbol\chi_i, W_i^{(m)}, W_i^{(c)})$ for $\boldsymbol\mu$ and $\boldsymbol\Sigma$, the unscented transform approximates the mean of $\phi(\mathbf x)$, the covariance of $\phi(\mathbf x)$, and the cross-covariance $\operatorname{Cov}(\mathbf x, \phi(\mathbf x))$ by
@@ -243,7 +244,7 @@ def _(mo):
 
 @app.cell
 def unscented_transform_impl(np):
-    # jb: echo=true
+    # jb: editor=true
     def unscented_transform(chi, Wm, Wc, phi):
         """Unscented transform of the sigma points chi (columns) through phi.
 
@@ -264,12 +265,13 @@ def unscented_transform_impl(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-how-accurate-is-it -->
     ### How Accurate Is It?
 
     The scalar example generalizes into a precise statement. Call the distribution of $\mathbf x$ *symmetric about* $\boldsymbol\mu$ if $\mathbf x - \boldsymbol\mu$ and $\boldsymbol\mu - \mathbf x$ have the same distribution; every {term}`multivariate normal distribution` is symmetric about its mean.
 
-    /// important | 📐 **Theorem (Exactness of the Unscented Transform)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Exactness of the Unscented Transform)**
+        attrs: {class: theorem, id: ch16-thm-exactness-of-the-unscented-transform}
     Let $\mathbf x$ have mean $\boldsymbol\mu$ and symmetric positive definite covariance $\boldsymbol\Sigma$, and use the scaled sigma points for $\boldsymbol\mu$ and $\boldsymbol\Sigma$.
 
     1. If $\phi(\mathbf x) = \mathbf F\mathbf x + \mathbf b$ is affine, the unscented transform returns exactly $\mathbb E[\phi(\mathbf x)] = \mathbf F\boldsymbol\mu + \mathbf b$, $\operatorname{Cov}(\phi(\mathbf x)) = \mathbf F\boldsymbol\Sigma\mathbf F^\top$, and $\operatorname{Cov}(\mathbf x, \phi(\mathbf x)) = \boldsymbol\Sigma\mathbf F^\top$.
@@ -277,7 +279,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $\boldsymbol\delta := \mathbf x - \boldsymbol\mu$ and $\boldsymbol\delta_i := \boldsymbol\chi_i - \boldsymbol\mu$, so $\boldsymbol\delta_0 = \mathbf 0$ and $\boldsymbol\delta_{n+j} = -\boldsymbol\delta_j$.
 
     *Part 1.* By the Scaled Sigma Points lemma, $\bar{\mathbf y} = \mathbf F\sum_i W_i^{(m)}\boldsymbol\chi_i + \mathbf b\sum_i W_i^{(m)} = \mathbf F\boldsymbol\mu + \mathbf b$. Then $\mathbf y_i - \bar{\mathbf y} = \mathbf F\boldsymbol\delta_i$, so $\mathbf P_{yy} = \mathbf F\big(\sum_i W_i^{(c)}\boldsymbol\delta_i\boldsymbol\delta_i^\top\big)\mathbf F^\top = \mathbf F\boldsymbol\Sigma\mathbf F^\top$ and $\mathbf P_{xy} = \big(\sum_i W_i^{(c)}\boldsymbol\delta_i\boldsymbol\delta_i^\top\big)\mathbf F^\top = \boldsymbol\Sigma\mathbf F^\top$. Chapter 13's Covariance Rules give the same true values: $\operatorname{Cov}(\mathbf F\mathbf x + \mathbf b) = \mathbf F\boldsymbol\Sigma\mathbf F^\top$ and $\operatorname{Cov}(\mathbf x, \mathbf F\mathbf x + \mathbf b) = \operatorname{Cov}(\mathbf x, \mathbf x)\mathbf F^\top = \boldsymbol\Sigma\mathbf F^\top$.
@@ -288,7 +290,7 @@ def _(mo):
 
     - *Constant:* $\sum_i W_i^{(m)}c = c = \mathbb E[c]$.
     - *Linear:* $\sum_i W_i^{(m)}\mathbf g^\top\boldsymbol\delta_i = \mathbf g^\top\big(\sum_i W_i^{(m)}\boldsymbol\chi_i - \boldsymbol\mu\big) = 0 = \mathbf g^\top\,\mathbb E[\boldsymbol\delta]$.
-    - *Quadratic:* $\boldsymbol\delta^\top\mathbf M\boldsymbol\delta = \operatorname{tr}(\mathbf M\boldsymbol\delta\boldsymbol\delta^\top)$ by the cyclic property of the {term}`trace` ([Appendix D: Trace](appendix_d_linear_algebra.md)), and the trace is linear, so $\mathbb E[\boldsymbol\delta^\top\mathbf M\boldsymbol\delta] = \operatorname{tr}(\mathbf M\boldsymbol\Sigma)$. For the sigma points, $\sum_i W_i^{(m)}\boldsymbol\delta_i^\top\mathbf M\boldsymbol\delta_i = \operatorname{tr}\big(\mathbf M\sum_i W_i^{(m)}\boldsymbol\delta_i\boldsymbol\delta_i^\top\big)$. Since $W_i^{(m)} = W_i^{(c)}$ for $i \ge 1$ and $\boldsymbol\delta_0 = \mathbf 0$, the inner sum equals $\sum_i W_i^{(c)}\boldsymbol\delta_i\boldsymbol\delta_i^\top = \boldsymbol\Sigma$, so this term is $\operatorname{tr}(\mathbf M\boldsymbol\Sigma)$ as well.
+    - *Quadratic:* $\boldsymbol\delta^\top\mathbf M\boldsymbol\delta = \operatorname{tr}(\mathbf M\boldsymbol\delta\boldsymbol\delta^\top)$ by the cyclic property of the {term}`trace` ([Appendix D: Trace](#appd-sec-trace)), and the trace is linear, so $\mathbb E[\boldsymbol\delta^\top\mathbf M\boldsymbol\delta] = \operatorname{tr}(\mathbf M\boldsymbol\Sigma)$. For the sigma points, $\sum_i W_i^{(m)}\boldsymbol\delta_i^\top\mathbf M\boldsymbol\delta_i = \operatorname{tr}\big(\mathbf M\sum_i W_i^{(m)}\boldsymbol\delta_i\boldsymbol\delta_i^\top\big)$. Since $W_i^{(m)} = W_i^{(c)}$ for $i \ge 1$ and $\boldsymbol\delta_0 = \mathbf 0$, the inner sum equals $\sum_i W_i^{(c)}\boldsymbol\delta_i\boldsymbol\delta_i^\top = \boldsymbol\Sigma$, so this term is $\operatorname{tr}(\mathbf M\boldsymbol\Sigma)$ as well.
     - *Cubic:* $t(\boldsymbol\delta_0) = t(\mathbf 0) = 0$, and the terms of each pair cancel: $t(\boldsymbol\delta_j) + t(-\boldsymbol\delta_j) = 0$. On the other side, $\boldsymbol\delta$ and $-\boldsymbol\delta$ have the same distribution, so $\mathbb E[t(\boldsymbol\delta)] = \mathbb E[t(-\boldsymbol\delta)] = -\mathbb E[t(\boldsymbol\delta)]$, which forces $\mathbb E[t(\boldsymbol\delta)] = 0$; the expectation exists because the third moments are finite.
 
     Adding the four terms gives $\bar y_l = \mathbb E[\phi_l(\mathbf x)]$. $\blacksquare$
@@ -296,14 +298,14 @@ def _(mo):
 
     Compare the tangent line: its mean is $\phi_l(\boldsymbol\mu) = c$, which misses $\operatorname{tr}(\mathbf M\boldsymbol\Sigma)$, the same curvature term as the scalar example's $\sigma^2$. For smooth functions that are not polynomials, the theorem turns into an error bound.
 
-    /// important | 📐 **Corollary (Mean Error of the Unscented Transform)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Mean Error of the Unscented Transform)**
+        attrs: {class: corollary, id: ch16-cor-mean-error-of-the-unscented-transform}
     Let $x \sim \mathcal N(\mu, \sigma^2)$ be scalar, and let $\phi: \mathbb R \to \mathbb R$ be four times continuously differentiable with $|\phi^{(4)}(t)| \le M$ for all $t$. With the scaled sigma points ($n = 1$),
     $$\big|\bar y - \mathbb E[\phi(x)]\big| \le \frac{M\big(1 + \lambda + 3\big)}{24}\,\sigma^4.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $T$ be the Taylor polynomial of degree 3 of $\phi$ at $\mu$ and $r := \phi - T$. By [Taylor's theorem](appendix_c_calculus.md) with the Lagrange remainder, $|r(t)| \le \frac{M}{24}(t - \mu)^4$ for every $t$, so $\mathbb E[\phi(x)]$ exists. The weighted sum $\bar y = \sum_i W_i^{(m)}\phi(\chi_i)$ is linear in $\phi$, and by Part 2 of the theorem it is exact for $T$, so
     $$\bar y - \mathbb E[\phi(x)] = \sum_i W_i^{(m)}r(\chi_i) - \mathbb E[r(x)].$$
     Here $r(\chi_0) = r(\mu) = 0$, and the other two points have the positive weight $\frac{1}{2(1+\lambda)}$ and lie at distance $\sqrt{1 + \lambda}\,\sigma$ from $\mu$, so $\big|\sum_i W_i^{(m)}r(\chi_i)\big| \le 2\cdot\frac{1}{2(1+\lambda)}\cdot\frac{M}{24}(1+\lambda)^2\sigma^4 = \frac{M(1+\lambda)}{24}\sigma^4$. A normal variable has $\mathbb E[(x - \mu)^4] = 3\sigma^4$ ([Wikipedia: Normal distribution, Moments](https://en.wikipedia.org/wiki/Normal_distribution#Moments)), so $\big|\mathbb E[r(x)]\big| \le \frac{3M}{24}\sigma^4$. Add the two bounds. $\blacksquare$
@@ -311,15 +313,15 @@ def _(mo):
 
     So as $\sigma \to 0$, the unscented mean's error shrinks like $\sigma^4$, while Chapter 15's Mean Error of the Tangent Line lemma only guarantees $\sigma^2$ for linearization. The covariance needs one more ingredient, the fourth moment, and that is where $\beta_{\text{UT}}$ enters.
 
-    /// important | 📐 **Lemma (Squared Gaussian)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Squared Gaussian)**
+        attrs: {class: lemma, id: ch16-lem-squared-gaussian}
     Let $x \sim \mathcal N(\mu, \sigma^2)$ be scalar and $\phi(x) = x^2$. The unscented transform with the scaled sigma points gives $\bar y = \mu^2 + \sigma^2$ and
     $$P_{yy} = 4\mu^2\sigma^2 + \big(\alpha_{\text{UT}}^2\kappa + \beta_{\text{UT}}\big)\sigma^4,$$
     while $\operatorname{Var}(x^2) = 4\mu^2\sigma^2 + 2\sigma^4$. So the unscented variance is exact if and only if $\alpha_{\text{UT}}^2\kappa + \beta_{\text{UT}} = 2$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The mean follows from Part 2 of the theorem. Let $c^2 := 1 + \lambda = \alpha_{\text{UT}}^2(1 + \kappa)$. The points are $\mu$ and $\mu \pm c\sigma$, so $y_0 - \bar y = -\sigma^2$ and $y_\pm - \bar y = \pm 2\mu c\sigma + (c^2 - 1)\sigma^2$. Hence
     $$P_{yy} = W_0^{(c)}\sigma^4 + \frac{1}{2c^2}\Big[\big(2\mu c\sigma + (c^2-1)\sigma^2\big)^2 + \big({-2\mu c\sigma} + (c^2-1)\sigma^2\big)^2\Big] = W_0^{(c)}\sigma^4 + 4\mu^2\sigma^2 + \frac{(c^2-1)^2}{c^2}\sigma^4.$$
     With $W_0^{(c)} = \frac{c^2 - 1}{c^2} + 1 - \alpha_{\text{UT}}^2 + \beta_{\text{UT}}$, the coefficient of $\sigma^4$ is $\frac{(c^2-1)(1 + c^2 - 1)}{c^2} + 1 - \alpha_{\text{UT}}^2 + \beta_{\text{UT}} = c^2 - \alpha_{\text{UT}}^2 + \beta_{\text{UT}} = \alpha_{\text{UT}}^2\kappa + \beta_{\text{UT}}$. For the true variance, the normal moments $\mathbb E[x^2] = \mu^2 + \sigma^2$ and $\mathbb E[x^4] = \mu^4 + 6\mu^2\sigma^2 + 3\sigma^4$ (same reference) give $\operatorname{Var}(x^2) = \mathbb E[x^4] - (\mathbb E[x^2])^2 = 4\mu^2\sigma^2 + 2\sigma^4$. $\blacksquare$
@@ -542,6 +544,7 @@ def simulation(DT, PEND_L, f_pendulum, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-unscented-transform-explorer -->
     ### Unscented Transform Explorer
 
     The explorer below pushes a two-dimensional Gaussian through a chosen nonlinear function three ways: by Monte Carlo with 20,000 samples (black, the reference), by linearization (red dotted), and by the unscented transform (orange; the transformed sigma points are the orange dots). Each ellipse is a 95% {term}`confidence ellipse` computed from the corresponding mean and covariance. The functions are:
@@ -683,7 +686,7 @@ def _(
     _lam = ut_alpha_slider.value**2 * (_n + ut_kappa_slider.value) - _n
     _table = mo.md(rf"""
     | | mean error (Monte Carlo standard deviations) | covariance size relative to Monte Carlo (1 = exact) |
-    |---|---|---|
+    |:---|:---:|:---:|
     | linearization | {_lin_d:.3f} | {_lin_r[0]:.2f}, {_lin_r[1]:.2f} |
     | unscented transform | {_ut_d:.3f} | {_ut_r[0]:.2f}, {_ut_r[1]:.2f} |
 
@@ -711,16 +714,14 @@ def _(mo):
     - **Parameters.** On the parabola, set $\alpha_{\text{UT}} = 0.05$ and $\kappa = 0$, then vary $\beta_{\text{UT}}$. The mean does not change, because only $W_0^{(c)}$ depends on $\beta_{\text{UT}}$. The covariance does: with $\beta_{\text{UT}} = 0$ it is as poor as linearization's, with $\beta_{\text{UT}} = 2$ it is nearly exact (the Squared Gaussian lemma at work), and with $\beta_{\text{UT}} = 4$ it is too large along the direction of the mean shift. Note that $W_0^{(m)}$ is then a large negative number; negative weights are allowed.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The unscented transform pushes $2n + 1$ sigma points through the exact function. Its mean captures the curvature term that linearization misses, and it is exact for affine functions and, for symmetric inputs, for polynomials of degree at most 3. Its covariance depends on the parameters through the fourth-order terms.
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **$\boldsymbol\Sigma$ must be symmetric positive definite** for the Cholesky factorization. Rounding can make a computed covariance slightly asymmetric or indefinite, and then `np.linalg.cholesky` fails. Symmetrize, $\tfrac12(\mathbf P + \mathbf P^\top)$, after each update and, if necessary, add a tiny multiple of $\mathbf I$. Square-root versions of the UKF propagate the Cholesky factor itself and avoid the problem.
     - **Negative weights.** When $\lambda < 0$, $W_0^{(m)}$ is negative (and $W_0^{(c)}$ may be), and $\mathbf P_{yy}$ can fail to be positive semidefinite even though $\boldsymbol\Sigma$ is. For large $n$ the choice $\kappa = 3 - n$ is negative and causes exactly this, which is why the scaled form was introduced.
     - **Only two moments.** The transform reports a mean and a covariance. A transformed distribution that is strongly skewed or has several peaks is still summarized by an ellipse.
-    - **Quantities that wrap around.** Averaging is wrong for angles near the wrap point: sigma points at bearings $179°$ and $-179°$ average to $0°$, not $180°$. Angles need a circular mean and wrapped differences, which matters in Parts V and VI.
+    - **Quantities that wrap around.** Averaging is wrong for angles near the wrap point: sigma points at bearings $179^\circ$ and $-179^\circ$ average to $0^\circ$, not $180^\circ$. Angles need a circular mean and wrapped differences, which matters in Parts V and VI.
     - **The guarantees are local.** Exactness holds for polynomials of degree at most 3 (mean) and for affine functions (covariance). Far from those, as with a spread of 2 in the explorer, the unscented transform can also be badly wrong; it is usually just less wrong than linearization.
     ///
     """)
@@ -730,6 +731,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-the-unscented-kalman-filter -->
     ## The Unscented Kalman Filter
 
     We use the {term}`nonlinear system` model and the assumptions of [Chapter 15](ch15_extended_kalman_filter.md): $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$ and $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$, with Chapter 13's (A1)–(A5) and Chapter 15's independence assumption (E1). Chapter 15's smoothness assumption (E2) is not needed: the UKF only evaluates $f$ and $h$. The EKF used linearization twice, to compute the mean and covariance of the prediction and to compute the joint moments of state and measurement for the update. The UKF uses the unscented transform for both.
@@ -748,18 +750,17 @@ def _(mo):
 
     where $\mathbf K_k\mathbf S_k\mathbf K_k^\top = \mathbf P_{xz,k}\mathbf S_k^{-1}\mathbf P_{xz,k}^\top$ is the conditioning formula's correction term. The innovation is $\tilde{\mathbf y}_k := \mathbf z_k - \hat{\mathbf z}_k$, the measurement minus a predicted measurement that, unlike the EKF's $h(\hat{\mathbf x}_k^-)$, includes the curvature term. Drawing fresh sigma points for the update, rather than reusing the propagated ones, makes them account for $\mathbf Q$.
 
-    /// important | 📐 **Lemma (The UKF Generalizes the Kalman Filter)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (The UKF Generalizes the Kalman Filter)**
+        attrs: {class: lemma, id: ch16-lem-the-ukf-generalizes-the-kalman-filter}
     If $f(\mathbf x, \mathbf u) = \mathbf F\mathbf x + \mathbf B\mathbf u$ and $h(\mathbf x) = \mathbf H\mathbf x$, then for every choice of $\alpha_{\text{UT}}$, $\beta_{\text{UT}}$, $\kappa$ the UKF's equations give exactly the Kalman filter's $\hat{\mathbf x}_k^-$, $\mathbf P_k^-$, $\mathbf K_k$, $\hat{\mathbf x}_k$, and $\mathbf P_k$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Part 1 of the Exactness theorem, the prediction gives $\hat{\mathbf x}_k^- = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$, and the update gives $\hat{\mathbf z}_k = \mathbf H\hat{\mathbf x}_k^-$, $\mathbf S_k = \mathbf H\mathbf P_k^-\mathbf H^\top + \mathbf R$, and $\mathbf P_{xz,k} = \mathbf P_k^-\mathbf H^\top$. Hence $\mathbf K_k = \mathbf P_k^-\mathbf H^\top\mathbf S_k^{-1}$, the Kalman gain, and the state update is Chapter 13's. Finally $\mathbf K_k\mathbf S_k\mathbf K_k^\top = \mathbf P_k^-\mathbf H^\top\mathbf S_k^{-1}\mathbf H\mathbf P_k^- = \mathbf K_k\mathbf H\mathbf P_k^-$, so $\mathbf P_k = (\mathbf I - \mathbf K_k\mathbf H)\mathbf P_k^-$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Unscented Kalman filter**</u>
 
     For a {term}`state-space model` $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$, $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$ with noise covariances $\mathbf Q$ and $\mathbf R$, the {term}`filter` that starts from $\hat{\mathbf x}_0$ and $\mathbf P_0$ and, for each $k \ge 1$, (1) applies the {term}`unscented transform` with $\phi = f(\cdot, \mathbf u_k)$ to {term}`sigma points` for $\hat{\mathbf x}_{k-1}$ and $\mathbf P_{k-1}$, giving $\hat{\mathbf x}_k^-$ and $\mathbf P_k^-$ (the transformed covariance plus $\mathbf Q$); (2) applies the unscented transform with $\phi = h$ to sigma points for $\hat{\mathbf x}_k^-$ and $\mathbf P_k^-$, giving $\hat{\mathbf z}_k$, $\mathbf S_k$ (the transformed covariance plus $\mathbf R$), and $\mathbf P_{xz,k}$; and (3) sets $\mathbf K_k = \mathbf P_{xz,k}\mathbf S_k^{-1}$, $\hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k(\mathbf z_k - \hat{\mathbf z}_k)$, and $\mathbf P_k = \mathbf P_k^- - \mathbf K_k\mathbf S_k\mathbf K_k^\top$.
@@ -772,7 +773,7 @@ def _(mo):
 
 @app.cell
 def ukf_impl(f_pendulum, h_pendulum, merwe_sigma_points, np, unscented_transform):
-    # jb: echo=true
+    # jb: editor=true
     def ukf_predict(x, P, f, Q, alpha=1.0, beta=0.0, kappa=None):
         """Predict: unscented transform of f, plus Q."""
         chi, Wm, Wc = merwe_sigma_points(x, P, alpha, beta, kappa)
@@ -810,13 +811,13 @@ def ukf_impl(f_pendulum, h_pendulum, merwe_sigma_points, np, unscented_transform
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Same model assumptions as the EKF**, except differentiability. Correlated noise, a wrong model, or a wrong $\mathbf Q$ or $\mathbf R$ affect the UKF exactly as they affect the Kalman filter (Chapter 13).
     - **The Gaussian summary remains.** After each step the UKF keeps only a mean and a covariance. A posterior with two peaks, such as the pendulum's two mirror-image angles, cannot be represented, and the UKF can still lock onto the wrong one (see Particle Filters below).
     - **Positive definiteness.** Every step needs Cholesky factorizations of $\mathbf P_{k-1}$ and $\mathbf P_k^-$. A covariance that loses positive definiteness, through rounding or negative weights, stops the filter; symmetrize, and consider square-root implementations.
     - **Cost.** Each step evaluates $f$ and $h$ at $2n + 1$ points and factors two $n \times n$ matrices. For the pendulum this costs about the same as the EKF; for large $n$ with cheap analytic Jacobians, the EKF is cheaper.
     ///
 
+    <!-- label: ch16-sec-the-pendulum-again -->
     ### The Pendulum Again
 
     Here is the same pendulum as in Chapter 15, with the same truth, noise, and measurements, and with $\alpha_{\text{UT}} = 1$, $\beta_{\text{UT}} = 0$, $\kappa = 1$. Start with one run on the wrong side of the fold, but with an honest, wide covariance: $\hat{\mathbf x}_0 = [2, 0]^\top$ and $\mathbf P_0 = \mathbf I$, so the truth $[1, 0]^\top$ is one standard deviation away.
@@ -945,6 +946,7 @@ def _(first_update, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-monte-carlo-comparison -->
     ### Monte Carlo Comparison
 
     As in Chapter 15, each run draws its initial estimate from $\mathcal N(\mathbf x_0, \mathbf P_0)$ with $\mathbf P_0 = \sigma_0^2\mathbf I$, so the initial covariance is honest, and runs both filters on the same measurements for 3 s. A run counts as converged if its RMS angle error over the last 0.5 s is below 0.2 rad. Panel (a) shows the average {term}`normalized estimation error squared` over the runs where both filters converged, with Chapter 14's 95% band for a consistent filter; panel (b) shows the RMS angle error over the same runs. Use the slider to change $\sigma_0$.
@@ -1044,6 +1046,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-particle-filters -->
     ## Particle Filters
 
     The EKF and the UKF both summarize the state's distribution by a mean and a covariance. Some distributions are nothing like a Gaussian. Suppose the pendulum's initial estimate is the mirror image of the truth, $\hat\theta_0 = \pi - 1 \approx 2.14$ rad, with $\mathbf P_0 = 0.7^2\,\mathbf I$, so the truth is about 1.6 standard deviations away. The first camera reading, about $0.84$ m, is explained equally well by $\theta \approx 1$ and by $\theta \approx 2.14$. After it, the {term}`posterior` of $\theta$ ([Chapter 8](ch8_bayesian_view.md)) has two separate peaks, and its mean, between them, is a value the state almost certainly does not have. A Gaussian filter has to commit to one peak.
@@ -1060,7 +1063,6 @@ def _(mo):
     Steps 2 and 3 are the two halves of [Chapter 8](ch8_bayesian_view.md)'s {term}`Bayes filter`. If the weighted particles approximate the posterior at step $k-1$, then moving each one by sampling from the process model approximates the predicted density, and multiplying by the likelihood is Bayes' rule applied particle by particle. Resampling discards particles with negligible weight and duplicates heavy ones, without changing the represented distribution on average. Under mild conditions, the weighted particles converge to the exact Bayes-filter posterior as $N \to \infty$ [@crisan2002].
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Particle filter**</u>
 
     A {term}`filter` that approximates the {term}`Bayes filter`'s posterior distribution of the state by a finite set of random samples (particles) with nonnegative weights that sum to 1, and updates the set at each step by drawing new particles using the process model (predict) and reweighting them in proportion to the {term}`likelihood` of the new measurement (update).
@@ -1073,7 +1075,7 @@ def _(mo):
 
 @app.cell
 def particle_filter_impl(f_pendulum, h_pendulum, np):
-    # jb: echo=true
+    # jb: editor=true
     def particle_filter(zs, x0_mean, P0, Q, R, n_particles, rng, keep_every=5):
         """Bootstrap particle filter for the pendulum.
 
@@ -1213,7 +1215,6 @@ def _(mo):
     For a gentle, readable development of particle filters, including other resampling schemes and the effective sample size, see the particle filter chapter (`12-Particle-Filters.ipynb`) of *Kalman and Bayesian Filters in Python* [@labbe_kalman_filters], the book that inspired this one.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Dimension.** The particles must cover the region where the posterior has mass. The number needed grows rapidly with the dimension of the state, so bootstrap particle filters are practical mainly for low-dimensional states; larger problems need better proposal distributions or structure that can be exploited.
     - **Weight degeneracy.** Without resampling, after a few updates nearly all the weight sits on one particle. Resampling fixes this but adds noise.
     - **Sample impoverishment.** Resampling duplicates particles. If the process noise is very small, duplicates stay nearly identical and the cloud collapses onto a few points; adding a little artificial noise ("roughening") is a common remedy.
@@ -1227,10 +1228,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-choosing-a-filter -->
     ## Choosing a Filter
 
     | Filter | Represents the state's distribution by | Requires | Work per step | Use when |
-    |---|---|---|---|---|
+    |:---|:---|:---|:---|:---|
     | Kalman filter (Ch 13) | mean and covariance, exact for linear-Gaussian models | linear $f$ and $h$ | products of $n \times n$ matrices | the model is linear |
     | EKF (Ch 15) | mean and covariance, via Jacobians | differentiable $f$, $h$, and their Jacobians | one evaluation of $f$ and $h$, plus Jacobians | the uncertainty is small compared with the curvature, for example in error-state filters |
     | UKF | mean and covariance, via $2n + 1$ sigma points | $f$ and $h$ only | $2n + 1$ evaluations of $f$ and $h$, plus two Cholesky factorizations | nonlinearity is stronger, Jacobians are hard to derive, or the EKF fails its consistency tests |
@@ -1246,7 +1248,6 @@ def _(mo):
     Often the best fix is not a different filter but a better *problem*: a state in which the errors stay small. That is the idea behind the error-state filters of Parts V and VI, which apply an EKF to the small error of an attitude or navigation solution rather than to the attitude itself, so that linearization is accurate and the EKF's low cost is kept.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Linear model: Kalman filter. Mild nonlinearity with small uncertainty: EKF. Strong nonlinearity or large uncertainty with a single-peaked posterior: UKF. Multiple peaks: particle filter. Whatever you choose, verify consistency with Monte Carlo tests.
     ///
     """)
@@ -1256,6 +1257,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch16-sec-summary -->
     ## Summary
 
     - {term}`Sigma points` are weighted points whose weighted mean and covariance equal a given mean and covariance. The scaled sigma points use a Cholesky factor and three parameters $\alpha_{\text{UT}}$, $\beta_{\text{UT}}$, $\kappa$ (with $\lambda = \alpha_{\text{UT}}^2(n + \kappa) - n$).
@@ -1263,6 +1265,7 @@ def _(mo):
     - The {term}`unscented Kalman filter` replaces both linearizations of the EKF with unscented transforms and uses Gaussian conditioning for the update. It equals the Kalman filter for linear models. On the pendulum it converged more often than the EKF and stayed consistent during the transient.
     - A {term}`particle filter` represents the posterior by weighted samples and can follow a multimodal posterior that defeats every Gaussian filter, at a cost that grows quickly with the state dimension.
 
+    <!-- label: ch16-sec-whats-next -->
     ## What's Next
 
     Part V turns to the nonlinearity that matters most in navigation: orientation. [Chapter 17](ch17_rotations.md) develops rotation matrices, Euler angles, and the angular velocity, and shows why every three-number description of orientation has singularities. Those singularities, and the fact that orientations cannot be averaged like vectors, are the reason Parts V and VI use quaternions and error-state Kalman filters.

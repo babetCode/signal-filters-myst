@@ -142,7 +142,6 @@ def _(mo):
     [Chapter 18](ch18_quaternions.md) integrates *perfect* gyroscope readings exactly. Real readings are not perfect: a gyroscope bias of just $0.01$ rad/s, typical of inexpensive MEMS sensors, makes the integrated attitude $34^\circ$ wrong after one minute. Two other sensors see directions that do not drift: an accelerometer at rest measures gravity, which fixes "down", and a magnetometer measures the Earth's magnetic field, which fixes "north". Both are noisy, and both are corrupted when the body accelerates or a magnetic object comes near. An **attitude and heading reference system** (AHRS) fuses the three into one attitude estimate. This chapter builds two: a *complementary filter*, which turns out to be exactly the Introduction's alpha filter, and an *error-state Kalman filter* that also estimates the gyroscope bias and reports its own uncertainty. The same attitude machinery is the core of the inertial navigation in Chapters 20 and 21.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Gyroscopes are accurate over short times but drift; gravity and the magnetic field are accurate over long times but noisy and easily disturbed. Fusing them means trusting the gyroscope for fast changes and the reference directions for slow ones.
     ///
     """)
@@ -153,7 +152,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Introduction](introduction.md): the alpha filter $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and first-measurement initialization.
     - [Chapter 6](ch6_expectation_and_variance.md): variance of sums of independent random variables, and the steady-state variance $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
     - [Chapter 9](ch9_noise_levels.md): white noise, random walks, and the theorem that the steady-state Kalman filter is an exponential moving average.
@@ -169,12 +167,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-inertial-sensors-and-their-models -->
     ## Inertial Sensors and Their Models
 
     Phones, drones, game controllers, and gait sensors all carry the same trio of tiny MEMS sensors. We define each by what it measures.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gyroscope**</u>
 
     A gyroscope is a sensor that measures the angular velocity of the body it is attached to, relative to non-rotating space, about one or more axes fixed in the body.
@@ -185,7 +183,6 @@ def _(mo):
     An accelerometer does *not* measure acceleration. Inside a MEMS accelerometer, a tiny proof mass $m$ hangs on springs in a case fixed to the body, and the sensor reports the spring force per unit mass along its axes. Once the mass has settled it moves with the case, with acceleration $\mathbf a^n$, so Newton's second law in the (non-rotating) navigation frame reads $m\mathbf a^n = \mathbf F_{\text{spring}} + m\mathbf g^n$. The sensor therefore reports $\mathbf F_{\text{spring}}/m = \mathbf a^n - \mathbf g^n$, in body axes.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Specific force**</u>
 
     The specific force on a body is $\mathbf f := \mathbf a - \mathbf g$, its acceleration relative to non-rotating space minus the gravitational acceleration; equivalently, the non-gravitational force acting on it per unit mass. In body coordinates,
@@ -195,21 +192,18 @@ def _(mo):
     Two examples fix the sign. A body at rest and level has $\mathbf a^n = \mathbf 0$ and $\mathbf R^n_b = \mathbf I$, so $\mathbf f^b = -\mathbf g^n = [0, 0, +g]^\top$: the floor pushes up. A body in free fall has $\mathbf a^n = \mathbf g^n$ and $\mathbf f^b = \mathbf 0$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Accelerometer**</u>
 
     An accelerometer is a sensor that measures specific force along one or more axes fixed in the body.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Inertial measurement unit**</u>
 
     An inertial measurement unit (IMU) is a device, rigidly attached to a body, that measures at regular sample times the body's angular velocity $\boldsymbol\omega^b$ and specific force $\mathbf f^b$ along three perpendicular body-fixed axes; that is, a three-axis gyroscope and a three-axis accelerometer.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Magnetometer**</u>
 
     A magnetometer is a sensor that measures the local magnetic field vector along one or more axes fixed in the body.
@@ -223,6 +217,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-measurement-models -->
     ### Measurement Models
 
     We model the three sensors as in the book-wide conventions:
@@ -230,20 +225,19 @@ def _(mo):
     where $\mathbf b_g$ and $\mathbf b_a$ are {term}`sensor biases <sensor bias>` (constant, or a slow {term}`random walk`), $\mathbf n_g$, $\mathbf n_a$, $\mathbf n_m$ are zero-mean Gaussian {term}`white noise` with independent components, and $\mathbf m^n = [0, 22, -42]^\top\ \mu\text{T}$ is the Earth's field in the navigation frame: it points north and steeply down, as at mid-northern latitudes. The default parameters, typical of a consumer MEMS IMU, are
 
     | quantity | value |
-    |---|---|
+    |:---|:---|
     | sample rate | 100 Hz ($\Delta t = 0.01$ s) |
     | gyroscope noise $\sigma_g$ / bias | 0.01 rad/s / 0.01 rad/s per axis |
-    | accelerometer noise $\sigma_a$ / bias | 0.05 m/s² / 0.05 m/s² per axis |
-    | magnetometer noise $\sigma_m$ | 0.5 μT per axis |
-    | gravity $\mathbf g^n$ | $[0, 0, -9.81]^\top$ m/s² |
+    | accelerometer noise $\sigma_a$ / bias | 0.05 m/s$^2$ / 0.05 m/s$^2$ per axis |
+    | magnetometer noise $\sigma_m$ | 0.5 $\mu$T per axis |
+    | gravity $\mathbf g^n$ | $[0, 0, -9.81]^\top$ m/s$^2$ |
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Calibrated, aligned sensors.** We assume scale factors are calibrated and that the three sensors' axes coincide with the body axes and with each other ([Chapter 11](ch11_measurement_functions.md)). Misalignment of $1^\circ$ turns a fast rotation about one axis into a false rate about another.
     - **Earth rotation is neglected.** The Earth turns at $7.3\times 10^{-5}$ rad/s, far below the assumed gyroscope bias. Navigation-grade gyroscopes are good enough to sense it, and then it must be modeled.
     - **Magnetic north.** $\mathbf m^n$ has no East component, so "North" here means *magnetic* north. Geographic north differs by the local magnetic declination, a known correction of a few degrees in most places.
     - **A clean magnetic field.** The model assumes the magnetometer sees only the Earth's field. Iron fixed to the body (*hard-iron* offsets and *soft-iron* distortions) must be calibrated out, and iron near the body (steel furniture, reinforced floors, electronics) changes $\mathbf m^n$ itself, often by tens of percent indoors.
-    - **Saturation.** Consumer gyroscopes typically saturate at 2000°/s and accelerometers at a few $g$; a foot strike can exceed the latter.
+    - **Saturation.** Consumer gyroscopes typically saturate at 2000$^\circ$/s and accelerometers at a few $g$; a foot strike can exceed the latter.
     ///
     """)
     return
@@ -251,7 +245,7 @@ def _(mo):
 
 @app.cell
 def imu_parameters(np):
-    # jb: echo=true
+    # jb: editor=true
     FS = 100.0                              # sample rate (Hz)
     DT = 1.0 / FS                           # sample period (s)
     GRAVITY = 9.81                          # m/s^2
@@ -266,17 +260,16 @@ def imu_parameters(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-attitude-and-heading -->
     ### Attitude and Heading
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Attitude**</u>
 
     The attitude of a body is the orientation of its body frame relative to the navigation frame, that is, the rotation matrix $\mathbf R^n_b$ (equivalently, the pair of unit quaternions $\pm q^n_b$, or Euler angles away from gimbal lock).
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Heading**</u>
 
     The heading of a body whose forward axis is not vertical is its yaw angle $\psi$: the angle, measured counterclockwise about Up, from East to the horizontal projection of the body's forward axis.
@@ -290,19 +283,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-tilt-from-the-accelerometer -->
     ## Tilt from the Accelerometer
 
     At rest, $\mathbf a^n = \mathbf 0$ and the accelerometer measures $\mathbf f^b = (\mathbf R^n_b)^\top[0, 0, g]^\top$, which is $g$ times the third row of $\mathbf R^n_b$. Chapter 17's Euler-angle theorem gives that row, so
     $$\mathbf f^b = g\,\big[-\sin\theta,\ \cos\theta\sin\phi,\ \cos\theta\cos\phi\big]^\top.$$
 
-    /// important | 📐 **Theorem (Tilt from Gravity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Tilt from Gravity)**
+        attrs: {class: theorem, id: ch19-thm-tilt-from-gravity}
     If the body is not accelerating and the accelerometer is error-free, then for $|\theta| < 90^\circ$
     $$\phi = \operatorname{atan2}(f_y, f_z),\qquad \theta = \operatorname{atan2}\Big(-f_x,\ \sqrt{f_y^2 + f_z^2}\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     With $c := g\cos\theta > 0$, the formula above says $(f_z, f_y) = c(\cos\phi, \sin\phi)$, which is the definition of $\phi = \operatorname{atan2}(f_y, f_z)$. Also $\sqrt{f_y^2 + f_z^2} = c = g\cos\theta$ and $-f_x = g\sin\theta$, so $(\sqrt{f_y^2 + f_z^2}, -f_x) = g(\cos\theta, \sin\theta)$ and $\theta = \operatorname{atan2}(-f_x, \sqrt{f_y^2 + f_z^2}) \in (-\tfrac\pi2, \tfrac\pi2)$. $\blacksquare$
     ///
 
@@ -310,9 +304,9 @@ def _(mo):
 
     **How good is accelerometer tilt?** To first order, an error component of size $\varepsilon$ perpendicular to gravity tips the measured vertical by $\varepsilon/g$ radians. Hence:
 
-    - **noise** of $\sigma_a = 0.05$ m/s² gives about $0.05/9.81\ \text{rad} = 0.29^\circ$ of tilt noise per sample;
-    - **bias** of $0.05$ m/s² gives a constant tilt error of about $0.29^\circ$, and nothing in a static accelerometer reading can tell this apart from a real tilt;
-    - **linear acceleration** is the big one: a horizontal acceleration $a$ tips the apparent vertical by $\arctan(a/g)$, so $1$ m/s² already gives $5.8^\circ$. A walking foot reaches tens of m/s².
+    - **noise** of $\sigma_a = 0.05$ m/s$^2$ gives about $0.05/9.81\ \text{rad} = 0.29^\circ$ of tilt noise per sample;
+    - **bias** of $0.05$ m/s$^2$ gives a constant tilt error of about $0.29^\circ$, and nothing in a static accelerometer reading can tell this apart from a real tilt;
+    - **linear acceleration** is the big one: a horizontal acceleration $a$ tips the apparent vertical by $\arctan(a/g)$, so $1$ m/s$^2$ already gives $5.8^\circ$. A walking foot reaches tens of m/s$^2$.
     """)
     return
 
@@ -320,18 +314,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-heading-from-the-magnetometer -->
     ## Heading from the Magnetometer
 
     The Earth's field $\mathbf m^n = [0, B_N, -B_D]^\top$ has a horizontal part $B_N = 22\ \mu$T pointing north and a vertical part $B_D = 42\ \mu$T pointing down; it dips $\arctan(42/22) \approx 62^\circ$ below the horizon. To read the heading, we first undo roll and pitch.
 
-    /// important | 📐 **Theorem (Tilt-Compensated Heading)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Tilt-Compensated Heading)**
+        attrs: {class: theorem, id: ch19-thm-tilt-compensated-heading}
     If $\mathbf m_m = (\mathbf R^n_b)^\top\mathbf m^n$ exactly, with $\mathbf R^n_b = \mathbf R_z(\psi)\mathbf R_y(\theta)\mathbf R_x(\phi)$, then the *leveled* field $\mathbf m_h := \mathbf R_y(\theta)\mathbf R_x(\phi)\,\mathbf m_m$ equals $[B_N\sin\psi,\ B_N\cos\psi,\ -B_D]^\top$. Hence
     $$\psi = \operatorname{atan2}(m_{h,x},\ m_{h,y}) = \operatorname{atan2}\big(\cos\theta\,m_x + \sin\theta\sin\phi\,m_y + \sin\theta\cos\phi\,m_z,\ \ \cos\phi\,m_y - \sin\phi\,m_z\big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $(\mathbf R^n_b)^\top = \mathbf R_x(\phi)^\top\mathbf R_y(\theta)^\top\mathbf R_z(\psi)^\top$, so $\mathbf R_y(\theta)\mathbf R_x(\phi)\mathbf m_m = \mathbf R_z(\psi)^\top\mathbf m^n$, and
     $$\mathbf R_z(\psi)^\top\mathbf m^n = \begin{bmatrix}\cos\psi & \sin\psi & 0\\ -\sin\psi & \cos\psi & 0\\ 0 & 0 & 1\end{bmatrix}\begin{bmatrix}0\\ B_N\\ -B_D\end{bmatrix} = \begin{bmatrix}B_N\sin\psi\\ B_N\cos\psi\\ -B_D\end{bmatrix}.$$
     Since $B_N > 0$, $(m_{h,y}, m_{h,x}) = B_N(\cos\psi, \sin\psi)$ gives $\psi = \operatorname{atan2}(m_{h,x}, m_{h,y})$. Multiplying out $\mathbf R_y(\theta)\mathbf R_x(\phi)\mathbf m_m$ gives the explicit form. $\blacksquare$
@@ -348,7 +343,7 @@ def _(mo):
 
 @app.cell
 def snapshot_functions(np, rot_x, rot_y):
-    # jb: echo=true
+    # jb: editor=true
     def tilt_from_accel(f):
         """Roll and pitch (rad) from a specific-force sample, assuming no acceleration."""
         roll = np.arctan2(f[1], f[2])
@@ -366,19 +361,20 @@ def snapshot_functions(np, rot_x, rot_y):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-integrating-the-gyroscope -->
     ## Integrating the Gyroscope
 
     The gyroscope alone gives attitude by Chapter 18's exact update, $\hat q_k = \hat q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_{m,k}\Delta t)$. Every error in $\boldsymbol\omega_m$ is integrated along with the motion. The single-axis case shows how.
 
-    /// important | 📐 **Theorem (Gyroscope Integration Error)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Gyroscope Integration Error)**
+        attrs: {class: theorem, id: ch19-thm-gyroscope-integration-error}
     Suppose a body turns about a fixed axis by angle $\theta_k$ at time $k\Delta t$, and $\hat\theta_k = \hat\theta_{k-1} + \omega_{m,k}\Delta t$ with $\omega_{m,k}\Delta t = (\theta_k - \theta_{k-1}) + (b + n_k)\Delta t$, where $b$ is a constant bias and the $n_k$ are independent with mean $0$ and variance $\sigma_g^2$. Then the error $e_k := \hat\theta_k - \theta_k$ satisfies
     $$\mathbb E[e_k] = e_0 + b\,t_k,\qquad \operatorname{Var}(e_k) = \sigma_g^2\,\Delta t\,t_k,\qquad t_k := k\Delta t,$$
     for a deterministic initial error $e_0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Subtracting $\theta_k = \theta_{k-1} + (\theta_k - \theta_{k-1})$ from the recursion gives $e_k = e_{k-1} + (b + n_k)\Delta t$, so $e_k = e_0 + kb\Delta t + \Delta t\sum_{j=1}^k n_j$. Take expectations, and use that the variance of a sum of independent random variables is the sum of their variances ([Chapter 6](ch6_expectation_and_variance.md)): $\operatorname{Var}(e_k) = k\,\Delta t^2\sigma_g^2 = \sigma_g^2\Delta t\,t_k$. $\blacksquare$
     ///
 
@@ -445,6 +441,7 @@ def make_drift_fig(DT, IMAGES_DIR, np, plt, simulate_pitch):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-the-complementary-filter -->
     ## The Complementary Filter
 
     The two error patterns are complementary: the gyroscope is good exactly where the accelerometer is bad (fast changes) and bad exactly where it is good (long-term average). Start with the simplest case, a body that only pitches about its own $y$ axis (roll and yaw stay zero). By Chapter 17's Euler-angle kinematics with $\phi = 0$, the pitch rate is then exactly the $y$ gyroscope rate, $\dot\theta = \omega_y$. We have two signals:
@@ -457,7 +454,6 @@ def _(mo):
     $$\hat\theta_1 = z_1;\qquad \hat\theta_k^- = \hat\theta_{k-1} + \omega_{m,k}\Delta t,\qquad \hat\theta_k = \hat\theta_k^- + \alpha\,(z_k - \hat\theta_k^-)\quad(k \ge 2).$$
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     This is *exactly* the Introduction's alpha filter, $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with $\hat x_k^- = \hat x_{k-1} + \Delta x_k$, with the predicted change supplied by the gyroscope, $\Delta x_k = \omega_{m,k}\Delta t$, and the measurement supplied by the accelerometer. Nothing about the recursion is new; only the source of $\Delta x_k$ is.
     ///
     """)
@@ -466,7 +462,7 @@ def _(mo):
 
 @app.cell
 def complementary_code(np):
-    # jb: echo=true
+    # jb: editor=true
     def complementary_filter(omega_m, z, alpha, dt):
         """Scalar complementary filter = the Introduction's alpha filter with dx_k = omega_k * dt.
         Index i holds time step k = i + 1; omega_m[i] covers the interval from k - 1 to k."""
@@ -483,18 +479,19 @@ def complementary_code(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-why-it-is-called-complementary -->
     ### Why It Is Called Complementary
 
     Let $\mathcal L$ denote the exponential moving average with gain $\alpha$, started from zero: $\mathcal L[y]_1 := 0$ and $\mathcal L[y]_k := (1 - \alpha)\mathcal L[y]_{k-1} + \alpha\,y_k$ for $k \ge 2$. Let $G_k := \hat\theta_1 + \sum_{j=2}^k\omega_{m,j}\Delta t$ be the gyroscope-only angle.
 
-    /// important | 📐 **Theorem (Complementary Decomposition)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Complementary Decomposition)**
+        attrs: {class: theorem, id: ch19-thm-complementary-decomposition}
     For every $k \ge 1$,
     $$\hat\theta_k = \mathcal L[z]_k + \big(G_k - \mathcal L[G]_k\big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $D_k := \hat\theta_k - G_k$, so $D_1 = 0$. For $k \ge 2$, using $G_k = G_{k-1} + \omega_{m,k}\Delta t$,
     $$D_k = (1 - \alpha)(\hat\theta_{k-1} + \omega_{m,k}\Delta t) + \alpha z_k - G_k = (1 - \alpha)(\hat\theta_{k-1} - G_{k-1}) + (1 - \alpha)G_k + \alpha z_k - G_k = (1 - \alpha)D_{k-1} + \alpha(z_k - G_k).$$
     This is the recursion defining $\mathcal L[z - G]$, with the same start, so $D = \mathcal L[z - G]$. The map $\mathcal L$ is linear (each $\mathcal L[y]_k$ is a fixed weighted sum of $y_2, \dots, y_k$), so $D = \mathcal L[z] - \mathcal L[G]$. $\blacksquare$
@@ -503,7 +500,6 @@ def _(mo):
     The exponential moving average $\mathcal L$ is a *low-pass* filter: it passes slowly varying signals and averages out fast fluctuations ([Chapter 6](ch6_expectation_and_variance.md) showed it shrinks white-noise variance by the factor $\alpha/(2-\alpha)$). Its complement $\mathcal I - \mathcal L$ (identity minus $\mathcal L$) is a *high-pass* filter: it removes constants and slow trends. So the estimate is the accelerometer angle, low-passed, plus the gyroscope angle, high-passed, and the two filters add up to the identity. If both sensors were perfect ($z = G = \theta$), the output would be exactly $\theta$, with no lag and no distortion.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Complementary filter**</u>
 
     A complementary filter is a {term}`filter` that estimates a signal from two measured versions of it, $z^{(1)}$ and $z^{(2)}$, as $\mathcal L[z^{(1)}] + \big(z^{(2)} - \mathcal L[z^{(2)}]\big)$, where $\mathcal L$ is a linear low-pass filter that passes constant signals unchanged. Equivalently, it low-passes one measurement and high-passes the other with filters that sum to the identity.
@@ -515,13 +511,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-errors-and-the-time-constant -->
     ### Errors and the Time Constant
 
     Let $e_k := \hat\theta_k - \theta_k$, let $d_k := \omega_{m,k}\Delta t - (\theta_k - \theta_{k-1})$ be the gyroscope increment error, and $v_k := z_k - \theta_k$ the accelerometer pitch error. Subtracting $\theta_k$ from the update gives the error recursion
     $$e_k = (1 - \alpha)(e_{k-1} + d_k) + \alpha\,v_k.$$
 
-    /// important | 📐 **Theorem (Complementary-Filter Errors)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Complementary-Filter Errors)**
+        attrs: {class: theorem, id: ch19-thm-complementary-filter-errors}
     Let $0 < \alpha \le 1$ and define the **time constant** $\tau := \Delta t\,(1 - \alpha)/\alpha$.
 
     1. *Gyroscope bias.* If $d_k = b\Delta t$ (constant bias, no noise) and $v_k = 0$, then $e_k \to b\tau$ as $k \to \infty$.
@@ -530,7 +527,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $e_k - b\tau = (1-\alpha)e_{k-1} + (1-\alpha)b\Delta t - b\Delta t\tfrac{1-\alpha}{\alpha} = (1-\alpha)\big(e_{k-1} - b\Delta t\tfrac{1-\alpha}{\alpha}\big) = (1-\alpha)(e_{k-1} - b\tau)$, so $e_k - b\tau = (1-\alpha)^{k-1}(e_1 - b\tau) \to 0$ when $\alpha > 0$.
     2. $e_k = (1-\alpha)e_{k-1} + \alpha v_k$, and $e_{k-1}$ depends only on $e_1$ and $v_j$ with $j < k$, so it is independent of $v_k$ and the variances add: $V_k = (1-\alpha)^2V_{k-1} + \alpha^2\sigma_v^2$. The fixed point is $V = \alpha^2\sigma_v^2/(1 - (1-\alpha)^2) = \sigma_v^2\alpha/(2-\alpha)$, and $V_k - V = (1-\alpha)^2(V_{k-1} - V) \to 0$. (This is Chapter 6's exponential-moving-average result.)
     3. The same argument with $e_k = (1-\alpha)e_{k-1} + (1-\alpha)\Delta t\,n_k$ gives the fixed point $(1-\alpha)^2\Delta t^2\sigma_g^2/(1 - (1-\alpha)^2)$. $\blacksquare$
@@ -554,6 +551,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-interactive-tuning-the-complementary-filter -->
     ### Interactive: Tuning the Complementary Filter
 
     A body pitches back and forth for 30 s while being pushed east and west (linear acceleration at 0.4 Hz). The top panel shows the truth (black), the accelerometer pitch (blue), the gyroscope-only pitch (red dotted), and the complementary filter (orange). The bottom panel shows the filter's error, with the predicted bias error $b\tau$ dashed. Try a large gyroscope bias with a small $\alpha$, then strong linear acceleration with a large $\alpha$.
@@ -566,7 +564,7 @@ def _(mo):
     cf_alpha = mo.ui.slider(steps=[0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0], value=0.02,
                             label=r"gain $\alpha$", show_value=True)
     cf_bias = mo.ui.slider(0.0, 0.1, 0.005, value=0.01, label="gyroscope bias $b$ (rad/s)", show_value=True)
-    cf_acc = mo.ui.slider(0.0, 3.0, 0.25, value=0.5, label="linear acceleration amplitude (m/s²)",
+    cf_acc = mo.ui.slider(0.0, 3.0, 0.25, value=0.5, label=r"linear acceleration amplitude (m/s$^2$)",
                           show_value=True)
     return cf_acc, cf_alpha, cf_bias
 
@@ -631,7 +629,6 @@ def _(
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Single-axis motion.** $\dot\theta = \omega_y$ holds only when $\phi = 0$; in general $\dot\theta = \cos\phi\,\omega_y - \sin\phi\,\omega_z$ ([Chapter 17](ch17_rotations.md)). Running one scalar filter per Euler angle works for small tilts but inherits gimbal lock and couples errors between axes. The fix is to apply the same idea to the whole rotation, as the Kalman filter below and the Mahony filter at the end of the chapter do.
     - **Gyroscope bias is not removed,** only limited to $b\tau$. Adding an integral term or estimating the bias removes it.
     - **Linear acceleration is not modeled.** It enters as a slowly varying accelerometer error that the low-pass path lets through whenever its frequency is below $f_c$.
@@ -644,6 +641,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-an-error-state-kalman-filter -->
     ## An Error-State Kalman Filter
 
     The complementary filter has two weaknesses: it is scalar, and it cannot remove gyroscope bias. A Kalman filter fixes both, but putting attitude directly into its state is awkward:
@@ -655,12 +653,12 @@ def _(mo):
     The way out is the one announced at the end of Chapter 17: use three numbers only *locally*. Keep the attitude itself as a unit quaternion, propagated exactly as in Chapter 18, and let the Kalman filter estimate only the small rotation $\delta\boldsymbol\theta$ between that quaternion and the truth. After every measurement update, fold the estimated error into the quaternion and reset it to zero, so $\delta\boldsymbol\theta$ never grows large.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Error-state Kalman filter**</u>
 
     An error-state Kalman filter is a filter that keeps (1) a *nominal state* $\hat{\mathbf x}_k$, propagated with the noise-free nonlinear process model, and (2) a Gaussian estimate (mean and covariance) of the *error state* $\delta\mathbf x_k$, defined by $\mathbf x_k = \hat{\mathbf x}_k \oplus \delta\mathbf x_k$ for a fixed composition rule $\oplus$. The error estimate is propagated and updated with the linearized ({term}`extended Kalman filter`) equations, and after each update its mean is *injected* into the nominal state ($\hat{\mathbf x} \leftarrow \hat{\mathbf x}\oplus\delta\hat{\mathbf x}$) and *reset* to zero.
     ///
 
+    <!-- label: ch19-sec-state-error-and-nominal-propagation -->
     ### State, Error, and Nominal Propagation
 
     The nominal state is the attitude quaternion and the gyroscope-bias estimate, $(\hat q, \hat{\mathbf b}_g)$. The error state is
@@ -676,29 +674,30 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-error-dynamics -->
     ### Error Dynamics
 
     We need one more identity about cross-product matrices.
 
-    /// important | 📐 **Lemma (Commutator of Cross-Product Matrices)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Commutator of Cross-Product Matrices)**
+        attrs: {class: lemma, id: ch19-lem-commutator-of-cross-product-matrices}
     For all $\mathbf a, \mathbf b \in \mathbb R^3$: $\ [\mathbf a]_\times[\mathbf b]_\times - [\mathbf b]_\times[\mathbf a]_\times = [\mathbf a\times\mathbf b]_\times$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Apply both sides to any $\mathbf c$ and use the triple-product expansion ([Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md)) three times:
+        attrs: {class: proof}
+    Apply both sides to any $\mathbf c$ and use the triple-product expansion ([Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices)) three times:
     $\mathbf a\times(\mathbf b\times\mathbf c) - \mathbf b\times(\mathbf a\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b) - \mathbf a(\mathbf b\cdot\mathbf c) + \mathbf c(\mathbf b\cdot\mathbf a) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf a(\mathbf b\cdot\mathbf c)$, and $(\mathbf a\times\mathbf b)\times\mathbf c = -\mathbf c\times(\mathbf a\times\mathbf b) = -\mathbf a(\mathbf c\cdot\mathbf b) + \mathbf b(\mathbf c\cdot\mathbf a)$, which is the same. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Attitude Error Dynamics)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Attitude Error Dynamics)**
+        attrs: {class: theorem, id: ch19-thm-attitude-error-dynamics}
     Let the true attitude obey $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ with $\boldsymbol\omega = \boldsymbol\omega_m - \mathbf b_g - \mathbf n_g$, and the nominal attitude obey $\dot{\hat{\mathbf R}} = \hat{\mathbf R}[\hat{\boldsymbol\omega}]_\times$ with $\hat{\boldsymbol\omega} = \boldsymbol\omega_m - \hat{\mathbf b}_g$. If $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$, then to first order in the small quantities $\delta\boldsymbol\theta$, $\delta\mathbf b_g$, $\mathbf n_g$,
     $$\dot{\delta\boldsymbol\theta} = -[\hat{\boldsymbol\omega}]_\times\,\delta\boldsymbol\theta - \delta\mathbf b_g - \mathbf n_g,\qquad \dot{\delta\mathbf b}_g = \mathbf w_b.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $\mathbf E := \operatorname{Exp}(\delta\boldsymbol\theta) = \mathbf I + [\delta\boldsymbol\theta]_\times + (\text{second order})$ (Chapter 17's small-angle theorem), so $\dot{\mathbf E} = [\dot{\delta\boldsymbol\theta}]_\times$ to first order. Differentiating $\mathbf R = \hat{\mathbf R}\mathbf E$ with the product rule and using both kinematic equations,
     $$\hat{\mathbf R}\mathbf E[\boldsymbol\omega]_\times = \dot{\mathbf R} = \hat{\mathbf R}[\hat{\boldsymbol\omega}]_\times\mathbf E + \hat{\mathbf R}\dot{\mathbf E}\quad\Longrightarrow\quad \dot{\mathbf E} = \mathbf E[\boldsymbol\omega]_\times - [\hat{\boldsymbol\omega}]_\times\mathbf E.$$
     Substituting the first-order forms of $\mathbf E$ and $\dot{\mathbf E}$:
@@ -719,21 +718,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-measurement-updates -->
     ### Measurement Updates
 
     **Accelerometer.** Assume for now that the body is not accelerating ($\mathbf a^n \approx \mathbf 0$) and ignore the accelerometer bias. Then the accelerometer measures gravity:
     $$\mathbf f_m = \mathbf R^\top(-\mathbf g^n) + \mathbf v_a,\qquad \mathbf v_a \sim \mathcal N(\mathbf 0, \mathbf R_{\text{acc}}),\quad \mathbf R_{\text{acc}} = \sigma_{\text{acc}}^2\mathbf I.$$
-    (In this chapter the measurement-noise covariance of [Chapter 13](ch13_kalman_filter.md) is written $\mathbf R_{\text{acc}}$ or $\mathbf R_{\text{mag}}$, to keep $\mathbf R$ for attitude.) The filter's $\sigma_{\text{acc}}$ is a tuning choice, usually set well above the sensor's $0.05$ m/s² to absorb the linear acceleration and bias that the model leaves out.
+    (In this chapter the measurement-noise covariance of [Chapter 13](ch13_kalman_filter.md) is written $\mathbf R_{\text{acc}}$ or $\mathbf R_{\text{mag}}$, to keep $\mathbf R$ for attitude.) The filter's $\sigma_{\text{acc}}$ is a tuning choice, usually set well above the sensor's $0.05$ m/s$^2$ to absorb the linear acceleration and bias that the model leaves out.
 
-    /// important | 📐 **Theorem (Measurement Jacobians)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Measurement Jacobians)**
+        attrs: {class: theorem, id: ch19-thm-measurement-jacobians}
     Let $\hat{\mathbf h}_a := \hat{\mathbf R}^\top(-\mathbf g^n)$ and $\hat{\mathbf h}_m := \hat{\mathbf R}^\top\mathbf m^n$ be the predicted accelerometer and magnetometer readings. With $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$, to first order in $\delta\boldsymbol\theta$,
     $$\mathbf R^\top(-\mathbf g^n) = \hat{\mathbf h}_a + [\hat{\mathbf h}_a]_\times\,\delta\boldsymbol\theta,\qquad \mathbf R^\top\mathbf m^n = \hat{\mathbf h}_m + [\hat{\mathbf h}_m]_\times\,\delta\boldsymbol\theta.$$
     So the measurement matrices with respect to $\delta\mathbf x = [\delta\boldsymbol\theta; \delta\mathbf b_g]$ are $\mathbf H_{\text{acc}} = \big[[\hat{\mathbf h}_a]_\times\ \ \mathbf 0\big]$ and $\mathbf H_{\text{mag}} = \big[[\hat{\mathbf h}_m]_\times\ \ \mathbf 0\big]$, and the innovations are $\mathbf f_m - \hat{\mathbf h}_a$ and $\mathbf m_m - \hat{\mathbf h}_m$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For any fixed $\mathbf v^n$, $\mathbf R^\top\mathbf v^n = \operatorname{Exp}(\delta\boldsymbol\theta)^\top\hat{\mathbf R}^\top\mathbf v^n = \operatorname{Exp}(-\delta\boldsymbol\theta)\,\hat{\mathbf h} \approx (\mathbf I - [\delta\boldsymbol\theta]_\times)\hat{\mathbf h} = \hat{\mathbf h} - \delta\boldsymbol\theta\times\hat{\mathbf h} = \hat{\mathbf h} + \hat{\mathbf h}\times\delta\boldsymbol\theta$, with $\hat{\mathbf h} := \hat{\mathbf R}^\top\mathbf v^n$. Apply this with $\mathbf v^n = -\mathbf g^n$ and $\mathbf v^n = \mathbf m^n$. Neither measurement depends on $\mathbf b_g$. $\blacksquare$
     ///
 
@@ -743,6 +743,7 @@ def _(mo):
     $$\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R_{\text{meas}},\quad \mathbf K = \mathbf P^-\mathbf H^\top\mathbf S^{-1},\quad \delta\hat{\mathbf x} = \mathbf K\,(\mathbf z - \hat{\mathbf h}),\quad \mathbf P = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-(\mathbf I - \mathbf K\mathbf H)^\top + \mathbf K\mathbf R_{\text{meas}}\mathbf K^\top,$$
     using the {term}`Joseph form` for numerical robustness.
 
+    <!-- label: ch19-sec-injection-and-reset -->
     ### Injection and Reset
 
     The estimated error $\delta\hat{\mathbf x} = [\delta\hat{\boldsymbol\theta}; \delta\hat{\mathbf b}_g]$ is folded into the nominal state,
@@ -804,7 +805,7 @@ def _(Exp, GRAVITY, G_N, Log, M_N, np, skew):
         ("one step of $\\boldsymbol\\Phi_k$ versus exact propagation", np.abs(_d1 - _d1_pred).max(), np.abs(_d1).max()),
     ]
     jacobian_check = "\n".join(
-        ["| quantity | largest difference | typical entry size |", "|---|---|---|"]
+        ["| quantity | largest difference | typical entry size |", "|:---|:---:|:---:|"]
         + [f"| {_name} | {_diff:.1e} | {_size:.1e} |" for _name, _diff, _size in _rows]
     )
     return (jacobian_check,)
@@ -813,16 +814,17 @@ def _(Exp, GRAVITY, G_N, Log, M_N, np, skew):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-implementation -->
     ### Implementation
 
-    The whole filter fits in one function. Each step predicts with the gyroscope, then (optionally) updates with the accelerometer and the magnetometer. The `gate` option skips an accelerometer update when $\big|\|\mathbf f_m\| - g\big| > 0.5$ m/s² and a magnetometer update when $\big|\|\mathbf m_m\| - \|\mathbf m^n\|\big| > 2\ \mu$T; we discuss it under failure modes.
+    The whole filter fits in one function. Each step predicts with the gyroscope, then (optionally) updates with the accelerometer and the magnetometer. The `gate` option skips an accelerometer update when $\big|\|\mathbf f_m\| - g\big| > 0.5$ m/s$^2$ and a magnetometer update when $\big|\|\mathbf m_m\| - \|\mathbf m^n\|\big| > 2\ \mu$T; we discuss it under failure modes.
     """)
     return
 
 
 @app.cell
 def eskf_code(Exp, GRAVITY, G_N, M_N, np, q_exp, q_to_R, qmul, skew):
-    # jb: echo=true
+    # jb: editor=true
     def ahrs_eskf(w_m, f_m, m_m, dt, q0, P0, sigma_g=0.01, sigma_bg=1e-5,
                   sigma_acc=1.0, sigma_mag=0.5, use_mag=True, gate=True):
         """Error-state Kalman filter for attitude and gyroscope bias.
@@ -872,6 +874,7 @@ def eskf_code(Exp, GRAVITY, G_N, M_N, np, q_exp, q_to_R, qmul, skew):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-simulation -->
     ## Simulation
 
     The simulator produces one minute of synthetic motion at 100 Hz. The true attitude follows smooth Euler angles: roll oscillating $\pm 25^\circ$ at 0.15 Hz, pitch $\pm 20^\circ$ at 0.1 Hz, and yaw swinging between $-30^\circ$ and $90^\circ$ over 50 s. The true body rate over each sample period is the exact one, $\boldsymbol\omega_k = \operatorname{Log}(\mathbf R_{k-1}^\top\mathbf R_k)/\Delta t$. The body is also shaken by a linear acceleration of adjustable amplitude: sinusoids at 0.5 Hz (East) and 0.37 Hz (North), and half the amplitude at 0.9 Hz (Up). The sensors follow the models above with the default noise levels, a gyroscope bias of the chosen magnitude on each axis (with signs $+, -, +$), and optionally the default accelerometer bias and a 10-second magnetic disturbance of $[20, 10, 0]\ \mu$T (as if walking past a steel cabinet). The noise realization is the same for every setting, so differences between runs are caused only by the settings.
@@ -959,7 +962,7 @@ def _(
         _Q, _B, _P = ahrs_eskf(sim["w_m"], sim["f_m"][1:], sim["m_m"][1:], DT, _q0, _P0,
                                sigma_acc=sigma_acc, use_mag=use_mag, gate=gate)
         _Qt = sim["q_true"][1:]
-        # body-frame error dtheta = Log(q_hat* ⊗ q_true), then rotated into navigation axes
+        # body-frame error dtheta = Log(q_hat* q_true) (Hamilton product), then rotated into navigation axes
         _r = qmul_arr(_Q * np.array([1.0, -1.0, -1.0, -1.0]), _Qt)
         _r = _r * np.sign(_r[:, :1] + 1e-300)
         _vn = np.linalg.norm(_r[:, 1:], axis=1, keepdims=True)
@@ -984,6 +987,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-interactive-the-error-state-filter-at-work -->
     ### Interactive: The Error-State Filter at Work
 
     The default settings are a realistic, well-behaved case. Then try the failure modes discussed below: switch off the magnetometer, add the magnetic disturbance (with and without gating), turn up the linear acceleration with a small $\sigma_{\text{acc}}$ and gating off, or remove the accelerometer bias to see the filter become consistent.
@@ -994,9 +998,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     ek_bias = mo.ui.slider(0.0, 0.05, 0.005, value=0.01, label="gyroscope bias per axis (rad/s)", show_value=True)
-    ek_acc = mo.ui.slider(0.0, 3.0, 0.25, value=1.0, label="linear acceleration amplitude (m/s²)", show_value=True)
+    ek_acc = mo.ui.slider(0.0, 3.0, 0.25, value=1.0, label=r"linear acceleration amplitude (m/s$^2$)", show_value=True)
     ek_sig = mo.ui.slider(steps=[0.05, 0.1, 0.2, 0.5, 1.0, 2.0], value=1.0,
-                          label=r"filter's $\sigma_{\text{acc}}$ (m/s²)", show_value=True)
+                          label=r"filter's $\sigma_{\text{acc}}$ (m/s$^2$)", show_value=True)
     ek_mag = mo.ui.checkbox(value=True, label="use magnetometer")
     ek_gate = mo.ui.checkbox(value=True, label="gate accelerometer and magnetometer")
     ek_abias = mo.ui.checkbox(value=True, label="accelerometer bias")
@@ -1061,14 +1065,14 @@ def _(
     _within = (np.abs(_r["err_n"]) <= 2 * _r["sig_n"])[_late].mean(axis=0)
     _table = "\n".join([
         "| method | RMS attitude error, t > 10 s | final attitude error |",
-        "|---|---|---|",
-        f"| gyroscope only | {np.sqrt(np.mean(_r['ang_gyro'][_late] ** 2)):.2f}° | {_r['ang_gyro'][-1]:.2f}° |",
-        f"| accelerometer + magnetometer snapshot | {np.sqrt(np.mean(_r['ang_snap'][_late] ** 2)):.2f}° | {_r['ang_snap'][-1]:.2f}° |",
-        f"| error-state Kalman filter | {np.sqrt(np.mean(_r['ang_eskf'][_late] ** 2)):.2f}° | {_r['ang_eskf'][-1]:.2f}° |",
+        "|:---|:---:|:---:|",
+        rf"| gyroscope only | {np.sqrt(np.mean(_r['ang_gyro'][_late] ** 2)):.2f}$^\circ$ | {_r['ang_gyro'][-1]:.2f}$^\circ$ |",
+        rf"| accelerometer + magnetometer snapshot | {np.sqrt(np.mean(_r['ang_snap'][_late] ** 2)):.2f}$^\circ$ | {_r['ang_snap'][-1]:.2f}$^\circ$ |",
+        rf"| error-state Kalman filter | {np.sqrt(np.mean(_r['ang_eskf'][_late] ** 2)):.2f}$^\circ$ | {_r['ang_eskf'][-1]:.2f}$^\circ$ |",
     ])
     _cons = mo.md(
         _table + "\n\n"
-        + "Fraction of time (t > 10 s) the filter's error lies inside its own ±2σ band: "
+        + r"Fraction of time ($t > 10$ s) the filter's error lies inside its own $\pm 2\sigma$ band: "
         + f"East {100 * _within[0]:.0f}%, North {100 * _within[1]:.0f}%, Up {100 * _within[2]:.0f}% "
         + "(about 95% is expected for a consistent filter)."
     )
@@ -1086,7 +1090,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    With the default settings (gyroscope bias $0.01$ rad/s, linear acceleration $1$ m/s², $\sigma_{\text{acc}} = 1$ m/s², accelerometer bias on), the three approaches compare as follows. Gyroscope integration alone is off by about $34^\circ$ RMS and $50^\circ$ at the end; the accelerometer-and-magnetometer snapshot never drifts but is about $10^\circ$ wrong at any instant, almost entirely because of the linear acceleration; the error-state filter stays below $1^\circ$. Its bias estimates lock onto the truth within about ten seconds; this is what lets it outperform the complementary filter, whose bias error $b\tau$ never goes away. Raising the gyroscope bias to $0.05$ rad/s makes gyroscope-only integration useless (over $130^\circ$ RMS) but barely changes the filter.
+    With the default settings (gyroscope bias $0.01$ rad/s, linear acceleration $1$ m/s$^2$, $\sigma_{\text{acc}} = 1$ m/s$^2$, accelerometer bias on), the three approaches compare as follows. Gyroscope integration alone is off by about $34^\circ$ RMS and $50^\circ$ at the end; the accelerometer-and-magnetometer snapshot never drifts but is about $10^\circ$ wrong at any instant, almost entirely because of the linear acceleration; the error-state filter stays below $1^\circ$. Its bias estimates lock onto the truth within about ten seconds; this is what lets it outperform the complementary filter, whose bias error $b\tau$ never goes away. Raising the gyroscope bias to $0.05$ rad/s makes gyroscope-only integration useless (over $130^\circ$ RMS) but barely changes the filter.
 
     The tilt error about East stays inside its $\pm 2\sigma$ band, but the errors about North and Up sit at a constant offset, outside it, about half the time. The filter is *inconsistent* ({term}`filter consistency`, [Chapter 9](ch9_noise_levels.md)). The cause is the accelerometer bias, which the six-state model does not contain: uncheck "accelerometer bias" and all three components stay inside their bands about 95–99% of the time. The next section explains why the filter cannot simply learn this bias.
     """)
@@ -1096,26 +1100,26 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-failure-modes -->
     ## Failure Modes
 
     Every measurement model above rested on an assumption. Here is what happens when each fails, with settings you can reproduce in the interactive simulation.
 
-    **Linear acceleration.** The accelerometer update assumed $\mathbf a^n \approx \mathbf 0$. With the linear-acceleration amplitude at $3$ m/s², a filter that trusts the accelerometer ($\sigma_{\text{acc}} = 0.05$ m/s², gating off) tilts to follow the apparent gravity and is off by about $11^\circ$ RMS. Three remedies, in increasing sophistication:
+    **Linear acceleration.** The accelerometer update assumed $\mathbf a^n \approx \mathbf 0$. With the linear-acceleration amplitude at $3$ m/s$^2$, a filter that trusts the accelerometer ($\sigma_{\text{acc}} = 0.05$ m/s$^2$, gating off) tilts to follow the apparent gravity and is off by about $11^\circ$ RMS. Three remedies, in increasing sophistication:
 
-    1. *Inflate $\mathbf R_{\text{acc}}$.* With $\sigma_{\text{acc}} = 2$ m/s² the same run has errors around $1.4^\circ$. The cost is slower correction when the body really is still.
-    2. *Gate on the magnitude.* At rest $\|\mathbf f\| = g$, so skip the update when $\big|\|\mathbf f_m\| - g\big|$ is large. This catches vertical accelerations but is weak against horizontal ones: a horizontal acceleration $a$ changes the magnitude only to $\sqrt{g^2 + a^2} \approx g + a^2/(2g)$, so $2$ m/s² sideways changes it by only $0.2$ m/s². In the simulation, gating alone (with $\sigma_{\text{acc}} = 0.05$) reduces the error only to about $6.5^\circ$. An *adaptive* covariance, for example $\mathbf R_{\text{acc}} = \big(\sigma_{\text{acc}}^2 + c\,(\|\mathbf f_m\| - g)^2\big)\mathbf I$, is a smooth version of the same idea with the same weakness.
+    1. *Inflate $\mathbf R_{\text{acc}}$.* With $\sigma_{\text{acc}} = 2$ m/s$^2$ the same run has errors around $1.4^\circ$. The cost is slower correction when the body really is still.
+    2. *Gate on the magnitude.* At rest $\|\mathbf f\| = g$, so skip the update when $\big|\|\mathbf f_m\| - g\big|$ is large. This catches vertical accelerations but is weak against horizontal ones: a horizontal acceleration $a$ changes the magnitude only to $\sqrt{g^2 + a^2} \approx g + a^2/(2g)$, so $2$ m/s$^2$ sideways changes it by only $0.2$ m/s$^2$. In the simulation, gating alone (with $\sigma_{\text{acc}} = 0.05$) reduces the error only to about $6.5^\circ$. An *adaptive* covariance, for example $\mathbf R_{\text{acc}} = \big(\sigma_{\text{acc}}^2 + c\,(\|\mathbf f_m\| - g)^2\big)\mathbf I$, is a smooth version of the same idea with the same weakness.
     3. *Gate on the innovation.* [Chapter 14](ch14_kalman_filters_in_practice.md)'s {term}`gating` with the {term}`normalized innovation squared` rejects any accelerometer reading inconsistent with the predicted gravity direction, whatever its magnitude. Foot-mounted systems go further and use gravity only while the foot is detected to be stationary ([Chapter 21](ch21_zero_velocity_updates.md)).
 
     **Magnetic disturbances.** Check "magnetic disturbance": between 35 and 45 s the field is distorted by $[20, 10, 0]\ \mu$T. Without gating, the heading error reaches about $30^\circ$ and, because the magnetometer update uses the full field vector, the tilt is dragged off by more than $10^\circ$ as well. With gating the disturbed readings are rejected (the field magnitude rises from $47.4$ to $56.5\ \mu$T) and the filter coasts on the gyroscope with almost no penalty. Magnitude gating misses a disturbance that rotates the field without changing its strength, so practical systems also check the *dip angle* between $\mathbf f_m$ and $\mathbf m_m$ (it should be $90^\circ + 62^\circ$ at rest), and many apply the magnetometer only to heading, projecting its innovation onto the horizontal plane so that it cannot corrupt the tilt.
 
     **No magnetometer: heading is unobservable.** Uncheck "use magnetometer". As shown above, gravity carries no heading information, so nothing corrects the heading error: it wanders (about $12^\circ$ RMS in this run), and the filter knows it, since its heading $\sigma$ grows steadily (to about $10^\circ$ after a minute) while the tilt stays accurate. The gyroscope-bias component along the vertical is also poorly observable, because a vertical bias error looks exactly like a slow heading change; it becomes partly observable only because this body keeps tilting. Chapter 21 meets the same problem with the foot-mounted filter, where heading and vertical gyroscope bias are unobservable from zero-velocity updates.
 
-    **Accelerometer bias.** For a body at rest, a horizontal accelerometer bias $b$ and a tilt of $b/g$ radians produce identical readings, so no amount of data from the accelerometer alone can separate them; this is a failure of {term}`observability`, not of tuning. Our $0.05$ m/s² bias becomes a constant tilt error of about $0.3^\circ$. The magnetometer then turns it into a heading error up to about $\tan 62^\circ \approx 1.9$ times larger, because the leveling step misreads part of the steep vertical field as horizontal. Calibration (Chapter 11) is the practical remedy; motion with varying attitude makes the bias weakly observable, which is why Chapter 21's 15-state filter includes it.
+    **Accelerometer bias.** For a body at rest, a horizontal accelerometer bias $b$ and a tilt of $b/g$ radians produce identical readings, so no amount of data from the accelerometer alone can separate them; this is a failure of {term}`observability`, not of tuning. Our $0.05$ m/s$^2$ bias becomes a constant tilt error of about $0.3^\circ$. The magnetometer then turns it into a heading error up to about $\tan 62^\circ \approx 1.9$ times larger, because the leveling step misreads part of the steep vertical field as horizontal. Calibration (Chapter 11) is the practical remedy; motion with varying attitude makes the bias weakly observable, which is why Chapter 21's 15-state filter includes it.
 
     **Large initial errors.** The Jacobians are first-order. Starting from the snapshot attitude keeps the initial error to a few degrees, where linearization is excellent. Starting from an arbitrary attitude with a small $\mathbf P_0$ can make the first corrections point the wrong way ([Chapter 15](ch15_extended_kalman_filter.md)'s failure modes).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The error-state filter of this chapter assumes:
 
     - a gyroscope with white noise and a constant or slowly wandering bias, sampled fast enough that the rate is nearly constant over each sample;
@@ -1132,6 +1136,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-mahony-and-madgwick-filters -->
     ## Mahony and Madgwick Filters
 
     Two lighter-weight attitude filters are so widely used, especially on microcontrollers, that they deserve a mention.
@@ -1150,6 +1155,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch19-sec-summary -->
     ## Summary
 
     - An {term}`inertial measurement unit` combines a {term}`gyroscope`, which measures $\boldsymbol\omega^b$, and an {term}`accelerometer`, which measures the {term}`specific force` $\mathbf f^b = (\mathbf R^n_b)^\top(\mathbf a^n - \mathbf g^n)$, reading $[0, 0, g]$ at rest and level. A {term}`magnetometer` measures $(\mathbf R^n_b)^\top\mathbf m^n$. All three have noise; the inertial sensors also have bias.
@@ -1159,9 +1165,10 @@ def _(mo):
     - The {term}`error-state Kalman filter` keeps the attitude as a quaternion $\hat q$ and estimates the small error $\delta\boldsymbol\theta$ in $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, together with the gyroscope-bias error. Its error dynamics are $\dot{\delta\boldsymbol\theta} = -[\hat{\boldsymbol\omega}]_\times\delta\boldsymbol\theta - \delta\mathbf b_g - \mathbf n_g$, its measurement matrices are $\big[[\hat{\mathbf h}]_\times\ \ \mathbf 0\big]$ for gravity and the magnetic field, and after each update the error is injected into $\hat q$ and reset.
     - Failure modes: linear acceleration corrupts tilt (inflate $\mathbf R_{\text{acc}}$ or gate), magnetic disturbances corrupt heading and, through the full-vector update, tilt (gate on magnitude and dip, or update heading only), heading is unobservable without a magnetometer, and accelerometer bias is indistinguishable from tilt.
 
+    <!-- label: ch19-sec-whats-next -->
     ## What's Next
 
-    An AHRS answers "which way is the body pointing?" [Chapter 20](ch20_strapdown_inertial_navigation.md) asks "where is it?" Rotating the specific force into the navigation frame, adding gravity back, and integrating twice gives velocity and position: strapdown inertial navigation. Every error studied here returns there, amplified: a tilt error of $0.3^\circ$ leaks $g\sin(0.3^\circ) \approx 0.05$ m/s² of gravity into the horizontal acceleration, which integrates to meters of position error within seconds. Chapter 20 derives how fast that happens and builds the walking-foot simulator that [Chapter 21](ch21_zero_velocity_updates.md) then rescues with zero-velocity updates.
+    An AHRS answers "which way is the body pointing?" [Chapter 20](ch20_strapdown_inertial_navigation.md) asks "where is it?" Rotating the specific force into the navigation frame, adding gravity back, and integrating twice gives velocity and position: strapdown inertial navigation. Every error studied here returns there, amplified: a tilt error of $0.3^\circ$ leaks $g\sin(0.3^\circ) \approx 0.05$ m/s$^2$ of gravity into the horizontal acceleration, which integrates to meters of position error within seconds. Chapter 20 derives how fast that happens and builds the walking-foot simulator that [Chapter 21](ch21_zero_velocity_updates.md) then rescues with zero-velocity updates.
     """)
     return
 

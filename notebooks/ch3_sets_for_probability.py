@@ -76,12 +76,11 @@ def latex_macros(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): connectives, quantifiers and their negations, and the proof techniques (contrapositive, contradiction, cases).
     - [Chapter 2](ch2_axioms_of_set_theory.md): the axioms of set theory (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), ordered pairs, Cartesian products, functions, the natural numbers, induction, and the Recursion Theorem.
-    - [Appendix B: Arithmetic on the Natural Numbers](appendix_b_number_systems.md) (optional): proofs of the facts about $+$, $\cdot$, and $<$ on $\mathbb N$ listed below, including well-ordering.
-    - [Appendix B: The Integers](appendix_b_number_systems.md), [The Rational Numbers](appendix_b_number_systems.md), [The Real Numbers](appendix_b_number_systems.md), and [Uniqueness of the Real Numbers](appendix_b_number_systems.md) (optional): the constructions of $\mathbb Z$, $\mathbb Q$, and $\mathbb R$, whose results this chapter uses.
-    - **Before [Chapter 4](ch4_probability_spaces.md):** read [Appendix C: Sequences and Limits](appendix_c_calculus.md) and [Appendix C: Series](appendix_c_calculus.md). They are built on the real numbers of this chapter, and Chapter 4 uses their limits.
+    - [Appendix B: Arithmetic on the Natural Numbers](#appb-sec-arithmetic-on-the-natural-numbers) (optional): proofs of the facts about $+$, $\cdot$, and $<$ on $\mathbb N$ listed below, including well-ordering.
+    - [Appendix B: The Integers](#appb-sec-the-integers), [The Rational Numbers](appendix_b_number_systems.md), [The Real Numbers](appendix_b_number_systems.md), and [Uniqueness of the Real Numbers](appendix_b_number_systems.md) (optional): the constructions of $\mathbb Z$, $\mathbb Q$, and $\mathbb R$, whose results this chapter uses.
+    - **Before [Chapter 4](ch4_probability_spaces.md):** read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series). They are built on the real numbers of this chapter, and Chapter 4 uses their limits.
     ///
     """)
     return
@@ -106,7 +105,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Every question about a noisy measurement is a set of outcomes. Set operations are the logic of those questions, and whether a set can be listed (is countable) decides how probabilities can be added up.
     ///
     """)
@@ -116,12 +114,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-complements-and-de-morgans-laws -->
     ## Complements and De Morgan's Laws
 
     In probability, every set we care about is a subset of one fixed set: the set $\Omega$ (capital omega) of all possible outcomes. "Not $A$" then means "in $\Omega$ but not in $A$". Chapter 2's {term}`set difference` $\Omega \setminus A$ already expresses this. Because we will use it constantly, it gets a shorter name.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Complement**</u>
 
     Let $\Omega$ be a set, called the *ambient set*, and let $A \subseteq \Omega$. The complement of $A$ (relative to $\Omega$) is
@@ -138,8 +136,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Rules for Complements)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rules for Complements)**
+        attrs: {class: lemma, id: ch3-lem-rules-for-complements}
     Let $A, B \subseteq \Omega$, with complements taken relative to $\Omega$. Then:
 
     1. $(A^c)^c = A$;
@@ -150,7 +148,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Every set in these statements is a subset of $\Omega$. So by Extensionality it suffices to show, for each $x \in \Omega$, that $x$ belongs to the left side if and only if it belongs to the right side.
 
     1. $x \in (A^c)^c \iff \neg(x \in A^c) \iff \neg\neg(x \in A) \iff x \in A$, by double negation.
@@ -166,14 +164,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (De Morgan's Laws)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (De Morgan's Laws)**
+        attrs: {class: theorem, id: ch3-thm-de-morgans-laws}
     For $A, B \subseteq \Omega$,
     $$(A \cup B)^c = A^c \cap B^c \qquad\text{and}\qquad (A \cap B)^c = A^c \cup B^c.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $x \in \Omega$,
     $$x \in (A \cup B)^c \iff \neg(x \in A \lor x \in B) \iff (x \notin A \land x \notin B) \iff x \in A^c \cap B^c.$$
     The middle step is De Morgan's law of logic, $\neg(P \lor Q) \leftrightarrow (\neg P \land \neg Q)$ ([Chapter 1](ch1_language_of_logic.md)). The second law follows in the same way from $\neg(P \land Q) \leftrightarrow (\neg P \lor \neg Q)$. $\blacksquare$
@@ -187,12 +185,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-indexed-families-and-sequences -->
     ## Indexed Families and Sequences
 
     The Introduction's measurements $z_1, z_2, \ldots$ are not a set $\{z_1, z_2, \ldots\}$: two measurements can be equal, and their order matters. They are the values of a function of the time step $k$. A function used this way is called an indexed family.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Indexed family**</u>
 
     A {term}`function` $A$ whose {term}`domain` is a set $I$, called the *index set*. The value of $A$ at $i \in I$ is written $A_i$ rather than $A(i)$, and the family is written $(A_i)_{i \in I}$.
@@ -205,7 +203,6 @@ def _(mo):
     so in particular $\{1, \ldots, 0\} = \emptyset$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sequence**</u>
 
     An {term}`indexed family` whose index set is $\mathbb N$ or $\mathbb N^+$, written $(x_n)_{n \in \mathbb N}$ or $(x_n)_{n=1}^\infty$. A *finite sequence of length* $n \in \mathbb N$ is an indexed family whose index set is $\{1, \ldots, n\}$, written $(x_k)_{k=1}^n$ or $x_1, \ldots, x_n$.
@@ -220,8 +217,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// tip | **Facts about $\mathbb N$ used in this chapter**
-        attrs: {class: no-icon}
-    Chapter 2 defines $+$, $\cdot$, and $<$ on $\mathbb N$ by recursion, and [Appendix B: Arithmetic on the Natural Numbers](appendix_b_number_systems.md) proves their familiar properties. We use the following:
+    Chapter 2 defines $+$, $\cdot$, and $<$ on $\mathbb N$ by recursion, and [Appendix B: Arithmetic on the Natural Numbers](#appb-sec-arithmetic-on-the-natural-numbers) proves their familiar properties. We use the following:
 
     - $+$ and $\cdot$ are associative and commutative, $\cdot$ distributes over $+$, and $n + 0 = n$, $n \cdot 1 = n$, $n \cdot 0 = 0$.
     - $<$ is a strict total order: for all $m, n$, exactly one of $m < n$, $m = n$, $n < m$ holds. Moreover $m < n + 1$ if and only if $m \le n$, and $m < n$ implies $m + k < n + k$.
@@ -236,6 +232,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-unions-and-intersections-of-families -->
     ### Unions and Intersections of Families
 
     Given a family of sets $(A_i)_{i \in I}$, Replacement gives the set $\{A_i : i \in I\}$ of its members, and Chapter 2's union and intersection of a set of sets apply to it:
@@ -254,14 +251,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (De Morgan's Laws for Families)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (De Morgan's Laws for Families)**
+        attrs: {class: theorem, id: ch3-thm-de-morgans-laws-for-families}
     Let $(A_i)_{i \in I}$ be a family of subsets of $\Omega$ with $I \neq \emptyset$. Then
     $$\Big(\bigcup_{i \in I} A_i\Big)^c = \bigcap_{i \in I} A_i^c \qquad\text{and}\qquad \Big(\bigcap_{i \in I} A_i\Big)^c = \bigcup_{i \in I} A_i^c.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Here $(A_i^c)_{i \in I}$ is the family $i \mapsto \Omega \setminus A_i$, which exists by Replacement. For $x \in \Omega$,
     $$x \in \Big(\bigcup_{i \in I} A_i\Big)^c \iff \neg\existsin{i}{I} (x \in A_i) \iff \forallin{i}{I} (x \notin A_i) \iff \forallin{i}{I} (x \in A_i^c) \iff x \in \bigcap_{i \in I} A_i^c,$$
     using the rule for negating a quantifier ([Chapter 1](ch1_language_of_logic.md)) and $x \in \Omega$ in the third step. For the second law, apply the first to the family $(A_i^c)_{i \in I}$ and use $(B^c)^c = B$:
@@ -271,14 +268,14 @@ def _(mo):
 
     The two-set laws are the special case $I = \{1, 2\}$.
 
-    /// important | 📐 **Lemma (Distributive Laws)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Distributive Laws)**
+        attrs: {class: lemma, id: ch3-lem-distributive-laws}
     For a set $B$ and a family of sets $(A_i)_{i \in I}$,
     $$B \cap \bigcup_{i \in I} A_i = \bigcup_{i \in I} (B \cap A_i), \qquad\text{and, if } I \neq \emptyset, \qquad B \cup \bigcap_{i \in I} A_i = \bigcap_{i \in I} (B \cup A_i).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $x \in B \land \existsin{i}{I} (x \in A_i)$ is equivalent to $\existsin{i}{I} (x \in B \land x \in A_i)$, because the condition $x \in B$ does not involve $i$. Similarly, $x \in B \lor \forallin{i}{I} (x \in A_i)$ is equivalent to $\forallin{i}{I} (x \in B \lor x \in A_i)$: if $x \notin B$, both say that $x \in A_i$ for every $i$, and if $x \in B$, both are true. $\blacksquare$
     ///
     """)
@@ -288,12 +285,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-disjoint-sets-and-partitions -->
     ## Disjoint Sets and Partitions
 
     A die cannot show both an even and an odd number. Events that cannot happen together are modeled by sets with no common elements, and Chapter 4's probabilities add up exactly over such sets.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Disjoint**</u>
 
     Sets $A$ and $B$ are disjoint if $A \cap B = \emptyset$. A family $(A_i)_{i \in I}$ is *pairwise disjoint* if $A_i \cap A_j = \emptyset$ for all $i, j \in I$ with $i \neq j$. A set $\mathcal A$ of sets is *pairwise disjoint* if any two distinct members of $\mathcal A$ are disjoint.
@@ -302,7 +299,6 @@ def _(mo):
     The family and set versions differ when members repeat. The family $A_1 = A_2 = \{1\}$ is *not* pairwise disjoint, since $A_1 \cap A_2 = \{1\}$, while the set $\{A_1, A_2\} = \{\{1\}\}$ is pairwise disjoint, because it has no two distinct members. The family $A_1 = A_2 = \emptyset$ is pairwise disjoint. Chapter 4 adds probabilities over pairwise disjoint *sequences*, so the family version is the one that matters there.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Partition**</u>
 
     A partition of a set $\Omega$ is a pairwise {term}`disjoint` set $\mathcal P$ of nonempty subsets of $\Omega$ whose union is $\Omega$, that is, $\bigcup \mathcal P = \Omega$.
@@ -318,8 +314,8 @@ def _(mo):
     mo.md(r"""
     Probabilities add up over disjoint sets, but the sets we meet are often not disjoint. The following construction replaces any sequence of sets by a disjoint one with the same unions.
 
-    /// important | 📐 **Lemma (Disjointification)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Disjointification)**
+        attrs: {class: lemma, id: ch3-lem-disjointification}
     Let $(A_n)_{n=1}^\infty$ be a sequence of sets and define
     $$D_n := A_n \setminus \bigcup_{k=1}^{n-1} A_k \qquad (n \in \mathbb N^+),$$
     so that $D_1 = A_1$. Then:
@@ -333,7 +329,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. By definition of set difference.
     2. Let $m < n$. Then $D_m \subseteq A_m \subseteq \bigcup_{k=1}^{n-1} A_k$, and $D_n$ contains no element of that union, so $D_m \cap D_n = \emptyset$.
     3. and 4. The inclusions $\subseteq$ follow from 1. Conversely, let $x \in A_k$ for some index $k$ (with $k \le n$ in part 3). By well-ordering there is a least index $m$ with $x \in A_m$, and $m \le k$. Then $x \notin A_j$ for all $j < m$, so $x \in D_m$.
@@ -349,6 +345,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-finite-sums-and-products -->
     ## Finite Sums and Products
 
     The Introduction averaged measurements as $(z_1 + \cdots + z_k)/k$. The dots hide a recursion, which we now make explicit. Let $S$ be a set with an addition $+ : S \times S \to S$ that is associative and commutative and has an identity element $0$ (so $a + 0 = a$). Right now our only example is $S = \mathbb N$. Later in this chapter $S$ will also be $\mathbb R$ and $[0, \infty]$, and Appendix B supplies $\mathbb Z$ and $\mathbb Q$.
@@ -360,8 +357,8 @@ def _(mo):
     By induction on $n$, $s_n$ depends only on $a_1, \ldots, a_n$. So the sum of a finite sequence $a_1, \ldots, a_N$ is defined by extending it with $a_k := 0$ for $k > N$, and the extension does not affect $\sum_{k=1}^n a_k$ for $n \le N$. Sums over other index ranges, such as $\sum_{k=0}^n a_k$, are defined by shifting the index. If $S$ also has an associative, commutative multiplication with identity $1$, products are defined in the same way:
     $$\prod_{k=1}^0 a_k := 1, \qquad \prod_{k=1}^{n+1} a_k := \Big(\prod_{k=1}^n a_k\Big) \cdot a_{n+1}, \qquad a^n := \prod_{k=1}^n a.$$
 
-    /// important | 📐 **Lemma (Rules for Finite Sums)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rules for Finite Sums)**
+        attrs: {class: lemma, id: ch3-lem-rules-for-finite-sums}
     Let $(a_k)$ and $(b_k)$ be sequences in $S$ and $n \in \mathbb N$.
 
     1. $\sum_{k=1}^n (a_k + b_k) = \sum_{k=1}^n a_k + \sum_{k=1}^n b_k$.
@@ -371,7 +368,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Parts 1–3 are by induction on $n$; each holds for $n = 0$ because both sides are $0$ (using $c \cdot 0 = 0$ in part 2, and $0 \le 0$ in part 3).
 
     1. $\sum_{k=1}^{n+1} (a_k + b_k) = \Big(\sum_{k=1}^n a_k + \sum_{k=1}^n b_k\Big) + (a_{n+1} + b_{n+1}) = \Big(\sum_{k=1}^n a_k + a_{n+1}\Big) + \Big(\sum_{k=1}^n b_k + b_{n+1}\Big)$, by the induction hypothesis, then associativity and commutativity.
@@ -390,12 +387,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-images-and-preimages -->
     ## Images and Preimages
 
     A function can transport sets in two directions. Forward, it carries a set of inputs to the set of their outputs. Backward, it pulls a set of outputs back to the set of all inputs that land in it. Probability uses the backward direction.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Image**</u>
 
     Let $f: X \to Y$ be a {term}`function` and $A \subseteq X$. The image of $A$ under $f$ is the set of outputs of elements of $A$,
@@ -403,7 +400,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Preimage**</u>
 
     Let $f: X \to Y$ be a {term}`function` and $B \subseteq Y$. The preimage of $B$ under $f$ is the set of inputs whose output lies in $B$,
@@ -422,8 +418,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Preimages Preserve Set Operations)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Preimages Preserve Set Operations)**
+        attrs: {class: lemma, id: ch3-lem-preimages-preserve-set-operations}
     Let $f: X \to Y$, let $B, B' \subseteq Y$, and let $(B_i)_{i \in I}$ be a family of subsets of $Y$. Then:
 
     1. $f^{-1}\big[\bigcup_{i \in I} B_i\big] = \bigcup_{i \in I} f^{-1}[B_i]$;
@@ -434,7 +430,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     All sets involved are subsets of $X$. For $x \in X$:
 
     1. $x \in f^{-1}\big[\bigcup_i B_i\big] \iff f(x) \in \bigcup_i B_i \iff \existsin{i}{I} \big(f(x) \in B_i\big) \iff \existsin{i}{I} \big(x \in f^{-1}[B_i]\big) \iff x \in \bigcup_i f^{-1}[B_i]$.
@@ -446,13 +442,13 @@ def _(mo):
 
     Images behave well with unions but not with intersections or complements.
 
-    /// important | 📐 **Lemma (Images)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Images)**
+        attrs: {class: lemma, id: ch3-lem-images}
     Let $f: X \to Y$, $A, A' \subseteq X$, and let $(A_i)_{i \in I}$ be a family of subsets of $X$. Then $f\big[\bigcup_{i \in I} A_i\big] = \bigcup_{i \in I} f[A_i]$ and $f[A \cap A'] \subseteq f[A] \cap f[A']$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $y \in f\big[\bigcup_i A_i\big]$ iff $y = f(x)$ for some $x$ in some $A_i$, iff $y \in f[A_i]$ for some $i$. If $y = f(x)$ with $x \in A \cap A'$, then $y \in f[A]$ and $y \in f[A']$. $\blacksquare$
     ///
 
@@ -467,7 +463,6 @@ def _(mo):
     **Why random variables are defined with preimages.** In [Chapter 5](ch5_random_variables.md) a {term}`random variable` will be a function $X$ from the set of outcomes $\Omega$ to $\mathbb R$; for the scale, it is the noise in a reading as a function of the outcome. A question about its value, "is $X$ in $B$?", is the set of outcomes $X^{-1}[B]$. The lemma says that "$X \in B$ or $X \in B'$" is the set $X^{-1}[B] \cup X^{-1}[B']$, that "not $X \in B$" is the complement $X^{-1}[B]^c$, and likewise for infinitely many conditions. So the logic of questions about the value of $X$ matches the logic of sets of outcomes exactly. Images have no such property, which is why Chapter 5 defines random variables through preimages.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Preimages commute with every set operation; images do not. A condition on a measured value becomes a set of outcomes through a preimage, and combining conditions with "not", "or", and "and" combines those sets in the same way.
     ///
 
@@ -553,26 +548,24 @@ def _(graphic, mo, np, plt, preimage_b1, preimage_b2, preimage_op):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-injections-surjections-and-bijections -->
     ## Injections, Surjections, and Bijections
 
     Whether a function loses information (two inputs, one output) or misses part of its codomain (an output that never occurs) is captured by three properties.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Injective**</u>
 
     A {term}`function` $f: X \to Y$ is injective (an *injection*) if different inputs have different outputs: for all $x, x' \in X$, $f(x) = f(x')$ implies $x = x'$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Surjective**</u>
 
     A {term}`function` $f: X \to Y$ is surjective (a *surjection*) if every element of the {term}`codomain` is an output: for every $y \in Y$ there is an $x \in X$ with $f(x) = y$. Equivalently, $f[X] = Y$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Bijective**</u>
 
     A {term}`function` $f: X \to Y$ is bijective (a *bijection*) if it is both {term}`injective` and {term}`surjective`; that is, every $y \in Y$ equals $f(x)$ for exactly one $x \in X$.
@@ -589,14 +582,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Composition**</u>
 
     For functions $f: X \to Y$ and $g: Y \to Z$, the composition of $g$ with $f$ is the function $g \circ f : X \to Z$ given by $(g \circ f)(x) := g(f(x))$. As a set, $g \circ f := \{(x, g(f(x))) : x \in X\}$.
     ///
 
-    /// important | 📐 **Lemma (Compositions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Compositions)**
+        attrs: {class: lemma, id: ch3-lem-compositions}
     Let $f: X \to Y$ and $g: Y \to Z$.
 
     1. If $f$ and $g$ are injective, so is $g \circ f$.
@@ -606,7 +598,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. If $g(f(x)) = g(f(x'))$, then $f(x) = f(x')$ because $g$ is injective, and $x = x'$ because $f$ is injective.
     2. Given $z \in Z$, there is $y \in Y$ with $g(y) = z$, and there is $x \in X$ with $f(x) = y$; then $(g \circ f)(x) = z$.
     3. Combine 1 and 2.
@@ -614,19 +606,18 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Inverse function**</u>
 
     For a {term}`bijection <bijective>` $f: X \to Y$, the inverse function $f^{-1} : Y \to X$ sends each $y \in Y$ to the unique $x \in X$ with $f(x) = y$. As a set, $f^{-1} := \{(y, x) : (x, y) \in f\}$.
     ///
 
-    /// important | 📐 **Lemma (Inverse Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Inverse Functions)**
+        attrs: {class: lemma, id: ch3-lem-inverse-functions}
     Let $f: X \to Y$ be a bijection. Then $f^{-1}$ is a bijection from $Y$ to $X$, with $f^{-1}(f(x)) = x$ for all $x \in X$ and $f(f^{-1}(y)) = y$ for all $y \in Y$. For $B \subseteq Y$, the preimage $f^{-1}[B]$ equals the image of $B$ under the inverse function.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The set $\{(y, x) : (x, y) \in f\}$ exists by Replacement and is a subset of $Y \times X$. Each $y \in Y$ is the second coordinate of at least one pair in $f$ (surjectivity) and of at most one (injectivity), so $f^{-1}$ is a function from $Y$ to $X$. Since $(x, f(x)) \in f$, we have $(f(x), x) \in f^{-1}$, that is, $f^{-1}(f(x)) = x$. Since $(f^{-1}(y), y) \in f$, we have $f(f^{-1}(y)) = y$. If $f^{-1}(y) = f^{-1}(y')$, applying $f$ gives $y = y'$, so $f^{-1}$ is injective; and every $x$ equals $f^{-1}(f(x))$, so $f^{-1}$ is surjective. Finally, $x \in f^{-1}[B] \iff f(x) \in B \iff x = f^{-1}(y)$ for some $y \in B$. $\blacksquare$
     ///
 
@@ -638,36 +629,36 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-countable-and-uncountable-sets -->
     ## Countable and Uncountable Sets
 
     A fair die has six equally likely outcomes. Can a "random natural number" have all of its outcomes equally likely? Can a "uniformly random" real number in $[0, 1]$? [Chapter 4](ch4_probability_spaces.md) shows that the answers are *no* and *yes, with care*, and the difference comes down to the kind of infinity involved. Here we make the size of a set precise without counting: two sets have the same size if their elements can be paired off exactly.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Equinumerous**</u>
 
     Sets $X$ and $Y$ are equinumerous, written $X \approx Y$, if there is a {term}`bijection <bijective>` $X \to Y$.
     ///
 
-    /// important | 📐 **Lemma (Equinumerosity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Equinumerosity)**
+        attrs: {class: lemma, id: ch3-lem-equinumerosity}
     For all sets $X$, $Y$, $Z$: $X \approx X$; if $X \approx Y$ then $Y \approx X$; and if $X \approx Y$ and $Y \approx Z$ then $X \approx Z$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The identity $\operatorname{id}_X$ is a bijection; the inverse of a bijection is a bijection (Inverse Functions lemma); and a composition of bijections is a bijection (Compositions lemma). $\blacksquare$
     ///
 
     The bijection $\operatorname{succ} : \mathbb N \to \mathbb N^+$ shows $\mathbb N \approx \mathbb N^+$: an infinite set can be equinumerous to a part of itself. For the sets $\{1, \ldots, n\}$ this is impossible, which is the content of the next lemma.
 
-    /// important | 📐 **Lemma (Pigeonhole Principle)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Pigeonhole Principle)**
+        attrs: {class: lemma, id: ch3-lem-pigeonhole-principle}
     For every $n \in \mathbb N$, there is no injection $\{1, \ldots, n + 1\} \to \{1, \ldots, n\}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Induction on $n$. For $n = 0$ there is no function at all from the nonempty set $\{1\}$ to $\emptyset$. Suppose the statement holds for $n$, and suppose $f : \{1, \ldots, n + 2\} \to \{1, \ldots, n + 1\}$ were injective.
 
     - If no $k \le n + 1$ has $f(k) = n + 1$, then $f$ restricted to $\{1, \ldots, n + 1\}$ is an injection into $\{1, \ldots, n\}$, contradicting the induction hypothesis.
@@ -681,26 +672,25 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Finite**</u>
 
     A set $X$ is finite if $X \approx \{1, \ldots, n\}$ for some $n \in \mathbb N$. A set that is not finite is *infinite*.
     ///
 
-    /// important | 📐 **Corollary (Number of Elements)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Number of Elements)**
+        attrs: {class: corollary, id: ch3-cor-number-of-elements}
     If $X \approx \{1, \ldots, m\}$ and $X \approx \{1, \ldots, n\}$, then $m = n$. This number is the *number of elements* of $X$, written $|X|$. Moreover, $\mathbb N$ is infinite.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Equinumerosity lemma there is a bijection $h : \{1, \ldots, n\} \to \{1, \ldots, m\}$. If $m < n$, then $\{1, \ldots, m + 1\} \subseteq \{1, \ldots, n\}$, and $h$ restricted to $\{1, \ldots, m + 1\}$ is an injection into $\{1, \ldots, m\}$, contradicting the Pigeonhole Principle. By symmetry $n < m$ is impossible too, so $m = n$. Likewise, a bijection $h : \mathbb N \to \{1, \ldots, n\}$ would restrict to an injection $\{1, \ldots, n + 1\} \to \{1, \ldots, n\}$. $\blacksquare$
     ///
 
     **Sums over finite sets.** A finite set has no preferred order, so to add up a family $(a_i)_{i \in F}$ indexed by a finite set $F$ we list $F$ in some order and must check that the order does not matter.
 
-    /// important | 📐 **Lemma (Splitting and Reordering Finite Sums)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Splitting and Reordering Finite Sums)**
+        attrs: {class: lemma, id: ch3-lem-splitting-and-reordering-finite-sums}
     Let $(a_k)$ be a sequence in a set $S$ with addition as in Finite Sums and Products, and let $m, n \in \mathbb N$.
 
     1. *(Splitting)* $\sum_{k=1}^{m+n} a_k = \sum_{k=1}^m a_k + \sum_{k=1}^n a_{m+k}$.
@@ -708,7 +698,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Induction on $n$. For $n = 0$ both sides are $\sum_{k=1}^m a_k$. For the step, $\sum_{k=1}^{m+n+1} a_k = \sum_{k=1}^m a_k + \sum_{k=1}^n a_{m+k} + a_{m+n+1} = \sum_{k=1}^m a_k + \sum_{k=1}^{n+1} a_{m+k}$.
     2. Induction on $n$; the case $n = 0$ is trivial. Let $\sigma$ be a bijection of $\{1, \ldots, n + 1\}$ and $j := \sigma^{-1}(n + 1)$. Splitting the sum before and after position $j$ (part 1) and moving the term $a_{\sigma(j)} = a_{n+1}$ to the end (commutativity),
     $$\sum_{k=1}^{n+1} a_{\sigma(k)} = \sum_{k=1}^n a_{\tau(k)} + a_{n+1}, \qquad \tau(k) := \begin{cases} \sigma(k), & k < j, \\ \sigma(k + 1), & j \le k \le n. \end{cases}$$
@@ -726,14 +716,12 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Countable**</u>
 
     A set $X$ is countable if there is an {term}`injection <injective>` $X \to \mathbb N$. It is *countably infinite* if $X \approx \mathbb N$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Uncountable**</u>
 
     A set is uncountable if it is not {term}`countable`.
@@ -741,13 +729,13 @@ def _(mo):
 
     Finite sets are countable: a bijection $X \to \{1, \ldots, n\}$ followed by the inclusion of $\{1, \ldots, n\}$ in $\mathbb N$ is an injection (Compositions lemma). Countably infinite sets are countable, and they are infinite: if $X \approx \mathbb N$ and $X \approx \{1, \ldots, n\}$, then $\mathbb N \approx \{1, \ldots, n\}$, which the corollary above rules out. Some books use "countable" to mean "countably infinite". In this book, finite sets are countable too.
 
-    /// important | 📐 **Theorem (Listing Countable Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Listing Countable Sets)**
+        attrs: {class: theorem, id: ch3-thm-listing-countable-sets}
     A nonempty set $X$ is countable if and only if there is a surjection $g : \mathbb N \to X$, that is, a sequence $(x_n)_{n \in \mathbb N}$ with $\{x_n : n \in \mathbb N\} = X$. The same holds with $\mathbb N^+$ in place of $\mathbb N$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Let $f : X \to \mathbb N$ be injective and fix $x_0 \in X$. Let
     $$g := \{(n, x) \in \mathbb N \times X : f(x) = n \ \lor\ (n \notin f[X] \land x = x_0)\}.$$
     For $n \in f[X]$ exactly one $x$ has $f(x) = n$, by injectivity, and for $n \notin f[X]$ the only partner is $x_0$. So $g$ is a function $\mathbb N \to X$, and it is surjective because $g(f(x)) = x$.
@@ -759,25 +747,25 @@ def _(mo):
 
     A listing may repeat elements. The direction ($\Leftarrow$) needs no Axiom of Choice: well-ordering supplies a definite choice, the least index.
 
-    /// important | 📐 **Corollary (Subsets and Images)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Subsets and Images)**
+        attrs: {class: corollary, id: ch3-cor-subsets-and-images}
     1. Every subset of a countable set is countable.
     2. If $X$ is countable and $f : X \to Y$, then $f[X]$ is countable.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Restrict the injection to the subset.
     2. If $X = \emptyset$, then $f[X] = \emptyset$, which is countable because the empty function is an injection. Otherwise take a surjection $g : \mathbb N \to X$. Viewed as a function into $f[X]$, $f$ is surjective, so $f \circ g : \mathbb N \to f[X]$ is a surjection (Compositions lemma), and $f[X]$ is countable by the theorem. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Countable Sets Are Finite or Countably Infinite)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Countable Sets Are Finite or Countably Infinite)**
+        attrs: {class: theorem, id: ch3-thm-countable-sets-are-finite-or-countably-infinite}
     A set is countable if and only if it is finite or countably infinite.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Finite and countably infinite sets are countable, as shown above. Conversely, let $f : X \to \mathbb N$ be injective. Then $f$ is a bijection from $X$ onto $f[X]$, so by the Equinumerosity lemma it suffices to show that every $Y \subseteq \mathbb N$ is finite or countably infinite.
 
     *Case 1: $Y$ is bounded,* that is, $Y \subseteq \{k \in \mathbb N : k < m\}$ for some $m$. We show by induction on $m$ that every subset of $\{k : k < m\}$ is finite. For $m = 0$ the only subset is $\emptyset = \{1, \ldots, 0\}$. If $Y \subseteq \{k : k < m + 1\}$, then $Y' := Y \setminus \{m\} \subseteq \{k : k < m\}$ is finite by the induction hypothesis, say via a bijection $h : Y' \to \{1, \ldots, j\}$. If $m \notin Y$, then $Y = Y'$. If $m \in Y$, then $h \cup \{(m, j + 1)\}$ is a bijection $Y \to \{1, \ldots, j + 1\}$.
@@ -791,17 +779,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-pairs-integers-and-rationals -->
     ### Pairs, Integers, and Rationals
 
     The pairs $(m, n)$ of natural numbers fill a quarter-plane, which looks "bigger" than $\mathbb N$. They can nevertheless be listed, diagonal by diagonal: first the pairs with $m + n = 0$, then those with $m + n = 1$, and so on. The triangular numbers $T(s) = \sum_{k=1}^s k$ count the pairs on the diagonals before diagonal $s$.
 
-    /// important | 📐 **Theorem (Pairing)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Pairing)**
+        attrs: {class: theorem, id: ch3-thm-pairing}
     The function $\pi : \mathbb N \times \mathbb N \to \mathbb N$, $\pi(m, n) := T(m + n) + n$, is a bijection. Hence $\mathbb N \times \mathbb N$ is countably infinite.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $T(t + 1) = T(t) + t + 1$, the function $T$ is strictly increasing, and by induction $T(t) \ge t$.
 
     *Claim: for every $N \in \mathbb N$ there is exactly one $s \in \mathbb N$ with $T(s) \le N < T(s + 1)$.* For existence, $T(N + 1) \ge N + 1 > N$, so the set $\{t \in \mathbb N : N < T(t)\}$ is nonempty and has a least element $t_0$. Since $T(0) = 0 \le N$, $t_0 \neq 0$, so $t_0 = s + 1$ for some $s$, and $T(s) \le N$ by minimality. For uniqueness, if $s < s'$ then $T(s + 1) \le T(s')$, so $N < T(s + 1)$ and $T(s') \le N$ cannot both hold.
@@ -813,28 +802,27 @@ def _(mo):
 
     So $\pi(0, 0) = 0$, $\pi(1, 0) = 1$, $\pi(0, 1) = 2$, $\pi(2, 0) = 3$, $\pi(1, 1) = 4$, $\pi(0, 2) = 5$, and so on.
 
-    /// important | 📐 **Corollary (Products of Countable Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Products of Countable Sets)**
+        attrs: {class: corollary, id: ch3-cor-products-of-countable-sets}
     If $X$ and $Y$ are countable, so is $X \times Y$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     With injections $f : X \to \mathbb N$ and $g : Y \to \mathbb N$, the function $(x, y) \mapsto \pi(f(x), g(y))$ is injective, because $\pi$ is injective and two ordered pairs are equal only if their coordinates are equal. $\blacksquare$
     ///
 
     /// tip | **Facts about $\mathbb Z$ and $\mathbb Q$ used in this chapter**
-        attrs: {class: no-icon}
-    [Appendix B: The Integers](appendix_b_number_systems.md) and [Appendix B: The Rational Numbers](appendix_b_number_systems.md) construct the integers $\mathbb Z$ and the rational numbers $\mathbb Q$, and identify $\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q$ so that $+$, $\cdot$, and $<$ extend those of $\mathbb N$. We use: every integer is $m - n$ for some $m, n \in \mathbb N$; every rational number is $a/b$ for some $a \in \mathbb Z$ and $b \in \mathbb N^+$, and every positive rational number is $a/b$ with $a, b \in \mathbb N^+$; $\mathbb Z$ is closed under $+$, $-$, and $\cdot$, and $\mathbb Q$ is in addition closed under division by nonzero elements.
+    [Appendix B: The Integers](#appb-sec-the-integers) and [Appendix B: The Rational Numbers](#appb-sec-the-rational-numbers) construct the integers $\mathbb Z$ and the rational numbers $\mathbb Q$, and identify $\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q$ so that $+$, $\cdot$, and $<$ extend those of $\mathbb N$. We use: every integer is $m - n$ for some $m, n \in \mathbb N$; every rational number is $a/b$ for some $a \in \mathbb Z$ and $b \in \mathbb N^+$, and every positive rational number is $a/b$ with $a, b \in \mathbb N^+$; $\mathbb Z$ is closed under $+$, $-$, and $\cdot$, and $\mathbb Q$ is in addition closed under division by nonzero elements.
     ///
 
-    /// important | 📐 **Theorem (The Integers and the Rationals Are Countable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Integers and the Rationals Are Countable)**
+        attrs: {class: theorem, id: ch3-thm-the-integers-and-the-rationals-are-countable}
     $\mathbb Z$ and $\mathbb Q$ are countably infinite.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The function $(m, n) \mapsto m - n$ maps $\mathbb N \times \mathbb N$ onto $\mathbb Z$, so $\mathbb Z$ is countable by the Pairing theorem and the Subsets and Images corollary. The function $(a, n) \mapsto a/(n + 1)$ maps $\mathbb Z \times \mathbb N$ onto $\mathbb Q$, and $\mathbb Z \times \mathbb N$ is countable by the previous corollary, so $\mathbb Q$ is countable. Both are infinite because they contain $\mathbb N$: an injection from either into $\{1, \ldots, n\}$ would restrict to an injection $\{1, \ldots, n + 1\} \to \{1, \ldots, n\}$. By the previous theorem both are countably infinite. $\blacksquare$
     ///
 
@@ -902,34 +890,34 @@ def _(graphic, mo, np, plt, zigzag_slider):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-countable-unions -->
     ### Countable Unions
 
     A countable union of countable sets is countable. The proof needs one injection into $\mathbb N$ for each of infinitely many sets, chosen all at once, so it uses Chapter 2's Axiom of Choice through the following consequence.
 
-    /// important | 📐 **Lemma (Countable Choice)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Countable Choice)**
+        attrs: {class: lemma, id: ch3-lem-countable-choice}
     If $(S_n)_{n \in \mathbb N}$ is a sequence of nonempty sets, there is a sequence $(s_n)_{n \in \mathbb N}$ with $s_n \in S_n$ for every $n$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $F := \{\{n\} \times S_n : n \in \mathbb N\}$, a set by Replacement. Its members are nonempty, and two different members share no element, since elements of $\{n\} \times S_n$ have first coordinate $n$. By the Axiom of Choice there is a set $C$ containing exactly one element of each member of $F$. Then $c := C \cap \bigcup F$ contains, for each $n$, exactly one pair $(n, s)$, and that pair has $s \in S_n$. So $c$ is a function on $\mathbb N$ with $c(n) \in S_n$; let $s_n := c(n)$. (With the function form of Choice from Chapter 2, apply it to the set $\{S_n : n \in \mathbb N\}$ directly.) $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Countable Unions of Countable Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Countable Unions of Countable Sets)**
+        attrs: {class: theorem, id: ch3-thm-countable-unions-of-countable-sets}
     If $(A_n)_{n \in \mathbb N}$ is a sequence of countable sets, then $\bigcup_{n \in \mathbb N} A_n$ is countable.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $S_n$ be the set of injections $A_n \to \mathbb N$, a subset of $\mathbb N^{A_n}$ by Separation. Each $S_n$ is nonempty because $A_n$ is countable, so by Countable Choice there is a sequence $(f_n)$ with each $f_n : A_n \to \mathbb N$ injective. For $x \in U := \bigcup_n A_n$, let $n_x := \min\{n : x \in A_n\}$ (well-ordering) and define
     $$F(x) := \pi\big(n_x,\ f_{n_x}(x)\big).$$
     If $F(x) = F(y)$, then since $\pi$ is injective, $n_x = n_y =: n$ and $f_n(x) = f_n(y)$, so $x = y$ because $f_n$ is injective. Thus $F : U \to \mathbb N$ is an injection. $\blacksquare$
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Choice is used.** Each $A_n$ has many injections into $\mathbb N$, and nothing singles one out, so choosing one for every $n$ at once needs the Axiom of Choice. Without it the theorem can fail: if the other axioms of set theory are consistent, they remain consistent when "$\mathbb R$ is a countable union of countable sets" is added (the Feferman–Lévy model; see [Axiom of countable choice](https://en.wikipedia.org/wiki/Axiom_of_countable_choice)). When the injections are given explicitly, as for $\mathbb Z$ and $\mathbb Q$ above, or when there are only finitely many sets, no choice is needed.
     - **"Countably many" is essential.** An uncountable union of countable sets can be uncountable: $\mathbb R = \bigcup_{x \in \mathbb R} \{x\}$, and $\mathbb R$ is uncountable, as we prove below.
     ///
@@ -940,27 +928,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-uncountable-sets-exist -->
     ### Uncountable Sets Exist
 
     Not every infinite set can be listed. The proof is the first appearance of a *diagonal argument*: build an object that differs from every item on a proposed list.
 
-    /// important | 📐 **Theorem (Cantor)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Cantor)**
+        attrs: {class: theorem, id: ch3-thm-cantor}
     For every set $X$, no function $f : X \to \mathcal P(X)$ is surjective.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $f : X \to \mathcal P(X)$ and let $D := \{x \in X : x \notin f(x)\}$, a subset of $X$ by Separation. If $D = f(d)$ for some $d \in X$, then $d \in D \iff d \notin f(d) = D$, a contradiction. So $D$ is not an output of $f$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (The Power Set of $\mathbb N$ Is Uncountable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (The Power Set of $\mathbb N$ Is Uncountable)**
+        attrs: {class: corollary, id: ch3-cor-the-power-set-of-n-is-uncountable}
     $\mathcal P(\mathbb N)$ is uncountable.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\mathcal P(\mathbb N)$ is nonempty. If it were countable, the Listing theorem would give a surjection $\mathbb N \to \mathcal P(\mathbb N)$, contradicting Cantor's theorem. $\blacksquare$
     ///
 
@@ -972,12 +961,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-the-real-numbers -->
     ## The Real Numbers
 
     Measurements, noise, and probabilities are real numbers. What matters about $\mathbb R$ in this book is not how it is built but which rules it obeys: those of a *complete ordered field*. We state the rules, then quote the theorem that exactly one structure obeys them.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Field**</u>
 
     A set $F$ together with two functions $+ : F \times F \to F$ and $\cdot : F \times F \to F$ and two elements $0 \neq 1$ of $F$, such that for all $a, b, c \in F$:
@@ -993,7 +982,6 @@ def _(mo):
     We write $ab$ for $a \cdot b$, $a - b := a + (-b)$, and $a / b := a b^{-1}$ for $b \neq 0$. Inverses are unique: if $a + b = 0$ and $a + b' = 0$, then $b = b + (a + b') = (b + a) + b' = b'$, and likewise for $a^{-1}$. So $-a$ and $a^{-1}$ name definite elements. (Formally, a field is the tuple $(F, +, \cdot, 0, 1)$.)
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Ordered field**</u>
 
     A {term}`field` $F$ together with a relation $<$ on $F$ such that for all $a, b, c \in F$:
@@ -1004,7 +992,7 @@ def _(mo):
     4. (multiplication) if $0 < a$ and $0 < b$, then $0 < ab$.
     ///
 
-    We write $a \le b$ for "$a < b$ or $a = b$" and $a > b$ for $b < a$, and call $a$ *positive* if $a > 0$ and *negative* if $a < 0$. The rational numbers form an ordered field ([Appendix B: The Rational Numbers](appendix_b_number_systems.md)).
+    We write $a \le b$ for "$a < b$ or $a = b$" and $a > b$ for $b < a$, and call $a$ *positive* if $a > 0$ and *negative* if $a < 0$. The rational numbers form an ordered field ([Appendix B: The Rational Numbers](#appb-sec-the-rational-numbers)).
     """)
     return
 
@@ -1012,8 +1000,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Rules of Algebra)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rules of Algebra)**
+        attrs: {class: lemma, id: ch3-lem-rules-of-algebra}
     In an ordered field, for all $a, b, c, d$:
 
     1. $a \cdot 0 = 0$, $(-a) b = -(ab)$, and $(-a)(-b) = ab$;
@@ -1025,7 +1013,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $a \cdot 0 = a(0 + 0) = a \cdot 0 + a \cdot 0$; adding $-(a \cdot 0)$ to both sides gives $0 = a \cdot 0$. Then $ab + (-a)b = (a + (-a))b = 0$, so $(-a)b$ is the additive inverse of $ab$. Since $x$ is the additive inverse of $-x$, we have $-(-x) = x$, so $(-a)(-b) = -(a(-b)) = -(-(ab)) = ab$.
     2. If $a < b$, adding $(-a) + (-b)$ to both sides (axiom 3) gives $-b < -a$. The converse is the same argument applied to $-b < -a$, using $-(-x) = x$. Taking $a = 0$ and using $-0 = 0$ gives the second statement.
     3. If $a > 0$, then $aa > 0$ by axiom 4. If $a < 0$, then $-a > 0$ by 2, and $aa = (-a)(-a) > 0$ by 1 and axiom 4. Since $1 \neq 0$, $1 = 1 \cdot 1 > 0$.
@@ -1042,24 +1030,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-bounds-and-completeness -->
     ### Bounds and Completeness
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Upper bound**</u>
 
     Let $F$ be an {term}`ordered field` and $S \subseteq F$. An element $u \in F$ is an upper bound of $S$ if $s \le u$ for every $s \in S$. If $S$ has an upper bound, $S$ is *bounded above*. *Lower bounds* and *bounded below* are defined in the same way, with $\ge$ in place of $\le$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Supremum**</u>
 
     Let $S$ be a subset of an {term}`ordered field` $F$. An element $u \in F$ is a supremum (*least upper bound*) of $S$ if $u$ is an {term}`upper bound` of $S$ and $u \le v$ for every upper bound $v$ of $S$. It is written $\sup S$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Infimum**</u>
 
     Let $S$ be a subset of an {term}`ordered field` $F$. An element $l \in F$ is an infimum (*greatest lower bound*) of $S$ if $l$ is a lower bound of $S$ and $v \le l$ for every lower bound $v$ of $S$. It is written $\inf S$.
@@ -1068,33 +1054,32 @@ def _(mo):
     A set has at most one supremum: if $u$ and $u'$ are both suprema, then $u \le u'$ and $u' \le u$, so $u = u'$ by trichotomy. The same holds for infima, so the notations $\sup S$ and $\inf S$ are justified whenever these exist. A supremum need not belong to the set. In $\mathbb Q$, the set $S = \{q \in \mathbb Q : q < 0\}$ has supremum $0 \notin S$: $0$ is an upper bound, and no $u < 0$ is one, because $u < u/2 < 0$ with $u/2 \in S$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Complete ordered field**</u>
 
     An {term}`ordered field` in which every nonempty subset that is bounded above has a {term}`supremum`. This requirement is called the *least-upper-bound property*.
     ///
 
-    /// important | 📐 **Theorem (The Real Numbers)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Real Numbers)**
+        attrs: {class: theorem, id: ch3-thm-the-real-numbers}
     There exists a complete ordered field. If $F$ and $F'$ are complete ordered fields, there is exactly one bijection $\varphi : F \to F'$ with $\varphi(a + b) = \varphi(a) + \varphi(b)$, $\varphi(ab) = \varphi(a)\varphi(b)$, and $a < b \iff \varphi(a) < \varphi(b)$ for all $a, b \in F$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Not proven here. [Appendix B: The Real Numbers](appendix_b_number_systems.md) constructs a complete ordered field from $\mathbb Q$ using Dedekind cuts, and [Appendix B: Uniqueness of the Real Numbers](appendix_b_number_systems.md) states uniqueness precisely, sketches why it holds, and links to a full proof.
+        attrs: {class: proof}
+    Not proven here. [Appendix B: The Real Numbers](#appb-sec-the-real-numbers) constructs a complete ordered field from $\mathbb Q$ using Dedekind cuts, and [Appendix B: Uniqueness of the Real Numbers](#appb-sec-uniqueness-of-the-real-numbers) states uniqueness precisely, sketches why it holds, and links to a full proof.
     ///
 
     We fix one complete ordered field, call its elements the *real numbers*, and denote it $\mathbb R$. By the theorem, any other choice differs only by renaming its elements, so nothing in this book depends on the choice. Appendix B builds $\mathbb R$ so that $\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q \subseteq \mathbb R$, with the $+$, $\cdot$, and $<$ of $\mathbb R$ extending those of the smaller systems. In particular, the successor of $n \in \mathbb N$ is $n + 1$, and the facts about $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ listed earlier hold inside $\mathbb R$.
 
-    Completeness is exactly what $\mathbb Q$ lacks. The set $\{q \in \mathbb Q : q < 0 \text{ or } q^2 < 2\}$ is nonempty and bounded above in $\mathbb Q$, but it has no supremum in $\mathbb Q$ ([Appendix B: Incompleteness of the Rationals](appendix_b_number_systems.md)). Completeness is the one axiom that separates $\mathbb R$ from $\mathbb Q$, and every limit argument in this book rests on it.
+    Completeness is exactly what $\mathbb Q$ lacks. The set $\{q \in \mathbb Q : q < 0 \text{ or } q^2 < 2\}$ is nonempty and bounded above in $\mathbb Q$, but it has no supremum in $\mathbb Q$ ([Appendix B: Incompleteness of the Rationals](#appb-sec-incompleteness-of-the-rationals)). Completeness is the one axiom that separates $\mathbb R$ from $\mathbb Q$, and every limit argument in this book rests on it.
 
-    /// important | 📐 **Lemma (Infima)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Infima)**
+        attrs: {class: lemma, id: ch3-lem-infima}
     Every nonempty $S \subseteq \mathbb R$ that is bounded below has an infimum, namely $\inf S = -\sup(-S)$, where $-S := \{-s : s \in S\}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Rules of Algebra part 2, $l$ is a lower bound of $S$ if and only if $-l$ is an upper bound of $-S$. So $-S$ is nonempty and bounded above, and $u := \sup(-S)$ exists. Then $-u$ is a lower bound of $S$. If $v$ is any lower bound of $S$, then $-v$ is an upper bound of $-S$, so $u \le -v$, that is, $v \le -u$. $\blacksquare$
     ///
     """)
@@ -1104,27 +1089,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-consequences-of-completeness -->
     ### Consequences of Completeness
 
-    /// important | 📐 **Theorem (Archimedean Property)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Archimedean Property)**
+        attrs: {class: theorem, id: ch3-thm-archimedean-property}
     For every $x \in \mathbb R$ there is $n \in \mathbb N$ with $n > x$. Consequently, for every $\varepsilon > 0$ there is $n \in \mathbb N^+$ with $1/n < \varepsilon$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose not: then $x$ is an upper bound of $\mathbb N$, which is nonempty, so $s := \sup \mathbb N$ exists. Since $s - 1 < s$, the number $s - 1$ is not an upper bound, so some $n \in \mathbb N$ has $n > s - 1$. Then $n + 1 \in \mathbb N$ and $n + 1 > s$, contradicting that $s$ is an upper bound. For the second statement, choose $n \in \mathbb N$ with $n > 1/\varepsilon$. Then $n > 0$, so $n \in \mathbb N^+$, and $1/n < \varepsilon$ by Rules of Algebra part 5. $\blacksquare$
     ///
 
     Completeness is needed: there are ordered fields with elements larger than every natural number (see [Archimedean property](https://en.wikipedia.org/wiki/Archimedean_property)).
 
-    /// important | 📐 **Theorem (Density of the Rationals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Density of the Rationals)**
+        attrs: {class: theorem, id: ch3-thm-density-of-the-rationals}
     For all real $a < b$ there is $q \in \mathbb Q$ with $a < q < b$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Archimedean property choose $n \in \mathbb N^+$ with $1/n < b - a$, so that $1 < n(b - a)$, and choose $k \in \mathbb N$ with $k > -na$. The set $J := \{j \in \mathbb N : j - k > na\}$ is nonempty (Archimedean property again), so it has a least element $j_0$. Let $m := j_0 - k \in \mathbb Z$. Then $m > na$. Moreover $j_0 \neq 0$, since $-k < na$, so $j_0 - 1 \in \mathbb N \setminus J$, which means $m - 1 \le na$. Hence
     $$na < m \le na + 1 < na + n(b - a) = nb,$$
     and dividing by $n > 0$ (Rules of Algebra parts 4 and 5) gives $a < m/n < b$. $\blacksquare$
@@ -1133,14 +1119,13 @@ def _(mo):
     So between any two real numbers, however close, there is a rational one. Yet the next section shows that the rationals are a negligible part of $\mathbb R$ in the sense of counting.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Absolute value**</u>
 
     For $x \in \mathbb R$, the absolute value of $x$ is $|x| := x$ if $x \ge 0$ and $|x| := -x$ if $x < 0$. The number $|x - y|$ is the *distance* between $x$ and $y$.
     ///
 
-    /// important | 📐 **Lemma (Properties of Absolute Value)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Properties of Absolute Value)**
+        attrs: {class: lemma, id: ch3-lem-properties-of-absolute-value}
     For $x, y \in \mathbb R$ and $c \ge 0$:
 
     1. $|x| \ge 0$, and $|x| = 0$ if and only if $x = 0$;
@@ -1151,7 +1136,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. If $x \ge 0$ then $|x| = x \ge 0$; if $x < 0$ then $|x| = -x > 0$ by Rules of Algebra part 2. In both cases $|x| = 0$ forces $x = 0$.
     2. Both $|x|$ and $|-x|$ equal whichever of $x, -x$ is nonnegative. If $x \ge 0$, then $-|x| = -x \le 0 \le x = |x|$; if $x < 0$, then $-|x| = x < 0 < -x = |x|$.
     3. If $|x| \le c$, then $x \le |x| \le c$ and $-x \le |-x| = |x| \le c$, so $-c \le x$. Conversely, if $-c \le x \le c$, then both $x$ and $-x$ are at most $c$, and $|x|$ is one of them.
@@ -1160,7 +1145,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Interval**</u>
 
     A subset of $\mathbb R$ of one of the following forms, where $a, b \in \mathbb R$ with $a \le b$, and $x$ ranges over $\mathbb R$:
@@ -1177,27 +1161,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-the-real-numbers-are-uncountable -->
     ## The Real Numbers Are Uncountable
 
     A noisy reading can be any real number in a range. If the real numbers in $[0, 1]$ could be listed as $x_0, x_1, x_2, \ldots$, we could hope to add up probabilities point by point. They cannot. The proof is a second diagonal argument, and it uses completeness through the following lemma.
 
-    /// important | 📐 **Lemma (Nested Intervals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Nested Intervals)**
+        attrs: {class: lemma, id: ch3-lem-nested-intervals}
     If $a_n \le a_{n+1} \le b_{n+1} \le b_n$ for all $n \in \mathbb N$, then $\bigcap_{n \in \mathbb N} [a_n, b_n] \neq \emptyset$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction, $a_n \le a_m$ and $b_m \le b_n$ whenever $n \le m$. So for any $n, m$, with $k$ the larger of the two, $a_n \le a_k \le b_k \le b_m$. Thus $A := \{a_n : n \in \mathbb N\}$ is nonempty and every $b_m$ is an upper bound of $A$. Let $s := \sup A$. Then $a_n \le s$ for all $n$ because $s$ is an upper bound, and $s \le b_m$ for all $m$ because $s$ is the least one. So $s \in [a_n, b_n]$ for every $n$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (The Real Numbers Are Uncountable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Real Numbers Are Uncountable)**
+        attrs: {class: theorem, id: ch3-thm-the-real-numbers-are-uncountable}
     For every sequence $(x_n)_{n \in \mathbb N}$ of real numbers and all real $a < b$, there is a $c \in [a, b]$ with $c \neq x_n$ for every $n$. Consequently every interval $[a, b]$ with $a < b$ is uncountable, and so is $\mathbb R$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $u < v$ let $d := v - u > 0$, and consider the left third $L := [u, u + d/3]$ and the right third $R := [v - d/3, v]$ of $[u, v]$. They are disjoint, since $u + d/3 < u + 2d/3 = v - d/3$. Let $P := \{(u, v) \in \mathbb R \times \mathbb R : u < v\}$ and define $g : \mathbb N \times P \to P$ by
     $$g\big(n, (u, v)\big) := \begin{cases} (u,\ u + d/3) & \text{if } x_n \notin L, \\ (v - d/3,\ v) & \text{if } x_n \in L. \end{cases}$$
     By the Recursion Theorem there is a sequence $(a_n, b_n)_{n \in \mathbb N}$ in $P$ with $(a_0, b_0) = (a, b)$ and $(a_{n+1}, b_{n+1}) = g\big(n, (a_n, b_n)\big)$. If $x_n \notin L$ we keep $L$, which avoids $x_n$; if $x_n \in L$ then $x_n \notin R$, and we keep $R$. Either way $x_n \notin [a_{n+1}, b_{n+1}]$. Both thirds lie in $[u, v]$, so $a_n \le a_{n+1} < b_{n+1} \le b_n$. By the Nested Intervals lemma some $c$ lies in every $[a_n, b_n]$. Then $c \in [a_0, b_0] = [a, b]$, and $c \neq x_n$ because $c \in [a_{n+1}, b_{n+1}]$ while $x_n$ is not.
@@ -1205,13 +1190,13 @@ def _(mo):
     If $[a, b]$ were countable, it would be nonempty, so it would be the set of terms of some sequence (Listing theorem), and the point $c$ for that sequence would be missing from it. So $[a, b]$ is uncountable, and $\mathbb R \supseteq [a, b]$ is uncountable because subsets of countable sets are countable. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Irrational Numbers)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Irrational Numbers)**
+        attrs: {class: corollary, id: ch3-cor-irrational-numbers}
     For real $a < b$, the set $[a, b] \setminus \mathbb Q$ of irrational numbers in $[a, b]$ is uncountable.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The union of two countable sets $A$ and $B$ is countable: with injections $f : A \to \mathbb N$ and $g : B \to \mathbb N$, the function sending $x \in A$ to $\pi(0, f(x))$ and $x \in B \setminus A$ to $\pi(1, g(x))$ is injective, because $\pi$ is. Now $[a, b] = ([a, b] \cap \mathbb Q) \cup ([a, b] \setminus \mathbb Q)$, and $[a, b] \cap \mathbb Q \subseteq \mathbb Q$ is countable. If $[a, b] \setminus \mathbb Q$ were countable too, $[a, b]$ would be countable. $\blacksquare$
     ///
     """)
@@ -1224,7 +1209,6 @@ def _(mo):
     The construction in the proof can be run on an actual list. Below, the list is $\mathbb Q \cap [0, 1]$ ordered by increasing denominator, in lowest terms: $0, 1, \tfrac12, \tfrac13, \tfrac23, \tfrac14, \tfrac34, \ldots$, which contains every rational number in $[0, 1]$. Each row shows the interval $[a_k, b_k]$ and the listed number $x_k$ that the next interval must avoid. Since the point $c$ in every interval differs from every rational number in $[0, 1]$, it is irrational.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Completeness is essential.** The proof uses completeness exactly once, in the Nested Intervals lemma. It must fail for $\mathbb Q$, which is countable. Indeed, running the construction inside $\mathbb Q$ on the listing below gives nested intervals $[a_n, b_n] \cap \mathbb Q$ that are all nonempty but have no rational number in common. In $\mathbb Q$, nested closed intervals can have empty intersection.
     - **Countable does not mean sparse.** $\mathbb Q$ is countable, yet it meets every interval $(a, b)$ with $a < b$ (Density of the Rationals). Countable sets are small only in the sense of listing. [Chapter 4](ch4_probability_spaces.md) shows that they are also small in the sense of length: a countable set has length $0$.
     ///
@@ -1286,7 +1270,7 @@ def _(Fraction, graphic, mo, nested_slider, plt):
     def _tex(_q):
         return str(_q.numerator) if _q.denominator == 1 else rf"\tfrac{{{_q.numerator}}}{{{_q.denominator}}}"
 
-    _rows = ["| $k$ | $x_k$ | kept third | $[a_{k+1}, b_{k+1}]$ |", "|---|---|---|---|"]
+    _rows = ["| $k$ | $x_k$ | kept third | $[a_{k+1}, b_{k+1}]$ |", "|:---|:---:|:---:|:---:|"]
     for _k, (_x, _side) in enumerate(zip(_xs, _kept)):
         _lo, _hi = _ivals[_k + 1]
         _rows.append(f"| {_k} | ${_tex(_x)}$ | {_side} | $[{_tex(_lo)}, {_tex(_hi)}]$ |")
@@ -1298,12 +1282,12 @@ def _(Fraction, graphic, mo, nested_slider, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-extended-real-numbers -->
     ## Extended Real Numbers
 
     Probabilities are real numbers in $[0, 1]$. But [Chapter 4](ch4_probability_spaces.md) also needs *lengths*, and $\mathbb R$ has infinite length; and a sum of infinitely many nonnegative numbers can be infinite. To state such facts without special cases, we add two new elements, $\infty$ and $-\infty$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Extended real numbers**</u>
 
     The set $\overline{\mathbb R} := \mathbb R \cup \{-\infty, +\infty\}$, where $-\infty$ and $+\infty$ are two distinct objects that are not real numbers, ordered by the order of $\mathbb R$ together with $-\infty < x < +\infty$ for every $x \in \mathbb R$ (and $-\infty < +\infty$). We write $\infty$ for $+\infty$ and $[0, \infty] := \{x \in \overline{\mathbb R} : x \ge 0\}$.
@@ -1318,13 +1302,13 @@ def _(mo):
 
     [^infinity-objects]: For example, $+\infty := \mathbb R$ and $-\infty := \{\mathbb R\}$ work. Regularity gives $\mathbb R \notin \mathbb R$. If $\{\mathbb R\} \in \mathbb R$, then the set $\{\mathbb R, \{\mathbb R\}\}$ would have no element disjoint from it, since $\{\mathbb R\} \in \mathbb R$ and $\mathbb R \in \{\mathbb R\}$, contradicting Regularity. The two objects are distinct because $\mathbb R \in \{\mathbb R\}$ but $\mathbb R \notin \mathbb R$.
 
-    /// important | 📐 **Lemma (Arithmetic in $[0, \infty]$)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Arithmetic in $[0, \infty]$)**
+        attrs: {class: lemma, id: ch3-lem-arithmetic-in-0-infty}
     On $[0, \infty]$, addition and multiplication are associative and commutative, multiplication distributes over addition, $a + 0 = a$ and $a \cdot 1 = a$, and $a \le b$ implies $a + c \le b + c$ and $a c \le b c$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     When none of the numbers involved is $\infty$, these are rules for nonnegative real numbers: field axioms, ordered-field axiom 3, and Rules of Algebra parts 1 and 4. Otherwise, note that a sum is $\infty$ exactly when some summand is $\infty$, and a product is $0$ exactly when some factor is $0$, and is otherwise $\infty$ exactly when some factor is $\infty$.
 
     - *Sums.* If some summand is $\infty$, both sides of the associative and commutative laws are $\infty$. For $a \le b$: if $c = \infty$ or $b = \infty$, then $b + c = \infty$; and $a = \infty$ forces $b = \infty$.
@@ -1334,7 +1318,6 @@ def _(mo):
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **No cancellation.** $1 + \infty = 2 + \infty$ and $1 \cdot \infty = 2 \cdot \infty$, although $1 \neq 2$. From $a + c = b + c$ we may conclude $a = b$ only when $c < \infty$. This is why Chapter 4 requires probabilities to be real numbers: its proofs subtract them.
     - **No subtraction.** $\infty - \infty$ has no sensible value: any $x \in [0, \infty]$ satisfies $x + \infty = \infty$.
     - **$0 \cdot \infty = 0$ is a convention.** It is convenient for lengths and probabilities, but it makes multiplication jump: $\tfrac1n \cdot \infty = \infty$ for every $n \in \mathbb N^+$, while $0 \cdot \infty = 0$.
@@ -1348,13 +1331,13 @@ def _(mo):
     mo.md(r"""
     The definitions of upper bound and supremum make sense for subsets of $\overline{\mathbb R}$ with its order. In $\overline{\mathbb R}$ the least-upper-bound property holds without any proviso.
 
-    /// important | 📐 **Lemma (Suprema in the Extended Reals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Suprema in the Extended Reals)**
+        attrs: {class: lemma, id: ch3-lem-suprema-in-the-extended-reals}
     Every subset $S \subseteq \overline{\mathbb R}$ has a supremum in $\overline{\mathbb R}$. If $S \subseteq [0, \infty]$ is nonempty, then $\sup S \in [0, \infty]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     - If $+\infty \in S$, or $S \cap \mathbb R$ has no upper bound in $\mathbb R$, then $+\infty$ is the only upper bound of $S$, so $\sup S = +\infty$.
     - If $S \subseteq \{-\infty\}$ (including $S = \emptyset$), every element of $\overline{\mathbb R}$ is an upper bound, and the least one is $-\infty$.
     - Otherwise $S \cap \mathbb R$ is nonempty and bounded above in $\mathbb R$, and $+\infty \notin S$. Then $s := \sup(S \cap \mathbb R)$ exists in $\mathbb R$ by completeness, and $s$ is an upper bound of $S$ (also of $-\infty$, if present). Every upper bound of $S$ is either $+\infty$ or a real upper bound of $S \cap \mathbb R$, and in both cases it is $\ge s$; it cannot be $-\infty$, because $S \cap \mathbb R \neq \emptyset$.
@@ -1362,7 +1345,7 @@ def _(mo):
     If $S \subseteq [0, \infty]$ is nonempty, then $\sup S \ge s$ for some $s \in S$, so $\sup S \ge 0$. $\blacksquare$
     ///
 
-    **Infinite sums.** For a sequence $(a_n)_{n=1}^\infty$ in $[0, \infty]$, the partial sums $\sum_{n=1}^N a_n$ never decrease as $N$ grows (we only add terms $\ge 0$), and by the lemma they always have a supremum in $[0, \infty]$. [Appendix C: Series](appendix_c_calculus.md) defines $\sum_{n=1}^\infty a_n$ as this supremum, shows that it is the limit of the partial sums when they are bounded, and proves that such sums may be reordered and regrouped freely. So a series of nonnegative terms always has a value in $[0, \infty]$. This is what lets Chapter 4 add up infinitely many probabilities without first checking convergence. Two examples we use there:
+    **Infinite sums.** For a sequence $(a_n)_{n=1}^\infty$ in $[0, \infty]$, the partial sums $\sum_{n=1}^N a_n$ never decrease as $N$ grows (we only add terms $\ge 0$), and by the lemma they always have a supremum in $[0, \infty]$. [Appendix C: Series](#appc-sec-series) defines $\sum_{n=1}^\infty a_n$ as this supremum, shows that it is the limit of the partial sums when they are bounded, and proves that such sums may be reordered and regrouped freely. So a series of nonnegative terms always has a value in $[0, \infty]$. This is what lets Chapter 4 add up infinitely many probabilities without first checking convergence. Two examples we use there:
 
     - $\sum_{n=1}^\infty 0 = 0$, because every partial sum is $0$;
     - $\sum_{n=1}^\infty c = \infty$ for every $c \in (0, \infty]$. If $c = \infty$, the first partial sum is already $\infty$. If $c$ is real, the $N$-th partial sum is $Nc$ (induction and distributivity), and for every real $u$ the Archimedean property gives $N > u/c$, so $Nc > u$; hence no real number is an upper bound.
@@ -1373,6 +1356,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch3-sec-summary -->
     ## Summary
 
     - The **complement** $A^c = \Omega \setminus A$ is taken relative to an ambient set $\Omega$. **De Morgan's laws** say that the complement of a union is the intersection of the complements and vice versa, for two sets and for any nonempty family.
@@ -1384,9 +1368,10 @@ def _(mo):
     - $\mathbb R$ is the **complete ordered field**. Completeness gives the Archimedean property and the density of $\mathbb Q$; we also have **absolute value** with the triangle inequality, and **intervals**.
     - The **extended real numbers** add $\pm\infty$. On $[0, \infty]$ every set has a supremum, the conventions $a + \infty = \infty$ and $0 \cdot \infty = 0$ hold, and every series of nonnegative terms has a value.
 
+    <!-- label: ch3-sec-whats-next -->
     ## What's Next
 
-    [Chapter 4](ch4_probability_spaces.md) uses all of this to define probability. Events are subsets of a sample space $\Omega$, and the collection of events is closed under complements and countable unions, where De Morgan's laws and indexed unions do the work. A probability measure adds up over sequences of disjoint events, with values in $[0, 1] \subseteq [0, \infty]$. Countability returns in two impossibility results: no probability treats all natural numbers equally, and, using the Axiom of Choice and the countability of $\mathbb Q$, no probability treats all subsets of $[0, 1)$ "uniformly". Before Chapter 4, read [Appendix C: Sequences and Limits](appendix_c_calculus.md) and [Appendix C: Series](appendix_c_calculus.md).
+    [Chapter 4](ch4_probability_spaces.md) uses all of this to define probability. Events are subsets of a sample space $\Omega$, and the collection of events is closed under complements and countable unions, where De Morgan's laws and indexed unions do the work. A probability measure adds up over sequences of disjoint events, with values in $[0, 1] \subseteq [0, \infty]$. Countability returns in two impossibility results: no probability treats all natural numbers equally, and, using the Axiom of Choice and the countability of $\mathbb Q$, no probability treats all subsets of $[0, 1)$ "uniformly". Before Chapter 4, read [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Series](#appc-sec-series).
     """)
     return
 

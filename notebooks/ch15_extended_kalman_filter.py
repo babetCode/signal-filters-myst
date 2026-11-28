@@ -71,7 +71,6 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 5](ch5_random_variables.md): the distribution of $aX + b$ when $X$ is normal.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity and monotonicity of expectation; the law of large numbers.
     - [Chapter 10](ch10_process_models.md): process models and discretization of continuous-time models.
@@ -79,8 +78,8 @@ def _(mo):
     - [Chapter 12](ch12_vectors_matrices_covariance.md): mean vectors, covariance matrices, $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, multivariate normal distributions, and confidence ellipses.
     - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's predict and update equations, and the Joseph form.
     - [Chapter 14](ch14_kalman_filters_in_practice.md): the continuous white-noise acceleration model for $\mathbf Q$, multi-rate operation, NEES consistency tests, and filter divergence.
-    - [Appendix C: Taylor's Theorem](appendix_c_calculus.md): the Lagrange form of the remainder.
-    - [Appendix C: Functions of Several Variables](appendix_c_calculus.md): partial derivatives, the Jacobian, the chain rule, and first-order Taylor approximation.
+    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): the Lagrange form of the remainder.
+    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): partial derivatives, the Jacobian, the chain rule, and first-order Taylor approximation.
     ///
     """)
     return
@@ -94,7 +93,6 @@ def _(mo):
     This chapter's key concept is **linearization**: near the current estimate, replace each nonlinear function by the affine function that matches it best, and run the Kalman filter on that approximation. The result is the **extended Kalman filter** (EKF). It is the most widely used nonlinear filter, and it is the filter behind the attitude and gait estimators of [Chapter 19](ch19_ahrs.md) and [Chapter 21](ch21_zero_velocity_updates.md).
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The EKF moves the estimate through the true nonlinear functions, but moves the covariance through their Jacobians evaluated at the current estimate. It works well when the state's uncertainty is small compared with the region over which those functions look linear.
     ///
     """)
@@ -104,6 +102,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-nonlinear-systems -->
     ## Nonlinear Systems
 
     Start with a concrete system. A bob hangs from a rigid rod of length $L$ whose other end turns freely about a fixed pivot. Let $\theta$ be the rod's angle from the downward vertical (counterclockwise positive) and $\omega := \dot\theta$ its angular velocity. In the pendulum example later in this chapter we derive
@@ -134,7 +133,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Nonlinear system**</u>
 
     A {term}`system` modeled, in a chosen state $\mathbf x_k$, by a {term}`state-space model` $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$ and $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$, in which the process function $f$ is not affine in $(\mathbf x_{k-1}, \mathbf u_k)$ or the measurement function $h$ is not affine in $\mathbf x_k$.
@@ -160,6 +158,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-how-a-gaussian-transforms-through-a-nonlinearity -->
     ## How a Gaussian Transforms Through a Nonlinearity
 
     To see what goes wrong, and how badly, take the simplest case: a scalar $x \sim \mathcal N(\mu, \sigma^2)$ and $y = \phi(x)$ for a differentiable $\phi: \mathbb R \to \mathbb R$. There are two ways to estimate the mean and variance of $y$.
@@ -179,15 +178,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Mean Error of the Tangent Line)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Mean Error of the Tangent Line)**
+        attrs: {class: lemma, id: ch15-lem-mean-error-of-the-tangent-line}
     Let $\phi: \mathbb R \to \mathbb R$ be twice continuously differentiable with $|\phi''(t)| \le M$ for all $t$, and let $x$ be a random variable with mean $\mu$ and finite variance $\sigma^2$. Then $\mathbb E[\phi(x)]$ exists and
 
     $$\big|\,\mathbb E[\phi(x)] - \phi(\mu)\,\big| \le \frac{M\sigma^2}{2}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Define the remainder $r(t) := \phi(t) - \phi(\mu) - \phi'(\mu)(t - \mu)$, a continuous function of $t$. By [Taylor's theorem](appendix_c_calculus.md) with the Lagrange remainder, for each $t$ there is a $\xi$ between $\mu$ and $t$ with $r(t) = \tfrac12\phi''(\xi)(t - \mu)^2$, so
 
     $$|r(t)| \le \tfrac M2 (t - \mu)^2 \quad \text{for every } t.$$
@@ -209,7 +208,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     phi_dropdown = mo.ui.dropdown(
-        options={"sin x": "sin", "x²": "square", "x³": "cube", "exp x": "exp"},
+        options={"sin x": "sin", "x^2": "square", "x^3": "cube", "exp x": "exp"},
         value="sin x",
         label=r"$\phi(x)$",
     )
@@ -286,7 +285,7 @@ def _(
 
     _table = mo.md(rf"""
     | | Monte Carlo ($N = {_x.size:,}$) | Tangent line |
-    |---|---|---|
+    |:---|:---:|:---:|
     | mean of $y$ | {_mc_mean:.4f} | {_lin_mean:.4f} |
     | standard deviation of $y$ | {_mc_std:.4f} | {_lin_std:.4f} |
     """)
@@ -301,7 +300,6 @@ def _(mo):
     Try $\phi(x) = \sin x$ with $\mu = 0.8$. At $\sigma = 0.1$ the two means differ by less than $0.005$. At $\sigma = 1$ the tangent line misses the mean by more than $0.2$, because $\sin x$ never exceeds 1, so the distribution of $y$ piles up just below 1 instead of spreading symmetrically. With $\phi(x) = x^2$ and $\mu = 0$, the tangent line is flat, so it predicts zero variance, which is badly wrong for any $\sigma$. These are the same errors an EKF makes at every step.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Pushing a Gaussian through a nonlinear function shifts its mean (by about $\tfrac12\phi''(\mu)\sigma^2$), changes its spread, and bends its shape. The tangent line keeps the Gaussian shape and misses the shift. Its error is small when $\sigma$ is small compared with the distance over which $\phi'$ changes appreciably.
     ///
     """)
@@ -311,16 +309,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-linearization -->
     ## Linearization
 
-    The tangent line generalizes to functions of several variables. Let $\phi: \mathbb R^n \to \mathbb R^m$ have components $\phi_1, \ldots, \phi_m$ whose first partial derivatives exist at a point $\mathbf a$. The {term}`Jacobian` of $\phi$ at $\mathbf a$ ([Appendix C: Functions of Several Variables](appendix_c_calculus.md)) is the $m \times n$ matrix
+    The tangent line generalizes to functions of several variables. Let $\phi: \mathbb R^n \to \mathbb R^m$ have components $\phi_1, \ldots, \phi_m$ whose first partial derivatives exist at a point $\mathbf a$. The {term}`Jacobian` of $\phi$ at $\mathbf a$ ([Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables)) is the $m \times n$ matrix
 
     $$\mathbf J_\phi(\mathbf a) := \begin{bmatrix} \dfrac{\partial\phi_1}{\partial x_1}(\mathbf a) & \cdots & \dfrac{\partial\phi_1}{\partial x_n}(\mathbf a) \\ \vdots & & \vdots \\ \dfrac{\partial\phi_m}{\partial x_1}(\mathbf a) & \cdots & \dfrac{\partial\phi_m}{\partial x_n}(\mathbf a)\end{bmatrix}.$$
 
     Row $i$ is the {term}`gradient` of $\phi_i$; column $j$ says how every output responds to a small change in $x_j$ alone.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Linearization**</u>
 
     The linearization of a function $\phi: \mathbb R^n \to \mathbb R^m$ at a point $\mathbf a \in \mathbb R^n$ where all first {term}`partial derivatives <partial derivative>` of $\phi$ exist is the affine function
@@ -330,26 +328,26 @@ def _(mo):
 
     For $n = m = 1$ the linearization is the tangent line of the previous section. The next theorem says in what sense it approximates $\phi$.
 
-    /// important | 📐 **Theorem (First-Order Taylor Approximation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (First-Order Taylor Approximation)**
+        attrs: {class: theorem, id: ch15-thm-first-order-taylor-approximation}
     Let $U \subseteq \mathbb R^n$ be open, $\mathbf a \in U$, and let $\phi: U \to \mathbb R^m$ have continuous first partial derivatives on $U$. Then
     $$\lim_{\mathbf x \to \mathbf a}\frac{\big\|\phi(\mathbf x) - \phi(\mathbf a) - \mathbf J_\phi(\mathbf a)(\mathbf x - \mathbf a)\big\|}{\|\mathbf x - \mathbf a\|} = 0.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Not given here; see [Appendix C: Functions of Several Variables](appendix_c_calculus.md). $\blacksquare$
+        attrs: {class: proof}
+    Not given here; see [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables). $\blacksquare$
     ///
 
     In words: the error of the linearization shrinks faster than the distance to $\mathbf a$. The theorem says nothing about points far from $\mathbf a$, which is exactly where the EKF gets into trouble. One special case is exact everywhere.
 
-    /// important | 📐 **Lemma (Linearizing an Affine Function)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Linearizing an Affine Function)**
+        attrs: {class: lemma, id: ch15-lem-linearizing-an-affine-function}
     If $\phi(\mathbf x) = \mathbf A\mathbf x + \mathbf b$, then $\mathbf J_\phi(\mathbf a) = \mathbf A$ for every $\mathbf a$, so the linearization of $\phi$ at any point is $\phi$ itself.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The $i$-th component is $\phi_i(\mathbf x) = \sum_{j=1}^n A_{ij}x_j + b_i$, so $\partial\phi_i/\partial x_j = A_{ij}$ at every point. Hence $\phi(\mathbf a) + \mathbf A(\mathbf x - \mathbf a) = \mathbf A\mathbf a + \mathbf b + \mathbf A\mathbf x - \mathbf A\mathbf a = \phi(\mathbf x)$. $\blacksquare$
     ///
 
@@ -365,8 +363,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-the-extended-kalman-filter -->
     ## The Extended Kalman Filter
 
+    <!-- label: ch15-sec-assumptions -->
     ### Assumptions
 
     We keep Chapter 13's assumptions (A2)–(A5), with (A1) now saying that $f$, $h$, $\mathbf Q$, $\mathbf R$, and the inputs $\mathbf u_k$ are known, and add two more:
@@ -376,6 +376,7 @@ def _(mo):
 
     Chapter 13 needed only *uncorrelated* noise because the Kalman filter's errors are fixed linear combinations of past noise. The EKF's estimates depend on past noise *nonlinearly*, and only independence guarantees that a new noise vector is uncorrelated with every function of the past. (E2) makes the Jacobians exist and lets the First-Order Taylor theorem apply.
 
+    <!-- label: ch15-sec-predict -->
     ### Predict
 
     Suppose that, given the measurements $\mathbf z_1, \ldots, \mathbf z_{k-1}$, the state $\mathbf x_{k-1}$ has mean $\hat{\mathbf x}_{k-1}$ and covariance $\mathbf P_{k-1}$. (For $k = 1$ these are $\hat{\mathbf x}_0$ and $\mathbf P_0$.) Given those measurements, $\hat{\mathbf x}_{k-1}$ and $\mathbf F_k$ are fixed numbers. By the definition of the linearization,
@@ -392,6 +393,7 @@ def _(mo):
 
     The mean is moved through $f$ itself and the covariance through its Jacobian. The two agree at $\hat{\mathbf x}_{k-1}$, which is the only point the approximation uses.
 
+    <!-- label: ch15-sec-update -->
     ### Update
 
     Expand $h$ about the prediction: $h(\mathbf x_k) = h(\hat{\mathbf x}_k^-) + \mathbf H_k(\mathbf x_k - \hat{\mathbf x}_k^-) + \mathbf s_k$. **The second approximation drops the remainder $\mathbf s_k$.** Moving the known terms to the left,
@@ -416,18 +418,17 @@ def _(mo):
     mo.md(r"""
     The EKF contains the Kalman filter as a special case.
 
-    /// important | 📐 **Lemma (The EKF Generalizes the Kalman Filter)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (The EKF Generalizes the Kalman Filter)**
+        attrs: {class: lemma, id: ch15-lem-the-ekf-generalizes-the-kalman-filter}
     If $f(\mathbf x, \mathbf u) = \mathbf F\mathbf x + \mathbf B\mathbf u$ and $h(\mathbf x) = \mathbf H\mathbf x$, then the EKF's equations are exactly the Kalman filter's equations of [Chapter 13](ch13_kalman_filter.md).
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Lemma on linearizing an affine function, $\mathbf F_k = \mathbf F$ and $\mathbf H_k = \mathbf H$ for every $k$. Moreover $f(\hat{\mathbf x}_{k-1}, \mathbf u_k) = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $h(\hat{\mathbf x}_k^-) = \mathbf H\hat{\mathbf x}_k^-$. Substituting these into the EKF's equations gives Chapter 13's equations term by term. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Extended Kalman filter**</u>
 
     For a {term}`state-space model` $\mathbf x_k = f(\mathbf x_{k-1}, \mathbf u_k) + \mathbf w_k$, $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$ with noise covariances $\mathbf Q$ and $\mathbf R$, the {term}`filter` that starts from an initial estimate $\hat{\mathbf x}_0$ and covariance $\mathbf P_0$ and, for each $k \ge 1$, computes
@@ -438,18 +439,16 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The EKF is the Kalman filter with three substitutions:
 
     | | Kalman filter | Extended Kalman filter |
-    |---|---|---|
+    |:---|:---:|:---|
     | prediction | $\mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ | $f(\hat{\mathbf x}_{k-1}, \mathbf u_k)$ |
     | predicted measurement | $\mathbf H\hat{\mathbf x}_k^-$ | $h(\hat{\mathbf x}_k^-)$ |
     | matrices in $\mathbf P_k^-$, $\mathbf S_k$, $\mathbf K_k$, $\mathbf P_k$ | $\mathbf F$, $\mathbf H$ | Jacobians $\mathbf F_k$, $\mathbf H_k$ at the current estimate |
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Dropped remainders are not small.** When the uncertainty is large compared with the region over which $f$ or $h$ looks linear, the predicted mean is biased (as in the Gaussian explorer above) and $\mathbf P_k$ is typically too small. The filter becomes overconfident and can diverge.
     - **The linearization point is far from the truth.** The Jacobians then describe the wrong part of the function, and the update can push the estimate the wrong way. A large initial error is the usual cause.
     - **(E2) fails.** If $f$ or $h$ is not differentiable at the estimate (a saturation, an absolute value, or an angle that wraps from $\pi$ to $-\pi$), the Jacobian is undefined or meaningless there. Reparametrize the state, or use a derivative-free filter ([Chapter 16](ch16_unscented_kalman_filter.md)).
@@ -464,8 +463,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-example-tracking-a-pendulum -->
     ## Example: Tracking a Pendulum
 
+    <!-- label: ch15-sec-the-model -->
     ### The Model
 
     Treat the bob as a point mass $m$ on a rigid, massless rod. The bob moves on a circle of radius $L$, so its displacement along the circle from the bottom is $L\theta$ and its acceleration along the circle is $L\ddot\theta$. Two forces act along the circle:
@@ -515,8 +516,9 @@ def _(mo):
 
     so $\mathbf R = [\sigma_z^2]$ is $1 \times 1$. On the other four steps the filter only predicts, as in the multi-rate filters of [Chapter 14](ch14_kalman_filters_in_practice.md).
 
-    **Truth.** The simulated pendulum starts at rest at $\theta_0 = 1$ rad (57°), so $\mathbf x_0 = [1, 0]^\top$, and follows exactly this model, with noise drawn from the stated distributions. The filter's model is therefore correct, and every error below comes from the filter's approximations rather than from model mismatch.
+    **Truth.** The simulated pendulum starts at rest at $\theta_0 = 1$ rad (57$^\circ$), so $\mathbf x_0 = [1, 0]^\top$, and follows exactly this model, with noise drawn from the stated distributions. The filter's model is therefore correct, and every error below comes from the filter's approximations rather than from model mismatch.
 
+    <!-- label: ch15-sec-the-jacobians -->
     ### The Jacobians
 
     Differentiating $a$ entry by entry gives its Jacobian, and $h$'s Jacobian was computed above:
@@ -525,8 +527,8 @@ def _(mo):
 
     The process Jacobian $\mathbf J_f$ needs the chain rule, because $f$ composes $a$ with itself four times.
 
-    /// important | 📐 **Lemma (Jacobian of an RK4 Step)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Jacobian of an RK4 Step)**
+        attrs: {class: lemma, id: ch15-lem-jacobian-of-an-rk4-step}
     Let $a: \mathbb R^n \to \mathbb R^n$ have continuous first partial derivatives and Jacobian $\mathbf A(\mathbf x)$, and let $f$ be the RK4 step above. Then $f$ has continuous first partial derivatives and
     $$\mathbf J_f(\mathbf x) = \mathbf I + \frac{\Delta t}6\big(\mathbf K_1 + 2\mathbf K_2 + 2\mathbf K_3 + \mathbf K_4\big),$$
     where
@@ -534,14 +536,15 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    We show that $\mathbf K_i$ is the Jacobian of the stage $\mathbf k_i$, viewed as a function of $\mathbf x$. For $\mathbf k_1 = a(\mathbf x)$ this is the definition of $\mathbf A$. Next, $\mathbf k_2 = a(\mathbf g_2(\mathbf x))$ with $\mathbf g_2(\mathbf x) := \mathbf x + \tfrac{\Delta t}2\mathbf k_1(\mathbf x)$. A partial derivative of a sum is the sum of the partial derivatives, a constant factor comes out, and the Jacobian of $\mathbf x \mapsto \mathbf x$ is $\mathbf I$, so $\mathbf J_{\mathbf g_2} = \mathbf I + \tfrac{\Delta t}2\mathbf K_1$. The chain rule ([Appendix C: Functions of Several Variables](appendix_c_calculus.md)) gives $\mathbf J_{\mathbf k_2}(\mathbf x) = \mathbf A(\mathbf g_2(\mathbf x))\,\mathbf J_{\mathbf g_2}(\mathbf x) = \mathbf K_2$. The same argument with $\mathbf g_3(\mathbf x) := \mathbf x + \tfrac{\Delta t}2\mathbf k_2(\mathbf x)$ and $\mathbf g_4(\mathbf x) := \mathbf x + \Delta t\,\mathbf k_3(\mathbf x)$ gives $\mathbf K_3$ and $\mathbf K_4$. Finally, $f = \mathbf x + \tfrac{\Delta t}6(\mathbf k_1 + 2\mathbf k_2 + 2\mathbf k_3 + \mathbf k_4)$ gives the formula by the same sum and constant-factor rules. Each $\mathbf K_i$ is built from continuous functions by sums, products, and composition, so it is continuous. $\blacksquare$
+        attrs: {class: proof}
+    We show that $\mathbf K_i$ is the Jacobian of the stage $\mathbf k_i$, viewed as a function of $\mathbf x$. For $\mathbf k_1 = a(\mathbf x)$ this is the definition of $\mathbf A$. Next, $\mathbf k_2 = a(\mathbf g_2(\mathbf x))$ with $\mathbf g_2(\mathbf x) := \mathbf x + \tfrac{\Delta t}2\mathbf k_1(\mathbf x)$. A partial derivative of a sum is the sum of the partial derivatives, a constant factor comes out, and the Jacobian of $\mathbf x \mapsto \mathbf x$ is $\mathbf I$, so $\mathbf J_{\mathbf g_2} = \mathbf I + \tfrac{\Delta t}2\mathbf K_1$. The chain rule ([Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables)) gives $\mathbf J_{\mathbf k_2}(\mathbf x) = \mathbf A(\mathbf g_2(\mathbf x))\,\mathbf J_{\mathbf g_2}(\mathbf x) = \mathbf K_2$. The same argument with $\mathbf g_3(\mathbf x) := \mathbf x + \tfrac{\Delta t}2\mathbf k_2(\mathbf x)$ and $\mathbf g_4(\mathbf x) := \mathbf x + \Delta t\,\mathbf k_3(\mathbf x)$ gives $\mathbf K_3$ and $\mathbf K_4$. Finally, $f = \mathbf x + \tfrac{\Delta t}6(\mathbf k_1 + 2\mathbf k_2 + 2\mathbf k_3 + \mathbf k_4)$ gives the formula by the same sum and constant-factor rules. Each $\mathbf K_i$ is built from continuous functions by sums, products, and composition, so it is continuous. $\blacksquare$
     ///
 
     Multiplying out the products shows $\mathbf J_f(\mathbf x) = \mathbf I + \Delta t\,\mathbf A(\mathbf x) + (\text{terms in } \Delta t^2, \Delta t^3, \Delta t^4)$. To first order in $\Delta t$ it is the Jacobian of Euler's step, and many texts use $\mathbf I + \Delta t\,\mathbf A$ as $\mathbf F_k$. We use the exact Jacobian of the step we actually take, so that the covariance prediction matches the state prediction and the numerical check below can verify it to rounding error. For the EKF,
 
     $$\mathbf F_k = \mathbf J_f(\hat{\mathbf x}_{k-1}), \qquad \mathbf H_k = \begin{bmatrix}L\cos\hat\theta_k^- & 0\end{bmatrix}.$$
 
+    <!-- label: ch15-sec-implementation -->
     ### Implementation
 
     The model functions accept either one state of shape `(2,)` or a batch of states of shape `(2, N)`, which the next chapter uses to move many points through $f$ at once.
@@ -551,7 +554,7 @@ def _(mo):
 
 @app.cell
 def pendulum_model(np):
-    # jb: echo=true
+    # jb: editor=true
     PEND_L = 1.0    # rod length L (m)
     GRAV = 9.81     # gravitational acceleration g (m/s^2)
     DAMP_C = 0.1    # damping rate c (1/s)
@@ -623,7 +626,7 @@ def _(mo):
 
 @app.cell
 def ekf_impl(F_pendulum, H_pendulum, f_pendulum, h_pendulum, np):
-    # jb: echo=true
+    # jb: editor=true
     def ekf_predict(x, P, f, F_jac, Q):
         """Predict: x^- = f(x),  P^- = F P F^T + Q with F the Jacobian at x."""
         F = F_jac(x)
@@ -745,6 +748,7 @@ def simulation(DT, PEND_L, f_pendulum, np, pendulum_rhs):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-checking-the-jacobians-numerically -->
     ### Checking the Jacobians Numerically
 
     A wrong Jacobian does not crash an EKF; it quietly makes the covariance wrong. So before trusting a filter, compare every analytic Jacobian with a finite-difference approximation. The central difference
@@ -758,7 +762,7 @@ def _(mo):
 
 @app.cell
 def jacobian_check(F_pendulum, H_pendulum, f_pendulum, h_pendulum, np):
-    # jb: echo=true
+    # jb: editor=true
     def numerical_jacobian(fun, x, eps=1e-6):
         """Central-difference approximation of the Jacobian of fun at x."""
         x = np.asarray(x, dtype=float)
@@ -796,6 +800,7 @@ def _(jacobian_errors, mo, sci):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-results -->
     ### Results
 
     We start the filter at $\hat{\mathbf x}_0 = [0.5, 0.5]^\top$, an error of $0.5$ in each component, with $\mathbf P_0 = \operatorname{diag}(0.5^2, 0.5^2)$, so the initial error is one standard deviation in each component.
@@ -872,6 +877,7 @@ def _(Ps_main, TIMES, mo, np, truth, xs_hat_main):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-what-the-linearized-covariance-misses -->
     ### What the Linearized Covariance Misses
 
     The EKF's covariance prediction is exactly the linearized propagation of the Gaussian explorer, applied at every step. The figure below shows its effect over many steps. It starts from 3000 states drawn from $\mathcal N\big([1, 0]^\top, \operatorname{diag}(0.45^2, 0.45^2)\big)$, moves each through $f$ for 0.6 s and 1.2 s (with $\mathbf Q = \mathbf 0$ to isolate the effect), and compares their sample mean and 95% {term}`confidence ellipse` (black) with what the same number of EKF predict steps computes (red dotted).
@@ -927,8 +933,10 @@ def make_cloud_fig(F_pendulum, IMAGES_DIR, f_pendulum, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-failure-modes -->
     ## Failure Modes
 
+    <!-- label: ch15-sec-large-initial-error -->
     ### Large Initial Error
 
     The measurement $h(\theta) = L\sin\theta$ takes the same value at $\theta$ and at $\pi - \theta$. From one camera reading, a bob below the pivot is indistinguishable from its mirror image above the pivot, and the Jacobian $L\cos\theta$ vanishes at $\theta = \pi/2$ and changes sign beyond it.
@@ -1005,10 +1013,12 @@ def _(mo):
     mo.md(r"""
     With $\sigma_z = 0.05$ m, every initial error that leaves $\hat\theta_0$ below $\pi/2$ converges, even $-1.5$ rad, while errors that put $\hat\theta_0$ beyond $\pi/2$ diverge. The size of the error matters less than which side of the fold it lands on. Larger $\sigma_z$ makes each update more cautious, which helps near the fold but slows convergence everywhere.
 
+    <!-- label: ch15-sec-strong-nonlinearity -->
     ### Strong Nonlinearity
 
     The Gaussian explorer showed that the tangent line describes a wide distribution poorly. In a filter, this shows up as overconfidence. Panel (a) below runs the EKF 50 times from initial estimates drawn from $\mathcal N(\mathbf x_0, \mathbf P_0)$, so that the initial covariance is honest, with $\mathbf P_0 = \sigma_0^2\mathbf I$ for a narrow $\sigma_0 = 0.1$ and a wide $\sigma_0 = 0.6$. It plots the average {term}`normalized estimation error squared` over the runs that converged, with the 95% band of [Chapter 14](ch14_kalman_filters_in_practice.md) for a consistent filter.
 
+    <!-- label: ch15-sec-bad-jacobians -->
     ### Bad Jacobians
 
     Panel (b) repeats the experiment with $\sigma_0 = 0.1$ for two filters: the correct one, and one that reuses the Jacobians of the small-angle (linear) pendulum, replacing $\cos\theta$ by $1$ in both $\mathbf A$ and $\mathbf H$. That is a natural mistake when an existing linear model is "upgraded" to an EKF.
@@ -1165,6 +1175,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-the-iterated-ekf -->
     ### The Iterated EKF
 
     The update linearizes $h$ at the prediction $\hat{\mathbf x}_k^-$, but the update itself moves the estimate, often to where the linearization is more accurate. The **iterated extended Kalman filter** (IEKF) relinearizes there and repeats. Starting from $\mathbf x^{(0)} := \hat{\mathbf x}_k^-$, for $i = 0, 1, 2, \ldots$ it computes
@@ -1180,7 +1191,6 @@ def _(mo):
     The IEKF helps when an accurate measurement passes through a strongly curved $h$. It does nothing for the prediction step, and it cannot resolve an ambiguity like the pendulum's fold: started on the wrong side, Gauss–Newton converges to the wrong minimum.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Most of the EKF's failures trace back to its one approximation, the dropped Taylor remainders; the rest are mistakes in the Jacobians. Guard against both by:
 
     - verifying every Jacobian numerically before running the filter;
@@ -1195,6 +1205,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch15-sec-summary -->
     ## Summary
 
     - A {term}`nonlinear system` has a process function or a measurement function that is not affine. The Kalman filter's derivation relies on affine maps and cannot be applied directly.
@@ -1203,6 +1214,7 @@ def _(mo):
     - The {term}`extended Kalman filter` moves the estimate through $f$ and $h$ and the covariance through their Jacobians at the current estimate. For affine models it is exactly the Kalman filter.
     - On the pendulum, the EKF converges quickly and is consistent when started near the truth. It diverges when the initial estimate lies on the wrong side of the measurement's fold, becomes overconfident when the initial uncertainty is large, and silently loses consistency with wrong Jacobians.
 
+    <!-- label: ch15-sec-whats-next -->
     ## What's Next
 
     The EKF approximates the *function*. [Chapter 16](ch16_unscented_kalman_filter.md) approximates the *distribution* instead: it pushes a few carefully chosen points through the exact nonlinear functions and rebuilds the mean and covariance from them. That **unscented Kalman filter** needs no Jacobians, captures the mean shift that the tangent line misses, and, on the same pendulum, tolerates larger initial uncertainty. The chapter closes with particle filters, which can represent the two-sided ambiguity of the fold that defeats every Gaussian filter.

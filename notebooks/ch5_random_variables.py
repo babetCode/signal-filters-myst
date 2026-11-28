@@ -70,14 +70,13 @@ def _(Path):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Introduction](introduction.md): the bathroom-scale example, the notation $x_k$ (true value) and $z_k$ (measurement), and the definitions of {term}`signal` and {term}`noise`.
     - [Chapter 3](ch3_sets_for_probability.md): {term}`preimages <preimage>` and the lemma that preimages preserve unions, intersections, and complements; {term}`countable` sets, including that $\mathbb Q$ and $\mathbb N \times \mathbb N$ are countable; the Archimedean property and the density of $\mathbb Q$ in $\mathbb R$; {term}`supremum` and {term}`infimum`; {term}`intervals <interval>`.
-    - [Chapter 4](ch4_probability_spaces.md): {term}`probability spaces <probability space>`; the {term}`generated σ-algebra <generated sigma-algebra>` and the {term}`Borel σ-algebra <Borel sigma-algebra>`; monotonicity, finite and countable additivity, the union bound, and continuity from below and above; Lebesgue measure on $[0,1]$; {term}`independent events`; {term}`almost surely`.
-    - [Appendix C: Sequences and Limits](appendix_c_calculus.md) and [Appendix C: Limits of Functions and Continuity](appendix_c_calculus.md): limits, including one-sided limits.
-    - [Appendix C: Series](appendix_c_calculus.md): a series of nonnegative terms, or an absolutely convergent series, may be summed in any order and grouped arbitrarily.
-    - [Appendix C: The Riemann Integral](appendix_c_calculus.md), [Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md) (including substitution), [Appendix C: Exponential and Logarithm](appendix_c_calculus.md), and [Appendix C: Improper Integrals](appendix_c_calculus.md).
-    - [Appendix C: Multiple Integrals](appendix_c_calculus.md): Fubini's theorem and the Gaussian integral $\int_{-\infty}^{\infty} e^{-z^2/2}\,dz = \sqrt{2\pi}$.
+    - [Chapter 4](ch4_probability_spaces.md): {term}`probability spaces <probability space>`; the {term}`generated sigma-algebra` and the {term}`Borel sigma-algebra`; monotonicity, finite and countable additivity, the union bound, and continuity from below and above; Lebesgue measure on $[0,1]$; {term}`independent events`; {term}`almost surely`.
+    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) and [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): limits, including one-sided limits.
+    - [Appendix C: Series](#appc-sec-series): a series of nonnegative terms, or an absolutely convergent series, may be summed in any order and grouped arbitrarily.
+    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (including substitution), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Improper Integrals](#appc-sec-improper-integrals).
+    - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): Fubini's theorem and the Gaussian integral $\int_{-\infty}^{\infty} e^{-z^2/2}\,dz = \sqrt{2\pi}$.
     ///
     """)
     return
@@ -91,7 +90,6 @@ def _(mo):
     [Chapter 4](ch4_probability_spaces.md) assigned probabilities to *events*. Random variables let us ask questions about *numbers* instead ("what is the probability that the noise exceeds 1 lb?"), and they let us describe the answers to all such questions at once with a single object, the *distribution*. By the end of this chapter we can state the standard model behind almost every filter in this book: each measurement is the true value plus independent, normally distributed noise. We also see exactly where that model can fail.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A random variable is a function from outcomes to real numbers such that "the value lies in $B$" is an event for every reasonable set $B$. Its distribution records how likely each range of values is; for any question about $X$ alone, that is all we need to know.
     ///
     """)
@@ -101,11 +99,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-random-variables -->
     ## Random Variables
 
+    <!-- label: ch5-sec-from-outcomes-to-numbers -->
     ### From Outcomes to Numbers
 
-    Toss a fair coin twice. Take the sample space $\Omega = \{HH, HT, TH, TT\}$, the σ-algebra $\mathcal F = \mathcal P(\Omega)$, and $\mathbb P(\{\omega\}) = 1/4$ for each outcome $\omega$. Let $X(\omega)$ be the number of heads in $\omega$:
+    Toss a fair coin twice. Take the sample space $\Omega = \{HH, HT, TH, TT\}$, the $\sigma$-algebra $\mathcal F = \mathcal P(\Omega)$, and $\mathbb P(\{\omega\}) = 1/4$ for each outcome $\omega$. Let $X(\omega)$ be the number of heads in $\omega$:
 
     $$X(HH) = 2, \qquad X(HT) = X(TH) = 1, \qquad X(TT) = 0.$$
 
@@ -115,11 +115,11 @@ def _(mo):
 
     $$\mathcal F_1 := \big\{\emptyset,\ \{HH, HT\},\ \{TH, TT\},\ \Omega\big\},$$
 
-    which is a σ-algebra (it contains $\Omega$ and is closed under complements and unions). The number of heads is not determined by the first toss alone, and indeed $X^{-1}[\{2\}] = \{HH\} \notin \mathcal F_1$. By contrast, the function $Y$ that equals $1$ if the first toss is heads and $0$ otherwise has preimages $\emptyset$, $\{HH, HT\}$, $\{TH, TT\}$, and $\Omega$, all of which are in $\mathcal F_1$. Relative to $\mathcal F_1$, $Y$ is a legitimate random quantity and $X$ is not.
+    which is a $\sigma$-algebra (it contains $\Omega$ and is closed under complements and unions). The number of heads is not determined by the first toss alone, and indeed $X^{-1}[\{2\}] = \{HH\} \notin \mathcal F_1$. By contrast, the function $Y$ that equals $1$ if the first toss is heads and $0$ otherwise has preimages $\emptyset$, $\{HH, HT\}$, $\{TH, TT\}$, and $\Omega$, all of which are in $\mathcal F_1$. Relative to $\mathcal F_1$, $Y$ is a legitimate random quantity and $X$ is not.
 
     The bathroom scale has the same structure. An outcome $\omega \in \Omega$ stands for everything that determines one reading: how the person shifted, the thermal noise in the load cell, and so on. We never need to list $\Omega$ explicitly. What we need is the function $V : \Omega \to \mathbb R$ giving the noise $V(\omega)$ in pounds, together with a guarantee that questions like "is the noise between $-1$ and $1$ lb?" (the set $V^{-1}\big[[-1, 1]\big]$) are events.
 
-    Which sets $B \subseteq \mathbb R$ should we be allowed to ask about? At the very least, every {term}`interval`. Events are closed under complements and countable unions, so once every interval is allowed, so is every set in the σ-algebra generated by the intervals. That is the {term}`Borel σ-algebra <Borel sigma-algebra>` of [Chapter 4](ch4_probability_spaces.md), which we write $\mathcal B(\mathbb R)$; its members are the *Borel sets*. The following lemma shows that a much smaller collection of intervals already generates it. Here $\sigma(\mathcal C)$ denotes the {term}`σ-algebra generated by <generated sigma-algebra>` a collection $\mathcal C$ of subsets of $\mathbb R$, the smallest σ-algebra on $\mathbb R$ containing $\mathcal C$.
+    Which sets $B \subseteq \mathbb R$ should we be allowed to ask about? At the very least, every {term}`interval`. Events are closed under complements and countable unions, so once every interval is allowed, so is every set in the $\sigma$-algebra generated by the intervals. That is the {term}`Borel sigma-algebra` of [Chapter 4](ch4_probability_spaces.md), which we write $\mathcal B(\mathbb R)$; its members are the *Borel sets*. The following lemma shows that a much smaller collection of intervals already generates it. Here $\sigma(\mathcal C)$ denotes the {term}`sigma-algebra generated by <generated sigma-algebra>` a collection $\mathcal C$ of subsets of $\mathbb R$, the smallest $\sigma$-algebra on $\mathbb R$ containing $\mathcal C$.
     """)
     return
 
@@ -127,29 +127,29 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Rays Generate the Borel Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rays Generate the Borel Sets)**
+        attrs: {class: lemma, id: ch5-lem-rays-generate-the-borel-sets}
     $\mathcal B(\mathbb R) = \sigma\big(\{(-\infty, b] : b \in \mathbb R\}\big)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathcal G := \sigma\big(\{(-\infty, b] : b \in \mathbb R\}\big)$.
 
-    ($\mathcal G \subseteq \mathcal B(\mathbb R)$.) Every ray $(-\infty, b]$ is an interval, so it belongs to $\mathcal B(\mathbb R)$. Thus $\mathcal B(\mathbb R)$ is a σ-algebra containing all the rays, and $\mathcal G$ is the smallest such σ-algebra, so $\mathcal G \subseteq \mathcal B(\mathbb R)$.
+    ($\mathcal G \subseteq \mathcal B(\mathbb R)$.) Every ray $(-\infty, b]$ is an interval, so it belongs to $\mathcal B(\mathbb R)$. Thus $\mathcal B(\mathbb R)$ is a $\sigma$-algebra containing all the rays, and $\mathcal G$ is the smallest such $\sigma$-algebra, so $\mathcal G \subseteq \mathcal B(\mathbb R)$.
 
-    ($\mathcal B(\mathbb R) \subseteq \mathcal G$.) It suffices to show that every interval is in $\mathcal G$, because $\mathcal B(\mathbb R)$ is the smallest σ-algebra containing the intervals. Fix $a, b \in \mathbb R$.
+    ($\mathcal B(\mathbb R) \subseteq \mathcal G$.) It suffices to show that every interval is in $\mathcal G$, because $\mathcal B(\mathbb R)$ is the smallest $\sigma$-algebra containing the intervals. Fix $a, b \in \mathbb R$.
 
     - $(-\infty, b] \in \mathcal G$ by definition.
     - $(-\infty, b) = \bigcup_{n=1}^{\infty} (-\infty, b - \tfrac1n]$. Each set on the right is contained in $(-\infty, b)$. Conversely, if $x < b$, the Archimedean property gives an $n$ with $\tfrac1n < b - x$, so $x \in (-\infty, b - \tfrac1n]$. A countable union of members of $\mathcal G$ is in $\mathcal G$.
     - $(a, \infty) = \mathbb R \setminus (-\infty, a]$ and $[a, \infty) = \mathbb R \setminus (-\infty, a)$ are complements of members of $\mathcal G$.
-    - Every bounded interval is the intersection of one of the two left-unbounded rays above with one of the two right-unbounded rays; for example $(a, b] = (a, \infty) \cap (-\infty, b]$ and $[a, b) = [a, \infty) \cap (-\infty, b)$. A σ-algebra is closed under finite intersections, by De Morgan's laws.
+    - Every bounded interval is the intersection of one of the two left-unbounded rays above with one of the two right-unbounded rays; for example $(a, b] = (a, \infty) \cap (-\infty, b]$ and $[a, b) = [a, \infty) \cap (-\infty, b)$. A $\sigma$-algebra is closed under finite intersections, by De Morgan's laws.
     - $\mathbb R = \bigcup_{n=1}^\infty (-\infty, n]$ and $\emptyset = \mathbb R \setminus \mathbb R$.
 
     So every interval is in $\mathcal G$. $\blacksquare$
     ///
 
-    Some books generate $\mathcal B(\mathbb R)$ from the open subsets of $\mathbb R$ instead of the intervals. This gives the same σ-algebra, because every open set is a countable union of open intervals with rational endpoints ([Wikipedia: Borel set](https://en.wikipedia.org/wiki/Borel_set)).
+    Some books generate $\mathcal B(\mathbb R)$ from the open subsets of $\mathbb R$ instead of the intervals. This gives the same $\sigma$-algebra, because every open set is a countable union of open intervals with rational endpoints ([Wikipedia: Borel set](https://en.wikipedia.org/wiki/Borel_set)).
     """)
     return
 
@@ -157,10 +157,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-definition -->
     ### Definition
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Random variable**</u>
 
     Let $(\Omega, \mathcal F, \mathbb P)$ be a {term}`probability space`. A random variable on it is a {term}`function` $X : \Omega \to \mathbb R$ such that $X^{-1}[B] \in \mathcal F$ for every Borel set $B \in \mathcal B(\mathbb R)$.
@@ -176,25 +176,25 @@ def _(mo):
 
     Checking the definition for every Borel set would be impractical. The next lemma reduces it to the rays.
 
-    /// important | 📐 **Lemma (Measurability Test)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Measurability Test)**
+        attrs: {class: lemma, id: ch5-lem-measurability-test}
     Let $(\Omega, \mathcal F, \mathbb P)$ be a probability space and $X : \Omega \to \mathbb R$ a function. Then $X$ is a random variable if and only if $\{X \le b\} \in \mathcal F$ for every $b \in \mathbb R$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Each ray $(-\infty, b]$ is a Borel set.
 
-    ($\Leftarrow$) Let $\mathcal A := \{B \subseteq \mathbb R : X^{-1}[B] \in \mathcal F\}$, the collection of "good" sets. We show $\mathcal A$ is a σ-algebra on $\mathbb R$, using the lemma of [Chapter 3](ch3_sets_for_probability.md) that preimages preserve complements and unions.
+    ($\Leftarrow$) Let $\mathcal A := \{B \subseteq \mathbb R : X^{-1}[B] \in \mathcal F\}$, the collection of "good" sets. We show $\mathcal A$ is a $\sigma$-algebra on $\mathbb R$, using the lemma of [Chapter 3](ch3_sets_for_probability.md) that preimages preserve complements and unions.
 
     - $\mathbb R \in \mathcal A$, since $X^{-1}[\mathbb R] = \Omega \in \mathcal F$.
     - If $B \in \mathcal A$, then $X^{-1}[\mathbb R \setminus B] = \Omega \setminus X^{-1}[B] \in \mathcal F$, so $\mathbb R \setminus B \in \mathcal A$.
     - If $B_1, B_2, \ldots \in \mathcal A$, then $X^{-1}\big[\bigcup_n B_n\big] = \bigcup_n X^{-1}[B_n] \in \mathcal F$, so $\bigcup_n B_n \in \mathcal A$.
 
-    By hypothesis $\mathcal A$ contains every ray $(-\infty, b]$. Since $\mathcal A$ is a σ-algebra, it contains the σ-algebra they generate, which is $\mathcal B(\mathbb R)$ by the previous lemma. So $X^{-1}[B] \in \mathcal F$ for every Borel set $B$. $\blacksquare$
+    By hypothesis $\mathcal A$ contains every ray $(-\infty, b]$. Since $\mathcal A$ is a $\sigma$-algebra, it contains the $\sigma$-algebra they generate, which is $\mathcal B(\mathbb R)$ by the previous lemma. So $X^{-1}[B] \in \mathcal F$ for every Borel set $B$. $\blacksquare$
     ///
 
-    The proof never used $\mathbb P$, only $\mathcal F$. The same argument works for any function between two sets each equipped with a σ-algebra, a fact we use again below.
+    The proof never used $\mathbb P$, only $\mathcal F$. The same argument works for any function between two sets each equipped with a $\sigma$-algebra, a fact we use again below.
     """)
     return
 
@@ -214,17 +214,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-new-random-variables-from-old -->
     ### New Random Variables from Old
 
     Filters add, scale, and combine measurements, so we need to know that these operations produce random variables again. Call a function $g : \mathbb R \to \mathbb R$ *Borel* iff $g^{-1}[B] \in \mathcal B(\mathbb R)$ for every $B \in \mathcal B(\mathbb R)$. For a random variable $X$ we write $g(X)$ for the composition $g \circ X : \Omega \to \mathbb R$.
 
-    /// important | 📐 **Theorem (Building Random Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Building Random Variables)**
+        attrs: {class: theorem, id: ch5-thm-building-random-variables}
     Let $X$ and $Y$ be random variables on $(\Omega, \mathcal F, \mathbb P)$, let $a, b \in \mathbb R$, and let $g : \mathbb R \to \mathbb R$ be Borel. Then $aX + b$, $X + Y$, $X^2$, $XY$, and $g(X)$ are random variables. Every continuous $g$ is Borel.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     We use the measurability test throughout. Fix $c \in \mathbb R$.
 
     - $aX + b$: if $a > 0$, then $\{aX + b \le c\} = \{X \le \tfrac{c-b}{a}\} \in \mathcal F$. If $a < 0$, then $\{aX + b \le c\} = \{X \ge \tfrac{c-b}{a}\} = X^{-1}\big[[\tfrac{c-b}{a}, \infty)\big] \in \mathcal F$, since intervals are Borel. If $a = 0$, then $aX + b$ is constant.
@@ -246,24 +247,24 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-distributions -->
     ## Distributions
 
     A random variable assigns a probability to every statement "$X \in B$." Collecting those probabilities into one function gives the distribution.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Distribution**</u>
 
     The distribution of a {term}`random variable` $X$ on $(\Omega, \mathcal F, \mathbb P)$ is the function $\mathbb P_X : \mathcal B(\mathbb R) \to [0, 1]$ defined by $\mathbb P_X(B) := \mathbb P(X \in B)$.
     ///
 
-    /// important | 📐 **Theorem (Distributions Are Probability Measures)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Distributions Are Probability Measures)**
+        attrs: {class: theorem, id: ch5-thm-distributions-are-probability-measures}
     For every random variable $X$, $\mathbb P_X$ is a {term}`probability measure` on $(\mathbb R, \mathcal B(\mathbb R))$. Hence $(\mathbb R, \mathcal B(\mathbb R), \mathbb P_X)$ is a probability space.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\mathbb P_X(B) = \mathbb P(X^{-1}[B]) \ge 0$ for every Borel $B$, and $\mathbb P_X(\mathbb R) = \mathbb P(\Omega) = 1$. Let $B_1, B_2, \ldots$ be pairwise disjoint Borel sets. Their preimages are pairwise disjoint: if $\omega \in X^{-1}[B_i] \cap X^{-1}[B_j]$ with $i \ne j$, then $X(\omega) \in B_i \cap B_j = \emptyset$, which is impossible. Since preimages preserve unions, countable additivity of $\mathbb P$ gives
     $$\mathbb P_X\Big(\bigcup_n B_n\Big) = \mathbb P\Big(\bigcup_n X^{-1}[B_n]\Big) = \sum_n \mathbb P(X^{-1}[B_n]) = \sum_n \mathbb P_X(B_n). \qquad \blacksquare$$
     ///
@@ -275,7 +276,6 @@ def _(mo):
     In the coin example, $\mathbb P_X(\{0\}) = \tfrac14$, $\mathbb P_X(\{1\}) = \tfrac12$, $\mathbb P_X(\{2\}) = \tfrac14$, and $\mathbb P_X(B)$ is the sum of these numbers over the points of $\{0, 1, 2\}$ that lie in $B$. The number of *tails*, $X'(\omega) := 2 - X(\omega)$, has exactly the same distribution, yet $X' \ne X$ (for instance $X'(HH) = 0$). Identically distributed random variables need not be equal; they only agree on how likely each range of values is.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Any probability that involves only $X$ is determined by $\mathbb P_X$. Once the distribution is known, the sample space fades into the background, which is why filtering texts rarely mention $\Omega$: they specify distributions.
     ///
     """)
@@ -285,19 +285,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-cumulative-distribution-functions -->
     ## Cumulative Distribution Functions
 
     A distribution is a function on *sets*, which is awkward to write down or plot. Because the rays generate $\mathcal B(\mathbb R)$, it is natural to record only the probabilities of the rays.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Cumulative distribution function**</u>
 
     The cumulative distribution function (CDF) of a {term}`random variable` $X$ is the function $F_X : \mathbb R \to [0, 1]$ defined by $F_X(x) := \mathbb P(X \le x)$.
     ///
 
-    /// important | 📐 **Theorem (Properties of CDFs)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of CDFs)**
+        attrs: {class: theorem, id: ch5-thm-properties-of-cdfs}
     For every random variable $X$:
 
     1. $F_X$ is nondecreasing: $x \le y$ implies $F_X(x) \le F_X(y)$.
@@ -308,7 +308,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $F := F_X$. All facts about $\mathbb P$ used here are from [Chapter 4](ch4_probability_spaces.md).
 
     1. If $x \le y$ then $\{X \le x\} \subseteq \{X \le y\}$, so monotonicity of $\mathbb P$ gives $F(x) \le F(y)$.
@@ -372,27 +372,27 @@ def _(mo):
     mo.md(r"""
     The CDF loses nothing: it determines the whole distribution. The proof needs a tool from measure theory, so we only state it.
 
-    /// important | 📐 **Theorem (A CDF Determines Its Distribution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (A CDF Determines Its Distribution)**
+        attrs: {class: theorem, id: ch5-thm-a-cdf-determines-its-distribution}
     If $X$ and $Y$ are random variables with $F_X = F_Y$, then $\mathbb P_X = \mathbb P_Y$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Not given here. $F_X = F_Y$ says that the probability measures $\mathbb P_X$ and $\mathbb P_Y$ agree on every ray. The rays form a collection closed under finite intersections ($(-\infty, a] \cap (-\infty, b] = (-\infty, \min(a,b)]$), and they generate $\mathcal B(\mathbb R)$. Dynkin's π-λ theorem says that two probability measures that agree on such a collection agree on the σ-algebra it generates ([Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
+        attrs: {class: proof}
+    Not given here. $F_X = F_Y$ says that the probability measures $\mathbb P_X$ and $\mathbb P_Y$ agree on every ray. The rays form a collection closed under finite intersections ($(-\infty, a] \cap (-\infty, b] = (-\infty, \min(a,b)]$), and they generate $\mathcal B(\mathbb R)$. Dynkin's $\pi$-$\lambda$ theorem says that two probability measures that agree on such a collection agree on the $\sigma$-algebra it generates ([Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
     ///
 
     Conversely, properties 1 to 3 are not just necessary; they are exactly what it takes to be a CDF. The proof builds the random variable explicitly from the uniformly random number $U$.
 
-    /// important | 📐 **Theorem (Every Such Function Is a CDF)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Every Such Function Is a CDF)**
+        attrs: {class: theorem, id: ch5-thm-every-such-function-is-a-cdf}
     Let $F : \mathbb R \to [0, 1]$ be nondecreasing and right-continuous, with $\lim_{x \to -\infty} F(x) = 0$ and $\lim_{x \to \infty} F(x) = 1$. For $u \in (0, 1)$ define
     $$G(u) := \inf\{x \in \mathbb R : F(x) \ge u\}.$$
     On the uniform probability space $([0,1], \text{Borel sets}, \lambda)$, let $X(\omega) := G(\omega)$ for $0 < \omega < 1$ and $X(0) := X(1) := 0$. Then $X$ is a random variable and $F_X = F$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *$G$ is well defined.* Fix $u \in (0, 1)$ and let $S_u := \{x \in \mathbb R : F(x) \ge u\}$. Since $F(x) \to 1 > u$ as $x \to \infty$, some $x$ has $F(x) \ge u$, so $S_u \ne \emptyset$. Since $F(x) \to 0 < u$ as $x \to -\infty$, there is an $x_0$ with $F(x) < u$ for all $x \le x_0$, so $x_0$ is a lower bound of $S_u$. By the completeness of $\mathbb R$ ([Chapter 3](ch3_sets_for_probability.md)), $S_u$ has an {term}`infimum`.
 
     *Key equivalence.* For $u \in (0, 1)$ and $x \in \mathbb R$: $G(u) \le x \iff u \le F(x)$.
@@ -406,7 +406,6 @@ def _(mo):
     The function $G$ is called the *quantile function* of $F$; when $F$ is continuous and strictly increasing it is simply the inverse function $F^{-1}$. Computers generate pseudo-random numbers that imitate $U$, and the theorem is one standard way to turn them into samples with any desired distribution ([Wikipedia: Inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling)).
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A function $F : \mathbb R \to [0,1]$ is the CDF of some random variable if and only if it is nondecreasing, right-continuous, and tends to $0$ at $-\infty$ and $1$ at $+\infty$; and the CDF determines the distribution. So we may specify a distribution simply by writing down such a function, and a random variable with that distribution is guaranteed to exist.
     ///
     """)
@@ -416,12 +415,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-discrete-random-variables -->
     ## Discrete Random Variables
 
-    Some random variables take only a list of values, like the number of heads. To add up probabilities over such a list we need sums over countable sets. Recall from [Chapter 3](ch3_sets_for_probability.md) that a {term}`countable` set is one that injects into $\mathbb N$; finite sets are countable. For a countable set $C$ and numbers $a_c \ge 0$, $\sum_{c \in C} a_c$ means $\sum_{n} a_{c_n}$ for an enumeration $c_1, c_2, \ldots$ of $C$. By [Appendix C: Series](appendix_c_calculus.md), the value (possibly $\infty$) does not depend on the enumeration, and the terms may be grouped arbitrarily. The same holds for real $a_c$ of either sign when $\sum_{c \in C} |a_c| < \infty$. If $C$ is finite, the sum is an ordinary finite sum.
+    Some random variables take only a list of values, like the number of heads. To add up probabilities over such a list we need sums over countable sets. Recall from [Chapter 3](ch3_sets_for_probability.md) that a {term}`countable` set is one that injects into $\mathbb N$; finite sets are countable. For a countable set $C$ and numbers $a_c \ge 0$, $\sum_{c \in C} a_c$ means $\sum_{n} a_{c_n}$ for an enumeration $c_1, c_2, \ldots$ of $C$. By [Appendix C: Series](#appc-sec-series), the value (possibly $\infty$) does not depend on the enumeration, and the terms may be grouped arbitrarily. The same holds for real $a_c$ of either sign when $\sum_{c \in C} |a_c| < \infty$. If $C$ is finite, the sum is an ordinary finite sum.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Discrete random variable**</u>
 
     A {term}`random variable` $X$ is discrete iff there is a {term}`countable` set $C \subseteq \mathbb R$ with $\mathbb P(X \in C) = 1$.
@@ -430,14 +429,13 @@ def _(mo):
     (A countable set $C$ is a Borel set, being a countable union of the one-point intervals $[c, c]$, so $\mathbb P(X \in C)$ makes sense.)
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Probability mass function**</u>
 
     The probability mass function (PMF) of a {term}`random variable` $X$ is the function $p_X : \mathbb R \to [0, 1]$ defined by $p_X(x) := \mathbb P(X = x)$.
     ///
 
-    /// important | 📐 **Theorem (A PMF Determines a Discrete Distribution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (A PMF Determines a Discrete Distribution)**
+        attrs: {class: theorem, id: ch5-thm-a-pmf-determines-a-discrete-distribution}
     Let $X$ be discrete with $\mathbb P(X \in C) = 1$ for a countable set $C$. Then
 
     1. $\mathbb P(X \in B) = \sum_{x \in B \cap C} p_X(x)$ for every Borel set $B$;
@@ -446,7 +444,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\{X \in B\}$ is the disjoint union of $\{X \in B \cap C\}$ and $\{X \in B \setminus C\}$. The second is contained in $\{X \notin C\}$, which has probability $0$, so it has probability $0$ by monotonicity. The first is the disjoint union of the countably many events $\{X = x\}$, $x \in B \cap C$, so countable additivity gives part 1. Part 2 is part 1 with $B = \mathbb R$. For part 3, $\{X = x\} \subseteq \{X \notin C\}$ when $x \notin C$. $\blacksquare$
     ///
 
@@ -462,19 +460,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-continuous-random-variables -->
     ## Continuous Random Variables
 
     For the uniformly random number $U$, every single value has probability zero: $\mathbb P(U = x) = \lambda([x, x]) = 0$. Its PMF is identically $0$ and tells us nothing. Instead, probabilities of intervals are *areas*: $\mathbb P(a < U \le b) = b - a = \int_a^b 1\,dt$ for $0 \le a < b \le 1$. Random variables whose probabilities are areas under a curve are called continuous.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Probability density function**</u>
 
     A probability density function (PDF) is a function $f : \mathbb R \to [0, \infty)$ such that the (possibly {term}`improper <improper integral>`) {term}`Riemann integral` $\int_{-\infty}^{x} f(t)\,dt$ exists for every $x \in \mathbb R$ and $\int_{-\infty}^{\infty} f(t)\,dt = 1$. A PDF $f$ is a *density of* a {term}`random variable` $X$ iff $F_X(x) = \int_{-\infty}^{x} f(t)\,dt$ for every $x \in \mathbb R$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Continuous random variable**</u>
 
     A {term}`random variable` $X$ is continuous iff some {term}`probability density function` is a density of $X$. We then write $f_X$ for a chosen density of $X$.
@@ -482,8 +479,8 @@ def _(mo):
 
     "Continuous" refers to the existence of a density, not to continuity of $X$ as a function on $\Omega$ (which would not even make sense, since $\Omega$ has no notion of nearness). Some books say *absolutely continuous*.
 
-    /// important | 📐 **Theorem (Densities Give Interval Probabilities)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Densities Give Interval Probabilities)**
+        attrs: {class: theorem, id: ch5-thm-densities-give-interval-probabilities}
     Let $X$ have density $f_X$. Then:
 
     1. $\mathbb P(a < X \le b) = \int_a^b f_X(t)\,dt$ whenever $a < b$.
@@ -492,9 +489,9 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. By property 4 of CDFs, $\mathbb P(a < X \le b) = \int_{-\infty}^b f_X - \int_{-\infty}^a f_X = \int_a^b f_X$, by additivity of the integral over adjacent intervals.
-    2. A (possibly improper) integral is a continuous function of its upper limit ([Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md), [Appendix C: Improper Integrals](appendix_c_calculus.md)), so $F_X$ is continuous. By property 5 of CDFs, $\mathbb P(X = x) = F_X(x) - F_X(x^-) = 0$. The equalities follow by finite additivity, adding or removing endpoints of probability $0$.
+    2. A (possibly improper) integral is a continuous function of its upper limit ([Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus), [Appendix C: Improper Integrals](#appc-sec-improper-integrals)), so $F_X$ is continuous. By property 5 of CDFs, $\mathbb P(X = x) = F_X(x) - F_X(x^-) = 0$. The equalities follow by finite additivity, adding or removing endpoints of probability $0$.
     3. This is the first part of the fundamental theorem of calculus applied to $F_X(x) = \int_{-\infty}^x f_X$. $\blacksquare$
     ///
 
@@ -512,12 +509,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-the-uniform-and-normal-distributions -->
     ## The Uniform and Normal Distributions
 
     Two distributions do almost all the work in this book. Because a CDF determines its distribution, we can name a distribution by giving a density.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Uniform distribution**</u>
 
     Let $a < b$ be real numbers. A {term}`random variable` $X$ has the uniform distribution on $[a, b]$, written $X \sim \mathcal U(a, b)$, iff the function
@@ -528,7 +525,6 @@ def _(mo):
     The function $f$ is a PDF: it is nonnegative, Riemann integrable on every bounded interval, and $\int_{-\infty}^\infty f = (b-a) \cdot \frac{1}{b-a} = 1$. Integrating it gives the CDF: $F_X(x) = 0$ for $x < a$, $F_X(x) = \frac{x - a}{b - a}$ for $a \le x \le b$, and $F_X(x) = 1$ for $x > b$. For $a \le c < d \le b$, $\mathbb P(c < X \le d) = \frac{d - c}{b - a}$: subintervals of equal length are equally likely, which is what "uniform" means. The random variable $U(\omega) = \omega$ on Chapter 4's uniform probability space satisfies $U \sim \mathcal U(0, 1)$, and the theorem on every CDF guarantees $\mathcal U(a, b)$ exists for all $a < b$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Normal distribution**</u>
 
     Let $\mu \in \mathbb R$ and $\sigma > 0$. A {term}`random variable` $X$ has the normal (or Gaussian) distribution with parameters $\mu$ and $\sigma^2$, written $X \sim \mathcal N(\mu, \sigma^2)$, iff the function
@@ -536,16 +532,16 @@ def _(mo):
     is a density of $X$. The case $\mathcal N(0, 1)$ is the *standard* normal distribution; its density and CDF are written $\varphi := \varphi_{0,1}$ and $\Phi$.
     ///
 
-    /// important | 📐 **Theorem (The Normal Density Is a PDF)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Normal Density Is a PDF)**
+        attrs: {class: theorem, id: ch5-thm-the-normal-density-is-a-pdf}
     For every $\mu \in \mathbb R$ and $\sigma > 0$, $\varphi_{\mu,\sigma}$ is a probability density function.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\varphi_{\mu,\sigma}$ is positive and continuous (the {term}`exponential function` is continuous), so it is Riemann integrable on every bounded interval. Substituting $x = \mu + \sigma z$, $dx = \sigma\,dz$ on $[\mu - \sigma M, \mu + \sigma M]$ gives
     $$\int_{\mu - \sigma M}^{\mu + \sigma M} \varphi_{\mu,\sigma}(x)\,dx = \frac{1}{\sqrt{2\pi}} \int_{-M}^{M} e^{-z^2/2}\,dz.$$
-    As $M \to \infty$ the right side tends to $\frac{1}{\sqrt{2\pi}} \cdot \sqrt{2\pi} = 1$ by the Gaussian integral ([Appendix C: Multiple Integrals](appendix_c_calculus.md)), which includes the convergence of the improper integral. Since the integrand is positive, the improper integral over $\mathbb R$ exists and equals this limit. $\blacksquare$
+    As $M \to \infty$ the right side tends to $\frac{1}{\sqrt{2\pi}} \cdot \sqrt{2\pi} = 1$ by the Gaussian integral ([Appendix C: Multiple Integrals](#appc-sec-multiple-integrals)), which includes the convergence of the improper integral. Since the integrand is positive, the improper integral over $\mathbb R$ exists and equals this limit. $\blacksquare$
     ///
 
     The parameter $\mu$ is the center of symmetry, $\varphi_{\mu,\sigma}(\mu + t) = \varphi_{\mu,\sigma}(\mu - t)$, and $\sigma$ sets the width: the next section shows that changing $\sigma$ simply stretches the bell horizontally. Chapter 6 shows that $\mu$ is the expected value of $X$ and $\sigma^2$ its variance; until then they are just parameters. The CDF $\Phi$ has no formula in terms of elementary functions and is computed numerically ([Wikipedia: Error function](https://en.wikipedia.org/wiki/Error_function)).
@@ -558,19 +554,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-functions-of-a-random-variable -->
     ## Functions of a Random Variable
 
     A scale that reports in kilograms instead of pounds, or that adds a calibration offset, applies an affine map $x \mapsto ax + b$ to its readings. The next theorem says how densities transform under such maps.
 
-    /// important | 📐 **Theorem (Density of $aX + b$)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Density of $aX + b$)**
+        attrs: {class: theorem, id: ch5-thm-density-of-ax-b}
     Let $X$ have density $f_X$, and let $a, b \in \mathbb R$ with $a \ne 0$. Then $Y := aX + b$ is continuous with density
     $$f_Y(y) = \frac{1}{|a|}\, f_X\!\Big(\frac{y - b}{a}\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    $Y$ is a random variable by the theorem on building random variables. Fix $y \in \mathbb R$ and put $t_y := \frac{y - b}{a}$. We use the substitution $t = \frac{s - b}{a}$, $dt = \frac{ds}{a}$ ([Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md)), applied on bounded intervals and then extended to the improper integrals by letting the infinite endpoint go to infinity.
+        attrs: {class: proof}
+    $Y$ is a random variable by the theorem on building random variables. Fix $y \in \mathbb R$ and put $t_y := \frac{y - b}{a}$. We use the substitution $t = \frac{s - b}{a}$, $dt = \frac{ds}{a}$ ([Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus)), applied on bounded intervals and then extended to the improper integrals by letting the infinite endpoint go to infinity.
 
     *Case $a > 0$.* $\{Y \le y\} = \{X \le t_y\}$, so
     $$F_Y(y) = \int_{-\infty}^{t_y} f_X(t)\,dt = \int_{-\infty}^{y} f_X\!\Big(\frac{s - b}{a}\Big) \frac{1}{a}\,ds.$$
@@ -582,8 +579,8 @@ def _(mo):
     In both cases $F_Y(y) = \int_{-\infty}^y f_Y$ for every $y$. Finally $f_Y \ge 0$, and $\int_{-\infty}^\infty f_Y = \lim_{y \to \infty} F_Y(y) = 1$ by property 3 of CDFs, so $f_Y$ is a PDF. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Affine Maps of Normal and Uniform Random Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Affine Maps of Normal and Uniform Random Variables)**
+        attrs: {class: corollary, id: ch5-cor-affine-maps-of-normal-and-uniform-random-variables}
     Let $a, b \in \mathbb R$ with $a \ne 0$.
 
     1. If $X \sim \mathcal N(\mu, \sigma^2)$, then $aX + b \sim \mathcal N(a\mu + b, a^2\sigma^2)$.
@@ -592,7 +589,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. By the theorem,
     $$f_{aX+b}(y) = \frac{1}{|a|} \cdot \frac{1}{\sigma\sqrt{2\pi}} \exp\!\Big(-\frac{\big(\frac{y-b}{a} - \mu\big)^2}{2\sigma^2}\Big) = \frac{1}{|a|\sigma\sqrt{2\pi}} \exp\!\Big(-\frac{\big(y - (a\mu + b)\big)^2}{2a^2\sigma^2}\Big),$$
     which is $\varphi_{a\mu + b,\, |a|\sigma}(y)$.
@@ -609,7 +606,7 @@ def _(mo):
 def _(math, mo):
     _lines = [
         r"| $k$ | $\mathbb P(\lvert X - \mu\rvert \le k\sigma)$ | $\mathbb P(\lvert X - \mu\rvert > k\sigma)$ |",
-        "|---|---|---|",
+        "|:---|:---:|:---:|",
     ]
     for _k in (1, 2, 3, 5):
         _p = math.erf(_k / math.sqrt(2))
@@ -627,6 +624,7 @@ def _(math, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-quantization-noise -->
     ### Quantization Noise
 
     A digital scale cannot display every real number. Suppose it shows the weight rounded to the nearest multiple of a resolution $\Delta > 0$, for example $\Delta = 0.1$ lb. By the Archimedean property ([Chapter 3](ch3_sets_for_probability.md)), each $y \in \mathbb R$ lies in exactly one interval $[n, n+1)$ with $n \in \mathbb Z$; write $\lfloor y \rfloor := n$. Define the rounding function and its *cells*
@@ -635,15 +633,15 @@ def _(mo):
 
     A common modeling assumption is that $E \sim \mathcal U(-\tfrac\Delta2, \tfrac\Delta2)$. Call a density $f$ *unimodal* iff there is an $m \in \mathbb R$ such that $f$ is nondecreasing on $(-\infty, m]$ and nonincreasing on $[m, \infty)$. The following theorem says when the assumption is justified.
 
-    /// important | 📐 **Theorem (Quantization Error Is Nearly Uniform)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Quantization Error Is Nearly Uniform)**
+        attrs: {class: theorem, id: ch5-thm-quantization-error-is-nearly-uniform}
     Let $X$ have a unimodal density $f$ bounded by $M$. Then for all $-\tfrac\Delta2 \le e_1 < e_2 \le \tfrac\Delta2$,
     $$\Big|\, \mathbb P(e_1 < E \le e_2) - \frac{e_2 - e_1}{\Delta} \,\Big| \le 3M\Delta \cdot \frac{e_2 - e_1}{\Delta}.$$
     That is, every interval probability of $E$ is within a relative error $3M\Delta$ of the corresponding probability under $\mathcal U(-\tfrac\Delta2, \tfrac\Delta2)$. If $X \sim \mathcal N(\mu, \sigma^2)$ for any $\mu$, the relative error is at most $3\Delta/(\sigma\sqrt{2\pi}) < 1.2\,\Delta/\sigma$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\ell := e_2 - e_1$. On the event $\{X \in C_j\}$ we have $E = j\Delta - X$, so
     $$\{e_1 < E \le e_2\} \cap \{X \in C_j\} = \{X \in I_j\}, \qquad I_j := [\,j\Delta - e_2,\ j\Delta - e_1),$$
     an interval of length $\ell$ contained in $C_j$ (because $-\tfrac\Delta2 \le e_1 < e_2 \le \tfrac\Delta2$). The cells partition $\mathbb R$, so countable additivity gives
@@ -738,24 +736,24 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-joint-distributions -->
     ## Joint Distributions
 
     Filters combine several random quantities: consecutive readings $Z_1, Z_2, \ldots$, or (from Chapter 7 on) a prediction and a measurement. Questions such as "are both of the first two readings above 156 lb?" involve several random variables at once, so we need probabilities of sets in $\mathbb R^n$, the set of $n$-tuples of real numbers (the {term}`Cartesian product` of $n$ copies of $\mathbb R$).
 
-    A *box* in $\mathbb R^n$ is a product $I_1 \times \cdots \times I_n$ of intervals. The *Borel σ-algebra* of $\mathbb R^n$ is $\mathcal B(\mathbb R^n) := \sigma(\{\text{boxes in } \mathbb R^n\})$; for $n = 1$ it is $\mathcal B(\mathbb R)$. For random variables $X_1, \ldots, X_n$ on the same probability space, write $(X_1, \ldots, X_n)$ for the function $\Omega \to \mathbb R^n$, $\omega \mapsto (X_1(\omega), \ldots, X_n(\omega))$.
+    A *box* in $\mathbb R^n$ is a product $I_1 \times \cdots \times I_n$ of intervals. The *Borel $\sigma$-algebra* of $\mathbb R^n$ is $\mathcal B(\mathbb R^n) := \sigma(\{\text{boxes in } \mathbb R^n\})$; for $n = 1$ it is $\mathcal B(\mathbb R)$. For random variables $X_1, \ldots, X_n$ on the same probability space, write $(X_1, \ldots, X_n)$ for the function $\Omega \to \mathbb R^n$, $\omega \mapsto (X_1(\omega), \ldots, X_n(\omega))$.
 
-    /// important | 📐 **Lemma (Vectors of Random Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Vectors of Random Variables)**
+        attrs: {class: lemma, id: ch5-lem-vectors-of-random-variables}
     If $X_1, \ldots, X_n$ are random variables on $(\Omega, \mathcal F, \mathbb P)$, then $\{(X_1, \ldots, X_n) \in B\} \in \mathcal F$ for every $B \in \mathcal B(\mathbb R^n)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    As in the measurability test, the collection of $B \subseteq \mathbb R^n$ whose preimage under $(X_1, \ldots, X_n)$ is in $\mathcal F$ is a σ-algebra. It contains every box, because the preimage of $I_1 \times \cdots \times I_n$ is $\{X_1 \in I_1\} \cap \cdots \cap \{X_n \in I_n\}$, a finite intersection of events. So it contains the σ-algebra generated by the boxes. $\blacksquare$
+        attrs: {class: proof}
+    As in the measurability test, the collection of $B \subseteq \mathbb R^n$ whose preimage under $(X_1, \ldots, X_n)$ is in $\mathcal F$ is a $\sigma$-algebra. It contains every box, because the preimage of $I_1 \times \cdots \times I_n$ is $\{X_1 \in I_1\} \cap \cdots \cap \{X_n \in I_n\}$, a finite intersection of events. So it contains the $\sigma$-algebra generated by the boxes. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Joint distribution**</u>
 
     The joint distribution of {term}`random variables <random variable>` $X_1, \ldots, X_n$ on the same probability space is the function $\mathbb P_{X_1, \ldots, X_n} : \mathcal B(\mathbb R^n) \to [0, 1]$ defined by $\mathbb P_{X_1, \ldots, X_n}(B) := \mathbb P\big((X_1, \ldots, X_n) \in B\big)$.
@@ -763,26 +761,25 @@ def _(mo):
 
     Exactly as for one random variable, the joint distribution is a probability measure on $(\mathbb R^n, \mathcal B(\mathbb R^n))$. It determines each individual distribution, for example $\mathbb P_{X_1}(B) = \mathbb P_{X_1, \ldots, X_n}(B \times \mathbb R^{n-1})$; in this context the individual distributions are called *marginal distributions*. The converse fails: the marginals do not determine the joint distribution. In the coin example, the pairs $(X, X)$ and $(X, X')$, with $X'$ the number of tails, have identical marginals (all four are the distribution of $X$), but $\mathbb P(X = 2, X = 2) = \tfrac14$ while $\mathbb P(X = 2, X' = 2) = 0$. How random variables *relate* to each other is extra information.
 
-    The *joint CDF* is $F_{X_1, \ldots, X_n}(x_1, \ldots, x_n) := \mathbb P(X_1 \le x_1, \ldots, X_n \le x_n)$. By the same π-λ argument as in one dimension, it determines the joint distribution.
+    The *joint CDF* is $F_{X_1, \ldots, X_n}(x_1, \ldots, x_n) := \mathbb P(X_1 \le x_1, \ldots, X_n \le x_n)$. By the same $\pi$-$\lambda$ argument as in one dimension, it determines the joint distribution.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Joint density**</u>
 
     A function $f : \mathbb R^n \to [0, \infty)$ is a joint density of {term}`random variables <random variable>` $X_1, \ldots, X_n$ iff
     $$F_{X_1, \ldots, X_n}(x_1, \ldots, x_n) = \int_{-\infty}^{x_1} \cdots \int_{-\infty}^{x_n} f(t_1, \ldots, t_n)\,dt_n \cdots dt_1 \quad \text{for every } (x_1, \ldots, x_n) \in \mathbb R^n.$$
     ///
 
-    As in one dimension, these are (possibly improper) Riemann integrals. We assume, as holds for every joint density in this book, that $f$ is regular enough for Fubini's theorem ([Appendix C: Multiple Integrals](appendix_c_calculus.md)), so that iterated integrals of $f$ over boxes and quadrants exist and may be computed in any order.
+    As in one dimension, these are (possibly improper) Riemann integrals. We assume, as holds for every joint density in this book, that $f$ is regular enough for Fubini's theorem ([Appendix C: Multiple Integrals](#appc-sec-multiple-integrals)), so that iterated integrals of $f$ over boxes and quadrants exist and may be computed in any order.
 
-    /// important | 📐 **Theorem (Box Probabilities)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Box Probabilities)**
+        attrs: {class: theorem, id: ch5-thm-box-probabilities}
     If $f$ is a joint density of $(X, Y)$, then for all $a_1 < b_1$ and $a_2 < b_2$,
     $$\mathbb P(a_1 < X \le b_1,\ a_2 < Y \le b_2) = \int_{a_1}^{b_1} \int_{a_2}^{b_2} f(s, t)\,dt\,ds.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $G := F_{X,Y}$. For any $y$, the event $\{X \le b_1, Y \le y\}$ is the disjoint union of $\{X \le a_1, Y \le y\}$ and $\{a_1 < X \le b_1, Y \le y\}$, so $\mathbb P(a_1 < X \le b_1, Y \le y) = G(b_1, y) - G(a_1, y)$. Splitting the same way in $Y$,
     $$\mathbb P(a_1 < X \le b_1,\ a_2 < Y \le b_2) = \big[G(b_1, b_2) - G(a_1, b_2)\big] - \big[G(b_1, a_2) - G(a_1, a_2)\big].$$
     Substitute the integral formula for each $G$ term. By additivity over adjacent intervals, $\int_{-\infty}^{b_1} - \int_{-\infty}^{a_1} = \int_{a_1}^{b_1}$ in $s$, and likewise in $t$, which leaves $\int_{a_1}^{b_1}\int_{a_2}^{b_2} f\,dt\,ds$. $\blacksquare$
@@ -791,20 +788,19 @@ def _(mo):
     With the Lebesgue integral, $\mathbb P\big((X,Y) \in B\big) = \iint_B f$ holds for every Borel set $B \subseteq \mathbb R^2$, not just boxes. Moreover, every nonnegative $f$ on $\mathbb R^n$ with integral $1$ is the joint density of some random variables (take $\Omega = \mathbb R^n$ with the probability measure $B \mapsto \int_B f$). Both facts need measure theory ([Wikipedia: Probability density function](https://en.wikipedia.org/wiki/Probability_density_function)).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Marginal density**</u>
 
     If $f$ is a {term}`joint density` of $X_1, \ldots, X_n$, the marginal density of $X_i$ is the function obtained by integrating $f$ over all variables except the $i$-th. For $n = 2$ and a joint density $f$ of $(X, Y)$:
     $$f_X(x) := \int_{-\infty}^{\infty} f(x, y)\,dy, \qquad f_Y(y) := \int_{-\infty}^{\infty} f(x, y)\,dx.$$
     ///
 
-    /// important | 📐 **Theorem (The Marginal Density Is a Density)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Marginal Density Is a Density)**
+        attrs: {class: theorem, id: ch5-thm-the-marginal-density-is-a-density}
     If $f$ is a joint density of $(X, Y)$, then $X$ is continuous and its marginal density $f_X$ is a density of $X$. The same holds for $Y$, and for each $X_i$ when there are $n$ random variables.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The events $\{X \le x, Y \le n\}$ increase with $n$, and their union is $\{X \le x\}$ because every real number $Y(\omega)$ is at most some integer $n$. Continuity from below and Fubini's theorem give
     $$F_X(x) = \lim_{n \to \infty} \int_{-\infty}^{x}\int_{-\infty}^{n} f(s, t)\,dt\,ds = \lim_{n \to \infty} \int_{-\infty}^{n}\int_{-\infty}^{x} f(s, t)\,ds\,dt = \int_{-\infty}^{\infty}\int_{-\infty}^{x} f(s, t)\,ds\,dt.$$
     The last step is the definition of an improper integral in $t$. Exchanging the order once more, $F_X(x) = \int_{-\infty}^x \int_{-\infty}^\infty f(s,t)\,dt\,ds = \int_{-\infty}^x f_X(s)\,ds$. Taking $x \to \infty$ shows $\int f_X = 1$, so $f_X$ is a PDF and a density of $X$. For $n$ variables, integrate out one variable at a time. $\blacksquare$
@@ -818,12 +814,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-independence -->
     ## Independence
 
     [Chapter 4](ch4_probability_spaces.md) called events independent when the probability of their intersection factors. Random variables are independent when *every* question about one is independent of every question about the others.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Independent random variables**</u>
 
     {term}`Random variables <random variable>` $X_1, \ldots, X_n$ on the same probability space are independent iff
@@ -833,8 +829,8 @@ def _(mo):
 
     Taking $B_i = \mathbb R$ for the indices outside a subfamily shows that the definition is the same as requiring that, for every choice of Borel sets, the events $\{X_1 \in B_1\}, \ldots, \{X_n \in B_n\}$ are mutually independent in the sense of [Chapter 4](ch4_probability_spaces.md). Checking all Borel sets is impractical; the following criteria reduce it to CDFs, PMFs, or densities.
 
-    /// important | 📐 **Theorem (Factorization Criteria)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Factorization Criteria)**
+        attrs: {class: theorem, id: ch5-thm-factorization-criteria}
     Let $X_1, \ldots, X_n$ be random variables on the same probability space.
 
     1. *(CDFs)* They are independent iff $F_{X_1, \ldots, X_n}(x_1, \ldots, x_n) = \prod_{i=1}^n F_{X_i}(x_i)$ for all $(x_1, \ldots, x_n) \in \mathbb R^n$.
@@ -843,11 +839,11 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    1. ($\Rightarrow$) Take $B_i = (-\infty, x_i]$. ($\Leftarrow$) Not given here: it follows from Dynkin's π-λ theorem, applied one coordinate at a time ([Wikipedia: Independence (probability theory)](https://en.wikipedia.org/wiki/Independence_(probability_theory)), [Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
+        attrs: {class: proof}
+    1. ($\Rightarrow$) Take $B_i = (-\infty, x_i]$. ($\Leftarrow$) Not given here: it follows from Dynkin's $\pi$-$\lambda$ theorem, applied one coordinate at a time ([Wikipedia: Independence (probability theory)](https://en.wikipedia.org/wiki/Independence_(probability_theory)), [Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
     2. ($\Rightarrow$) Take $B_i = \{x_i\}$. ($\Leftarrow$) Let $\mathbb P(X_i \in C_i) = 1$ with $C_i$ countable, and let $B_1, \ldots, B_n$ be Borel. The event $\{X_1 \in B_1, \ldots, X_n \in B_n\}$ differs from the disjoint union of the events $\{X_1 = x_1, \ldots, X_n = x_n\}$ over $(x_1, \ldots, x_n) \in (B_1 \cap C_1) \times \cdots \times (B_n \cap C_n)$ only by a subset of $\bigcup_i \{X_i \notin C_i\}$, which has probability $0$ by the union bound. That index set is countable ([Chapter 3](ch3_sets_for_probability.md)), so countable additivity and the hypothesis give
     $$\mathbb P(X_1 \in B_1, \ldots, X_n \in B_n) = \sum_{x_1 \in B_1 \cap C_1} \cdots \sum_{x_n \in B_n \cap C_n} \prod_{i=1}^n p_{X_i}(x_i) = \prod_{i=1}^n \sum_{x_i \in B_i \cap C_i} p_{X_i}(x_i) = \prod_{i=1}^n \mathbb P(X_i \in B_i),$$
-    where the middle step factors a sum of nonnegative products ([Appendix C: Series](appendix_c_calculus.md)) and the last step is the theorem on PMFs.
+    where the middle step factors a sum of nonnegative products ([Appendix C: Series](#appc-sec-series)) and the last step is the theorem on PMFs.
     3. An iterated integral of a product of functions of separate variables is the product of the one-dimensional integrals (pull each factor that does not depend on the current integration variable out of that integral). So for every $(x_1, \ldots, x_n)$,
     $$\int_{-\infty}^{x_1}\cdots\int_{-\infty}^{x_n} \prod_{i=1}^n f_{X_i}(t_i)\,dt_n\cdots dt_1 = \prod_{i=1}^n \int_{-\infty}^{x_i} f_{X_i} = \prod_{i=1}^n F_{X_i}(x_i).$$
     ($\Rightarrow$) By part 1, the right side equals $F_{X_1, \ldots, X_n}(x_1, \ldots, x_n)$, so the product is a joint density. ($\Leftarrow$) If the product is a joint density, the left side equals $F_{X_1, \ldots, X_n}(x_1, \ldots, x_n)$, so the joint CDF factors, and part 1 gives independence. $\blacksquare$
@@ -859,44 +855,43 @@ def _(mo):
     - The pair with joint density $x + y$ on $[0,1]^2$ is *not* independent. Directly from the definition,
     $$\mathbb P\big(X \le \tfrac12, Y \le \tfrac12\big) = \int_0^{1/2}\!\!\int_0^{1/2} (s + t)\,dt\,ds = \tfrac18, \quad \text{but} \quad \mathbb P\big(X \le \tfrac12\big)\,\mathbb P\big(Y \le \tfrac12\big) = \Big(\int_0^{1/2} \big(s + \tfrac12\big)\,ds\Big)^2 = \tfrac{9}{64}.$$
 
-    /// important | 📐 **Theorem (Functions of Independent Random Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Functions of Independent Random Variables)**
+        attrs: {class: theorem, id: ch5-thm-functions-of-independent-random-variables}
     If $X_1, \ldots, X_n$ are independent and $g_1, \ldots, g_n : \mathbb R \to \mathbb R$ are Borel, then $g_1(X_1), \ldots, g_n(X_n)$ are independent.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For Borel sets $B_i$, $\{g_i(X_i) \in B_i\} = \{X_i \in g_i^{-1}[B_i]\}$, and each $g_i^{-1}[B_i]$ is Borel. Apply the definition of independence to the Borel sets $g_i^{-1}[B_i]$. $\blacksquare$
     ///
 
     For example, if the noise values $V_1, \ldots, V_n$ are independent, so are the readings $x_1 + V_1, \ldots, x_n + V_n$. We also need to *group* independent random variables, for example to know that $V_1 + V_2$ is independent of $V_3$. A function $g : \mathbb R^m \to \mathbb R$ is Borel iff $g^{-1}[B] \in \mathcal B(\mathbb R^m)$ for every $B \in \mathcal B(\mathbb R)$; continuous functions, such as sums, products, and linear combinations, are Borel, by the same fact about open sets as in one dimension. For Borel $g$, $g(X_1, \ldots, X_m)$ is a random variable, because $\{g(X_1, \ldots, X_m) \in B\} = \{(X_1, \ldots, X_m) \in g^{-1}[B]\}$ is an event by the lemma on vectors of random variables.
 
-    /// important | 📐 **Theorem (Grouping)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Grouping)**
+        attrs: {class: theorem, id: ch5-thm-grouping}
     If $X_1, \ldots, X_n$ are independent, $1 \le m < n$, and $g : \mathbb R^m \to \mathbb R$ is Borel, then $g(X_1, \ldots, X_m), X_{m+1}, \ldots, X_n$ are independent.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Not given here; like the CDF criterion, it follows from Dynkin's π-λ theorem ([Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
+        attrs: {class: proof}
+    Not given here; like the CDF criterion, it follows from Dynkin's $\pi$-$\lambda$ theorem ([Wikipedia: Dynkin system](https://en.wikipedia.org/wiki/Dynkin_system)).
     ///
 
     The most important case in this book is a sequence of independent copies of one random variable.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Independent and identically distributed**</u>
 
     An {term}`indexed family` of {term}`random variables <random variable>` is independent and identically distributed (i.i.d.) iff it is independent and all of its members have the same {term}`distribution`.
     ///
 
-    /// important | 📐 **Theorem (Existence of i.i.d. Sequences)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Existence of i.i.d. Sequences)**
+        attrs: {class: theorem, id: ch5-thm-existence-of-i-i-d-sequences}
     For every probability measure $\mu$ on $(\mathbb R, \mathcal B(\mathbb R))$ there is a probability space carrying an i.i.d. {term}`sequence` $X_1, X_2, \ldots$ of random variables with $X_k \sim \mu$ for every $k$. More generally, for any sequence $\mu_1, \mu_2, \ldots$ of such measures there are independent $X_1, X_2, \ldots$ with $X_k \sim \mu_k$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not given here. The probability space is an infinite product of copies of $(\mathbb R, \mathcal B(\mathbb R), \mu)$, whose existence is the Kolmogorov extension theorem ([Wikipedia: Kolmogorov extension theorem](https://en.wikipedia.org/wiki/Kolmogorov_extension_theorem), [Wikipedia: Product measure](https://en.wikipedia.org/wiki/Product_measure)).
     ///
 
@@ -908,18 +903,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-sums-of-independent-random-variables -->
     ## Sums of Independent Random Variables
 
     Averaging measurements means adding them, so we need the distribution of a sum. For discrete random variables it follows directly from countable additivity.
 
-    /// important | 📐 **Theorem (Discrete Convolution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Discrete Convolution)**
+        attrs: {class: theorem, id: ch5-thm-discrete-convolution}
     Let $X$ and $Y$ be independent and discrete, with $\mathbb P(X \in C) = \mathbb P(Y \in D) = 1$ for countable sets $C, D$. Then $X + Y$ is discrete and
     $$p_{X+Y}(s) = \sum_{x \in C} p_X(x)\, p_Y(s - x) \quad \text{for every } s \in \mathbb R.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $X + Y$ is a random variable. Outside the event $\{X \in C, Y \in D\}$, whose complement has probability $0$ by the union bound, $X + Y$ takes values in $\{c + d : c \in C, d \in D\}$, the image of the countable set $C \times D$ under addition, which is countable. So $X + Y$ is discrete. Fix $s$. The event $\{X + Y = s\} \cap \{X \in C\}$ is the disjoint union over $x \in C$ of $\{X = x, Y = s - x\}$, and the rest of $\{X + Y = s\}$ lies in $\{X \notin C\}$, which has probability $0$. Countable additivity and independence give $p_{X+Y}(s) = \sum_{x \in C} \mathbb P(X = x)\,\mathbb P(Y = s - x)$. $\blacksquare$
     ///
 
@@ -927,25 +923,25 @@ def _(mo):
 
     For densities, the sum is replaced by an integral. The *convolution* of two functions $f, g : \mathbb R \to [0, \infty)$ is $(f * g)(s) := \int_{-\infty}^\infty f(x)\,g(s - x)\,dx$.
 
-    /// important | 📐 **Theorem (Continuous Convolution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Continuous Convolution)**
+        attrs: {class: theorem, id: ch5-thm-continuous-convolution}
     If $X$ and $Y$ are independent with densities $f_X$ and $f_Y$, then $X + Y$ is continuous with density $f_X * f_Y$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not given here. The proof integrates the joint density $f_X(x) f_Y(y)$ over the half-plane $\{(x, y) : x + y \le s\}$, which is not a box, so it needs the Lebesgue integral ([Wikipedia: Convolution of probability distributions](https://en.wikipedia.org/wiki/Convolution_of_probability_distributions)). The formula is the discrete one with the sum replaced by an integral.
     ///
 
     For example, if $X, Y \sim \mathcal U(0, 1)$ are independent, then $(f_X * f_Y)(s) = \int_0^1 \mathbf 1[0 \le s - x \le 1]\,dx$ is the length of $[0, 1] \cap [s - 1, s]$, which is $s$ for $0 \le s \le 1$, $2 - s$ for $1 \le s \le 2$, and $0$ otherwise: again a triangle. For normal random variables the convolution can be computed exactly, and the result is the most useful fact of this section.
 
-    /// important | 📐 **Theorem (Sums of Independent Normals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Sums of Independent Normals)**
+        attrs: {class: theorem, id: ch5-thm-sums-of-independent-normals}
     If $X \sim \mathcal N(\mu_1, \sigma_1^2)$ and $Y \sim \mathcal N(\mu_2, \sigma_2^2)$ are independent, then $X + Y \sim \mathcal N(\mu_1 + \mu_2,\ \sigma_1^2 + \sigma_2^2)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     First let $\mu_1 = \mu_2 = 0$, and write $a := \sigma_1$, $b := \sigma_2$, $c := \sqrt{a^2 + b^2}$. By the convolution theorem, $X + Y$ has density
     $$h(s) = \int_{-\infty}^{\infty} \frac{1}{2\pi a b} \exp\!\Big(-\frac{x^2}{2a^2} - \frac{(s - x)^2}{2b^2}\Big)\,dx.$$
     Complete the square in $x$. Over the common denominator $2a^2b^2$, the numerator of the exponent's negative is
@@ -957,14 +953,14 @@ def _(mo):
     In general, $X - \mu_1 \sim \mathcal N(0, \sigma_1^2)$ and $Y - \mu_2 \sim \mathcal N(0, \sigma_2^2)$ by the affine corollary, and they are independent by the theorem on functions of independent random variables. By the first case their sum is $\mathcal N(0, \sigma_1^2 + \sigma_2^2)$, and adding the constant $\mu_1 + \mu_2$ gives the claim by the affine corollary again. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Linear Combinations of Independent Normals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Linear Combinations of Independent Normals)**
+        attrs: {class: corollary, id: ch5-cor-linear-combinations-of-independent-normals}
     If $X_1, \ldots, X_n$ are independent with $X_i \sim \mathcal N(\mu_i, \sigma_i^2)$, and $a_1, \ldots, a_n, b \in \mathbb R$ with not all $a_i = 0$, then
     $$\sum_{i=1}^n a_i X_i + b \sim \mathcal N\Big(\sum_{i=1}^n a_i\mu_i + b,\ \sum_{i=1}^n a_i^2\sigma_i^2\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Terms with $a_i = 0$ contribute nothing, so drop them; by the theorem on functions of independent random variables, the remaining $a_i X_i$ are independent, and $a_i X_i \sim \mathcal N(a_i\mu_i, a_i^2\sigma_i^2)$ by the affine corollary. Induct on the number of terms: by the grouping theorem, the sum of the first $m - 1$ terms is independent of the $m$-th, so the theorem applies to them. Finally add $b$ using the affine corollary. $\blacksquare$
     ///
 
@@ -976,12 +972,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-stochastic-processes -->
     ## Stochastic Processes
 
     A filter does not see one random variable but a stream of them, one per time step. The Introduction defined a {term}`signal` as a function whose domain is a set of times and whose values are the quantity being represented. The random version of a signal is a stochastic process.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Stochastic process**</u>
 
     A stochastic process is an {term}`indexed family` $(X_t)_{t \in T}$ of {term}`random variables <random variable>` on a common probability space, where the index set $T$ is interpreted as a set of times (or positions). It is a *discrete-time* process if $T \subseteq \mathbb Z$; in this book usually $T = \mathbb N^+ = \{1, 2, \ldots\}$ and the index is written $k$.
@@ -990,7 +986,6 @@ def _(mo):
     A stochastic process is really a function of two arguments, $(t, \omega) \mapsto X_t(\omega)$. Fixing the time $t$ gives a random variable $X_t$. Fixing the outcome $\omega$ gives the function $t \mapsto X_t(\omega)$ on $T$, called the *sample path* (or *realization*) at $\omega$, and a sample path is a signal. So:
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A random signal is a stochastic process. The signal we actually record is one of its sample paths, chosen by the outcome $\omega$ that occurred.
     ///
 
@@ -1034,12 +1029,12 @@ def _(IMAGES_DIR, np, plt, std_normal_draws):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-the-measurement-noise-model -->
     ## The Measurement-Noise Model
 
     We can now make the Introduction's informal {term}`noise` precise.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Measurement noise**</u>
 
     Let $Z_k$ be the {term}`random variable` giving the measurement at step $k$ of a quantity whose true value is the real number $x_k$. The measurement noise at step $k$ is the random variable $V_k := Z_k - x_k$.
@@ -1133,7 +1128,6 @@ def _(mo):
     - A nonzero $\mu$ moves every reading the same way. No amount of averaging can detect or remove it from readings alone: the data would look exactly like an honest scale weighing a different person.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The standard model can fail in each of its parts. The most common failures for a scale, and where this book deals with them:
 
     - **Quantization.** Readings are discrete multiples of a resolution $\Delta$. The error is close to $\mathcal U(-\tfrac\Delta2, \tfrac\Delta2)$ only when $\sigma \gg \Delta$; when $\sigma \lesssim \Delta$ it is a nearly deterministic offset that averaging cannot remove (the quantization theorem above; Chapter 9).
@@ -1149,6 +1143,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch5-sec-summary -->
     ## Summary
 
     - A {term}`random variable` is a function $X : \Omega \to \mathbb R$ whose preimages of Borel sets are events; it suffices to check the rays $\{X \le b\}$. Sums, products, affine maps, and continuous functions of random variables are random variables.
@@ -1160,6 +1155,7 @@ def _(mo):
     - A {term}`stochastic process` is a time-indexed family of random variables, and each of its sample paths is a signal.
     - The standard model of {term}`measurement noise` is $Z_k = x_k + V_k$ with $V_k$ {term}`i.i.d. <independent and identically distributed>` $\mathcal N(0, \sigma^2)$. It is an assumption, and it fails under quantization, outliers, drift, correlated noise, and a moving truth.
 
+    <!-- label: ch5-sec-whats-next -->
     ## What's Next
 
     We can now describe the scale's noise completely, but we cannot yet say how *large* it is in a single number, or prove that averaging shrinks it. [Chapter 6](ch6_expectation_and_variance.md) defines the expected value and the variance of a random variable, proves that the average of $k$ readings has variance $\sigma^2/k$, and computes exactly how much noise and how much lag the Introduction's EMA lets through.

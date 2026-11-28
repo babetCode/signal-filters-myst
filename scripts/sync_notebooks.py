@@ -4,6 +4,7 @@ for use with [jupyter-book-marimo](https://github.com/marimo-team/jupyter-book-m
 """
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import os
 from pathlib import Path
 import re
@@ -27,6 +28,10 @@ IGNORED_DIRS = {"__marimo__", "__pycache__"}
 
 # Set by --no-eval: skip cell evaluation for faster dev builds.
 disable_eval = False
+
+# Set by --force: re-run `marimo export` even when its cached output is newer
+# than the notebook (e.g. after upgrading marimo).
+force_export = False
 
 # jupyter-book-marimo directive options with no marimo-native equivalent.
 # --flavor mystmd already handles everything else (name, column, hide-code,
@@ -53,26 +58,50 @@ JB_FRONTMATTER_PATTERN = re.compile(
 )
 FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
 
-# pymdownx-style `/// admonition | Title` block with a `no-icon` class and a
-# `<u>**Term**</u>` first line, used here for glossary definitions.
-GLOSSARY_ADMONITION_PATTERN = re.compile(
-    r"^///[ \t]*note[ \t]*\|[ \t]*(?P<title>[^\n]*)\n"
-    r"[ \t]*attrs:[ \t]*\{[ \t]*class:[ \t]*no-icon[ \t]*\}[ \t]*\n"
-    r"<u>\*\*(?P<term>[^\n]+?)\*\*</u>[ \t]*\n"
-    r"(?P<definition>.*?)"
-    r"^///[ \t]*$",
-    re.MULTILINE | re.DOTALL,
-)
-
-# pymdownx-style `/// <type> | Title` block with an `attrs: {class: no-icon}`
-# line, e.g. `/// attention | My Title`.
-NO_ICON_ADMONITION_PATTERN = re.compile(
+# pymdownx-style `/// <kind> | Title` block, optionally followed by an
+# `attrs: {class: ..., id: ...}` line, e.g.
+#
+#     /// admonition | 📐 **Theorem (Optimal Gain)**
+#         attrs: {class: theorem dropdown, id: ch7-thm-optimal-gain}
+#     Statement...
+#     ///
+#
+# Blocks must not be nested: a block ends at the first `///` line.
+ADMONITION_PATTERN = re.compile(
     r"^///[ \t]*(?P<kind>[\w-]+)[ \t]*(?:\|[ \t]*(?P<title>[^\n]*))?\n"
-    r"[ \t]*attrs:[ \t]*\{[ \t]*class:[ \t]*no-icon[ \t]*\}[ \t]*\n"
+    r"(?:[ \t]*attrs:[ \t]*\{(?P<attrs>[^}\n]*)\}[ \t]*\n)?"
     r"(?P<body>.*?)"
     r"^///[ \t]*$",
     re.MULTILINE | re.DOTALL,
 )
+
+# Admonition kinds MyST supports; `/// admonition` maps to MyST's generic one.
+# Other pymdownx kinds (e.g. `info`, `success`) render in marimo but not MyST.
+MYST_ADMONITION_KINDS = {
+    "admonition", "note", "important", "hint", "seealso", "tip",
+    "attention", "caution", "warning", "danger", "error",
+}
+
+# Classes that turn a block into a `prf:` directive instead of an admonition.
+# Every other class is passed through to MyST's `:class:` (e.g. `dropdown`).
+PRF_ROLE_CLASSES = {"theorem", "lemma", "corollary", "proof"}
+
+# A glossary definition: a `/// note` block whose body starts with `<u>**Term**</u>`.
+GLOSSARY_TERM_PATTERN = re.compile(r"<u>\*\*(?P<term>[^\n]+?)\*\*</u>[ \t]*$")
+
+# A result's title, e.g. `📐 **Theorem (Optimal Gain)**`: the label word and
+# the name in parentheses. The name may itself contain parentheses.
+RESULT_TITLE_PATTERN = re.compile(r"\*\*(?P<word>[^\s(*]+)(?:[ \t]*\((?P<name>.*)\))?[ \t]*\*\*")
+
+# `<!-- label: ch4-sec-kolmogorovs-axioms -->` on its own line, before the
+# block it labels. Converted to MyST's `(ch4-sec-kolmogorovs-axioms)=`.
+LABEL_COMMENT_PATTERN = re.compile(
+    r"^[ \t]*<!--[ \t]*label:[ \t]*(?P<label>\S+?)[ \t]*-->[ \t]*$",
+    re.MULTILINE,
+)
+
+# Label format from the style guide: lowercase ASCII words joined by hyphens.
+LABEL_FORMAT = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 def spawn(cmd, **kwargs) -> subprocess.Popen:
@@ -216,45 +245,142 @@ def comment_out_marimo_version(content: str) -> str:
     return f"---\n{chr(10).join(yaml_lines)}\n---\n{rest}"
 
 
-def apply_glossary_admonitions(content: str) -> str:
-    """Convert `/// note` glossary blocks into MyST admonition + glossary
-    directives, indenting every definition line after the first by two spaces."""
-
-    def replace(match: re.Match) -> str:
-        title = match.group("title").strip()
-        term = match.group("term").strip()
-        lines = match.group("definition").strip("\n").splitlines()
-        if not lines:
-            return match.group(0)
-
-        definition = [f": {lines[0]}"] + [
-            f"  {line}" if line.strip() else "" for line in lines[1:]
-        ]
-        return "\n".join([
-            f"::::{{admonition icon=false}} {title}",
-            ":::{glossary}",
-            term,
-            *definition,
-            ":::",
-            "::::",
-        ])
-
-    return GLOSSARY_ADMONITION_PATTERN.sub(replace, content)
+def warn(message: str, source: str = "") -> None:
+    location = f" in {source}" if source else ""
+    print(f"[marimo-sync] Warning{location}: {message}", file=sys.stderr)
 
 
-def apply_no_icon_admonitions(content: str) -> str:
-    """Convert `/// <type> | Title` blocks with `attrs: {class: no-icon}` into
-    MyST `:::{<type> icon=false} Title` admonitions."""
+def parse_attrs(text: str | None, source: str = "") -> tuple[list[str], str | None]:
+    """Parse the inside of an `attrs: {class: a b, id: x}` line into its list
+    of classes and its id. Both keys are optional."""
+    classes: list[str] = []
+    block_id = None
+    if not text:
+        return classes, block_id
+
+    for item in text.split(","):
+        if not item.strip():
+            continue
+        key, sep, value = item.partition(":")
+        key, value = key.strip(), value.strip().strip("'\"")
+        if not sep:
+            warn(f"malformed attrs entry '{item.strip()}', skipping", source)
+        elif key == "class":
+            classes.extend(value.split())
+        elif key == "id":
+            block_id = value
+        else:
+            warn(f"unknown attrs key '{key}', skipping", source)
+
+    if block_id is not None and not LABEL_FORMAT.match(block_id):
+        warn(f"label '{block_id}' is not lowercase words joined by hyphens", source)
+    return classes, block_id
+
+
+def directive_options(block_id: str | None, classes: list[str]) -> list[str]:
+    """MyST option lines for a block's label and its passed-through classes."""
+    options = []
+    if block_id:
+        options.append(f":label: {block_id}")
+    if classes:
+        options.append(f":class: {' '.join(classes)}")
+    return options
+
+
+def convert_glossary(title: str, term: str, definition: str, options: list[str]) -> str:
+    """A glossary definition: a MyST admonition wrapping a one-term glossary,
+    with every definition line after the first indented by two spaces."""
+    lines = definition.strip("\n").splitlines()
+    definition_lines = [f": {lines[0]}"] + [
+        f"  {line}" if line.strip() else "" for line in lines[1:]
+    ]
+    return "\n".join([
+        f"::::{{admonition icon=false}} {title}",
+        *options,
+        ":::{glossary}",
+        term,
+        *definition_lines,
+        ":::",
+        "::::",
+    ])
+
+
+def convert_result(role: str, title: str, body: str, options: list[str], source: str) -> str:
+    """A theorem, lemma, corollary, or proof: a MyST `prf:` directive, never
+    numbered (results are referred to by name). MyST's book theme draws no
+    end-of-proof mark, so a proof's own `$\\blacksquare$` is kept."""
+    if role == "proof":
+        return "\n".join([":::{prf:proof}", *options, ":enumerated: false", body, ":::"])
+
+    name = ""
+    title_match = RESULT_TITLE_PATTERN.search(title)
+    if not title_match:
+        warn(f"could not read the {role} title '{title}'", source)
+    else:
+        if title_match.group("word").lower() != role:
+            warn(f"title '{title}' does not match its class '{role}'", source)
+        name = (title_match.group("name") or "").strip()
+        if not name:
+            warn(f"{role} '{title}' has no name in parentheses", source)
+
+    opening = f":::{{prf:{role}}}" + (f" {name}" if name else "")
+    return "\n".join([opening, *options, ":enumerated: false", body, ":::"])
+
+
+def apply_admonitions(content: str, source: str = "") -> str:
+    """Convert every `/// <kind> | Title` block (with an optional `attrs` line)
+    into MyST syntax:
+
+    - a `/// note` block starting with `<u>**Term**</u>` becomes a glossary entry;
+    - a block with a role class (`theorem`, `lemma`, `corollary`, `proof`)
+      becomes the matching `prf:` directive;
+    - any other block becomes a `:::{<kind> icon=false}` admonition.
+
+    MyST icons are always off (`icon=false`). The `id` becomes `:label:`, and
+    classes other than role classes are passed through as `:class:`."""
 
     def replace(match: re.Match) -> str:
         kind = match.group("kind")
         title = (match.group("title") or "").strip()
         body = match.group("body").strip("\n")
+        classes, block_id = parse_attrs(match.group("attrs"), source)
+
+        roles = [c for c in classes if c in PRF_ROLE_CLASSES]
+        extra_classes = [c for c in classes if c not in PRF_ROLE_CLASSES]
+        options = directive_options(block_id, extra_classes)
+
+        if roles:
+            if len(roles) > 1:
+                warn(f"block '{title}' has several role classes {roles}; using '{roles[0]}'", source)
+            if kind != "admonition":
+                warn(f"{roles[0]} block '{title}' should be `/// admonition`, not `/// {kind}`", source)
+            return convert_result(roles[0], title, body, options, source)
+
+        if kind not in MYST_ADMONITION_KINDS:
+            warn(f"`/// {kind}` has no MyST equivalent; left unconverted", source)
+            return match.group(0)
+
+        first_line, _, definition = body.partition("\n")
+        term_match = GLOSSARY_TERM_PATTERN.match(first_line)
+        if kind == "note" and term_match and definition.strip():
+            return convert_glossary(title, term_match.group("term").strip(), definition, options)
 
         opening = f":::{{{kind} icon=false}}" + (f" {title}" if title else "")
-        return "\n".join([opening, body, ":::"])
+        return "\n".join([opening, *options, body, ":::"])
 
-    return NO_ICON_ADMONITION_PATTERN.sub(replace, content)
+    return ADMONITION_PATTERN.sub(replace, content)
+
+
+def apply_label_comments(content: str, source: str = "") -> str:
+    """Convert `<!-- label: x -->` lines into MyST `(x)=` targets."""
+
+    def replace(match: re.Match) -> str:
+        label = match.group("label")
+        if not LABEL_FORMAT.match(label):
+            warn(f"label '{label}' is not lowercase words joined by hyphens", source)
+        return f"({label})="
+
+    return LABEL_COMMENT_PATTERN.sub(replace, content)
 
 
 def rewrite_public_paths(content: str) -> str:
@@ -281,8 +407,8 @@ def postprocess_file(export_path: Path):
 
     updated = apply_jb_options(content, source=str(export_path))
     updated = apply_jb_frontmatter(updated, source=str(export_path))
-    updated = apply_glossary_admonitions(updated)
-    updated = apply_no_icon_admonitions(updated)
+    updated = apply_label_comments(updated, source=str(export_path))
+    updated = apply_admonitions(updated, source=str(export_path))
     updated = rewrite_public_paths(updated)
     updated = remove_empty_comments(updated)
     updated = comment_out_marimo_version(updated)
@@ -292,7 +418,21 @@ def postprocess_file(export_path: Path):
     write_if_changed(content_path_for(export_path), updated)
 
 
+def export_is_current(notebook_path: Path, export_path: Path) -> bool:
+    """True if marimo's raw export is newer than the notebook, so `marimo
+    export` (the slow step) can be skipped. `make clean` or --force resets this."""
+    return (
+        not force_export
+        and export_path.exists()
+        and export_path.stat().st_mtime >= notebook_path.stat().st_mtime
+    )
+
+
 def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
+    if export_is_current(notebook_path, export_path):
+        postprocess_file(export_path)
+        return export_path
+
     export_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "marimo",
@@ -333,7 +473,11 @@ def run_marimo_export(notebook_path: Path, export_path: Path) -> Path | None:
 
 
 def export_all() -> bool:
-    results = [run_marimo_export(file, path) for file, path in iter_notebooks()]
+    """Export every notebook. Each `marimo export` is a separate process, so
+    they run in parallel."""
+    notebooks = list(iter_notebooks())
+    with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+        results = list(pool.map(lambda args: run_marimo_export(*args), notebooks))
     return all(results)
 
 
@@ -398,15 +542,17 @@ def serve(port: str, server_port: str):
 
 
 def main():
-    global disable_eval
-    
+    global disable_eval, force_export
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--serve", action="store_true", help="Start watchers and dev server")
     parser.add_argument("--port", default="3102")
     parser.add_argument("--server-port", default="4102")
     parser.add_argument("--no-eval", action="store_true", help="Disable cell evaluation for faster builds")
+    parser.add_argument("--force", action="store_true", help="Re-export every notebook, ignoring cached exports")
     args = parser.parse_args()
     disable_eval = args.no_eval
+    force_export = args.force
 
     if args.serve:
         serve(args.port, args.server_port)

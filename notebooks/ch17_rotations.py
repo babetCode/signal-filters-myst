@@ -64,7 +64,6 @@ def _(mo):
     A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](ch18_quaternions.md).
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The orientation of a body is a rotation matrix $\mathbf R^n_b$ that converts body coordinates into navigation coordinates. It evolves according to $\dot{\mathbf R}^n_b = \mathbf R^n_b[\boldsymbol\omega^b]_\times$, where $\boldsymbol\omega^b$ is what a gyroscope measures. Every description of orientation by only three numbers, such as yaw, pitch, and roll, is singular somewhere.
     ///
     """)
@@ -75,14 +74,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 12](ch12_vectors_matrices_covariance.md): bold lowercase vectors and bold uppercase matrices.
-    - [Appendix D: Matrix Multiplication](appendix_d_linear_algebra.md), [Transpose, Identity, and Inverse](appendix_d_linear_algebra.md), and [Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md): a matrix is determined by its action on a basis, and a square matrix with a left inverse is invertible.
-    - [Appendix D: Determinants](appendix_d_linear_algebra.md): $\det(\mathbf A\mathbf B) = \det\mathbf A\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and cofactor expansion of a $3\times 3$ determinant.
-    - [Appendix D: Trace](appendix_d_linear_algebra.md), [Orthogonal Matrices](appendix_d_linear_algebra.md), and [Eigenvalues and Eigenvectors](appendix_d_linear_algebra.md).
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md): $[\mathbf a]_\times\mathbf b = \mathbf a\times\mathbf b$, every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one $\mathbf a$, and the triple-product expansion $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$.
-    - [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md): $\exp(\mathbf A) = \sum_{m\ge 0}\mathbf A^m/m!$, $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$, and $\exp(\mathbf A + \mathbf B) = \exp(\mathbf A)\exp(\mathbf B)$ when $\mathbf A\mathbf B = \mathbf B\mathbf A$.
-    - [Appendix C: Derivatives](appendix_c_calculus.md) (the product rule, applied entrywise to matrices) and [Appendix C: Exponential and Logarithm](appendix_c_calculus.md) (the power series and remainder bounds of $\sin$ and $\cos$).
+    - [Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Transpose, Identity, and Inverse](appendix_d_linear_algebra.md), and [Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md): a matrix is determined by its action on a basis, and a square matrix with a left inverse is invertible.
+    - [Appendix D: Determinants](#appd-sec-determinants): $\det(\mathbf A\mathbf B) = \det\mathbf A\det\mathbf B$, $\det\mathbf A^\top = \det\mathbf A$, and cofactor expansion of a $3\times 3$ determinant.
+    - [Appendix D: Trace](#appd-sec-trace), [Orthogonal Matrices](appendix_d_linear_algebra.md), and [Eigenvalues and Eigenvectors](appendix_d_linear_algebra.md).
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $[\mathbf a]_\times\mathbf b = \mathbf a\times\mathbf b$, every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one $\mathbf a$, and the triple-product expansion $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$.
+    - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\exp(\mathbf A) = \sum_{m\ge 0}\mathbf A^m/m!$, $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$, and $\exp(\mathbf A + \mathbf B) = \exp(\mathbf A)\exp(\mathbf B)$ when $\mathbf A\mathbf B = \mathbf B\mathbf A$.
+    - [Appendix C: Derivatives](#appc-sec-derivatives) (the product rule, applied entrywise to matrices) and [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm) (the power series and remainder bounds of $\sin$ and $\cos$).
     ///
     """)
     return
@@ -91,12 +89,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-reference-frames -->
     ## Reference Frames
 
     Picture an inertial sensor clipped to the top of a shoe. When you stand still facing east on level ground, the sensor's "forward" axis points east, its "left" axis points north, and its "up" axis points up. Take a step and all three sensor axes swing through space, while east, north, and up stay where they are. To talk about either set of axes precisely we need the notion of a frame.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Reference frame**</u>
 
     A reference frame $a$ is a point $O_a$ (its *origin*) together with an ordered triple $(\mathbf a_1, \mathbf a_2, \mathbf a_3)$ of mutually perpendicular unit vectors (its *axes*) that is right-handed: $\mathbf a_1\times\mathbf a_2 = \mathbf a_3$.
@@ -126,9 +124,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
-    - **The navigation frame is treated as non-rotating.** In reality an ENU frame turns with the Earth at $7.29\times 10^{-5}$ rad/s (about 15°/h). Gyroscopes measure rotation relative to non-rotating space, so we are ignoring a rate roughly 140 times smaller than the gyroscope bias we assume in [Chapter 19](ch19_ahrs.md). Navigation-grade systems cannot ignore it.
-    - **The navigation frame is treated as flat.** Over the few hundred meters of a walk, the Earth's curvature changes the direction of "up" by less than 0.01°.
+    - **The navigation frame is treated as non-rotating.** In reality an ENU frame turns with the Earth at $7.29\times 10^{-5}$ rad/s (about 15$^\circ$/h). Gyroscopes measure rotation relative to non-rotating space, so we are ignoring a rate roughly 140 times smaller than the gyroscope bias we assume in [Chapter 19](ch19_ahrs.md). Navigation-grade systems cannot ignore it.
+    - **The navigation frame is treated as flat.** Over the few hundred meters of a walk, the Earth's curvature changes the direction of "up" by less than 0.01$^\circ$.
     - **Conventions differ between texts.** Aerospace texts often use north-east-down (NED) and forward-right-down axes. Mixing conventions silently flips signs, so every formula in Chapters 17–21 uses exactly the conventions above.
     ///
     """)
@@ -138,6 +135,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-rotation-matrices -->
     ## Rotation Matrices
 
     Write a vector in body axes, $\mathbf v = v^b_1\mathbf b_1 + v^b_2\mathbf b_2 + v^b_3\mathbf b_3$, and take navigation coordinates of both sides. Coordinates are linear, so
@@ -150,14 +148,12 @@ def _(mo):
     - Cofactor expansion along the third column shows that the determinant of any $3\times 3$ matrix with columns $\mathbf a, \mathbf b, \mathbf c$ is $(\mathbf a\times\mathbf b)\cdot\mathbf c$. Hence $\det\mathbf R^n_b = (\mathbf b_1\times\mathbf b_2)\cdot\mathbf b_3 = \mathbf b_3\cdot\mathbf b_3 = 1$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Rotation matrix**</u>
 
     A rotation matrix is a real $3\times 3$ matrix $\mathbf R$ with $\mathbf R^\top\mathbf R = \mathbf I$ and $\det\mathbf R = +1$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Special orthogonal group**</u>
 
     The special orthogonal group is the set of all rotation matrices,
@@ -175,8 +171,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Properties of Rotation Matrices)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of Rotation Matrices)**
+        attrs: {class: theorem, id: ch17-thm-properties-of-rotation-matrices}
     Let $\mathbf R, \mathbf R_1, \mathbf R_2 \in SO(3)$ and $\mathbf u, \mathbf v, \mathbf a \in \mathbb R^3$. Then
 
     1. $\mathbf R$ is invertible with $\mathbf R^{-1} = \mathbf R^\top$, so $\mathbf R\mathbf R^\top = \mathbf I$, and $\mathbf R^\top \in SO(3)$;
@@ -187,8 +183,8 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    1. $\mathbf R^\top\mathbf R = \mathbf I$ says $\mathbf R^\top$ is a left inverse of the square matrix $\mathbf R$, hence its inverse ([Appendix D: Transpose, Identity, and Inverse](appendix_d_linear_algebra.md)), so $\mathbf R\mathbf R^\top = \mathbf I$ as well. Then $(\mathbf R^\top)^\top\mathbf R^\top = \mathbf R\mathbf R^\top = \mathbf I$ and $\det\mathbf R^\top = \det\mathbf R = 1$.
+        attrs: {class: proof}
+    1. $\mathbf R^\top\mathbf R = \mathbf I$ says $\mathbf R^\top$ is a left inverse of the square matrix $\mathbf R$, hence its inverse ([Appendix D: Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse)), so $\mathbf R\mathbf R^\top = \mathbf I$ as well. Then $(\mathbf R^\top)^\top\mathbf R^\top = \mathbf R\mathbf R^\top = \mathbf I$ and $\det\mathbf R^\top = \det\mathbf R = 1$.
     2. $\mathbf I^\top\mathbf I = \mathbf I$ and $\det\mathbf I = 1$. Also $(\mathbf R_1\mathbf R_2)^\top\mathbf R_1\mathbf R_2 = \mathbf R_2^\top(\mathbf R_1^\top\mathbf R_1)\mathbf R_2 = \mathbf I$ and $\det(\mathbf R_1\mathbf R_2) = \det\mathbf R_1\det\mathbf R_2 = 1$.
     3. $(\mathbf R\mathbf u)\cdot(\mathbf R\mathbf v) = \mathbf u^\top\mathbf R^\top\mathbf R\mathbf v = \mathbf u^\top\mathbf v$. Take $\mathbf u = \mathbf v$ for the norm.
     4. For every $\mathbf c \in \mathbb R^3$, using the determinant formula above twice and item 3,
@@ -205,6 +201,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-passive-and-active-readings -->
     ### Passive and Active Readings
 
     The same matrix $\mathbf R^n_b$ can be read in two ways, and we use both:
@@ -219,7 +216,6 @@ def _(mo):
     Adjacent matching indices "cancel". The order matters, because matrix multiplication is not commutative; we will see a concrete example once we have elementary rotations.
 
     /// tip | **Notation in other texts**
-        attrs: {class: no-icon}
     Other common names for $\mathbf R^n_b$ are the *direction cosine matrix* $\mathbf C^n_b$ and $\mathbf R_{nb}$. Some texts write $\mathbf R$ for our $\mathbf R^b_n$. Always check which way a matrix converts before using a formula from another source.
     ///
     """)
@@ -229,6 +225,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-elementary-rotations-and-euler-angles -->
     ## Elementary Rotations and Euler Angles
 
     The simplest rotations turn about a single navigation axis. Rotating the navigation frame about its $z$ axis by an angle $\psi$, counterclockwise when seen from above, moves the $x$ axis to $[\cos\psi, \sin\psi, 0]^\top$ and the $y$ axis to $[-\sin\psi, \cos\psi, 0]^\top$, and leaves $z$ alone. Putting these as columns, and doing the same for the other two axes (the cyclic order is $x\to y\to z\to x$, so a rotation about $y$ turns $z$ toward $x$):
@@ -240,7 +237,6 @@ def _(mo):
     Each is in $SO(3)$ (check $\mathbf R^\top\mathbf R = \mathbf I$ and $\det = \cos^2 + \sin^2 = 1$). They are **active and right-handed**: a positive angle turns counterclockwise when viewed from the positive end of the axis, looking toward the origin. Equivalently, with your right thumb along the axis, your fingers curl in the positive direction.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Euler angles**</u>
 
     The (ZYX, or yaw-pitch-roll) Euler angles of a rotation matrix $\mathbf R$ are any triple $(\phi, \theta, \psi) \in \mathbb R^3$ with
@@ -256,15 +252,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-reading-the-product-as-three-motions -->
     ### Reading the Product as Three Motions
 
-    /// important | 📐 **Lemma (Rotating About a Body Axis)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rotating About a Body Axis)**
+        attrs: {class: lemma, id: ch17-lem-rotating-about-a-body-axis}
     If a frame $a$ has attitude $\mathbf R^n_a = \mathbf R_1$ and is then rotated by an angle $\gamma$ about its *own* $i$-th axis, the new frame $a'$ has attitude $\mathbf R^n_{a'} = \mathbf R_1\,\mathbf R_i(\gamma)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Relative to $a$, the frame $a'$ is obtained by an elementary rotation about $a$'s $i$-th axis, so by the same construction as above (with $a$ in place of $n$) $\mathbf R^a_{a'} = \mathbf R_i(\gamma)$. The composition rule gives $\mathbf R^n_{a'} = \mathbf R^n_a\mathbf R^a_{a'} = \mathbf R_1\mathbf R_i(\gamma)$. $\blacksquare$
     ///
 
@@ -279,7 +276,6 @@ def _(mo):
     Because our body axes are forward-left-up, the signs have the following meanings. Two of them are easy to get backwards:
 
     /// tip | **What the signs mean (FLU body, ENU navigation)**
-        attrs: {class: no-icon}
     - **Yaw $\psi > 0$:** the nose turns from East toward North, counterclockwise seen from above (a left turn).
     - **Pitch $\theta > 0$: the nose goes *down*.** A right-handed turn about the left-pointing $y$ axis carries forward toward down: $\mathbf R_y(\theta)\mathbf e_x = [\cos\theta, 0, -\sin\theta]^\top$.
     - **Roll $\phi > 0$:** the left side goes up and the right side down: $\mathbf R_x(\phi)\mathbf e_y = [0, \cos\phi, \sin\phi]^\top$.
@@ -301,12 +297,13 @@ def _(R_order_1, R_order_2, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-from-matrix-to-angles -->
     ### From Matrix to Angles
 
     Recovering the angles from a matrix needs the two-argument arctangent. For $(x, y) \ne (0, 0)$, $\operatorname{atan2}(y, x)$ denotes the unique angle $a \in (-\pi, \pi]$ with $(x, y) = r(\cos a, \sin a)$ for some $r > 0$. (Unlike $\arctan(y/x)$, it knows which quadrant $(x, y)$ is in.)
 
-    /// important | 📐 **Theorem (Euler Angles from a Rotation Matrix)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Euler Angles from a Rotation Matrix)**
+        attrs: {class: theorem, id: ch17-thm-euler-angles-from-a-rotation-matrix}
     Write $r_{ij}$ for the entries of $\mathbf R \in SO(3)$ and $c_\theta := \cos\theta$, $s_\theta := \sin\theta$, and so on.
 
     1. $\mathbf R_z(\psi)\mathbf R_y(\theta)\mathbf R_x(\phi)$ has third row $[-s_\theta,\ c_\theta s_\phi,\ c_\theta c_\phi]$ and first column $[c_\psi c_\theta,\ s_\psi c_\theta,\ -s_\theta]^\top$.
@@ -317,7 +314,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $\mathbf e_z^\top\mathbf R_z(\psi) = \mathbf e_z^\top$, so the third row is $\mathbf e_z^\top\mathbf R_y(\theta)\mathbf R_x(\phi) = [-s_\theta, 0, c_\theta]\,\mathbf R_x(\phi) = [-s_\theta,\ c_\theta s_\phi,\ c_\theta c_\phi]$. Similarly $\mathbf R_x(\phi)\mathbf e_x = \mathbf e_x$, so the first column is $\mathbf R_z(\psi)\mathbf R_y(\theta)\mathbf e_x = \mathbf R_z(\psi)[c_\theta, 0, -s_\theta]^\top = [c_\psi c_\theta,\ s_\psi c_\theta,\ -s_\theta]^\top$.
     2. *Existence.* With $\theta$ as defined, $c_\theta = \sqrt{1 - r_{31}^2} > 0$. The rows of $\mathbf R$ are unit vectors (because $\mathbf R\mathbf R^\top = \mathbf I$), so $r_{32}^2 + r_{33}^2 = 1 - r_{31}^2 = c_\theta^2$, and therefore $(r_{33}, r_{32}) = c_\theta(\cos\phi, \sin\phi)$ with $\phi = \operatorname{atan2}(r_{32}, r_{33})$. The columns are unit vectors too, so in the same way $(r_{11}, r_{21}) = c_\theta(\cos\psi, \sin\psi)$. By item 1, $\mathbf R' := \mathbf R_z(\psi)\mathbf R_y(\theta)\mathbf R_x(\phi)$ has the same third row and first column as $\mathbf R$.
     Let $\mathbf M := \mathbf R'^\top\mathbf R \in SO(3)$. Equal first columns give $\mathbf M\mathbf e_x = \mathbf R'^\top\mathbf R'\mathbf e_x = \mathbf e_x$. Equal third rows give $\mathbf R^\top\mathbf e_z = \mathbf R'^\top\mathbf e_z =: \mathbf w$, so $\mathbf M^\top\mathbf w = \mathbf R^\top\mathbf R'\mathbf R'^\top\mathbf e_z = \mathbf w$ and hence $\mathbf M\mathbf w = \mathbf w$. Now $\mathbf w = [-s_\theta, c_\theta s_\phi, c_\theta c_\phi]^\top$ is not parallel to $\mathbf e_x$ because $c_\theta \ne 0$, so $\mathbf e_x\times\mathbf w \ne \mathbf 0$, and by property 4, $\mathbf M(\mathbf e_x\times\mathbf w) = \mathbf M\mathbf e_x\times\mathbf M\mathbf w = \mathbf e_x\times\mathbf w$. The vectors $\mathbf e_x$, $\mathbf w$, $\mathbf e_x\times\mathbf w$ are linearly independent (the third is nonzero and perpendicular to the first two, which are independent), and $\mathbf M$ fixes all three, so $\mathbf M = \mathbf I$ and $\mathbf R = \mathbf R'$.
@@ -330,7 +327,6 @@ def _(mo):
     Item 2 shows every rotation matrix has Euler angles (item 3 covers the remaining cases), and that restricting $\theta$ to $[-\tfrac\pi2, \tfrac\pi2]$ removes most ambiguity; without that restriction $(\phi + \pi,\ \pi - \theta,\ \psi + \pi)$ always gives the same matrix as $(\phi, \theta, \psi)$. Item 3 is the troublesome case: at $\theta = \pm 90^\circ$ infinitely many triples give the same matrix. That is our first sighting of gimbal lock.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - The formulas assume $\mathbf R$ is exactly orthogonal. A matrix that has drifted from orthogonality (for example after many numerical integration steps) can give $|r_{31}| > 1$, where $\arcsin$ is undefined; clip $r_{31}$ to $[-1, 1]$ or re-orthonormalize first.
     - Near $\theta = \pm 90^\circ$, $(r_{32}, r_{33})$ and $(r_{11}, r_{21})$ are both tiny, so $\phi$ and $\psi$ individually become extremely sensitive to rounding and noise, even though the matrix itself is perfectly well behaved.
     - $\phi$ and $\psi$ jump by $360^\circ$ when they cross $\pm 180^\circ$. Never difference or average angles without wrapping the result back into $(-\pi, \pi]$.
@@ -341,7 +337,7 @@ def _(mo):
 
 @app.cell
 def rotation_helpers(np):
-    # jb: echo=true
+    # jb: editor=true
     def skew(a):
         """Cross-product matrix: skew(a) @ b == np.cross(a, b)."""
         return np.array([[0.0, -a[2], a[1]],
@@ -453,7 +449,7 @@ def make_frames_fig(IMAGES_DIR, draw_axes, draw_body, euler_to_R, np, plt, setup
     _fig = plt.figure(figsize=(9, 4.2))
     _cases = [((0.0, 0.0, 0.0), "Zero attitude: body axes = ENU"),
               ((np.radians(10), np.radians(-20), np.radians(35)),
-               "Yaw 35°, pitch −20° (nose up), roll 10°")]
+               r"Yaw $35^\circ$, pitch $-20^\circ$ (nose up), roll $10^\circ$")]
     for _j, (_ang, _title) in enumerate(_cases):
         _ax = _fig.add_subplot(1, 2, _j + 1, projection="3d")
         setup_3d(_ax, lim=1.1, zlim=(-0.5, 1.2), zoom=1.45)
@@ -471,24 +467,24 @@ def make_frames_fig(IMAGES_DIR, draw_axes, draw_body, euler_to_R, np, plt, setup
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-angular-velocity -->
     ## Angular Velocity
 
     A walking foot's attitude changes continuously, $\mathbf R^n_b = \mathbf R^n_b(t)$. A gyroscope measures neither $\mathbf R^n_b$ nor the Euler angles; it measures how fast the body is turning. To say precisely what that means, differentiate the defining property of a rotation matrix.
 
-    /// important | 📐 **Lemma (The Rate of a Rotation Is Skew-Symmetric)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (The Rate of a Rotation Is Skew-Symmetric)**
+        attrs: {class: lemma, id: ch17-lem-the-rate-of-a-rotation-is-skew-symmetric}
     If $t \mapsto \mathbf R(t) \in SO(3)$ is differentiable, then $\mathbf R^\top\dot{\mathbf R}$ is skew-symmetric at every $t$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Differentiate $\mathbf R^\top\mathbf R = \mathbf I$ entrywise with the product rule: $\dot{\mathbf R}^\top\mathbf R + \mathbf R^\top\dot{\mathbf R} = \mathbf 0$, that is, $(\mathbf R^\top\dot{\mathbf R})^\top = -\mathbf R^\top\dot{\mathbf R}$. $\blacksquare$
     ///
 
-    Since every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one vector $\mathbf a$ ([Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md)), the following definition makes sense.
+    Since every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one vector $\mathbf a$ ([Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices)), the following definition makes sense.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Angular velocity**</u>
 
     The angular velocity of the body frame $b$ relative to the navigation frame $n$, expressed in body coordinates, is the unique vector $\boldsymbol\omega^b(t) \in \mathbb R^3$ with
@@ -500,13 +496,13 @@ def _(mo):
     $$\dot{\mathbf p}^n = \dot{\mathbf R}^n_b\mathbf p^b = \mathbf R^n_b(\boldsymbol\omega^b\times\mathbf p^b) = (\mathbf R^n_b\boldsymbol\omega^b)\times(\mathbf R^n_b\mathbf p^b) = \boldsymbol\omega^n\times\mathbf p^n,$$
     by property 4. So every point of the body moves as if spinning about the axis $\boldsymbol\omega^n$ at $\|\boldsymbol\omega^n\|$ radians per second, by the right-hand rule. Property 5 gives the navigation-frame form of the definition, $\dot{\mathbf R}^n_b(\mathbf R^n_b)^\top = \mathbf R^n_b[\boldsymbol\omega^b]_\times(\mathbf R^n_b)^\top = [\boldsymbol\omega^n]_\times$.
 
-    /// important | 📐 **Lemma (Elementary Rotation Rates)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Elementary Rotation Rates)**
+        attrs: {class: lemma, id: ch17-lem-elementary-rotation-rates}
     For differentiable angles, $\mathbf R_x(\phi)^\top\tfrac{d}{dt}\mathbf R_x(\phi) = \dot\phi\,[\mathbf e_x]_\times$, $\ \mathbf R_y(\theta)^\top\tfrac{d}{dt}\mathbf R_y(\theta) = \dot\theta\,[\mathbf e_y]_\times$, and $\mathbf R_z(\psi)^\top\tfrac{d}{dt}\mathbf R_z(\psi) = \dot\psi\,[\mathbf e_z]_\times$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the chain rule, $\tfrac{d}{dt}\mathbf R_z(\psi) = \dot\psi\begin{bmatrix}-\sin\psi & -\cos\psi & 0\\ \cos\psi & -\sin\psi & 0\\ 0 & 0 & 0\end{bmatrix}$, and multiplying by $\mathbf R_z(\psi)^\top$ on the left gives $\dot\psi\begin{bmatrix}0 & -1 & 0\\ 1 & 0 & 0\\ 0 & 0 & 0\end{bmatrix} = \dot\psi\,[\mathbf e_z]_\times$. The other two are the same computation. $\blacksquare$
     ///
 
@@ -518,12 +514,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-gimbal-lock -->
     ## Gimbal Lock
 
     Euler angles are the most intuitive description of attitude, so it is tempting to integrate them directly from gyroscope readings. That requires the relation between the Euler-angle rates $\dot{\boldsymbol\Theta} = [\dot\phi, \dot\theta, \dot\psi]^\top$ and the angular velocity.
 
-    /// important | 📐 **Theorem (Euler-Angle Kinematics)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Euler-Angle Kinematics)**
+        attrs: {class: theorem, id: ch17-thm-euler-angle-kinematics}
     If $\mathbf R^n_b(t) = \mathbf R_z(\psi(t))\mathbf R_y(\theta(t))\mathbf R_x(\phi(t))$ with differentiable angles, then
     $$\boldsymbol\omega^b = \mathbf W(\phi, \theta)\,\dot{\boldsymbol\Theta},\qquad \mathbf W(\phi, \theta) = \begin{bmatrix}1 & 0 & -\sin\theta\\ 0 & \cos\phi & \sin\phi\cos\theta\\ 0 & -\sin\phi & \cos\phi\cos\theta\end{bmatrix},\qquad \det\mathbf W = \cos\theta.$$
     Whenever $\cos\theta \ne 0$, the Euler-angle rates are $\dot{\boldsymbol\Theta} = \mathbf E(\phi, \theta)\,\boldsymbol\omega^b$ with
@@ -531,7 +528,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Abbreviate $\mathbf R_x := \mathbf R_x(\phi)$ and so on. By the product rule, $\dot{\mathbf R} = \dot{\mathbf R}_z\mathbf R_y\mathbf R_x + \mathbf R_z\dot{\mathbf R}_y\mathbf R_x + \mathbf R_z\mathbf R_y\dot{\mathbf R}_x$. Multiply on the left by $\mathbf R^\top = \mathbf R_x^\top\mathbf R_y^\top\mathbf R_z^\top$ and use the elementary-rate lemma:
     $$\mathbf R^\top\dot{\mathbf R} = \dot\psi\,(\mathbf R_y\mathbf R_x)^\top[\mathbf e_z]_\times(\mathbf R_y\mathbf R_x) + \dot\theta\,\mathbf R_x^\top[\mathbf e_y]_\times\mathbf R_x + \dot\phi\,[\mathbf e_x]_\times.$$
     Property 5, applied with the rotation matrices $(\mathbf R_y\mathbf R_x)^\top$ and $\mathbf R_x^\top$, turns this into $\big[\dot\psi\,(\mathbf R_y\mathbf R_x)^\top\mathbf e_z + \dot\theta\,\mathbf R_x^\top\mathbf e_y + \dot\phi\,\mathbf e_x\big]_\times$. Direct multiplication gives $\mathbf R_x^\top\mathbf e_y = [0, \cos\phi, -\sin\phi]^\top$ and $(\mathbf R_y\mathbf R_x)^\top\mathbf e_z = \mathbf R_x^\top[-\sin\theta, 0, \cos\theta]^\top = [-\sin\theta, \sin\phi\cos\theta, \cos\phi\cos\theta]^\top$. These three vectors are the columns of $\mathbf W$. Expanding $\det\mathbf W$ along its first column gives $\cos\phi\cdot\cos\phi\cos\theta + \sin\phi\cdot\sin\phi\cos\theta = \cos\theta$, and multiplying out $\mathbf W\mathbf E$ gives $\mathbf I$. $\blacksquare$
@@ -540,7 +537,6 @@ def _(mo):
     The proof also explains the columns of $\mathbf W$: they are the body-frame directions of the *roll axis* (body $x$), the *pitch axis* (the body $y$ axis after yawing), and the *yaw axis* (Up). The angular velocity is $\dot\phi$ times the first plus $\dot\theta$ times the second plus $\dot\psi$ times the third. The pitch axis is always perpendicular to the other two, so $\mathbf W$ is singular exactly when the roll axis lines up with the yaw axis, at $\theta = \pm 90^\circ$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gimbal lock**</u>
 
     An attitude is in gimbal lock (for a given Euler-angle sequence) if the matrix that maps Euler-angle rates to angular velocity at that attitude is singular. For ZYX Euler angles this happens exactly when $\cos\theta = 0$, that is, at pitch $\theta = \pm 90^\circ$.
@@ -620,7 +616,7 @@ def make_euler_rates_fig(Exp, IMAGES_DIR, R_to_euler, euler_to_R, np, plt):
     _axs[0].set_ylabel("angle (deg)")
     _axs[1].set_ylabel("Euler-angle rate (rad/s)")
     _axs[1].set_xlabel("time (s)")
-    _axs[0].set_title("Constant body rate of 0.5 rad/s passing 3° from gimbal lock", style="italic")
+    _axs[0].set_title(r"Constant body rate of 0.5 rad/s passing $3^\circ$ from gimbal lock", style="italic")
     for _a in _axs:
         _a.grid(visible=True, alpha=0.9, linewidth=0.4)
         _a.legend(loc="upper left", fontsize=9)
@@ -633,6 +629,7 @@ def make_euler_rates_fig(Exp, IMAGES_DIR, R_to_euler, euler_to_R, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-interactive-approaching-gimbal-lock -->
     ### Interactive: Approaching Gimbal Lock
 
     Set the yaw, pitch, and roll below. The shaded wedge is the body (its point is "forward"), the dashed gray axes are East, North, Up, and the dotted lines are the three gimbal axes. The panel on the right shows $\det\mathbf W = \cos\theta$ and the Euler-angle rates $\dot{\boldsymbol\Theta} = \mathbf E\boldsymbol\omega^b$ needed to produce a steady body rotation of $\boldsymbol\omega^b = [0, 0, 1]^\top$ rad/s about the body's own $z$ axis. Drag the pitch toward $\pm 90^\circ$ and watch the roll axis swing onto the yaw axis and the required rates explode.
@@ -677,7 +674,7 @@ def _(
     for _name, (_a, _c) in _gimbal.items():
         _ax.plot(*np.array([-1.35 * _a, 1.35 * _a]).T, color=_c, ls=":", lw=1.6)
         _ax.text(*(1.45 * _a), _name, color=_c, fontsize=9)
-    _ax.set_title(f"yaw {yaw_slider.value}°, pitch {pitch_slider.value}°, roll {roll_slider.value}°",
+    _ax.set_title(rf"yaw {yaw_slider.value}$^\circ$, pitch {pitch_slider.value}$^\circ$, roll {roll_slider.value}$^\circ$",
                   style="italic", fontsize=11)
     _fig.tight_layout()
 
@@ -715,6 +712,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-axisangle-representation-and-rodrigues-formula -->
     ## Axis–Angle Representation and Rodrigues' Formula
 
     Euler angles describe a rotation as three turns about coordinate axes. A single turn about a well-chosen axis is enough. A door turns about its hinge; turning $90^\circ$ about Up carries East to North. In this section we make "turning about an axis" precise. We write the rotation angle as $\vartheta$ (a variant of the letter theta), because $\theta$ is reserved for pitch.
@@ -726,7 +724,6 @@ def _(mo):
     <img src="public/ch17_rodrigues.svg" class="graphic" alt="A 3-D sketch of a vertical axis u, a vector v split into a vertical part along u and a horizontal part perpendicular to u, the vector u cross v-perpendicular at 90 degrees to it, and the rotated vector, whose tip lies on the circle traced around the axis." />
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Axis-angle representation**</u>
 
     An axis–angle representation of a rotation matrix $\mathbf R$ is a pair $(\mathbf u, \vartheta)$ of a unit vector $\mathbf u \in \mathbb R^3$ and an angle $\vartheta \in \mathbb R$ such that, for every $\mathbf v \in \mathbb R^3$,
@@ -734,14 +731,14 @@ def _(mo):
     We write $\mathbf R(\mathbf u, \vartheta)$ for this matrix: the right-handed rotation by $\vartheta$ about $\mathbf u$.
     ///
 
-    /// important | 📐 **Theorem (Rodrigues' Formula)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Rodrigues' Formula)**
+        attrs: {class: theorem, id: ch17-thm-rodrigues-formula}
     For every unit vector $\mathbf u$ and angle $\vartheta$,
     $$\mathbf R(\mathbf u, \vartheta) = \mathbf I + \sin\vartheta\,[\mathbf u]_\times + (1 - \cos\vartheta)\,[\mathbf u]_\times^2.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Multiplying out $[\mathbf u]_\times[\mathbf u]_\times$ gives $\mathbf u\mathbf u^\top - \|\mathbf u\|^2\mathbf I$ (for example, the $(1,1)$ entry is $-u_2^2 - u_3^2 = u_1^2 - \|\mathbf u\|^2$ and the $(1,2)$ entry is $u_1u_2$). With $\|\mathbf u\| = 1$ this says $[\mathbf u]_\times^2\mathbf v = (\mathbf u\cdot\mathbf v)\mathbf u - \mathbf v = -\mathbf v_\perp$, so $\mathbf v_\perp = -[\mathbf u]_\times^2\mathbf v$ and $\mathbf v_\parallel = \mathbf v + [\mathbf u]_\times^2\mathbf v$. Also $\mathbf u\times\mathbf v_\perp = \mathbf u\times\mathbf v - \mathbf u\times\mathbf v_\parallel = [\mathbf u]_\times\mathbf v$, since $\mathbf v_\parallel$ is parallel to $\mathbf u$. Substituting into the definition,
     $$\mathbf R(\mathbf u, \vartheta)\mathbf v = \mathbf v + [\mathbf u]_\times^2\mathbf v - \cos\vartheta\,[\mathbf u]_\times^2\mathbf v + \sin\vartheta\,[\mathbf u]_\times\mathbf v$$
     for every $\mathbf v$, which is the claim. $\blacksquare$
@@ -799,20 +796,20 @@ def _(mo):
     mo.md(r"""
     So far $\mathbf R(\mathbf u, \vartheta)$ is just a matrix. The next theorem shows it is always a rotation matrix and, more surprisingly, that *every* rotation matrix is a single turn about some axis.
 
-    /// important | 📐 **Theorem (Euler's Rotation Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Euler's Rotation Theorem)**
+        attrs: {class: theorem, id: ch17-thm-eulers-rotation-theorem}
     1. $\mathbf R(\mathbf u, \vartheta) \in SO(3)$ for every unit vector $\mathbf u$ and angle $\vartheta$.
     2. Every $\mathbf R \in SO(3)$ equals $\mathbf R(\mathbf u, \vartheta)$ for some unit vector $\mathbf u$ and some $\vartheta \in [0, \pi]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Choose a unit vector $\mathbf a \perp \mathbf u$ and let $\mathbf b := \mathbf u\times\mathbf a$. The matrix $\mathbf B := [\mathbf u\ \mathbf a\ \mathbf b]$ has perpendicular unit columns with $\mathbf u\times\mathbf a = \mathbf b$, so $\mathbf B \in SO(3)$. From the definition, $\mathbf R(\mathbf u, \vartheta)\mathbf u = \mathbf u$, $\ \mathbf R(\mathbf u, \vartheta)\mathbf a = \cos\vartheta\,\mathbf a + \sin\vartheta\,\mathbf b$, and, since $\mathbf u\times\mathbf b = \mathbf u\times(\mathbf u\times\mathbf a) = -\mathbf a$, $\ \mathbf R(\mathbf u, \vartheta)\mathbf b = \cos\vartheta\,\mathbf b - \sin\vartheta\,\mathbf a$. These three equations say $\mathbf R(\mathbf u, \vartheta)\mathbf B = \mathbf B\,\mathbf R_x(\vartheta)$ column by column, so $\mathbf R(\mathbf u, \vartheta) = \mathbf B\,\mathbf R_x(\vartheta)\,\mathbf B^\top \in SO(3)$ by properties 1 and 2.
     2. First, $\det(\mathbf R - \mathbf I) = \det\big(\mathbf R(\mathbf I - \mathbf R^\top)\big) = \det\mathbf R\,\det\big((\mathbf I - \mathbf R)^\top\big) = \det(\mathbf I - \mathbf R) = (-1)^3\det(\mathbf R - \mathbf I)$, so $\det(\mathbf R - \mathbf I) = 0$. Hence $1$ is an eigenvalue of $\mathbf R$: there is a unit vector $\mathbf u$ with $\mathbf R\mathbf u = \mathbf u$. Choose $\mathbf a$, $\mathbf b$ as in part 1. By property 3, $\mathbf R\mathbf a$ is a unit vector with $\mathbf R\mathbf a\cdot\mathbf u = \mathbf R\mathbf a\cdot\mathbf R\mathbf u = \mathbf a\cdot\mathbf u = 0$, so it lies in the plane spanned by $\mathbf a$ and $\mathbf b$: $\mathbf R\mathbf a = \cos\vartheta\,\mathbf a + \sin\vartheta\,\mathbf b$ with $\vartheta := \operatorname{atan2}(\mathbf R\mathbf a\cdot\mathbf b, \mathbf R\mathbf a\cdot\mathbf a)$. By property 4, $\mathbf R\mathbf b = \mathbf R\mathbf u\times\mathbf R\mathbf a = \cos\vartheta\,\mathbf b - \sin\vartheta\,\mathbf a$. So $\mathbf R$ and $\mathbf R(\mathbf u, \vartheta)$ agree on the basis $\mathbf u, \mathbf a, \mathbf b$, hence everywhere. Finally, Rodrigues' formula shows $\mathbf R(-\mathbf u, -\vartheta) = \mathbf R(\mathbf u, \vartheta)$, so if $\vartheta < 0$ we may replace $(\mathbf u, \vartheta)$ by $(-\mathbf u, -\vartheta)$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Angle and Axis from the Matrix)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Angle and Axis from the Matrix)**
+        attrs: {class: corollary, id: ch17-cor-angle-and-axis-from-the-matrix}
     $\operatorname{tr}\mathbf R(\mathbf u, \vartheta) = 1 + 2\cos\vartheta$ and $\mathbf R(\mathbf u, \vartheta) - \mathbf R(\mathbf u, \vartheta)^\top = 2\sin\vartheta\,[\mathbf u]_\times$. Consequently, for $\mathbf R \in SO(3)$ the angle $\vartheta \in [0, \pi]$ in Euler's theorem is $\vartheta = \arccos\tfrac{\operatorname{tr}\mathbf R - 1}{2}$, and
 
     - if $0 < \vartheta < \pi$, the axis is unique: $[\mathbf u]_\times = (\mathbf R - \mathbf R^\top)/(2\sin\vartheta)$;
@@ -821,7 +818,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\operatorname{tr}\mathbf I = 3$, $\operatorname{tr}[\mathbf u]_\times = 0$, and $\operatorname{tr}[\mathbf u]_\times^2 = \operatorname{tr}(\mathbf u\mathbf u^\top) - 3 = 1 - 3 = -2$, so Rodrigues' formula gives $\operatorname{tr}\mathbf R = 3 - 2(1 - \cos\vartheta)$. Since $[\mathbf u]_\times^\top = -[\mathbf u]_\times$ while $\mathbf I$ and $[\mathbf u]_\times^2$ are symmetric, $\mathbf R - \mathbf R^\top = 2\sin\vartheta\,[\mathbf u]_\times$. On $[0, \pi]$, $\cos$ is one-to-one, which gives $\vartheta$; for $0 < \vartheta < \pi$, $\sin\vartheta > 0$ gives $\mathbf u$. At $\vartheta = \pi$, Rodrigues' formula reads $\mathbf R = \mathbf I + 2(\mathbf u\mathbf u^\top - \mathbf I)$. $\blacksquare$
     ///
     """)
@@ -831,12 +828,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-rotation-vectors-and-the-exponential-map -->
     ## Rotation Vectors and the Exponential Map
 
     An axis–angle pair uses four numbers tied together by one constraint, $\|\mathbf u\| = 1$. Multiplying them packs the same information into a single vector.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Rotation vector**</u>
 
     A rotation vector of a rotation matrix $\mathbf R$ is a vector $\boldsymbol\theta \in \mathbb R^3$ with $\mathbf R = \operatorname{Exp}(\boldsymbol\theta)$, where
@@ -846,16 +843,16 @@ def _(mo):
 
     By Euler's rotation theorem every rotation matrix has a rotation vector with $\|\boldsymbol\theta\| \le \pi$. The name $\operatorname{Exp}$ is no accident.
 
-    /// important | 📐 **Theorem (Rotation Vectors and the Matrix Exponential)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Rotation Vectors and the Matrix Exponential)**
+        attrs: {class: theorem, id: ch17-thm-rotation-vectors-and-the-matrix-exponential}
     For every $\boldsymbol\theta \in \mathbb R^3$, $\ \operatorname{Exp}(\boldsymbol\theta) = \exp\big([\boldsymbol\theta]_\times\big)$, the matrix exponential of the cross-product matrix.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    For $\boldsymbol\theta = \mathbf 0$ both sides are $\mathbf I$. Otherwise write $\boldsymbol\theta = \vartheta\mathbf u$ with $\|\mathbf u\| = 1$. From the proof of Rodrigues' formula, $[\mathbf u]_\times^2 = \mathbf u\mathbf u^\top - \mathbf I$, and $[\mathbf u]_\times\mathbf u = \mathbf u\times\mathbf u = \mathbf 0$, so $[\mathbf u]_\times^3 = [\mathbf u]_\times(\mathbf u\mathbf u^\top - \mathbf I) = -[\mathbf u]_\times$. By induction, for $m \ge 0$, $[\mathbf u]_\times^{2m+1} = (-1)^m[\mathbf u]_\times$, and for $m \ge 1$, $[\mathbf u]_\times^{2m} = (-1)^{m-1}[\mathbf u]_\times^2$. The exponential series converges absolutely ([Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md)), so we may group its odd and even terms:
+        attrs: {class: proof}
+    For $\boldsymbol\theta = \mathbf 0$ both sides are $\mathbf I$. Otherwise write $\boldsymbol\theta = \vartheta\mathbf u$ with $\|\mathbf u\| = 1$. From the proof of Rodrigues' formula, $[\mathbf u]_\times^2 = \mathbf u\mathbf u^\top - \mathbf I$, and $[\mathbf u]_\times\mathbf u = \mathbf u\times\mathbf u = \mathbf 0$, so $[\mathbf u]_\times^3 = [\mathbf u]_\times(\mathbf u\mathbf u^\top - \mathbf I) = -[\mathbf u]_\times$. By induction, for $m \ge 0$, $[\mathbf u]_\times^{2m+1} = (-1)^m[\mathbf u]_\times$, and for $m \ge 1$, $[\mathbf u]_\times^{2m} = (-1)^{m-1}[\mathbf u]_\times^2$. The exponential series converges absolutely ([Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential)), so we may group its odd and even terms:
     $$\exp(\vartheta[\mathbf u]_\times) = \mathbf I + \Big(\sum_{m\ge 0}\frac{(-1)^m\vartheta^{2m+1}}{(2m+1)!}\Big)[\mathbf u]_\times + \Big(\sum_{m\ge 1}\frac{(-1)^{m-1}\vartheta^{2m}}{(2m)!}\Big)[\mathbf u]_\times^2 = \mathbf I + \sin\vartheta\,[\mathbf u]_\times + (1 - \cos\vartheta)[\mathbf u]_\times^2,$$
-    using the power series of $\sin$ and $\cos$ ([Appendix C: Exponential and Logarithm](appendix_c_calculus.md)). By Rodrigues' formula this is $\mathbf R(\mathbf u, \vartheta) = \operatorname{Exp}(\boldsymbol\theta)$. $\blacksquare$
+    using the power series of $\sin$ and $\cos$ ([Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm)). By Rodrigues' formula this is $\mathbf R(\mathbf u, \vartheta) = \operatorname{Exp}(\boldsymbol\theta)$. $\blacksquare$
     ///
 
     The exponential form makes several properties one-liners. For $\mathbf a, \boldsymbol\theta \in \mathbb R^3$, $\mathbf R \in SO(3)$, and scalars $s, t$:
@@ -897,17 +894,18 @@ def _(Exp, Log, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-integrating-a-constant-angular-velocity -->
     ### Integrating a Constant Angular Velocity
 
     The exponential map solves the angular-velocity equation exactly when the rate is constant. This is the basis of every attitude update in Chapters 18–21.
 
-    /// important | 📐 **Theorem (Constant Angular Velocity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Constant Angular Velocity)**
+        attrs: {class: theorem, id: ch17-thm-constant-angular-velocity}
     If $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ on an interval $[t_0, t_1]$ with $\boldsymbol\omega$ constant, then $\mathbf R(t) = \mathbf R(t_0)\operatorname{Exp}\big(\boldsymbol\omega\,(t - t_0)\big)$ for all $t$ in the interval.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathbf X(t) := \mathbf R(t)\exp\big(-(t - t_0)[\boldsymbol\omega]_\times\big)$. By the product rule and $\tfrac{d}{dt}\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$,
     $$\dot{\mathbf X} = \mathbf R[\boldsymbol\omega]_\times\exp\big(-(t-t_0)[\boldsymbol\omega]_\times\big) - \mathbf R\,\exp\big(-(t-t_0)[\boldsymbol\omega]_\times\big)[\boldsymbol\omega]_\times = \mathbf 0,$$
     because $[\boldsymbol\omega]_\times$ commutes with every power of itself and hence with its exponential. So $\mathbf X(t) = \mathbf X(t_0) = \mathbf R(t_0)$; multiply on the right by $\exp((t - t_0)[\boldsymbol\omega]_\times)$, the inverse of $\exp(-(t - t_0)[\boldsymbol\omega]_\times)$. $\blacksquare$
@@ -918,7 +916,6 @@ def _(mo):
     The body rate multiplies on the **right**, because $\boldsymbol\omega$ is expressed in body coordinates (compare the lemma on rotating about a body axis).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Constant rate within each step.** If $\boldsymbol\omega$ changes direction during a sample period, the true increment is not $\operatorname{Exp}(\boldsymbol\omega_k\Delta t)$, because rotations about different axes do not commute. The resulting error (called *coning* in the navigation literature) is small at 100 Hz for walking motion but grows with vibration and lower sample rates.
     - **Rounding.** Each product $\mathbf R_{k-1}\operatorname{Exp}(\cdot)$ is computed in floating point, so after many steps $\mathbf R_k$ drifts slightly away from $SO(3)$. Practical code re-orthonormalizes occasionally, or stores the attitude as a quaternion and normalizes it ([Chapter 18](ch18_quaternions.md)).
     - **Tiny angles.** Evaluating $\sin\vartheta/\vartheta$ and $(1 - \cos\vartheta)/\vartheta^2$ naively loses precision for very small $\vartheta$; use their Taylor series there.
@@ -930,19 +927,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-small-angles -->
     ## Small Angles
 
     Attitude *errors* in a working filter are small: a fraction of a degree to a few degrees. For such rotations the exponential is nearly linear.
 
-    /// important | 📐 **Theorem (Small-Angle Approximation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Small-Angle Approximation)**
+        attrs: {class: theorem, id: ch17-thm-small-angle-approximation}
     For every $\delta\boldsymbol\theta \in \mathbb R^3$ with $\vartheta := \|\delta\boldsymbol\theta\|$ and every $\mathbf v \in \mathbb R^3$,
     $$\big\|\big(\operatorname{Exp}(\delta\boldsymbol\theta) - \mathbf I - [\delta\boldsymbol\theta]_\times\big)\mathbf v\big\| \le \Big(\frac{\vartheta^2}{2} + \frac{\vartheta^3}{6}\Big)\|\mathbf v\|.$$
     So $\operatorname{Exp}(\delta\boldsymbol\theta) = \mathbf I + [\delta\boldsymbol\theta]_\times$ up to an error of second order in $\vartheta$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $\vartheta = 0$ there is nothing to prove. Otherwise, with $\delta\boldsymbol\theta = \vartheta\mathbf u$, Rodrigues' formula gives $\operatorname{Exp}(\delta\boldsymbol\theta) - \mathbf I - [\delta\boldsymbol\theta]_\times = (\sin\vartheta - \vartheta)[\mathbf u]_\times + (1 - \cos\vartheta)[\mathbf u]_\times^2$. From the proof of Rodrigues' formula, $\|[\mathbf u]_\times\mathbf v\| = \|\mathbf u\times\mathbf v_\perp\| = \|\mathbf v_\perp\| \le \|\mathbf v\|$ and $\|[\mathbf u]_\times^2\mathbf v\| = \|\mathbf v_\perp\| \le \|\mathbf v\|$. Taylor's theorem with the Lagrange remainder gives $|\sin\vartheta - \vartheta| \le \vartheta^3/6$ and $0 \le 1 - \cos\vartheta \le \vartheta^2/2$. The triangle inequality finishes the proof. $\blacksquare$
     ///
 
@@ -973,11 +971,11 @@ def _(mo, small_angle_table):
 def _(Exp, np, skew):
     # jb: include=false
     _u = np.array([1.0, 2.0, -2.0]) / 3.0
-    _rows = ["| angle | max entry error | bound $\\vartheta^2/2 + \\vartheta^3/6$ |", "|---|---|---|"]
+    _rows = ["| angle | max entry error | bound $\\vartheta^2/2 + \\vartheta^3/6$ |", "|:---|:---:|:---:|"]
     for _deg in [1, 5, 10, 30]:
         _t = np.radians(_deg)
         _err = np.abs(Exp(_t * _u) - np.eye(3) - skew(_t * _u)).max()
-        _rows.append(f"| {_deg}° | {_err:.1e} | {_t**2/2 + _t**3/6:.1e} |")
+        _rows.append(rf"| {_deg}$^\circ$ | {_err:.1e} | {_t**2/2 + _t**3/6:.1e} |")
     small_angle_table = "\n".join(_rows)
     return (small_angle_table,)
 
@@ -986,7 +984,6 @@ def _(Exp, np, skew):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The first-order formulas are only as good as the angle is small. A filter whose attitude error grows to tens of degrees (for example after a bad initialization) linearizes about the wrong point, and its Jacobians, built from $\mathbf I + [\delta\boldsymbol\theta]_\times$, can point the correction in the wrong direction. This is the rotational version of the extended Kalman filter's failure modes in [Chapter 15](ch15_extended_kalman_filter.md).
     ///
     """)
@@ -996,18 +993,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-why-three-numbers-are-never-enough -->
     ## Why Three Numbers Are Never Enough
 
     Euler angles fail at gimbal lock and jump at $\pm 180^\circ$. The rotation vector $\operatorname{Log}(\mathbf R)$ also jumps: at $\vartheta = \pi$ it switches between $\pi\mathbf u$ and $-\pi\mathbf u$, two very different vectors for nearly the same rotation. The Gibbs vector $\tan(\vartheta/2)\,\mathbf u$, another popular choice, is infinite at $\vartheta = \pi$. This is not bad luck.
 
-    /// important | 📐 **Theorem (No Global Three-Parameter Description)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (No Global Three-Parameter Description)**
+        attrs: {class: theorem, id: ch17-thm-no-global-three-parameter-description}
     There is no continuous injective function from $SO(3)$ to $\mathbb R^3$. Consequently, every way of assigning three real numbers to every rotation either jumps somewhere (is discontinuous) or assigns the same numbers to two different rotations.
     ///
 
-    /// admonition | ✍️ **Proof (sketch)**
-        attrs: {class: no-icon}
-    The full argument uses topology beyond this book; see @stuelpnagel1964. In outline, regard $SO(3)$ as a subset of $\mathbb R^9$ (the nine entries).
+    /// admonition | ✍️ **Proof**
+        attrs: {class: proof}
+    *Sketch.* The full argument uses topology beyond this book; see @stuelpnagel1964. In outline, regard $SO(3)$ as a subset of $\mathbb R^9$ (the nine entries).
 
     1. $SO(3)$ is *compact*[^compact]: it is closed (it is defined by the continuous equations $\mathbf R^\top\mathbf R = \mathbf I$ and $\det\mathbf R = 1$) and bounded (every entry has absolute value at most 1, because the columns are unit vectors).
     2. $SO(3)$ is three-dimensional in the precise sense that near every $\mathbf R$ it looks like a ball in $\mathbb R^3$: the map $\boldsymbol\theta \mapsto \mathbf R\operatorname{Exp}(\boldsymbol\theta)$, restricted to $\|\boldsymbol\theta\| < \pi$, is a continuous bijection onto a neighborhood of $\mathbf R$ with continuous inverse $\mathbf R' \mapsto \operatorname{Log}(\mathbf R^\top\mathbf R')$.
@@ -1027,6 +1025,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch17-sec-summary -->
     ## Summary
 
     - A {term}`reference frame` is an origin with a right-handed triple of perpendicular unit axes. The navigation frame $n$ is ENU, the body frame $b$ is FLU, and $\mathbf v^n = \mathbf R^n_b\mathbf v^b$, where the columns of $\mathbf R^n_b$ are the body axes in navigation coordinates.
@@ -1038,6 +1037,7 @@ def _(mo):
     - Small rotations satisfy $\operatorname{Exp}(\delta\boldsymbol\theta) \approx \mathbf I + [\delta\boldsymbol\theta]_\times$, which defines the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
     - No continuous one-to-one description of all rotations by three numbers exists.
 
+    <!-- label: ch17-sec-whats-next -->
     ## What's Next
 
     [Chapter 18](ch18_quaternions.md) introduces quaternions: four numbers on a unit sphere whose product composes rotations, whose kinematic equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$ is linear and never singular, and whose only quirk is that $q$ and $-q$ describe the same rotation. They are the attitude representation used in every filter for the rest of the book.

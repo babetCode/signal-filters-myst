@@ -58,12 +58,6 @@ def display_settings(dedent, mo, plt):
             </div>
             '''))
 
-    return (graphic,)
-
-
-@app.cell
-def display_settings(dedent, mo):
-    # jb: include=false
     mo.latex(dedent(
         r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
         \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
@@ -71,14 +65,14 @@ def display_settings(dedent, mo):
         \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}"""
     ))
     mo.output.clear()
-    return
+
+    return (graphic,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): all of it, especially induction, the Recursion Theorem, Equality of Functions, and the recursive definitions of $+$, $\cdot$, and $<$ on $\mathbb N$.
     - [Chapter 3](ch3_sets_for_probability.md) (optional): the definitions of a {term}`field`, an {term}`ordered field`, an {term}`upper bound`, a {term}`supremum`, a {term}`complete ordered field`, and a {term}`bijective` function. Each is restated here where it is first needed, so this appendix can be read directly after Chapter 2.
     ///
@@ -94,7 +88,6 @@ def _(mo):
     This appendix shows that the property is not an extra assumption. Inside ZFC, starting from the natural numbers of [Chapter 2](ch2_axioms_of_set_theory.md), we construct the integers $\mathbb Z$, the rational numbers $\mathbb Q$, and the real numbers $\mathbb R$, and prove that $\mathbb R$ is a complete ordered field. Along the way we see exactly what is missing from $\mathbb Q$: the rationals have a hole where $\sqrt 2$ should be.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Each number system is built from the previous one by a set-theoretic construction that repairs one defect. Integers are classes of pairs of natural numbers (adding subtraction), rational numbers are classes of pairs of integers (adding division), and real numbers are sets of rational numbers called Dedekind cuts (adding least upper bounds).
     ///
     """)
@@ -104,16 +97,17 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-arithmetic-on-the-natural-numbers -->
     ## Arithmetic on the Natural Numbers
 
     Chapter 2 defined, for all $m, n \in \mathbb N$,
 
     $$m + 0 = m, \qquad m + (n + 1) = (m + n) + 1, \qquad m \cdot 0 = 0, \qquad m \cdot (n + 1) = m \cdot n + m,$$
 
-    where $n + 1 = \operatorname{succ}(n)$, together with $m < n :\Longleftrightarrow m \in n$ and $m \le n :\Longleftrightarrow (m < n \lor m = n)$. This section proves the Theorem (Arithmetic and Order on ℕ) stated there. Every proof is an induction on the variable that the recursion runs over. We write $mn$ for $m \cdot n$, and we use two facts from Chapter 2: the successor is injective on $\mathbb N$ (Peano axiom 4), and every natural number is $0$ or $n + 1$ for some $n \in \mathbb N$ (Zero or Successor).
+    where $n + 1 = \operatorname{succ}(n)$, together with $m < n :\Longleftrightarrow m \in n$ and $m \le n :\Longleftrightarrow (m < n \lor m = n)$. This section proves the Theorem (Arithmetic and Order on $\mathbb N$) stated there. Every proof is an induction on the variable that the recursion runs over. We write $mn$ for $m \cdot n$, and we use two facts from Chapter 2: the successor is injective on $\mathbb N$ (Peano axiom 4), and every natural number is $0$ or $n + 1$ for some $n \in \mathbb N$ (Zero or Successor).
 
-    /// important | 📐 **Theorem (Addition on ℕ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Addition on $\mathbb N$)**
+        attrs: {class: theorem, id: appb-thm-addition-on-n}
     For all $a, b, c \in \mathbb N$:
 
     1. $0 + a = a$.
@@ -124,7 +118,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Induction on $a$. $0 + 0 = 0$ by definition. If $0 + a = a$, then $0 + (a + 1) = (0 + a) + 1 = a + 1$.
     2. Induction on $b$. For $b = 0$: $(a + 1) + 0 = a + 1 = (a + 0) + 1$. If the claim holds for $b$, then $(a + 1) + (b + 1) = \big((a + 1) + b\big) + 1 = \big((a + b) + 1\big) + 1 = \big(a + (b + 1)\big) + 1$.
     3. Induction on $c$. For $c = 0$: $(a + b) + 0 = a + b = a + (b + 0)$. If the claim holds for $c$, then $(a + b) + (c + 1) = \big((a + b) + c\big) + 1 = \big(a + (b + c)\big) + 1 = a + \big((b + c) + 1\big) = a + \big(b + (c + 1)\big)$.
@@ -132,8 +126,8 @@ def _(mo):
     5. Induction on $c$. For $c = 0$ there is nothing to prove. Suppose the claim holds for $c$, and $a + (c + 1) = b + (c + 1)$. Then $(a + c) + 1 = (b + c) + 1$, so $a + c = b + c$ because the successor is injective, so $a = b$ by the induction hypothesis. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Multiplication on ℕ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Multiplication on $\mathbb N$)**
+        attrs: {class: theorem, id: appb-thm-multiplication-on-n}
     For all $a, b, c \in \mathbb N$:
 
     1. $0 \cdot a = 0$ and $a \cdot 1 = a$.
@@ -144,7 +138,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     We use the laws of addition freely.
 
     1. Induction on $a$: $0 \cdot 0 = 0$, and if $0 \cdot a = 0$, then $0 \cdot (a + 1) = 0 \cdot a + 0 = 0$. Also $a \cdot 1 = a \cdot (0 + 1) = a \cdot 0 + a = 0 + a = a$.
@@ -160,8 +154,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Order on ℕ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Order on $\mathbb N$)**
+        attrs: {class: theorem, id: appb-thm-order-on-n}
     For all $a, b, c \in \mathbb N$:
 
     1. $a < b + 1 \leftrightarrow a \le b$, and $0 \le a$.
@@ -175,7 +169,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $a \in b \cup \{b\}$ iff $a \in b$ or $a = b$. Then $0 \le a$ by induction on $a$: $0 \le 0$, and if $0 \le a$, then $0 < a + 1$ by the first part.
     2. $c$ is transitive (Chapter 2, Transitivity Lemma), so $b \in c$ gives $b \subseteq c$, and $a \in b$ gives $a \in c$.
     3. *At most one holds:* $a < a$ is impossible because no set is an element of itself, and $a < b$ together with $b < a$ would give $a < a$ by part 2. *At least one holds:* first we show that $a < b$ implies $a + 1 \le b$, by induction on $b$. For $b = 0$ there is nothing to prove, since nothing is an element of $0$. If it holds for $b$ and $a < b + 1$, then either $a = b$, so $a + 1 = b + 1$, or $a < b$, so $a + 1 \le b < b + 1$ by the induction hypothesis; either way $a + 1 \le b + 1$. Now we prove "$a < b$ or $a = b$ or $b < a$ for every $b$" by induction on $a$. For $a = 0$ it holds because $0 \le b$. Suppose it holds for $a$, and let $b \in \mathbb N$. If $b < a$ or $b = a$, then $b < a + 1$ by part 1. If $a < b$, then $a + 1 \le b$ by the claim just shown. In every case the statement holds for $a + 1$.
@@ -186,7 +180,7 @@ def _(mo):
     8. Suppose $X \subseteq \mathbb N$ has no least element; we show $X = \emptyset$. Let $T := \{n \in \mathbb N : n \cap X = \emptyset\}$, the set of $n$ with no element of $X$ below $n$. Then $0 \in T$. Let $n \in T$. If $(n + 1) \cap X$ had an element $y$, then $y \in n$ or $y = n$; the first contradicts $n \cap X = \emptyset$, so $n \in X$. But then $n$ would be a least element of $X$: for $x \in X$, $x \notin n$ (as $n \cap X = \emptyset$), so $n \le x$ by trichotomy. This contradicts the assumption, so $n + 1 \in T$. By induction, $T = \mathbb N$. Finally, if $x \in X$, then $x \in (x + 1) \cap X$, contradicting $x + 1 \in T$. So $X = \emptyset$. $\blacksquare$
     ///
 
-    These three theorems together prove every item of Chapter 2's Theorem (Arithmetic and Order on ℕ). Part 4 also justifies subtraction where it makes sense: for $m \le n$ we write $n - m$ for the unique $k \in \mathbb N$ with $m + k = n$. For $m > n$ no such $k$ exists in $\mathbb N$; repairing that is the job of the integers.
+    These three theorems together prove every item of Chapter 2's Theorem (Arithmetic and Order on $\mathbb N$). Part 4 also justifies subtraction where it makes sense: for $m \le n$ we write $n - m$ for the unique $k \in \mathbb N$ with $m + k = n$. For $m > n$ no such $k$ exists in $\mathbb N$; repairing that is the job of the integers.
     """)
     return
 
@@ -194,12 +188,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-equivalence-relations-and-quotients -->
     ## Equivalence Relations and Quotients
 
     In $\mathbb N$, the expression $2 - 5$ has no value. The fix is to *represent* each missing number by the data that would produce it, for instance the pair $(2, 5)$ for "$2 - 5$", and to declare two representations equal when they ought to name the same number: $(2, 5)$ and $(0, 3)$ both stand for "$-3$". Equivalence relations make "ought to name the same number" precise, and quotient sets turn it into actual equality.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Equivalence relation**</u>
 
     A relation $\sim$ on a set $X$ is an equivalence relation iff it is reflexive, symmetric, and transitive:
@@ -210,7 +204,6 @@ def _(mo):
     Equality on any set is an equivalence relation. For intuition[^display-informal]: a scale that displays weight to the nearest 0.1 lb treats two true weights as equivalent when they produce the same display. The order $<$ on $\mathbb N$ is transitive but neither reflexive nor symmetric, so it is not an equivalence relation.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Equivalence class**</u>
 
     For an equivalence relation $\sim$ on $X$ and $x \in X$, the equivalence class of $x$ is
@@ -219,7 +212,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Quotient set**</u>
 
     For an equivalence relation $\sim$ on $X$, the quotient set is the set of all equivalence classes,
@@ -229,8 +221,8 @@ def _(mo):
 
     In the scale example, each class is the set of true weights that produce one display value, and the quotient set corresponds to the set of possible displays.
 
-    /// important | 📐 **Lemma (Equivalence Classes)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Equivalence Classes)**
+        attrs: {class: lemma, id: appb-lem-equivalence-classes}
     Let $\sim$ be an equivalence relation on $X$. For all $x, y \in X$:
 
     1. $x \in [x]$;
@@ -239,7 +231,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Reflexivity.
     2. ($\leftarrow$) Suppose $x \sim y$. If $z \in [x]$, then $z \sim x$ and $x \sim y$, so $z \sim y$, that is, $z \in [y]$. If $z \in [y]$, then $z \sim y$ and $y \sim x$ (symmetry), so $z \in [x]$. By Extensionality, $[x] = [y]$. ($\rightarrow$) By part 1, $x \in [x] = [y]$, so $x \sim y$.
     3. If $z \in [x] \cap [y]$, then $z \sim x$ and $z \sim y$, so $x \sim z$ and $z \sim y$, so $x \sim y$, and $[x] = [y]$ by part 2. $\blacksquare$
@@ -257,8 +249,8 @@ def _(mo):
     mo.md(r"""
     To compute with classes we compute with representatives: for example, add two pairs and take the class of the result. This works only if the class of the result does not depend on which representatives we picked.
 
-    /// important | 📐 **Lemma (Well-Definedness)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Well-Definedness)**
+        attrs: {class: lemma, id: appb-lem-well-definedness}
     Let $\sim$ be an equivalence relation on $X$.
 
     1. Let $\star : X \times X \to X$ be *compatible* with $\sim$, meaning that $x \sim x'$ and $y \sim y'$ imply $x \star y \sim x' \star y'$. Then there is exactly one function $\circledast : (X/{\sim}) \times (X/{\sim}) \to X/{\sim}$ with $[x] \circledast [y] = [x \star y]$ for all $x, y \in X$.
@@ -267,7 +259,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. *Existence.* Let $\circledast := \{(([x], [y]), [x \star y]) : (x, y) \in X \times X\}$, a set by Replacement. Every element of $(X/{\sim}) \times (X/{\sim})$ has the form $([x], [y])$, so it is a first coordinate of some element of $\circledast$. Suppose two elements of $\circledast$ have the same first coordinate, $([x], [y]) = ([x'], [y'])$. Then $[x] = [x']$ and $[y] = [y']$ (Characteristic Property of Ordered Pairs), so $x \sim x'$ and $y \sim y'$ (Equivalence Classes, part 2), so $x \star y \sim x' \star y'$ (compatibility), so $[x \star y] = [x' \star y']$. Hence $\circledast$ is a function with the required property. *Uniqueness.* Any function with the property has the same domain as $\circledast$ and the same value at every $([x], [y])$, so it equals $\circledast$ by Equality of Functions.
     2. The same argument with one argument instead of two.
     3. Let $\bar\rho := \{([x], [y]) : (x, y) \in X \times X \land x \mathrel{\rho} y\}$. If $x \mathrel{\rho} y$, then $[x] \mathrel{\bar\rho} [y]$ by construction. Conversely, if $[x] \mathrel{\bar\rho} [y]$, then $([x], [y]) = ([x'], [y'])$ for some $x', y'$ with $x' \mathrel{\rho} y'$; then $x' \sim x$ and $y' \sim y$, and compatibility gives $x \mathrel{\rho} y$. Two relations on $X/{\sim}$ with the stated property contain exactly the same pairs, so $\bar\rho$ is unique. $\blacksquare$
@@ -276,8 +268,7 @@ def _(mo):
     In each construction below, $x \star y = y \star x$ holds literally for representatives. Then compatibility needs checking in one argument only: if $x \sim x'$ always implies $x \star y \sim x' \star y$, then $x \star y \sim x' \star y = y \star x' \sim y' \star x' = x' \star y'$.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
-    Compatibility is essential. On pairs of natural numbers with nonzero second entry, read informally as fractions, let $(a, b) \approx (c, d) :\Longleftrightarrow ad = bc$. This is an equivalence relation: reflexivity and symmetry follow from commutativity, and if $ad = bc$ and $cf = de$, then $(af)d = (ad)f = (bc)f = b(cf) = b(de) = (be)d$, so $af = be$ by cancellation ($d \neq 0$; Order on ℕ, part 6). The rule "numerator plus denominator", $(a, b) \mapsto a + b$, is not compatible: $(1, 2) \approx (2, 4)$, but $1 + 2 = 3$ while $2 + 4 = 6$. So "the numerator plus the denominator of a fraction" is not a function of the fraction; the set built in the proof above would be a relation in which one class has two partners.
+    Compatibility is essential. On pairs of natural numbers with nonzero second entry, read informally as fractions, let $(a, b) \approx (c, d) :\Longleftrightarrow ad = bc$. This is an equivalence relation: reflexivity and symmetry follow from commutativity, and if $ad = bc$ and $cf = de$, then $(af)d = (ad)f = (bc)f = b(cf) = b(de) = (be)d$, so $af = be$ by cancellation ($d \neq 0$; Order on $\mathbb N$, part 6). The rule "numerator plus denominator", $(a, b) \mapsto a + b$, is not compatible: $(1, 2) \approx (2, 4)$, but $1 + 2 = 3$ while $2 + 4 = 6$. So "the numerator plus the denominator of a fraction" is not a function of the fraction; the set built in the proof above would be a relation in which one class has two partners.
     ///
     """)
     return
@@ -286,24 +277,24 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-the-integers -->
     ## The Integers
 
     We represent the integer "$a - b$" by the pair $(a, b) \in \mathbb N \times \mathbb N$. This reading is only a guide, since subtraction is not yet defined. Two pairs should represent the same integer when $a - b = c - d$, which can be said without subtraction as $a + d = b + c$.
 
-    /// important | 📐 **Lemma**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Equivalence Relation for $\mathbb Z$)**
+        attrs: {class: lemma, id: appb-lem-equivalence-relation-for-z}
     The relation on $\mathbb N \times \mathbb N$ given by $(a, b) \sim (c, d) :\Longleftrightarrow a + d = b + c$ is an equivalence relation.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Reflexivity ($a + b = b + a$) and symmetry follow from commutativity. For transitivity, suppose $a + d = b + c$ and $c + f = d + e$. Then, rearranging with the associative and commutative laws,
     $$(a + f) + (c + d) = (a + d) + (c + f) = (b + c) + (d + e) = (b + e) + (c + d),$$
     and cancellation gives $a + f = b + e$, that is, $(a, b) \sim (e, f)$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Integers**</u>
 
     The set of integers is the quotient set
@@ -317,13 +308,13 @@ def _(mo):
 
     $$(a, b) \prec (c, d) \;:\Longleftrightarrow\; a + d < b + c.$$
 
-    /// important | 📐 **Lemma (Compatibility for ℤ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Compatibility for $\mathbb Z$)**
+        attrs: {class: lemma, id: appb-lem-compatibility-for-z}
     The functions $\oplus$, $\odot$, $\ominus$ and the relation $\prec$ are compatible with $\sim$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose $(a, b) \sim (a', b')$, that is, $a + b' = b + a'$. Since $\oplus$ and $\odot$ are commutative on representatives (by the laws of $\mathbb N$), it suffices to vary the first argument.
 
     - $\oplus$: $(a + c) + (b' + d) = (a + b') + (c + d) = (b + a') + (c + d) = (b + d) + (a' + c)$, which says $(a + c, b + d) \sim (a' + c, b' + d)$.
@@ -331,7 +322,7 @@ def _(mo):
       $$(ac + bd) + (a'd + b'c) = c(a + b') + d(b + a') = cs + ds = d(a + b') + c(b + a') = (ad + bc) + (a'c + b'd),$$
       which says $(ac + bd,\ ad + bc) \sim (a'c + b'd,\ a'd + b'c)$.
     - $\ominus$: $b + a' = a + b'$ says $(b, a) \sim (b', a')$.
-    - $\prec$: suppose also $(c, d) \sim (c', d')$, that is, $c + d' = d + c'$, and $a + d < b + c$. Adding $b' + d'$ to both sides (Order on ℕ, part 5) and substituting gives $(b + d) + (a' + d') < (b + d) + (b' + c')$, and cancelling $b + d$ (part 5 again) gives $a' + d' < b' + c'$. $\blacksquare$
+    - $\prec$: suppose also $(c, d) \sim (c', d')$, that is, $c + d' = d + c'$, and $a + d < b + c$. Adding $b' + d'$ to both sides (Order on $\mathbb N$, part 5) and substituting gives $(b + d) + (a' + d') < (b + d) + (b' + c')$, and cancelling $b + d$ (part 5 again) gives $a' + d' < b' + c'$. $\blacksquare$
     ///
 
     By the Well-Definedness Lemma we obtain operations $+$, $\cdot$, $-$ and a relation $<$ on $\mathbb Z$ with
@@ -340,8 +331,8 @@ def _(mo):
 
     and $[(a, b)] < [(c, d)] \leftrightarrow a + d < b + c$. Let $0 := [(0, 0)]$ and $1 := [(1, 0)]$, write $x - y := x + (-y)$ and $x \le y :\Longleftrightarrow (x < y \lor x = y)$, and define $\iota : \mathbb N \to \mathbb Z$ by $\iota(n) := [(n, 0)]$.
 
-    /// important | 📐 **Theorem (Properties of ℤ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of $\mathbb Z$)**
+        attrs: {class: theorem, id: appb-thm-properties-of-z}
     1. For all $x, y, z \in \mathbb Z$: $(x + y) + z = x + (y + z)$, $x + y = y + x$, $x + 0 = x$, $x + (-x) = 0$, $(xy)z = x(yz)$, $xy = yx$, $x \cdot 1 = x$, and $x(y + z) = xy + xz$.
     2. $0 \neq 1$, and if $xy = 0$, then $x = 0$ or $y = 0$.
     3. For all $x, y, z \in \mathbb Z$: exactly one of $x < y$, $x = y$, $y < x$ holds; if $x < y$ and $y < z$, then $x < z$; if $x < y$, then $x + z < y + z$; and if $0 < x$ and $0 < y$, then $0 < xy$.
@@ -349,13 +340,13 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $x = [(a, b)]$, $y = [(c, d)]$, $z = [(e, f)]$. We prove part 4 before part 3, which uses it.
 
     - *Part 1.* Every identity except $x + (-x) = 0$ holds already for representatives, as an equality of pairs, by the laws of $\mathbb N$. For example, for associativity of multiplication both $\big((a, b) \odot (c, d)\big) \odot (e, f)$ and $(a, b) \odot \big((c, d) \odot (e, f)\big)$ equal $(ace + adf + bcf + bde,\ acf + ade + bce + bdf)$, and $(a, b) \odot (1, 0) = (a, b)$. For the additive inverse, $(a, b) \oplus (b, a) = (a + b, b + a) \sim (0, 0)$, because $(a + b) + 0 = (b + a) + 0$.
-    - *Part 4.* $[(m, 0)] = [(n, 0)]$ iff $m + 0 = 0 + n$ iff $m = n$. Also $(m, 0) \oplus (n, 0) = (m + n, 0)$, $(m, 0) \odot (n, 0) = (mn, 0)$, and $(m, 0) \prec (n, 0)$ iff $m < n$. For $x = [(a, b)]$, trichotomy in $\mathbb N$ gives $b \le a$ or $a \le b$. If $b \le a$, then $a = b + k$ for some $k$ (Order on ℕ, part 4), so $(a, b) \sim (k, 0)$ and $x = \iota(k)$. If $a \le b$, then $b = a + k$, so $(a, b) \sim (0, k)$ and $x = -\iota(k)$. Finally, $0 < \iota(k)$ iff $0 < k$, while $0 < -\iota(k) = [(0, k)]$ would mean $k < 0$, which is impossible; so the integers $> 0$ are the $\iota(n)$ with $n \neq 0$, and those $\ge 0$ are the $\iota(n)$.
-    - *Part 3.* *Trichotomy:* $x < y$, $x = y$, $y < x$ mean $a + d < b + c$, $a + d = b + c$, $b + c < a + d$, and exactly one of these holds in $\mathbb N$. *Transitivity:* from $a + d < b + c$ and $c + f < d + e$, applying Order on ℕ, part 5, twice gives $(a + d) + (c + f) < (b + c) + (d + e)$, that is, $(a + f) + (c + d) < (b + e) + (c + d)$, and cancelling $c + d$ (part 5) gives $a + f < b + e$. *Addition:* $(a + e) + (d + f) < (b + f) + (c + e)$ iff $a + d < b + c$, by part 5. *Multiplication:* by part 4, $0 < x$ and $0 < y$ give $x = \iota(m)$ and $y = \iota(n)$ with $m, n \neq 0$, so $xy = \iota(mn)$ with $mn \neq 0$ (Order on ℕ, part 7), and $0 < xy$.
-    - *Part 2.* $(0, 0) \sim (1, 0)$ would mean $0 + 0 = 0 + 1$, which is false. Now suppose $x \neq 0$ and $xy = 0$. Then $a \neq b$. If $b < a$, write $a = b + k$ with $k \neq 0$; the equation $xy = 0$ says $ac + bd = ad + bc$, that is, $(b + k)c + bd = (b + k)d + bc$, so $kc = kd$ after cancelling $bc + bd$, and $c = d$ by Order on ℕ, part 6. So $y = [(c, c)] = 0$. The case $a < b$ is symmetric. $\blacksquare$
+    - *Part 4.* $[(m, 0)] = [(n, 0)]$ iff $m + 0 = 0 + n$ iff $m = n$. Also $(m, 0) \oplus (n, 0) = (m + n, 0)$, $(m, 0) \odot (n, 0) = (mn, 0)$, and $(m, 0) \prec (n, 0)$ iff $m < n$. For $x = [(a, b)]$, trichotomy in $\mathbb N$ gives $b \le a$ or $a \le b$. If $b \le a$, then $a = b + k$ for some $k$ (Order on $\mathbb N$, part 4), so $(a, b) \sim (k, 0)$ and $x = \iota(k)$. If $a \le b$, then $b = a + k$, so $(a, b) \sim (0, k)$ and $x = -\iota(k)$. Finally, $0 < \iota(k)$ iff $0 < k$, while $0 < -\iota(k) = [(0, k)]$ would mean $k < 0$, which is impossible; so the integers $> 0$ are the $\iota(n)$ with $n \neq 0$, and those $\ge 0$ are the $\iota(n)$.
+    - *Part 3.* *Trichotomy:* $x < y$, $x = y$, $y < x$ mean $a + d < b + c$, $a + d = b + c$, $b + c < a + d$, and exactly one of these holds in $\mathbb N$. *Transitivity:* from $a + d < b + c$ and $c + f < d + e$, applying Order on $\mathbb N$, part 5, twice gives $(a + d) + (c + f) < (b + c) + (d + e)$, that is, $(a + f) + (c + d) < (b + e) + (c + d)$, and cancelling $c + d$ (part 5) gives $a + f < b + e$. *Addition:* $(a + e) + (d + f) < (b + f) + (c + e)$ iff $a + d < b + c$, by part 5. *Multiplication:* by part 4, $0 < x$ and $0 < y$ give $x = \iota(m)$ and $y = \iota(n)$ with $m, n \neq 0$, so $xy = \iota(mn)$ with $mn \neq 0$ (Order on $\mathbb N$, part 7), and $0 < xy$.
+    - *Part 2.* $(0, 0) \sim (1, 0)$ would mean $0 + 0 = 0 + 1$, which is false. Now suppose $x \neq 0$ and $xy = 0$. Then $a \neq b$. If $b < a$, write $a = b + k$ with $k \neq 0$; the equation $xy = 0$ says $ac + bd = ad + bc$, that is, $(b + k)c + bd = (b + k)d + bc$, so $kc = kd$ after cancelling $bc + bd$, and $c = d$ by Order on $\mathbb N$, part 6. So $y = [(c, c)] = 0$. The case $a < b$ is symmetric. $\blacksquare$
     ///
 
     With $x - y := x + (-y)$ we get $[(a, b)] = \iota(a) - \iota(b)$, because $[(a, 0)] + [(0, b)] = [(a, b)]$; so the class of $(a, b)$ really is "$a - b$".
@@ -366,8 +357,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// tip | **Identifying ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ**
-        attrs: {class: no-icon}
+    /// tip | **Identifying $\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q \subseteq \mathbb R$**
     Strictly speaking, $\mathbb N$ is not a subset of $\mathbb Z$: the integer $\iota(n) = [(n, 0)]$ is a set of ordered pairs, not the von Neumann numeral $n$. But $\iota$ is injective and preserves $+$, $\cdot$, and $<$, so every statement about natural numbers translates into the same statement about their images. We therefore *identify* each $n \in \mathbb N$ with $\iota(n)$ and write $\mathbb N \subseteq \mathbb Z$. (If one insists on a literal inclusion, one can replace $\mathbb Z$ by an isomorphic copy that contains $\mathbb N$ itself; nothing in the theory changes.) The same remark applies to the embeddings $\mathbb Z \to \mathbb Q$ and $\mathbb Q \to \mathbb R$ below. With these identifications, $\mathbb N \subseteq \mathbb Z \subseteq \mathbb Q \subseteq \mathbb R$, every integer is $m - n$ for some $m, n \in \mathbb N$, and the positive integers are the elements of $\mathbb N \setminus \{0\}$.
     ///
     """)
@@ -377,24 +367,25 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-the-rational-numbers -->
     ## The Rational Numbers
 
     **The goal.** We now repeat the construction with multiplication in place of addition, aiming for an ordered field. We use the standard axioms, as in [Chapter 3](ch3_sets_for_probability.md). A {term}`field` is a set $F$ with two functions $+, \cdot : F \times F \to F$ and two elements $0 \neq 1$ of $F$ such that, for all $x, y, z \in F$:
 
     | | addition | multiplication |
-    |---|---|---|
+    |:---|:---:|:---|
     | associativity | $(x + y) + z = x + (y + z)$ | $(xy)z = x(yz)$ |
     | commutativity | $x + y = y + x$ | $xy = yx$ |
     | identity | $x + 0 = x$ | $x \cdot 1 = x$ |
     | inverses | some $-x \in F$ has $x + (-x) = 0$ | if $x \neq 0$, some $x^{-1} \in F$ has $x x^{-1} = 1$ |
     | distributivity | $x(y + z) = xy + xz$ | |
 
-    An {term}`ordered field` is a field with a relation $<$ such that, for all $x, y, z$: exactly one of $x < y$, $x = y$, $y < x$ holds (trichotomy); $x < y$ and $y < z$ imply $x < z$ (transitivity); $x < y$ implies $x + z < y + z$ (addition); and $0 < x$ and $0 < y$ imply $0 < xy$ (multiplication). We write $x \le y$ for "$x < y$ or $x = y$", and $x - y := x + (-y)$. By the Theorem (Properties of ℤ), $\mathbb Z$ satisfies all of these axioms except the existence of multiplicative inverses.
+    An {term}`ordered field` is a field with a relation $<$ such that, for all $x, y, z$: exactly one of $x < y$, $x = y$, $y < x$ holds (trichotomy); $x < y$ and $y < z$ imply $x < z$ (transitivity); $x < y$ implies $x + z < y + z$ (addition); and $0 < x$ and $0 < y$ imply $0 < xy$ (multiplication). We write $x \le y$ for "$x < y$ or $x = y$", and $x - y := x + (-y)$. By the Theorem (Properties of $\mathbb Z$), $\mathbb Z$ satisfies all of these axioms except the existence of multiplicative inverses.
 
     The usual rules for inequalities follow from these axioms. We need them both in $\mathbb Z$ and in ordered fields.
 
-    /// important | 📐 **Lemma (Inequality Rules)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Inequality Rules)**
+        attrs: {class: lemma, id: appb-lem-inequality-rules}
     Let $R$ be $\mathbb Z$ or an ordered field. For all $x, y, z \in R$:
 
     1. $x < y \leftrightarrow 0 < y - x$.
@@ -405,14 +396,14 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The ring laws give $x \cdot 0 = 0$ (from $x \cdot 0 = x(0 + 0) = x \cdot 0 + x \cdot 0$), $(-x)y = -(xy)$ (since $(-x)y + xy = (-x + x)y = 0$), and hence $(-x)(-y) = xy$.
 
     1. Add $-x$ to both sides of $x < y$ (addition axiom); for the converse, add $x$.
     2. If $x < y$, then $0 < y - x$ by part 1, so $0 < (y - x)z = yz - xz$ by the multiplication axiom, and $xz < yz$ by part 1. Conversely, if $xz < yz$ but $x < y$ fails, then $y \le x$ by trichotomy, so $yz \le xz$, which contradicts trichotomy. The statement for $\le$ follows, because $x = y$ implies $xz = yz$, and $xz = yz$ implies $x = y$ (otherwise $x < y$ or $y < x$ would give $xz \neq yz$).
     3. If $0 < x$, then $0 < x \cdot x$ by the multiplication axiom. If $x < 0$, then $0 < -x$ by part 1, and $x^2 = (-x)(-x) > 0$. In particular $0 < 1 \cdot 1 = 1$.
     4. $x^{-1} \neq 0$, since $x x^{-1} = 1 \neq 0 = x \cdot 0$. If $x^{-1} < 0$, then part 2 with $z = x$ gives $1 = x^{-1}x < 0 \cdot x = 0$, contradicting part 3.
-    5. If $0 \le x < y$, then $0 < y$, so $x \cdot x \le x \cdot y$ (by part 2 if $0 < x$, and trivially if $x = 0$) and $x \cdot y < y \cdot y$ (part 2); hence $x^2 < y^2$. For the second claim: if $y \le x$, then $y^2 \le x^2$ by the first claim (or equality), contradicting $x^2 < y^2$. $\blacksquare$
+    5. If $0 \le x < y$, then $0 < y$, so $x \cdot x \le x \cdot y$ (by part 2 if $0 < x$; if $x = 0$, both sides are $0$) and $x \cdot y < y \cdot y$ (part 2); hence $x^2 < y^2$. For the second claim: if $y \le x$, then $y^2 \le x^2$ by the first claim (or equality), contradicting $x^2 < y^2$. $\blacksquare$
     ///
     """)
     return
@@ -423,20 +414,19 @@ def _(mo):
     mo.md(r"""
     **The construction.** Represent the fraction "$a / b$" by a pair $(a, b)$ of integers with $b \neq 0$, and declare $(a, b)$ and $(c, d)$ equivalent when $a/b = c/d$, which can be said without division as $ad = bc$. Let $\mathbb Z^* := \mathbb Z \setminus \{0\}$.
 
-    /// important | 📐 **Lemma**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Equivalence Relation for $\mathbb Q$)**
+        attrs: {class: lemma, id: appb-lem-equivalence-relation-for-q}
     The relation on $\mathbb Z \times \mathbb Z^*$ given by $(a, b) \approx (c, d) :\Longleftrightarrow ad = bc$ is an equivalence relation.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Reflexivity and symmetry follow from commutativity. For transitivity, suppose $ad = bc$ and $cf = de$. Then $(af)d = (ad)f = (bc)f = b(cf) = b(de) = (be)d$, so $(af - be)d = 0$. Since $d \neq 0$ and $\mathbb Z$ has no zero divisors, $af = be$. $\blacksquare$
     ///
 
     This is exactly where the construction needs $\mathbb Z$ to have no zero divisors.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Rational numbers**</u>
 
     The set of rational numbers is the quotient set
@@ -456,15 +446,15 @@ def _(mo):
 
     Both sides are unchanged when $(a, b)$ is replaced by $(-a, -b)$ or $(c, d)$ by $(-c, -d)$, and when $b, d > 0$ the condition is equivalent to $ad < bc$ (Inequality Rules, part 2, with $z = bd > 0$). So compatibility only needs checking for positive denominators: if $b, b', d, d' > 0$, $ab' = a'b$, $cd' = c'd$, and $ad < bc$, then multiplying by $b'd' > 0$ gives $(ab')(dd') < (cd')(bb')$, that is, $(a'd')(bd) < (b'c')(bd)$, and cancelling $bd > 0$ (part 2) gives $a'd' < b'c'$.
 
-    /// important | 📐 **Theorem (Properties of ℚ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of $\mathbb Q$)**
+        attrs: {class: theorem, id: appb-thm-properties-of-q}
     1. $\mathbb Q$, with the operations above, $0 := 0/1$, $1 := 1/1$, and $<$, is an ordered field.
     2. $\iota : \mathbb Z \to \mathbb Q$, $\iota(a) := a/1$, is injective and preserves $+$, $\cdot$, and $<$.
     3. (Density) If $p < q$ in $\mathbb Q$, then $p < \tfrac{p + q}{2} < q$, where $2 := 1 + 1$ and $\tfrac{x}{2} := x \cdot 2^{-1}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Each field axiom reduces to the laws of $\mathbb Z$. Some hold already for representatives: for instance, both $(a/b + c/d) + e/f$ and $a/b + (c/d + e/f)$ have the representative $(adf + bcf + bde,\ bdf)$. The others hold up to $\approx$, using $(bu)/(bv) = u/v$ for $b \neq 0$ (because $(bu)v = (bv)u$). For example, $a/b + (-a)/b = 0/b^2 = 0/1$; $(a/b)(b/a) = (ab)/(ba) = 1/1$; and both sides of the distributive law reduce to $(acf + ade)/(bdf)$. Also $0/1 \neq 1/1$ because $0 \cdot 1 \neq 1 \cdot 1$. For the order axioms, take positive denominators $b, d, f$. *Trichotomy* comes from trichotomy in $\mathbb Z$, since $a/b = c/d$ iff $ad = bc$. *Transitivity:* from $ad < bc$ and $cf < de$, multiplying by $f$ and by $b$ gives $adf < bcf < bde$, so $(af)d < (be)d$, and cancelling $d$ gives $af < be$. *Addition:* $a/b + e/f < c/d + e/f$ means $(af + be)(df) < (cf + de)(bf)$, that is, $adf^2 < bcf^2$, which holds iff $ad < bc$ because $f^2 > 0$. *Multiplication:* $0 < a/b$ iff $0 < a$, so $0 < a/b$ and $0 < c/d$ give $0 < ac$, that is, $0 < (ac)/(bd)$.
     2. $a/1 = c/1$ iff $a = c$; $a/1 + c/1 = (a + c)/1$; $(a/1)(c/1) = (ac)/1$; and $a/1 < c/1$ iff $a < c$.
     3. From $p < q$, the addition axiom gives $p + p < p + q$, that is, $2p < p + q$. Also $0 < 1$ gives $1 < 2$, so $0 < 2$ and $0 < 2^{-1}$ (Inequality Rules, parts 3 and 4). Multiplying by $2^{-1}$ gives $p < \tfrac{p + q}{2}$. Likewise $p + q < 2q$ gives $\tfrac{p + q}{2} < q$. $\blacksquare$
@@ -478,6 +468,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-incompleteness-of-the-rationals -->
     ## Incompleteness of the Rationals
 
     $\mathbb Q$ is dense (between any two rationals lies a third), yet it has holes. To say this precisely we need the following notions, restated from [Chapter 3](ch3_sets_for_probability.md), for a subset $S$ of an ordered field $F$ (they use only the order, so they make sense for any set with a relation $<$ satisfying trichotomy and transitivity):
@@ -487,13 +478,13 @@ def _(mo):
 
     A set has at most one supremum, since two suprema are each $\le$ the other.
 
-    /// important | 📐 **Lemma (No Rational Square Root of 2)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (No Rational Square Root of 2)**
+        attrs: {class: lemma, id: appb-lem-no-rational-square-root-of-2}
     No $q \in \mathbb Q$ satisfies $q^2 = 2$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose $q^2 = 2$ and write $q = a/b$ with $b > 0$. Then $a \neq 0$ (since $0^2 \neq 2$), and replacing $q$ by $-q$ if necessary, $a > 0$. Now $a^2/b^2 = 2/1$ means $a^2 = 2b^2$ in $\mathbb Z$. So the set
     $$B := \{b \in \mathbb N : b > 0 \land \existsin{a}{\mathbb N}\,(a > 0 \land a^2 = 2b^2)\}$$
     is nonempty, and by well-ordering it has a least element $b$; fix $a > 0$ with $a^2 = 2b^2$. Since $b^2 > 0$, we have $b^2 < 2b^2 = a^2 < 4b^2 = (2b)^2$, so $b < a < 2b$ by Inequality Rules, part 5. Let $a' := 2b - a$ and $b' := a - b$. Both are positive, and $b' < b$ because $a < 2b$. Using $a^2 = 2b^2$ twice,
@@ -507,13 +498,13 @@ def _(mo):
 
     Both identities are direct computations. Since $p + 2 > 0$, they show: if $p^2 < 2$, then $\varphi(p) > p$ and $\varphi(p)^2 < 2$; if $p^2 > 2$, then $0 < \varphi(p) < p$ and $\varphi(p)^2 > 2$. In words, $\varphi$ moves any positive rational strictly closer to the hole while staying on the same side of it.
 
-    /// important | 📐 **Theorem (Incompleteness of ℚ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Incompleteness of $\mathbb Q$)**
+        attrs: {class: theorem, id: appb-thm-incompleteness-of-q}
     The set $S := \{q \in \mathbb Q : q < 0 \lor q^2 < 2\}$ is nonempty and bounded above in $\mathbb Q$, but it has no supremum in $\mathbb Q$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Nonempty:* $0 \in S$. *Bounded above by 2:* if $q \in S$ and $2 < q$, then $q > 0$, and $4 < q^2$ by Inequality Rules, part 5, so $q \notin S$, a contradiction. Hence $q \le 2$ for every $q \in S$.
 
     *No supremum.* Suppose $\sigma \in \mathbb Q$ is a supremum of $S$. Since $1 \in S$, $\sigma \ge 1 > 0$. By the Lemma, $\sigma^2 \neq 2$, so there are two cases.
@@ -581,7 +572,7 @@ def _(Fraction, denominator_slider, graphic, mo, plt):
         ("smallest upper bound shown", _hi, _in_S(_hi)),
         (r"$\varphi$ of it: a smaller upper bound", _hi_next, _in_S(_hi_next)),
     ]
-    _table = "| | rational | decimal | in $S$? |\n|---|---|---|---|\n" + "\n".join(
+    _table = "| | rational | decimal | in $S$? |\n|:---|:---:|:---:|:---:|\n" + "\n".join(
         f"| {_label} | ${_frac(_r)}$ | {float(_r):.6f} | {'yes' if _ins else 'no'} |"
         for _label, _r, _ins in _rows
     )
@@ -597,12 +588,12 @@ def _(Fraction, denominator_slider, graphic, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-the-real-numbers -->
     ## The Real Numbers
 
     The set $S$ above "points at" a number that $\mathbb Q$ lacks, and it is completely determined by that number: it consists of the rationals below it. [Dedekind](https://en.wikipedia.org/wiki/Dedekind_cut) (1872) turned this around: *define* a real number to be such a set of rationals[^cauchy].
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Dedekind cut**</u>
 
     A Dedekind cut is a set $\alpha \subseteq \mathbb Q$ that is neither $\emptyset$ nor $\mathbb Q$, is downward closed, $\forallin{p}{\alpha}\,\forallin{q}{\mathbb Q}\,(q < p \rightarrow q \in \alpha)$, and has no greatest element, $\forallin{p}{\alpha}\,\existsin{q}{\alpha}\,(p < q)$.
@@ -614,23 +605,23 @@ def _(mo):
 
     a set by Power Set and Separation. In this section, lowercase Greek letters $\alpha, \beta, \gamma, \sigma$ denote cuts.
 
-    /// important | 📐 **Lemma (Rational Cuts)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rational Cuts)**
+        attrs: {class: lemma, id: appb-lem-rational-cuts}
     For $r \in \mathbb Q$, the set $r^* := \{q \in \mathbb Q : q < r\}$ is a Dedekind cut, and $r^* = s^*$ implies $r = s$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $r - 1 \in r^*$ and $r \notin r^*$, so $r^*$ is neither $\emptyset$ nor $\mathbb Q$. It is downward closed because $q < p < r$ implies $q < r$. It has no greatest element: if $q < r$, then $q < \tfrac{q + r}{2} < r$ by density. Finally, if $r < s$, then $r \in s^* \setminus r^*$, so $r^* \neq s^*$; likewise if $s < r$. By trichotomy, $r^* = s^*$ forces $r = s$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (The Cut at √2)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Cut at $\sqrt 2$)**
+        attrs: {class: theorem, id: appb-thm-the-cut-at-sqrt-2}
     The set $S = \{q \in \mathbb Q : q < 0 \lor q^2 < 2\}$ is a Dedekind cut, and $S \neq r^*$ for every $r \in \mathbb Q$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $0 \in S$ and $2 \notin S$. *Downward closed:* let $p \in S$ and $q < p$. If $q < 0$, then $q \in S$. Otherwise $0 \le q < p$, so $p > 0$, hence $p^2 < 2$, and $q^2 < p^2 < 2$ (Inequality Rules, part 5), so $q \in S$. *No greatest element:* if $p < 0$, then $0 \in S$ is larger; if $p = 0$, then $1 \in S$ is larger; if $p > 0$, then $\varphi(p) \in S$ is larger. *Not rational:* $r$ is a supremum of $r^*$ in $\mathbb Q$. Indeed, $r$ is an upper bound of $r^*$, and if $u < r$, then $\tfrac{u + r}{2} \in r^*$ exceeds $u$, so $u$ is not an upper bound; hence every upper bound is $\ge r$. Since $S$ has no supremum in $\mathbb Q$, $S \neq r^*$. $\blacksquare$
     ///
 
@@ -638,13 +629,13 @@ def _(mo):
 
     **Order.** For cuts, define $\alpha < \beta :\Longleftrightarrow (\alpha \subseteq \beta \land \alpha \neq \beta)$, so that $\alpha \le \beta$ iff $\alpha \subseteq \beta$.
 
-    /// important | 📐 **Theorem (Order on ℝ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Order on $\mathbb R$)**
+        attrs: {class: theorem, id: appb-thm-order-on-r}
     For all cuts $\alpha$, $\beta$, $\gamma$: exactly one of $\alpha < \beta$, $\alpha = \beta$, $\beta < \alpha$ holds, and $\alpha < \beta$ and $\beta < \gamma$ imply $\alpha < \gamma$. For all $r, s \in \mathbb Q$: $r < s \leftrightarrow r^* < s^*$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Any two cuts are comparable under $\subseteq$:* suppose $\alpha \not\subseteq \beta$, and pick $p \in \alpha \setminus \beta$. Let $q \in \beta$. If $p \le q$, then $p \in \beta$ (by downward closure, or because $p = q$), which is false; so $q < p$, and $q \in \alpha$ by downward closure of $\alpha$. Hence $\beta \subseteq \alpha$. *Trichotomy:* by comparability, at least one of $\alpha \subsetneq \beta$, $\alpha = \beta$, $\beta \subsetneq \alpha$ holds; $\alpha \subsetneq \beta$ and $\beta \subsetneq \alpha$ cannot both hold by Double Inclusion, and neither is compatible with $\alpha = \beta$. *Transitivity:* $\alpha \subseteq \beta \subseteq \gamma$ gives $\alpha \subseteq \gamma$, and $\alpha = \gamma$ would give $\beta \subseteq \alpha$, hence $\alpha = \beta$, which is false. *Rationals:* if $r < s$, then $r^* \subseteq s^*$ (since $q < r$ implies $q < s$) and $r \in s^* \setminus r^*$, so $r^* < s^*$. The converse follows by trichotomy in $\mathbb Q$ and in $\mathbb R$. $\blacksquare$
     ///
 
@@ -658,13 +649,13 @@ def _(mo):
     mo.md(r"""
     **Completeness.** This is exactly the property that $\mathbb Q$ lacks.
 
-    /// important | 📐 **Theorem (Least-Upper-Bound Property)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Least-Upper-Bound Property)**
+        attrs: {class: theorem, id: appb-thm-least-upper-bound-property}
     Every nonempty set $\mathcal A \subseteq \mathbb R$ that is bounded above has a supremum in $\mathbb R$, namely $\bigcup \mathcal A$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\beta$ be an upper bound of $\mathcal A$, and let $\sigma := \bigcup \mathcal A$, a set by the Axiom of Union. First, $\sigma$ is a cut:
 
     - $\sigma \neq \emptyset$, because $\mathcal A$ has an element $\alpha$, and $\alpha \neq \emptyset$.
@@ -676,7 +667,6 @@ def _(mo):
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **$\mathcal A$ must be nonempty.** For $\mathcal A = \emptyset$, the union $\bigcup \emptyset = \emptyset$ is not a cut.
     - **$\mathcal A$ must be bounded above.** For $\mathcal A = \{r^* : r \in \mathbb Q\}$, every rational $q$ lies in $(q + 1)^*$, so $\bigcup \mathcal A = \mathbb Q$, which is not a cut; correspondingly, $\mathcal A$ has no upper bound in $\mathbb R$.
     - **The property is about $\mathbb R$, not $\mathbb Q$.** The Incompleteness theorem shows that it fails in $\mathbb Q$. The difference is that a union of cuts is again a cut, while nothing in $\mathbb Q$ plays the role of the union.
@@ -688,8 +678,8 @@ def _(mo):
 
     The definition of $-\alpha$ says that $-p - r \notin \alpha$ for some $r > 0$, so $-p$ exceeds every element of $\alpha$ by more than $r$. The margin $r$ prevents $-\alpha$ from having a greatest element when $\alpha = s^*$ for a rational $s$.
 
-    /// important | 📐 **Lemma (Addition of Cuts)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Addition of Cuts)**
+        attrs: {class: lemma, id: appb-lem-addition-of-cuts}
     For cuts $\alpha$, $\beta$ and rationals $r$, $s$:
 
     1. $\alpha + \beta$ is a cut;
@@ -698,7 +688,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $\alpha + \beta \neq \emptyset$ because $\alpha$ and $\beta$ are nonempty. Choose $r \notin \alpha$ and $s \notin \beta$. Every $p \in \alpha$ satisfies $p < r$, since $r \le p$ would put $r$ in $\alpha$; likewise every $q \in \beta$ satisfies $q < s$. So every element of $\alpha + \beta$ is less than $r + s$, and $r + s \notin \alpha + \beta$. *Downward closed:* if $t < p + q$ with $p \in \alpha$ and $q \in \beta$, then $t - q < p$, so $t - q \in \alpha$, and $t = (t - q) + q \in \alpha + \beta$. *No greatest element:* given $p + q$, choose $p' \in \alpha$ with $p' > p$; then $p' + q \in \alpha + \beta$ is larger.
     2. If $p \in \alpha$ and $q < 0$, then $p + q < p$, so $p + q \in \alpha$. Conversely, if $p \in \alpha$, choose $r \in \alpha$ with $r > p$; then $p = r + (p - r)$ with $p - r < 0$, so $p \in \alpha + 0^*$.
     3. If $p < r$ and $q < s$, then $p + q < r + s$. Conversely, if $t < r + s$, let $h := \tfrac{(r + s) - t}{2} > 0$; then $t = (r - h) + (s - h)$ with $r - h \in r^*$ and $s - h \in s^*$. $\blacksquare$
@@ -714,13 +704,13 @@ def _(mo):
 
     and $\alpha^{-1} := -\big((-\alpha)^{-1}\big)$ for $\alpha < 0^*$.
 
-    /// important | 📐 **Theorem (ℝ Is a Complete Ordered Field)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem ($\mathbb R$ Is a Complete Ordered Field)**
+        attrs: {class: theorem, id: appb-thm-r-is-a-complete-ordered-field}
     $(\mathbb R, +, \cdot, 0^*, 1^*, <)$ is a {term}`complete ordered field`: an ordered field in which every nonempty subset that is bounded above has a supremum. The map $\iota : \mathbb Q \to \mathbb R$, $\iota(r) := r^*$, is injective and preserves $+$, $\cdot$, and $<$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Proved above: $<$ satisfies trichotomy and transitivity, the least-upper-bound property holds, $\alpha + \beta$ is a cut, $0^*$ is an additive identity, and $\iota$ is injective and preserves $<$ and $+$. The remaining verifications (that $-\alpha$, $\alpha\beta$, and $\alpha^{-1}$ are cuts, and that the other field and order axioms hold) each reduce to the corresponding property of $\mathbb Q$, but they are long, and we do not repeat them. Complete proofs are in @rudin1976 [appendix to Chapter 1], and in @enderton1977 [Chapter 5]. The one step that needs more than the ordered-field axioms of $\mathbb Q$ is $\alpha + (-\alpha) = 0^*$, which uses the Archimedean property of $\mathbb Q$: for rationals $w > 0$ and $p$, some natural number $n$ has $nw > p$.
     ///
 
@@ -732,23 +722,25 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appb-sec-uniqueness-of-the-real-numbers -->
     ## Uniqueness of the Real Numbers
 
     Dedekind cuts are one construction among several. The next theorem says the choice does not matter.
 
-    /// important | 📐 **Theorem (Uniqueness of the Real Numbers)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Uniqueness of the Real Numbers)**
+        attrs: {class: theorem, id: appb-thm-uniqueness-of-the-real-numbers}
     Let $F$ be any complete ordered field. There is exactly one {term}`bijective` function $\phi : \mathbb R \to F$ such that, for all $x, y \in \mathbb R$,
     $$\phi(x + y) = \phi(x) + \phi(y), \qquad \phi(xy) = \phi(x)\,\phi(y), \qquad x < y \leftrightarrow \phi(x) < \phi(y).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not proved here; see Spivak, *Calculus*, Chapters 29–30, or [Real number: Axiomatic approach](https://en.wikipedia.org/wiki/Real_number). The idea: $\phi$ is forced on $\mathbb N$ by $\phi(1) = 1$ and additivity, then on $\mathbb Z$ by $\phi(-x) = -\phi(x)$, and on $\mathbb Q$ by $\phi(x^{-1}) = \phi(x)^{-1}$. For a general $x$, order preservation forces $\phi(x) = \sup\{\phi(q) : q \in \mathbb Q,\ q < x\}$, and completeness of $F$ guarantees that this supremum exists. One then checks that this $\phi$ is a bijection that preserves $+$, $\cdot$, and $<$.
     ///
 
     So, up to renaming elements by $\phi$, there is only one complete ordered field. Every construction (Dedekind cuts, Cauchy sequences, infinite decimals) produces "the same" $\mathbb R$, and any theorem proved from the complete-ordered-field axioms alone holds for all of them. This is why [Chapter 3](ch3_sets_for_probability.md) and the rest of the book work from those axioms and never mention cuts again.
 
+    <!-- label: appb-sec-summary -->
     ## Summary
 
     - **Natural numbers:** the recursive definitions of $+$, $\cdot$, and $<$ from Chapter 2 yield, by induction, the associative, commutative, distributive, cancellation, and order laws, including trichotomy and well-ordering.

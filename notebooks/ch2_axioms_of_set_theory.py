@@ -57,12 +57,6 @@ def display_settings(dedent, mo, plt):
             </div>
             '''))
 
-    return (graphic,)
-
-
-@app.cell
-def display_settings(dedent, mo):
-    # jb: include=false
     mo.latex(dedent(
         r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
         \newcommand{\forallin}[2]{\forall #1 \!\!\in\!\! #2\,}
@@ -70,14 +64,14 @@ def display_settings(dedent, mo):
         \newcommand{\forallsubseteq}[2]{\forall #1 \!\!\subseteq\!\! #2\,}"""
     ))
     mo.output.clear()
-    return
+
+    return (graphic,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): statements and predicates; the connectives $\neg, \land, \lor, \rightarrow, \leftrightarrow$; the quantifiers $\forall$, $\exists$, $\exists!$ and the bounded forms $\forallin{x}{A}$, $\existsin{x}{A}$; the notations $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and the proof techniques (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
     - [Appendix A](appendix_a_formal_logic.md) (optional): the formal language behind the notation of this chapter.
     ///
@@ -103,7 +97,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Every object in this book (numbers, pairs, functions, signals, probabilities) is a set, built by a small number of axioms. The payoff comes at the end of the chapter: the Recursion Theorem proves that an update rule $\hat x_k = G(k, \hat x_{k-1})$ and an initial value $\hat x_0$ define exactly one estimate for every step $k$.
     ///
     """)
@@ -113,6 +106,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-sets-and-membership -->
     ## Sets and Membership
 
     Informally, a *set* is a collection of objects, called its *elements* (or *members*). We write $x \in A$ for "$x$ is an element of $A$" and $x \notin A$ for $\neg(x \in A)$.
@@ -124,7 +118,6 @@ def _(mo):
     The first defined notion compares two sets by their elements.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Subset**</u>
 
     A set $A$ is a subset of a set $B$, written $A \subseteq B$, iff every element of $A$ is an element of $B$:
@@ -139,12 +132,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-the-axioms-of-zfc -->
     ## The Axioms of ZFC
 
     Why axioms at all? The naive rule "every property defines a set" is contradictory, as we prove under Separation below. Zermelo–Fraenkel set theory replaces that rule with ten specific set-building {term}`axioms <axiom>`[^zfc-variants], each a sentence about $\in$ and $=$, which mathematicians assume to be free of contradictions[^zfc-consistency]. For each axiom we give it in words, then in symbols, and then define the notation it justifies, immediately, so that nothing is used before it is introduced.
 
     | # | Axiom | What it provides |
-    |---|---|---|
+    |:---:|:---|:---|
     | 1 | Extensionality | sets with the same elements are equal, so names are unambiguous |
     | 2 | Empty Set | $\emptyset$ |
     | 3 | Pairing | $\{a, b\}$ and $\{a\}$ |
@@ -158,7 +152,7 @@ def _(mo):
 
     [^zfc-variants]: Formulations of ZFC differ slightly. Empty Set is often omitted because it follows from Separation applied to any set (for example, the one provided by Infinity) with the predicate $x \neq x$, and Separation is sometimes omitted because it follows from Replacement and Empty Set. We list all ten because each one justifies notation. Set theory is also not the only possible foundation: [category theory](https://en.wikipedia.org/wiki/Category_theory) and [type theory](https://en.wikipedia.org/wiki/Type_theory) are alternatives, and type theory underlies proof assistants such as [Lean](https://lean-lang.org) and [Rocq](https://rocq-prover.org).
 
-    [^zfc-consistency]: By Gödel's second incompleteness theorem, ZFC cannot prove its own consistency unless it is inconsistent, so this is an assumption, shared by nearly all of mathematics. See [Appendix A: The Metatheory](appendix_a_formal_logic.md).
+    [^zfc-consistency]: By Gödel's second incompleteness theorem, ZFC cannot prove its own consistency unless it is inconsistent, so this is an assumption, shared by nearly all of mathematics. See [Appendix A: The Metatheory](#appa-sec-the-metatheory).
     """)
     return
 
@@ -166,6 +160,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-1-extensionality -->
     ### 1. Extensionality
 
     **In words.** Two sets with the same elements are equal.
@@ -178,27 +173,27 @@ def _(mo):
 
     **What it builds.** Extensionality creates no sets, but it makes names unambiguous.
 
-    /// important | 📐 **Lemma (Uniqueness)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Uniqueness)**
+        attrs: {class: lemma, id: ch2-lem-uniqueness}
     Let $\psi(x)$ be a predicate (it may mention other sets as parameters). There is at most one set $A$ whose elements are exactly the sets satisfying $\psi$, that is, with $\forall x\,\big(x \in A \leftrightarrow \psi(x)\big)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose $A$ and $A'$ both have this property. Then for every $x$, $x \in A \leftrightarrow \psi(x) \leftrightarrow x \in A'$, so $A = A'$ by Extensionality. $\blacksquare$
     ///
 
-    Every axiom below that creates a set says "there is a set $A$ with $\forall x\,(x \in A \leftrightarrow \psi(x))$" for some predicate $\psi$. By the Uniqueness Lemma that set is unique, so we may give it a name, such as $\emptyset$ or $\{a, b\}$, introduced with $:=$. A name introduced this way is pure shorthand: every statement that uses it can be rewritten as a statement about $\in$ and $=$ alone, and the name makes no new theorems provable. In logic this is called an *extension by definitions*. [Appendix A: Extension by Definitions](appendix_a_formal_logic.md) gives the precise rules, including the rules for notation that names a set only under a stated condition (a *proviso*), such as the function value $f(a)$ defined later in this chapter.
+    Every axiom below that creates a set says "there is a set $A$ with $\forall x\,(x \in A \leftrightarrow \psi(x))$" for some predicate $\psi$. By the Uniqueness Lemma that set is unique, so we may give it a name, such as $\emptyset$ or $\{a, b\}$, introduced with $:=$. A name introduced this way is pure shorthand: every statement that uses it can be rewritten as a statement about $\in$ and $=$ alone, and the name makes no new theorems provable. In logic this is called an *extension by definitions*. [Appendix A: Extension by Definitions](#appa-sec-extension-by-definitions) gives the precise rules, including the rules for notation that names a set only under a stated condition (a *proviso*), such as the function value $f(a)$ defined later in this chapter.
 
     The most common way to use Extensionality is the following.
 
-    /// important | 📐 **Lemma (Double Inclusion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Double Inclusion)**
+        attrs: {class: lemma, id: ch2-lem-double-inclusion}
     For all sets $A$ and $B$: $A = B \leftrightarrow (A \subseteq B \land B \subseteq A)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\rightarrow$) Every set is a subset of itself. ($\leftarrow$) If $A \subseteq B$ and $B \subseteq A$, then for every $x$ both $x \in A \rightarrow x \in B$ and $x \in B \rightarrow x \in A$ hold, that is, $x \in A \leftrightarrow x \in B$. By Extensionality, $A = B$. $\blacksquare$
     ///
 
@@ -210,6 +205,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-2-empty-set -->
     ### 2. Empty Set
 
     **In words.** There is a set with no elements.
@@ -221,7 +217,6 @@ def _(mo):
     **What it builds.** A set with no elements is a set $A$ with $\forall x\,(x \in A \leftrightarrow x \neq x)$, since $x \neq x$ is never true. By the Uniqueness Lemma there is exactly one such set.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Empty set**</u>
 
     The empty set $\emptyset$ is the unique set with no elements:
@@ -236,6 +231,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-3-pairing -->
     ### 3. Pairing
 
     **In words.** For any sets $a$ and $b$, there is a set whose elements are exactly $a$ and $b$.
@@ -258,6 +254,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-4-union -->
     ### 4. Union
 
     **In words.** For any set $F$, there is a set whose elements are exactly the elements of the elements of $F$.
@@ -269,7 +266,6 @@ def _(mo):
     **What it builds.** By the Uniqueness Lemma the set $U$ is unique.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Union**</u>
 
     The union of a set $F$ is the unique set $\bigcup F$ whose elements are the elements of the elements of $F$:
@@ -277,13 +273,13 @@ def _(mo):
     The union of two sets $A$ and $B$ is $A \cup B := \bigcup \{A, B\}$.
     ///
 
-    /// important | 📐 **Lemma (Binary Union)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Binary Union)**
+        attrs: {class: lemma, id: ch2-lem-binary-union}
     For all sets $A$, $B$, and $x$: $x \in A \cup B \leftrightarrow (x \in A \lor x \in B)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By definition, $x \in \bigcup\{A, B\}$ iff $x \in C$ for some $C \in \{A, B\}$, that is, for some $C$ with $C = A$ or $C = B$. This holds iff $x \in A$ or $x \in B$. $\blacksquare$
     ///
 
@@ -297,11 +293,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-5-separation -->
     ### 5. Separation
 
     **In words.** For any set $A$ and any predicate $\varphi(x)$, the elements of $A$ that satisfy $\varphi$ form a set.
 
-    **In symbols.** For each {term}`predicate` $\varphi(x, p_1, \ldots, p_n)$ in which the letter $B$ does not occur (formally, each {term}`formula`; see [Appendix A: Formal Syntax](appendix_a_formal_logic.md)), the following is an axiom:
+    **In symbols.** For each {term}`predicate` $\varphi(x, p_1, \ldots, p_n)$ in which the letter $B$ does not occur (formally, each {term}`formula`; see [Appendix A: Formal Syntax](#appa-sec-formal-syntax)), the following is an axiom:
 
     $$\forall p_1 \cdots \forall p_n\,\forall A\,\exists B\,\forall x\,\big(x \in B \leftrightarrow (x \in A \land \varphi(x, p_1, \ldots, p_n))\big).$$
 
@@ -315,13 +312,13 @@ def _(mo):
 
     Separation only carves a subset out of a set $A$ that already exists. That restriction is essential.
 
-    /// important | 📐 **Theorem (No Set of All Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (No Set of All Sets)**
+        attrs: {class: theorem, id: ch2-thm-no-set-of-all-sets}
     There is no set $V$ such that $\forall x\,(x \in V)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose, for contradiction, that such a set $V$ exists. By Separation, $R := \{x \in V : x \notin x\}$ is a set, and $R \in V$ because every set is in $V$. By the definition of $R$,
     $$R \in R \;\leftrightarrow\; (R \in V \land R \notin R) \;\leftrightarrow\; R \notin R,$$
     where the second step uses $R \in V$. A statement equivalent to its own negation is a contradiction. $\blacksquare$
@@ -329,7 +326,7 @@ def _(mo):
 
     The same argument is [Russell's paradox](https://en.wikipedia.org/wiki/Russell%27s_paradox) (1901). It shows that the naive rule "for every predicate $\varphi$, the collection $\{x : \varphi(x)\}$ is a set" is contradictory: applied to $\varphi(x) := x \notin x$, it produces a set $R$ with $R \in R \leftrightarrow R \notin R$. ZFC avoids the paradox by building new sets only from sets already known to exist[^proper-class].
 
-    [^proper-class]: Collections such as "all sets" can still be discussed in the metalanguage, where they are called *proper classes*; they are just not sets. See [Appendix A: The Metatheory](appendix_a_formal_logic.md).
+    [^proper-class]: Collections such as "all sets" can still be discussed in the metalanguage, where they are called *proper classes*; they are just not sets. See [Appendix A: The Metatheory](#appa-sec-the-metatheory).
     """)
     return
 
@@ -340,7 +337,6 @@ def _(mo):
     Separation gives the remaining basic operations on sets.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Intersection**</u>
 
     The intersection of sets $A$ and $B$ is $A \cap B := \{x \in A : x \in B\}$, so that
@@ -352,20 +348,19 @@ def _(mo):
 
     Although the definition of $A \cap B$ treats $A$ and $B$ differently, $A \cap B = B \cap A$: both sides have the same elements because $\land$ is commutative. The characterization of $\bigcap F$ needs a proof, because that is where the proviso $F \neq \emptyset$ matters.
 
-    /// important | 📐 **Lemma (General Intersection)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (General Intersection)**
+        attrs: {class: lemma, id: ch2-lem-general-intersection}
     If $F \neq \emptyset$, then for every $x$: $x \in \bigcap F \leftrightarrow \forallin{A}{F}\,(x \in A)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\rightarrow$) This is part of the defining condition of $\bigcap F$. ($\leftarrow$) Suppose $x \in A$ for every $A \in F$. Since $F \neq \emptyset$, it has some element $A_0$, and $x \in A_0$, so $x \in \bigcup F$. Together with the assumption, this is exactly the condition for $x \in \bigcap F$. $\blacksquare$
     ///
 
     Why the proviso? When $F = \emptyset$, the condition $\forallin{A}{\emptyset}\,(x \in A)$ is vacuously true for *every* set $x$, so a set with the characterization above would contain every set, and the No Set of All Sets theorem says no such set exists. The formula in the definition would still produce a set when $F = \emptyset$ (namely $\emptyset$, the only subset of $\bigcup \emptyset = \emptyset$), but that set lacks the property that makes it an intersection, so we never write $\bigcap F$ unless $F \neq \emptyset$. Any element of $F$ could replace $\bigcup F$ as the set we separate from; using $\bigcup F$ avoids having to pick one. For two sets the definitions agree: $\bigcap\{A, B\} = A \cap B$, since both have as elements exactly the $x$ with $x \in A \land x \in B$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Set difference**</u>
 
     The set difference of sets $A$ and $B$ is $A \setminus B := \{x \in A : x \notin B\}$, so that
@@ -380,6 +375,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-6-power-set -->
     ### 6. Power Set
 
     **In words.** For any set $A$, there is a set whose elements are exactly the subsets of $A$.
@@ -391,7 +387,6 @@ def _(mo):
     **What it builds.** By the Uniqueness Lemma the set $P$ is unique.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Power set**</u>
 
     The power set of a set $A$ is the unique set $\mathcal P(A)$ whose elements are the subsets of $A$:
@@ -408,6 +403,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-7-replacement -->
     ### 7. Replacement
 
     **In words.** If a predicate assigns to each element $x$ of a set $A$ exactly one set $y$, then the assigned sets form a set.
@@ -444,12 +440,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-8-infinity -->
     ### 8. Infinity
 
     Pairing and Union let us form, from any set $x$, a set that contains everything in $x$ and also $x$ itself.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Successor**</u>
 
     The successor of a set $x$ is $\operatorname{succ}(x) := x \cup \{x\}$, so that
@@ -471,7 +467,6 @@ def _(mo):
     **What it builds.** The property in parentheses gets a name.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Inductive set**</u>
 
     A set $I$ is inductive iff it contains $\emptyset$ and the successor of each of its elements:
@@ -490,6 +485,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-9-regularity -->
     ### 9. Regularity
 
     **In words.** Every nonempty set $A$ has an element $x$ that has no element in common with $A$.
@@ -500,13 +496,13 @@ def _(mo):
 
     **What it builds.** Nothing. Regularity (also called Foundation) forbids membership loops: there is no set with $x \in x$ (proved next), and no sets with $x \in y$ and $y \in x$ (apply Regularity to $\{x, y\}$: its element $x$ has $y$ in common with it, and its element $y$ has $x$ in common with it). More generally, it forbids [infinite descending membership chains](https://en.wikipedia.org/wiki/Axiom_of_regularity), so every set is built up in stages from $\emptyset$. Ordinary mathematics rarely needs it. We use it once, through the next theorem, to prove that different natural numbers have different successors.
 
-    /// important | 📐 **Theorem (No Set Is an Element of Itself)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (No Set Is an Element of Itself)**
+        attrs: {class: theorem, id: ch2-thm-no-set-is-an-element-of-itself}
     For every set $x$, $x \notin x$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose, for contradiction, that $x \in x$. The singleton $\{x\}$ is nonempty, so by Regularity it has an element $y$ with $y \cap \{x\} = \emptyset$. The only element of $\{x\}$ is $x$, so $y = x$ and $x \cap \{x\} = \emptyset$. But $x \in x$ and $x \in \{x\}$, so $x \in x \cap \{x\}$, a contradiction. $\blacksquare$
     ///
     """)
@@ -516,6 +512,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-10-choice -->
     ### 10. Choice
 
     **In words.** For any set $F$ of nonempty sets, no two of which have an element in common, there is a set $C$ that contains exactly one element of each member of $F$.
@@ -534,16 +531,17 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-building-blocks -->
     ## Building Blocks
 
     The axioms give us sets. Mathematics also needs ordered pairs, relations, and functions; each of these is a particular kind of set.
 
+    <!-- label: ch2-sec-ordered-pairs -->
     ### Ordered Pairs
 
     A measurement taken at step $k$ is naturally the pair "step $k$, value $z_k$", and the order matters: step 2 with value 5 is not step 5 with value 2. Sets built by Pairing are unordered ($\{a, b\} = \{b, a\}$), so we need a set that also records which element comes first. The standard choice is due to [Kuratowski](https://en.wikipedia.org/wiki/Ordered_pair) (1921).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Ordered pair**</u>
 
     The ordered pair of sets $a$ and $b$ is
@@ -553,14 +551,14 @@ def _(mo):
 
     The set $(a, b)$ exists by three applications of Pairing. The particular set $\{\{a\}, \{a, b\}\}$ is only a device[^other-pairs]; everything we ever use about ordered pairs is the following property, which says that an ordered pair determines its coordinates and their order.
 
-    /// important | 📐 **Theorem (Characteristic Property of Ordered Pairs)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Characteristic Property of Ordered Pairs)**
+        attrs: {class: theorem, id: ch2-thm-characteristic-property-of-ordered-pairs}
     For all sets $a$, $b$, $c$, $d$:
     $$(a, b) = (c, d) \;\leftrightarrow\; (a = c \land b = d).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\leftarrow$) If $a = c$ and $b = d$, then $(a, b)$ and $(c, d)$ are built from the same sets in the same way, so they are equal.
 
     ($\rightarrow$) Suppose $\{\{a\}, \{a, b\}\} = \{\{c\}, \{c, d\}\}$.
@@ -581,22 +579,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-cartesian-products -->
     ### Cartesian Products
 
     Given sets $X$ and $Y$, we want the set of all ordered pairs $(a, b)$ with $a \in X$ and $b \in Y$. Separation can only select from a set that already exists, so we first find a set that contains every such pair.
 
-    /// important | 📐 **Lemma (Pairs Lie in a Power Set)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Pairs Lie in a Power Set)**
+        attrs: {class: lemma, id: ch2-lem-pairs-lie-in-a-power-set}
     If $a \in X$ and $b \in Y$, then $(a, b) \in \mathcal P(\mathcal P(X \cup Y))$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $a$ and $b$ are elements of $X \cup Y$, the sets $\{a\}$ and $\{a, b\}$ are *subsets* of $X \cup Y$, that is, *elements* of $\mathcal P(X \cup Y)$. Therefore $(a, b) = \{\{a\}, \{a, b\}\}$ is a *subset* of $\mathcal P(X \cup Y)$, that is, an *element* of $\mathcal P(\mathcal P(X \cup Y))$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Cartesian product**</u>
 
     The Cartesian product of sets $X$ and $Y$ is the set of all ordered pairs whose first coordinate is in $X$ and whose second coordinate is in $Y$:
@@ -605,10 +603,10 @@ def _(mo):
 
     By the Lemma, separating from $\mathcal P(\mathcal P(X \cup Y))$ loses no pairs: $p \in X \times Y \leftrightarrow \existsin{a}{X}\,\existsin{b}{Y}\,\big(p = (a, b)\big)$. Combined with the Characteristic Property, $(a, b) \in X \times Y \leftrightarrow (a \in X \land b \in Y)$. For example, $\{a, b\} \times \{c\} = \{(a, c), (b, c)\}$ for any sets $a$, $b$, $c$, and $X \times \emptyset = \emptyset$ for every $X$. In general $X \times Y \neq Y \times X$.
 
+    <!-- label: ch2-sec-relations -->
     ### Relations
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Relation**</u>
 
     A relation is a set $R$ whose elements are all ordered pairs. For a relation $R$, we write $a \mathrel{R} b$ for $(a, b) \in R$. A relation from $X$ to $Y$ is a relation $R \subseteq X \times Y$, and a relation on $X$ is a relation $R \subseteq X \times X$.
@@ -622,18 +620,17 @@ def _(mo):
 
     Every relation has a set of first coordinates and a set of second coordinates. To build them with Separation we need a set that contains every coordinate.
 
-    /// important | 📐 **Lemma (Coordinates)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Coordinates)**
+        attrs: {class: lemma, id: ch2-lem-coordinates}
     If $(a, b) \in R$, then $a \in \bigcup\bigcup R$ and $b \in \bigcup\bigcup R$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     We have $\{a, b\} \in (a, b)$ and $(a, b) \in R$, so $\{a, b\} \in \bigcup R$. Then $a \in \{a, b\}$ and $\{a, b\} \in \bigcup R$ give $a \in \bigcup\bigcup R$, and likewise for $b$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Domain**</u>
 
     The domain of a relation $R$ is the set of first coordinates of its elements,
@@ -642,7 +639,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Range**</u>
 
     The range of a relation $R$ is the set of second coordinates of its elements,
@@ -656,10 +652,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-functions -->
     ### Functions
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Function**</u>
 
     A function is a relation $f$ in which no first coordinate has two different partners:
@@ -667,12 +663,11 @@ def _(mo):
     For $a \in \operatorname{dom} f$, the value of $f$ at $a$, written $f(a)$, is the unique $b$ with $(a, b) \in f$.
     ///
 
-    So a function *is* its graph: the set of its input–output pairs. The notation $f(a)$ has a proviso: it names a set only when $f$ is a function and $a \in \operatorname{dom} f$, and we write it only then (see [Appendix A: Extension by Definitions](appendix_a_formal_logic.md)). For example, if $a$, $b$, $c$ are distinct sets, then $f := \{(a, c), (b, c)\}$ is a function with $\operatorname{dom} f = \{a, b\}$, $\operatorname{ran} f = \{c\}$, and $f(a) = f(b) = c$. The relation $\{(a, b), (a, c)\}$ is not a function, because $a$ has the two partners $b \neq c$.
+    So a function *is* its graph: the set of its input–output pairs. The notation $f(a)$ has a proviso: it names a set only when $f$ is a function and $a \in \operatorname{dom} f$, and we write it only then (see [Appendix A: Extension by Definitions](#appa-sec-extension-by-definitions)). For example, if $a$, $b$, $c$ are distinct sets, then $f := \{(a, c), (b, c)\}$ is a function with $\operatorname{dom} f = \{a, b\}$, $\operatorname{ran} f = \{c\}$, and $f(a) = f(b) = c$. The relation $\{(a, b), (a, c)\}$ is not a function, because $a$ has the two partners $b \neq c$.
 
     The domain and range of a function are determined by its pairs. A target set for the values is not, so it is declared separately.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Codomain**</u>
 
     A set $Y$ is a codomain of a function $f$ iff $\operatorname{ran} f \subseteq Y$. We write
@@ -684,13 +679,13 @@ def _(mo):
 
     [^reals-informal]: Used informally here; the real numbers are constructed in [Appendix B](appendix_b_number_systems.md) and characterized in [Chapter 3](ch3_sets_for_probability.md).
 
-    /// important | 📐 **Lemma (Equality of Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Equality of Functions)**
+        attrs: {class: lemma, id: ch2-lem-equality-of-functions}
     Functions $f$ and $g$ are equal iff $\operatorname{dom} f = \operatorname{dom} g$ and $f(a) = g(a)$ for every $a \in \operatorname{dom} f$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\rightarrow$) Equal sets have the same domains and the same values. ($\leftarrow$) We show $f \subseteq g$. Every element of $f$ is a pair $(a, b)$ with $a \in \operatorname{dom} f$ and $b = f(a)$. Then $a \in \operatorname{dom} g$ and $b = f(a) = g(a)$, so $(a, b) = (a, g(a)) \in g$. Exchanging the roles of $f$ and $g$ gives $g \subseteq f$, so $f = g$ by Double Inclusion. $\blacksquare$
     ///
 
@@ -708,13 +703,13 @@ def _(mo):
 
     **Choice, restated.** With functions available, the Axiom of Choice takes a more familiar form.
 
-    /// important | 📐 **Theorem (Choice Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Choice Functions)**
+        attrs: {class: theorem, id: ch2-thm-choice-functions}
     For every set $F$ of nonempty sets, there is a function $c : F \to \bigcup F$ with $c(A) \in A$ for every $A \in F$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The members of $F$ may share elements, so we first make disjoint copies of them by tagging each element with the set it came from. For $A \in F$, let $A' := \{A\} \times A$, the set of pairs $(A, x)$ with $x \in A$, and let $F' := \{A' : A \in F\}$ (Replacement).
 
     - Each $A'$ is nonempty: $A$ has an element $x$, and $(A, x) \in A'$.
@@ -731,8 +726,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-natural-numbers -->
     ## Natural Numbers
 
+    <!-- label: ch2-sec-the-smallest-inductive-set -->
     ### The Smallest Inductive Set
 
     The Axiom of Infinity provides an inductive set, but possibly one with extra elements. The natural numbers are the sets that belong to *every* inductive set. Fix an inductive set $I_0$ (one exists by Infinity) and define
@@ -742,7 +739,6 @@ def _(mo):
     A set that belongs to every inductive set belongs in particular to $I_0$, so the condition $n \in I_0$ excludes nothing:
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Natural numbers**</u>
 
     The set $\mathbb N$ of natural numbers is the set whose elements are exactly the sets that belong to every inductive set:
@@ -752,13 +748,13 @@ def _(mo):
 
     This characterization does not mention $I_0$, so by the Uniqueness Lemma $\mathbb N$ does not depend on which inductive set we fixed.
 
-    /// important | 📐 **Theorem (Smallest Inductive Set)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Smallest Inductive Set)**
+        attrs: {class: theorem, id: ch2-thm-smallest-inductive-set}
     $\mathbb N$ is inductive, and $\mathbb N \subseteq I$ for every inductive set $I$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Every inductive set contains $\emptyset$, so $\emptyset \in \mathbb N$. If $n \in \mathbb N$ and $I$ is inductive, then $n \in I$, so $\operatorname{succ}(n) \in I$; since this holds for every inductive $I$, $\operatorname{succ}(n) \in \mathbb N$. So $\mathbb N$ is inductive. The inclusion $\mathbb N \subseteq I$ is the definition of $\mathbb N$. $\blacksquare$
     ///
 
@@ -786,7 +782,7 @@ def _():
     def braces(s):
         """Write a hereditarily finite set using only braces and the empty-set symbol."""
         if not s:
-            return "∅"
+            return r"\emptyset"
         return "{" + ", ".join(braces(e) for e in sorted(s, key=len)) + "}"
 
     return braces, von_neumann
@@ -817,15 +813,15 @@ def _(braces, mo, numeral_slider, von_neumann):
 
     _brace_form = braces(_x)
     _rows = [
-        (rf"${_n}$ written with braces and $\emptyset$ only", _brace_form),
+        (rf"${_n}$ written with braces and $\emptyset$ only", f"${_brace_form}$"),
         (rf"${_n}$ as a set of numerals", f"${_roster(_x)}$"),
         (rf"$\operatorname{{succ}}({_n}) = {_n} \cup \{{{_n}\}}$", f"${_roster(_succ)}$"),
         (rf"number of elements of ${_n}$", str(len(_x))),
-        (r"number of $\emptyset$ symbols in the brace form", str(_brace_form.count("∅"))),
+        (r"number of $\emptyset$ symbols in the brace form", str(_brace_form.count(r"\emptyset"))),
         (rf"every element of ${_n}$ is a subset of ${_n}$", _yes(all(e <= _x for e in _x))),
         (rf"${_n} \in {_n}$", _yes(_x in _x)),
     ]
-    _table = "| | |\n|---|---|\n" + "\n".join(f"| {a} | {b} |" for a, b in _rows)
+    _table = "| | |\n|:---|:---:|\n" + "\n".join(f"| {a} | {b} |" for a, b in _rows)
     mo.vstack([numeral_slider, mo.md(_table)])
     return
 
@@ -835,17 +831,18 @@ def _(mo):
     mo.md(r"""
     The brace form doubles in length at each step, because $\operatorname{succ}(n) = n \cup \{n\}$ contains a complete copy of $n$ as an element. Nobody computes with numerals this way; the point is that the natural numbers *exist as sets*, with nothing assumed beyond the axioms.
 
+    <!-- label: ch2-sec-induction -->
     ### Induction
 
     Because $\mathbb N$ is the *smallest* inductive set, any inductive subset of $\mathbb N$ is all of $\mathbb N$. This is the principle of induction.
 
-    /// important | 📐 **Theorem (Induction)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Induction)**
+        attrs: {class: theorem, id: ch2-thm-induction}
     Let $T \subseteq \mathbb N$. If $0 \in T$ and $\forallin{n}{T}\,\big(\operatorname{succ}(n) \in T\big)$, then $T = \mathbb N$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The hypotheses say that $T$ is inductive, so $\mathbb N \subseteq T$ by the Smallest Inductive Set theorem. Together with $T \subseteq \mathbb N$, Double Inclusion gives $T = \mathbb N$. $\blacksquare$
     ///
 
@@ -856,13 +853,13 @@ def _(mo):
 
     Here are two first examples; both are used again later.
 
-    /// important | 📐 **Lemma (Zero or Successor)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Zero or Successor)**
+        attrs: {class: lemma, id: ch2-lem-zero-or-successor}
     Every natural number is $0$ or the successor of a natural number: $\forallin{n}{\mathbb N}\,\big(n = 0 \lor \existsin{m}{\mathbb N}\,(n = \operatorname{succ}(m))\big)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction on $n$. *Base case:* $0 = 0$. *Inductive step:* for any $n \in \mathbb N$, the number $\operatorname{succ}(n)$ is the successor of the natural number $n$ (this step does not even need the induction hypothesis). $\blacksquare$
     ///
 
@@ -872,20 +869,19 @@ def _(mo):
 
     Equivalently, $y \in x$ and $x \in A$ imply $y \in A$.
 
-    /// important | 📐 **Lemma (Transitivity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Transitivity)**
+        attrs: {class: lemma, id: ch2-lem-transitivity}
     (a) Every natural number is transitive. (b) $\mathbb N$ is transitive: every element of a natural number is a natural number.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     (a) By induction on $n$. *Base case:* $0 = \emptyset$ is transitive, vacuously. *Inductive step:* suppose $n$ is transitive, and let $x \in \operatorname{succ}(n) = n \cup \{n\}$. If $x \in n$, then $x \subseteq n \subseteq \operatorname{succ}(n)$ by the induction hypothesis. If $x = n$, then $x = n \subseteq \operatorname{succ}(n)$. Either way $x \subseteq \operatorname{succ}(n)$, so $\operatorname{succ}(n)$ is transitive.
 
     (b) We prove $n \subseteq \mathbb N$ for every $n \in \mathbb N$, by induction. *Base case:* $\emptyset \subseteq \mathbb N$. *Inductive step:* if $n \subseteq \mathbb N$, then every element of $\operatorname{succ}(n) = n \cup \{n\}$ is either an element of $n \subseteq \mathbb N$ or equal to $n \in \mathbb N$, so $\operatorname{succ}(n) \subseteq \mathbb N$. $\blacksquare$
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     Induction needs both hypotheses, for every $n$.
 
     - **Without the base case, the inductive step proves nothing.** Let $P(n)$ be "$n = \operatorname{succ}(n)$". The inductive step holds: if $n = \operatorname{succ}(n)$, then $\operatorname{succ}(n) = \operatorname{succ}(\operatorname{succ}(n))$, since equal sets have equal successors. Yet $P(n)$ is false for every $n$, because $n \in \operatorname{succ}(n)$ while $n \notin n$.
@@ -898,12 +894,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-the-peano-axioms -->
     ### The Peano Axioms
 
     In 1889, Giuseppe Peano characterized the natural numbers by five properties, now called the [Peano axioms](https://en.wikipedia.org/wiki/Peano_axioms). In ZFC they are not axioms but theorems about the set $\mathbb N$ we just constructed. Only the fourth needs real work.
 
-    /// important | 📐 **Theorem (Peano Axioms)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Peano Axioms)**
+        attrs: {class: theorem, id: ch2-thm-peano-axioms}
     1. $0 \in \mathbb N$.
     2. $\forallin{n}{\mathbb N}\,\big(\operatorname{succ}(n) \in \mathbb N\big)$.
     3. $\forallin{n}{\mathbb N}\,\big(\operatorname{succ}(n) \neq 0\big)$.
@@ -912,7 +909,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     (1) and (2) say that $\mathbb N$ is inductive (Smallest Inductive Set), and (5) is the Induction theorem. (3) holds because $n \in \operatorname{succ}(n)$, while $0 = \emptyset$ has no elements.
 
     (4) Suppose $\operatorname{succ}(m) = \operatorname{succ}(n)$ but $m \neq n$. Since $m \in \operatorname{succ}(m) = \operatorname{succ}(n) = n \cup \{n\}$ and $m \neq n$, we get $m \in n$. The same argument with $m$ and $n$ exchanged gives $n \in m$. Now $n$ is transitive (Transitivity Lemma), so $m \in n$ gives $m \subseteq n$, and then $n \in m$ gives $n \in n$. This contradicts the theorem that no set is an element of itself. $\blacksquare$
@@ -928,12 +925,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-recursion -->
     ### Recursion
 
     A recursive definition gives a starting value and a rule for computing each value from the previous one. It feels obvious that this defines a value for every $n$, but "and so on" is not a proof: the result is a function on all of $\mathbb N$, an infinite set of pairs, and we must show that exactly one such set exists. Not every self-referential rule succeeds. For example, every constant function satisfies $h(n) = h(\operatorname{succ}(n))$, so that "rule" determines nothing. The Recursion Theorem shows that a rule which refers only to the *previous* value always defines exactly one function.
 
-    /// important | 📐 **Theorem (Recursion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Recursion)**
+        attrs: {class: theorem, id: ch2-thm-recursion}
     Let $A$ be a set, $a \in A$, and $g : A \to A$. There is exactly one function $h : \mathbb N \to A$ such that
     $$h(0) = a \qquad\text{and}\qquad h(\operatorname{succ}(n)) = g(h(n)) \ \text{ for every } n \in \mathbb N.$$
     ///
@@ -941,7 +939,7 @@ def _(mo):
     The idea of the proof: take $h$ to be the smallest set of pairs that contains $(0, a)$ and is closed under the step $(n, x) \mapsto (\operatorname{succ}(n), g(x))$, and then show by induction that it contains exactly one pair for each $n$.
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Construction.* Call a set $R \subseteq \mathbb N \times A$ *closed* if $(0, a) \in R$ and, for all $n$ and $x$, $(n, x) \in R$ implies $(\operatorname{succ}(n), g(x)) \in R$. The set $\mathbb N \times A$ itself is closed, so the set
     $$\mathcal C := \{R \in \mathcal P(\mathbb N \times A) : R \text{ is closed}\}$$
     is nonempty, and we may define $h := \bigcap \mathcal C$. By the General Intersection Lemma, $h \subseteq R$ for every closed $R$. Moreover, $h$ is itself closed: $(0, a)$ lies in every closed $R$, hence in $h$; and if $(n, x) \in h$, then $(n, x)$ lies in every closed $R$, so $(\operatorname{succ}(n), g(x))$ lies in every closed $R$, hence in $h$. In particular, $h \subseteq \mathbb N \times A$.
@@ -962,14 +960,14 @@ def _(mo):
 
     The rule of a filter also depends on the step number, through the gain and the measurement, so we need a version in which $g$ sees $n$ as well.
 
-    /// important | 📐 **Theorem (Recursion with a Step Index)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Recursion with a Step Index)**
+        attrs: {class: theorem, id: ch2-thm-recursion-with-a-step-index}
     Let $A$ be a set, $a \in A$, and $g : \mathbb N \times A \to A$. There is exactly one function $h : \mathbb N \to A$ such that
     $$h(0) = a \qquad\text{and}\qquad h(\operatorname{succ}(n)) = g(n, h(n)) \ \text{ for every } n \in \mathbb N.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Existence.* We recurse on pairs (step, value). Apply the Recursion Theorem to the set $\mathbb N \times A$, the starting value $(0, a)$, and the function $G : \mathbb N \times A \to \mathbb N \times A$ given by $G(n, x) := (\operatorname{succ}(n), g(n, x))$. This yields $H : \mathbb N \to \mathbb N \times A$ with $H(0) = (0, a)$ and $H(\operatorname{succ}(n)) = G(H(n))$. By induction, the first coordinate of $H(n)$ is $n$: this holds for $n = 0$, and if $H(n) = (n, x)$, then $H(\operatorname{succ}(n)) = G(n, x) = (\operatorname{succ}(n), g(n, x))$.
 
     Let $h := \operatorname{ran} H$. Its elements are the pairs $H(n)$, and $H(n)$ is the only one of them with first coordinate $n$, so $h$ is a function with $\operatorname{dom} h = \mathbb N$, $\operatorname{ran} h \subseteq A$, and $H(n) = (n, h(n))$. Then $H(0) = (0, a)$ gives $h(0) = a$, and $H(\operatorname{succ}(n)) = (\operatorname{succ}(n), g(n, h(n)))$ gives $h(\operatorname{succ}(n)) = g(n, h(n))$, by the Characteristic Property.
@@ -984,7 +982,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A filter is a recursion with a step index. Given an initial estimate $\hat x_0 \in A$ and an update rule $G$ that computes the estimate at each step $k \ge 1$ from $k$ and the previous estimate,
     $$\hat x_k = G(k, \hat x_{k-1}),$$
     the Recursion Theorem with a Step Index, applied to $g(n, x) := G(\operatorname{succ}(n), x)$, gives exactly one function $k \mapsto \hat x_k$ on all of $\mathbb N$.
@@ -1013,10 +1010,10 @@ def _(mo):
     )
     gain_choice = mo.ui.dropdown(
         options={
-            "cumulative average, α_k = 1/k": "average",
-            "EMA, α_k = 0.2": "ema",
+            "cumulative average, alpha_k = 1/k": "average",
+            "EMA, alpha_k = 0.2": "ema",
         },
-        value="cumulative average, α_k = 1/k",
+        value="cumulative average, alpha_k = 1/k",
         label="update rule",
     )
     return gain_choice, steps_slider
@@ -1032,7 +1029,7 @@ def _(gain_choice, graphic, mo, np, plt, scale_z, steps_slider):
             return 1.0
         return 1.0 / k if rule == "average" else 0.2
 
-    _xhat = [0.0]  # h(0) = x̂_0; irrelevant because α_1 = 1
+    _xhat = [0.0]  # h(0) = x_hat_0; irrelevant because alpha_1 = 1
     for _k in range(1, _K + 1):
         _prev = _xhat[-1]
         _xhat.append(_prev + _gain(_k, _rule) * (scale_z[_k - 1] - _prev))
@@ -1066,7 +1063,6 @@ def _(gain_choice, graphic, mo, np, plt, scale_z, steps_slider):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The update must be defined for every value it can receive.** The theorem requires $g : A \to A$ (or $g : \mathbb N \times A \to A$): defined on all of $A$, with values in $A$. If a rule is undefined for some value the recursion can reach, the recursion stops there. For example, an update containing $1/(\hat x_{k-1} - c)$ is undefined as soon as some estimate equals $c$.
     - **The rule may use only the previous value and the step index.** Rules that refer to later values need not define anything, as the constant-function example above shows. Rules that use several earlier values, such as $h(n+2) = g(h(n), h(n+1))$, reduce to the theorem by recursing on pairs $(h(n), h(n+1))$, just as the Introduction's alpha-beta filter carries the pair (estimate, rate) from step to step.
     - **The theorem is about exact values.** A computer evaluates $h(1), h(2), \ldots$ in finite-precision arithmetic, so the computed values can drift from the exact ones over many steps. [Chapter 14](ch14_kalman_filters_in_practice.md) discusses this for the Kalman filter.
@@ -1078,6 +1074,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-arithmetic-and-order -->
     ### Arithmetic and Order
 
     Recursion defines the arithmetic of $\mathbb N$.
@@ -1104,8 +1101,8 @@ def _(mo):
 
     So $n = \{0, 1, \ldots, n - 1\}$: each natural number is the set of the natural numbers before it, as the explorer above showed. For a filter, the number $k$ is literally the set of time steps before step $k$. [Chapter 3](ch3_sets_for_probability.md) uses these sets to define what it means for a set to be finite.
 
-    /// important | 📐 **Theorem (Arithmetic and Order on ℕ)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Arithmetic and Order on $\mathbb N$)**
+        attrs: {class: theorem, id: ch2-thm-arithmetic-and-order-on-n}
     For all $a, b, c \in \mathbb N$:
 
     1. $(a + b) + c = a + (b + c)$ and $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
@@ -1120,8 +1117,8 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    Each statement is proved by induction from the recursive equations above; the full proofs are in [Appendix B: Arithmetic on the Natural Numbers](appendix_b_number_systems.md). To see the pattern, here is $0 + n = n$, by induction on $n$: $0 + 0 = 0$ by the first equation for addition, and if $0 + n = n$, then $0 + (n + 1) = (0 + n) + 1 = n + 1$ by the second.
+        attrs: {class: proof}
+    Each statement is proved by induction from the recursive equations above; the full proofs are in [Appendix B: Arithmetic on the Natural Numbers](#appb-sec-arithmetic-on-the-natural-numbers). To see the pattern, here is $0 + n = n$, by induction on $n$: $0 + 0 = 0$ by the first equation for addition, and if $0 + n = n$, then $0 + (n + 1) = (0 + n) + 1 = n + 1$ by the second.
     ///
     """)
     return
@@ -1130,6 +1127,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch2-sec-summary -->
     ## Summary
 
     - **Sets and $\in$ are primitive.** Extensionality says a set is determined by its elements, so a set specified by a membership condition is unique and can be named.
@@ -1141,6 +1139,7 @@ def _(mo):
     - **Recursion.** A starting value and an update rule define exactly one function on $\mathbb N$. With a step index, this is the filter recursion $\hat x_k = G(k, \hat x_{k-1})$.
     - **Arithmetic and order** on $\mathbb N$ are defined by recursion; their properties are proved in Appendix B.
 
+    <!-- label: ch2-sec-whats-next -->
     ## What's Next
 
     [Chapter 3](ch3_sets_for_probability.md) develops the set theory that probability needs: complements and De Morgan's laws, images and preimages (the tools behind the definition of a random variable), sizes of infinite sets, and the real numbers as a complete ordered field. To see the integers, rationals, and real numbers constructed from $\mathbb N$, read [Appendix B](appendix_b_number_systems.md) before or alongside Chapter 3.

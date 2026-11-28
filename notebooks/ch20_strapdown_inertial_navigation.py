@@ -70,7 +70,6 @@ def _(mo):
     Its central difficulty is also the reason this chapter belongs in a book about filters. Integration accumulates errors. We will derive exactly how fast: a constant accelerometer error grows into a position error proportional to $t^2$, and a constant gyroscope error into one proportional to $t^3$. With a consumer-grade IMU, the position is off by meters within a few seconds. Walking offers a way out: once per stride, the foot stands still on the ground, so its true velocity is known to be zero. This chapter builds the navigation equations, a synthetic walking simulator with exact ground truth, and detectors that find the stationary moments. [Chapter 21](ch21_zero_velocity_updates.md) turns those moments into Kalman filter measurements.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Inertial navigation integrates, and integration turns small constant sensor errors into position errors that grow like $t^2$ and $t^3$. A walking foot is stationary once per stride, which provides a perfect velocity measurement roughly every second, provided we can detect when it happens.
     ///
     """)
@@ -81,14 +80,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 17](ch17_rotations.md): rotation matrices, ZYX Euler angles, the kinematics $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, the exponential map, and the small-angle approximation.
     - [Chapter 18](ch18_quaternions.md): the Hamilton product, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and exact integration for a constant rate.
     - [Chapter 19](ch19_ahrs.md): the IMU sensor models, specific force, tilt from the accelerometer, and the error-state convention $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
     - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): likelihoods and the multivariate normal density (only for the GLRT detector).
     - [Chapter 9](ch9_noise_levels.md): white noise, random walks, and the chi-squared distribution.
-    - [Appendix C: Taylor's Theorem](appendix_c_calculus.md) and [Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md).
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md) and [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md).
+    - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) and [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus).
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices) and [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
     """)
     return
@@ -97,6 +95,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-conventions -->
     ## Conventions
 
     We use the orientation conventions of Chapters 17–19 without change:
@@ -111,12 +110,12 @@ def _(mo):
     with constant {term}`sensor biases <sensor bias>` $\mathbf b_g, \mathbf b_a$ and {term}`white noise` samples $\mathbf n_g, \mathbf n_a$ that are independent, zero-mean, and normal with covariances $\sigma_g^2\mathbf I$ and $\sigma_a^2\mathbf I$.
 
     | Parameter | Default value |
-    |---|---|
+    |:---|:---:|
     | sample rate | 100 Hz |
     | gyroscope white noise $\sigma_g$ | 0.01 rad/s |
     | gyroscope bias, per axis | 0.01 rad/s |
-    | accelerometer white noise $\sigma_a$ | 0.05 m/s² |
-    | accelerometer bias, per axis | 0.05 m/s² |
+    | accelerometer white noise $\sigma_a$ | 0.05 m/s$^2$ |
+    | accelerometer bias, per axis | 0.05 m/s$^2$ |
 
     These are typical of an inexpensive MEMS IMU. Where no confusion is possible we write $\mathbf R := \mathbf R^n_b$, $q := q^n_b$, $\boldsymbol\omega := \boldsymbol\omega^b$, and $\mathbf f := \mathbf f^b$. A hat marks a computed quantity, as in [Chapter 7](ch7_optimal_alpha.md): $\hat{\mathbf p}$ is the computed position and $\mathbf p$ the true one.
     """)
@@ -126,12 +125,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-dead-reckoning-and-strapdown-navigation -->
     ## Dead Reckoning and Strapdown Navigation
 
     Sailors without satellites estimated their position from a known starting point, their speed, their heading, and the time elapsed. The method needs no position measurement after the start, which is both its appeal and its weakness.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Dead reckoning**</u>
 
     A method that estimates the position $\mathbf p(t)$ of a moving object as a known initial position $\mathbf p(0)$ plus the integral (or sum) of estimated velocities or displacements over $[0, t]$, without using any measurement of position at a time after $0$.
@@ -140,7 +139,6 @@ def _(mo):
     Early inertial navigation systems mounted the accelerometers on a gimbaled platform that motors kept level and pointing North, so that the accelerometers measured navigation-frame components directly. Modern MEMS sensors are instead fixed rigidly to the vehicle (here, the shoe), and the platform's job is done in software by tracking $\mathbf R$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Strapdown inertial navigation**</u>
 
     Dead reckoning in which the attitude, velocity, and position of a body are computed by numerically integrating the angular rate and specific force measured by an inertial measurement unit that is rigidly attached to the body.
@@ -152,6 +150,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-the-navigation-equations -->
     ### The Navigation Equations
 
     Three differential equations relate the IMU's outputs to the quantities we want.
@@ -170,6 +169,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-discrete-implementation-at-100-hz -->
     ### Discrete Implementation at 100 Hz
 
     The IMU delivers samples $\boldsymbol\omega_k, \mathbf f_k$ at times $t_k = k\,\Delta t$. Between samples we know nothing, so we assume every signal varies linearly from one sample to the next and integrate that assumption exactly:
@@ -189,7 +189,7 @@ def _(mo):
 
 @app.cell
 def helpers(np):
-    # jb: echo=true
+    # jb: editor=true
     G = 9.81                          # gravity magnitude, m/s^2
     G_N = np.array([0.0, 0.0, -G])    # gravity in ENU coordinates
 
@@ -198,7 +198,7 @@ def helpers(np):
         return np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
 
     def quat_mult(p, q):
-        """Hamilton product p ⊗ q of scalar-first quaternions."""
+        """Hamilton product of scalar-first quaternions p and q."""
         pw, px, py, pz = p
         qw, qx, qy, qz = q
         return np.array([
@@ -266,7 +266,7 @@ def _(mo):
 
 @app.cell
 def strapdown_cell(G_N, np, quat_exp, quat_mult, quat_to_rotmat):
-    # jb: echo=true
+    # jb: editor=true
     def strapdown(omega_m, f_m, dt, q0, v0, p0):
         """Integrate N x 3 arrays of IMU samples from the initial state (q0, v0, p0)."""
         N = len(omega_m)
@@ -295,7 +295,6 @@ def strapdown_cell(G_N, np, quat_exp, quat_mult, quat_to_rotmat):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The navigation equations above assume:
 
     1. **A non-rotating, flat Earth with constant gravity.** Neglecting the Earth's rotation and curvature is harmless for a walk of a few minutes with MEMS sensors, whose biases are far larger. For hours-long navigation with precise sensors, the Coriolis and transport-rate terms must be added.
@@ -310,6 +309,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-how-errors-grow -->
     ## How Errors Grow
 
     Feeding $\boldsymbol\omega_m$ and $\mathbf f_m$ into the navigation equations integrates the biases and noise along with the signal. To see how fast the result degrades, we follow [Chapter 19](ch19_ahrs.md)'s error-state convention: an error is what must be *added to the computed value to obtain the true one*,
@@ -317,7 +317,6 @@ def _(mo):
     where $\operatorname{Exp}$ is [Chapter 17](ch17_rotations.md)'s exponential map and $\delta\boldsymbol\theta$ is a small rotation vector in body coordinates. So $\delta\mathbf p = -e$ in the notation $e = \hat x - x$ of [Chapter 7](ch7_optimal_alpha.md); only the sign differs, and every growth law below is about magnitudes.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Drift**</u>
 
     The part of the error of an estimate that is produced by integrating (or summing) errors in the measured rates of change of the estimated quantity, as opposed to an error present in the initial value.
@@ -331,8 +330,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Drift Laws)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Drift Laws)**
+        attrs: {class: theorem, id: ch20-thm-drift-laws}
     Let an IMU be at rest and level, and let the navigation equations be integrated exactly from the true initial velocity and position $\hat{\mathbf v}(0) = \hat{\mathbf p}(0) = \mathbf 0$. Suppose exactly one of the following errors is present and there is no noise.
 
     1. **Accelerometer bias** $\mathbf b_a$ (constant), with the correct initial attitude: $\ \delta\mathbf p(t) = -\tfrac12\,\mathbf b_a\,t^2$.
@@ -343,12 +342,12 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     In every case the true acceleration is zero, so $\delta\mathbf p = -\hat{\mathbf p}$, and $\hat{\mathbf p}$ is the double integral of the computed acceleration $\hat{\mathbf a} = \hat{\mathbf R}\,\mathbf f_m + \mathbf g^n$ (two applications of the [fundamental theorem of calculus](appendix_c_calculus.md)).
 
     1. The attitude is correct, $\hat{\mathbf R} = \mathbf I$, and $\mathbf f_m = [0, 0, g]^\top + \mathbf b_a$, so $\hat{\mathbf a} = \mathbf b_a$. Integrating twice gives $\hat{\mathbf p} = \tfrac12\mathbf b_a t^2$.
     2. From $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$ and $\mathbf R = \mathbf I$ we get $\hat{\mathbf R} = \operatorname{Exp}(\delta\boldsymbol\theta)^\top = \operatorname{Exp}(-\delta\boldsymbol\theta) = \mathbf R_y(-\varepsilon)$, because the exponential of a rotation vector along a coordinate axis is the elementary rotation about that axis ([Chapter 17](ch17_rotations.md)). Then $\hat{\mathbf a} = \mathbf R_y(-\varepsilon)[0, 0, g]^\top + \mathbf g^n = [-g\sin\varepsilon,\ 0,\ g(\cos\varepsilon - 1)]^\top$, a constant, so $\hat p_x = -\tfrac12 g\sin\varepsilon\, t^2$ and $\hat p_y = 0$. Finally $\sin\varepsilon = \varepsilon + O(\varepsilon^3)$ ([Taylor's theorem](appendix_c_calculus.md)).
-    3. The computed attitude solves $\dot{\hat{\mathbf R}} = \hat{\mathbf R}[\boldsymbol\omega_m]_\times = \hat{\mathbf R}[b\,\mathbf e_y]_\times$ with $\hat{\mathbf R}(0) = \mathbf I$, whose unique solution is $\hat{\mathbf R}(t) = \exp(t[b\,\mathbf e_y]_\times) = \mathbf R_y(bt)$ ([Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md)). Then $\hat{\mathbf a}(t) = [g\sin bt,\ 0,\ g(\cos bt - 1)]^\top$. Integrating, $\hat v_x(t) = g(1 - \cos bt)/b$ and $\hat p_x(t) = g(bt - \sin bt)/b^2$. Since $\sin x = x - x^3/6 + O(x^5)$, we get $bt - \sin bt = \tfrac16 (bt)^3\big(1 + O((bt)^2)\big)$. $\blacksquare$
+    3. The computed attitude solves $\dot{\hat{\mathbf R}} = \hat{\mathbf R}[\boldsymbol\omega_m]_\times = \hat{\mathbf R}[b\,\mathbf e_y]_\times$ with $\hat{\mathbf R}(0) = \mathbf I$, whose unique solution is $\hat{\mathbf R}(t) = \exp(t[b\,\mathbf e_y]_\times) = \mathbf R_y(bt)$ ([Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential)). Then $\hat{\mathbf a}(t) = [g\sin bt,\ 0,\ g(\cos bt - 1)]^\top$. Integrating, $\hat v_x(t) = g(1 - \cos bt)/b$ and $\hat p_x(t) = g(bt - \sin bt)/b^2$. Since $\sin x = x - x^3/6 + O(x^5)$, we get $bt - \sin bt = \tfrac16 (bt)^3\big(1 + O((bt)^2)\big)$. $\blacksquare$
     ///
 
     The three laws share one mechanism with different numbers of integrations. A bias in $\mathbf f$ is integrated twice. A tilt error rotates the $g$ that the accelerometer senses partly into the horizontal, creating a false horizontal acceleration $g\varepsilon$ that is integrated twice. A gyroscope bias makes the tilt itself grow linearly ($\delta\theta_y = -bt$), adding a third integration. [Chapter 21](ch21_zero_velocity_updates.md) derives the general linearized error equations, of which these are special cases.
@@ -359,6 +358,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-noise-and-leveling -->
     ### Noise and Leveling
 
     White noise drifts too, but more slowly. Summing $t/\Delta t$ independent accelerometer noise samples, each contributing $\mathbf n_a\Delta t$ to the velocity, gives a {term}`random walk` in velocity with per-axis standard deviation $\sigma_a\sqrt{\Delta t\,t}$; integrating it once more gives a position standard deviation of $\sigma_a\sqrt{\Delta t/3}\;t^{3/2}$. Gyroscope noise makes the tilt a random walk with standard deviation $\sigma_g\sqrt{\Delta t\,t}$, and two integrations of $g$ times that tilt give $g\,\sigma_g\sqrt{\Delta t/20}\;t^{5/2}$.[^iwp] The table compares all five sources with the default parameters and an initial tilt of $\varepsilon = 0.005$ rad, which is what leveling produces with a $0.05\ \text{m/s}^2$ accelerometer bias (see below).
@@ -386,7 +386,7 @@ def _(G, mo, np):
     )
     mo.md(
         "| Error source | Horizontal position error | after 1 s | after 10 s | after 30 s |\n"
-        "|---|---|---|---|---|\n" + _rows
+        "|:---|:---:|:---:|:---:|:---:|\n" + _rows
     )
     return
 
@@ -397,10 +397,10 @@ def _(mo):
     Two facts stand out. After one second, roughly one stride, every source contributes only centimeters. After ten seconds, the gyroscope bias alone has moved the computed position by more than 16 m, and after thirty seconds by more than 400 m. Because the error grows like a power of $t$, shortening the integration interval is enormously effective: halving it divides the gyroscope-bias term by eight.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Free-running inertial navigation with a consumer IMU is accurate to centimeters for about a second and useless after ten. Its errors are small over short intervals, so anything that periodically resets them (such as a known zero velocity once per stride) can keep the whole trajectory accurate.
     ///
 
+    <!-- label: ch20-sec-interactive-drift-demo -->
     ### Interactive: Drift Demo
 
     The sliders set the three error sources for the motionless, level IMU of the theorem. Each solid curve is the horizontal position error $\lVert\delta\mathbf p_h\rVert$ produced by the actual 100 Hz mechanization with one source switched on; the dashed curves are the drift laws. The black curve has all three sources on at once. The axes are logarithmic, so each power law is a straight line whose slope is its exponent: 2, 2, and 3.
@@ -410,7 +410,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    drift_ba = mo.ui.slider(0.0, 0.2, 0.005, value=0.05, label=r"accelerometer bias $b_a$ (m/s²)", show_value=True)
+    drift_ba = mo.ui.slider(0.0, 0.2, 0.005, value=0.05, label=r"accelerometer bias $b_a$ (m/s$^2$)", show_value=True)
     drift_tilt = mo.ui.slider(0.0, 20.0, 0.5, value=5.0, label=r"tilt error $\varepsilon$ (mrad)", show_value=True)
     drift_bg = mo.ui.slider(0.0, 0.03, 0.001, value=0.01, label=r"gyroscope bias $b_g$ (rad/s)", show_value=True)
     drift_T = mo.ui.slider(5, 60, 5, value=30, label="duration (s)", show_value=True)
@@ -495,7 +495,6 @@ def _(G, drift_ba, drift_bg, drift_tilt, mo, np):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The drift laws assume:
 
     1. **A motionless, level IMU.** During real motion the specific force is not $[0, 0, g]$ and the attitude changes, so the same errors project differently onto the axes. The mechanisms (and the powers of $t$) survive, but the coefficients change; [Chapter 21](ch21_zero_velocity_updates.md) gives the general equations.
@@ -510,6 +509,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-the-gait-cycle -->
     ## The Gait Cycle
 
     Walking is periodic, and clinicians describe one period of one leg with a fixed vocabulary of events [see @perry2024]. For the foot that carries our IMU, in order:
@@ -521,28 +521,24 @@ def _(mo):
     - The foot then travels through the air until its next heel strike.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Stride**</u>
 
     For a given foot, the time interval from one heel strike of that foot to its next heel strike, together with the motion of the foot during that interval.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gait cycle**</u>
 
     The ordered sequence of events that one foot passes through during a stride (heel strike, foot flat, heel off, toe off, and the next heel strike), with the time of each event expressed as a percentage of the stride's duration, heel strike being $0\%$ and the next heel strike $100\%$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Stance phase**</u>
 
     The part of a stride during which the foot is in contact with the ground: from heel strike to toe off.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Swing phase**</u>
 
     The part of a stride during which the foot is not in contact with the ground: from toe off to the next heel strike.
@@ -591,6 +587,7 @@ def _(IMAGES_DIR, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-a-synthetic-gait-simulator -->
     ## A Synthetic Gait Simulator
 
     To test navigation algorithms we need IMU data *and* the exact trajectory that produced it. Real walking data comes with neither exact truth nor control over the error sources, so we build a simulator: an analytic trajectory of the foot, from which the true $\boldsymbol\omega^b$ and $\mathbf f^b$ follow by differentiation, plus the sensor errors of our IMU model. [Chapter 21](ch21_zero_velocity_updates.md) reuses it unchanged.
@@ -620,14 +617,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Body Rate of a Yawing, Pitching Foot)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Body Rate of a Yawing, Pitching Foot)**
+        attrs: {class: lemma, id: ch20-lem-body-rate-of-a-yawing-pitching-foot}
     If $\mathbf R(t) = \mathbf R_z(\psi(t))\,\mathbf R_y(\theta(t))$ with differentiable $\psi$ and $\theta$, then $\mathbf R^\top\dot{\mathbf R} = [\boldsymbol\omega]_\times$ with
     $$\boldsymbol\omega = \big[-\dot\psi\sin\theta,\ \ \dot\theta,\ \ \dot\psi\cos\theta\big]^\top.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     This is [Chapter 17](ch17_rotations.md)'s Euler-rate theorem with $\phi \equiv 0$; directly: by the product rule, $\mathbf R^\top\dot{\mathbf R} = \mathbf R_y^\top(\mathbf R_z^\top\dot{\mathbf R}_z)\mathbf R_y + \mathbf R_y^\top\dot{\mathbf R}_y = \dot\psi\,\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y + \dot\theta\,[\mathbf e_y]_\times$, using Chapter 17's elementary rates $\mathbf R_z^\top\dot{\mathbf R}_z = \dot\psi[\mathbf e_z]_\times$ and $\mathbf R_y^\top\dot{\mathbf R}_y = \dot\theta[\mathbf e_y]_\times$. Chapter 17's identity $\mathbf Q^\top[\mathbf a]_\times\mathbf Q = [\mathbf Q^\top\mathbf a]_\times$ for a rotation matrix $\mathbf Q$ gives $\mathbf R_y^\top[\mathbf e_z]_\times\mathbf R_y = [\mathbf R_y^\top\mathbf e_z]_\times$, and $\mathbf R_y(\theta)^\top\mathbf e_z = [-\sin\theta, 0, \cos\theta]^\top$ (the third row of $\mathbf R_y$). Adding the two cross-product matrices gives the claim. $\blacksquare$
     ///
 
@@ -638,7 +635,7 @@ def _(mo):
 
 @app.cell
 def simulator(G_N, np):
-    # jb: echo=true
+    # jb: editor=true
     def min_jerk(x):
         """Minimum-jerk profile s(x) = 10x^3 - 15x^4 + 6x^5 and its first two derivatives."""
         return (10 * x**3 - 15 * x**4 + 6 * x**5, 30 * x**2 * (1 - x) ** 2,
@@ -742,7 +739,7 @@ def _(mo):
 
 @app.cell
 def _(np, simulate_gait):
-    # jb: echo=true
+    # jb: editor=true
     walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
     sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
     return sim, walk_turns
@@ -787,7 +784,7 @@ def _(IMAGES_DIR, np, plt, sim):
     _ax.plot(_t[_k], sim["f_m"][_k, 2], ".", color="C0", ms=2.5)
     _ax.plot(_t[_k], sim["f"][_k, 0], color="black", lw=1.2, label="true $f_x$")
     _ax.plot(_t[_k], sim["f"][_k, 2], color="black", lw=1.2, ls="--", label="true $f_z$")
-    _ax.set_ylabel("specific force (m/s²)", fontsize=9)
+    _ax.set_ylabel("specific force (m/s$^2$)", fontsize=9)
     _ax.legend(fontsize=8, loc="upper right", ncol=3)
     _ax.set_xlabel("time (s)")
     for _ax in _axs:
@@ -809,6 +806,7 @@ def _(IMAGES_DIR, np, plt, sim):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-validating-the-simulator -->
     ### Validating the Simulator
 
     A simulator whose IMU signals were inconsistent with its trajectory (a sign error in $\omega_x$, say) would silently corrupt every later experiment. The test is to integrate its **noise-free, bias-free** IMU output with the strapdown mechanization, starting from the true initial state, and compare with the true trajectory. Agreement cannot be perfect, because the trapezoidal rule has an error proportional to $\Delta t^2$. So the test is that the discrepancy **shrinks by a factor of about four each time the sample rate doubles**. An inconsistent signal would leave an error that does not shrink.
@@ -839,7 +837,7 @@ def _(mo, validation):
     _walked = validation[100.0]["sim"]["stride_length"].sum()
     mo.md(
         "| Sample rate | Largest position error | Final position error | Reduction factor |\n"
-        "|---|---|---|---|\n" + "\n".join(_rows) + "\n\n"
+        "|:---|:---:|:---:|:---:|\n" + "\n".join(_rows) + "\n\n"
         f"Each doubling of the rate divides the error by about four, as second-order accuracy predicts, "
         f"so the simulated signals are consistent with the simulated trajectory. At 100 Hz the "
         f"integration error accumulated over the whole {_walked:.1f} m walk is "
@@ -882,12 +880,12 @@ def _(IMAGES_DIR, plt, validation):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-detecting-zero-velocity -->
     ## Detecting Zero Velocity
 
     The stationary moments are only useful if we can find them from the IMU data alone.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Zero-velocity detector**</u>
 
     A function that maps the IMU samples in a time window around sample $k$ to one of two decisions for sample $k$: *stationary* (the IMU's velocity and angular velocity are zero) or *moving*.
@@ -908,8 +906,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (GLRT for a Stationary IMU)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (GLRT for a Stationary IMU)**
+        attrs: {class: theorem, id: ch20-thm-glrt-for-a-stationary-imu}
     Within the window $\Omega_k$, model the measurements as $\mathbf f_{m,j} = \boldsymbol\mu_j + \mathbf n_{a,j}$ and $\boldsymbol\omega_{m,j} = \boldsymbol\nu_j + \mathbf n_{g,j}$, with all noise vectors independent, $\mathbf n_{a,j} \sim \mathcal N(\mathbf 0, \sigma_a^2\mathbf I)$, $\mathbf n_{g,j} \sim \mathcal N(\mathbf 0, \sigma_g^2\mathbf I)$, and no biases. Consider the hypotheses
 
     - $H_0$ (stationary): $\boldsymbol\mu_j = g\,\mathbf u$ and $\boldsymbol\nu_j = \mathbf 0$ for all $j \in \Omega_k$, for some unknown unit vector $\mathbf u$;
@@ -920,12 +918,12 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     A measurement $\mathbf y \sim \mathcal N(\boldsymbol\mu, \sigma^2\mathbf I)$ in $\mathbb R^3$ has density $(2\pi\sigma^2)^{-3/2}\exp\big(-\lVert\mathbf y - \boldsymbol\mu\rVert^2/(2\sigma^2)\big)$: the multivariate normal density of [Chapter 12](ch12_vectors_matrices_covariance.md) with determinant $\sigma^6$ and inverse covariance $\sigma^{-2}\mathbf I$. By independence, $\ell$ is the product of $2W$ such densities, so
     $$\ell = C\exp\Big(-\frac12\sum_{j\in\Omega_k}\Big(\frac{\lVert\mathbf f_{m,j} - \boldsymbol\mu_j\rVert^2}{\sigma_a^2} + \frac{\lVert\boldsymbol\omega_{m,j} - \boldsymbol\nu_j\rVert^2}{\sigma_g^2}\Big)\Big), \qquad C := (2\pi\sigma_a^2)^{-3W/2}(2\pi\sigma_g^2)^{-3W/2}.$$
     Under $H_1$, choosing $\boldsymbol\mu_j = \mathbf f_{m,j}$ and $\boldsymbol\nu_j = \boldsymbol\omega_{m,j}$ makes the exponent zero, its largest possible value, so $\sup_{H_1}\ell = C$. Under $H_0$, we must minimize $\sum_j\lVert\mathbf f_{m,j} - g\mathbf u\rVert^2$ over unit vectors $\mathbf u$. Expanding with $\lVert\mathbf u\rVert = 1$,
     $$\sum_{j}\lVert\mathbf f_{m,j} - g\mathbf u\rVert^2 = \sum_j\lVert\mathbf f_{m,j}\rVert^2 - 2gW\,\mathbf u\cdot\bar{\mathbf f}_k + Wg^2,$$
-    which is smallest when $\mathbf u\cdot\bar{\mathbf f}_k$ is largest. By the Cauchy–Schwarz inequality ([Appendix D: Vectors](appendix_d_linear_algebra.md)), $\mathbf u\cdot\bar{\mathbf f}_k \le \lVert\bar{\mathbf f}_k\rVert$, with equality exactly for $\mathbf u = \bar{\mathbf f}_k/\lVert\bar{\mathbf f}_k\rVert$. Substituting this $\mathbf u$ gives $\sup_{H_0}\ell = C\exp\big(-\tfrac{W}{2}T_{\text{SHOE}}(k)\big)$, and dividing, $\ln L_k = \tfrac W2 T_{\text{SHOE}}(k)$. $\blacksquare$
+    which is smallest when $\mathbf u\cdot\bar{\mathbf f}_k$ is largest. By the Cauchy–Schwarz inequality ([Appendix D: Vectors](#appd-sec-vectors)), $\mathbf u\cdot\bar{\mathbf f}_k \le \lVert\bar{\mathbf f}_k\rVert$, with equality exactly for $\mathbf u = \bar{\mathbf f}_k/\lVert\bar{\mathbf f}_k\rVert$. Substituting this $\mathbf u$ gives $\sup_{H_0}\ell = C\exp\big(-\tfrac{W}{2}T_{\text{SHOE}}(k)\big)$, and dividing, $\ln L_k = \tfrac W2 T_{\text{SHOE}}(k)$. $\blacksquare$
     ///
 
     A GLRT rejects $H_0$ when the ratio is large, so SHOE declares the sample **stationary when $T_{\text{SHOE}}(k) < \gamma$**. The statistic is small only if the specific force has magnitude $g$ *and* a constant direction across the window, *and* the angular rate is near zero.
@@ -937,7 +935,7 @@ def _(mo):
 
 @app.cell
 def detectors(G, np):
-    # jb: echo=true
+    # jb: editor=true
     def imu_windows(x, W):
         """Windows of W samples centered on each sample (edges padded): shape (N, W, 3)."""
         h = W // 2
@@ -967,6 +965,7 @@ def detectors(G, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-evaluating-the-detectors -->
     ### Evaluating the Detectors
 
     Because the simulator knows exactly when the foot is still, we can score each detector on the U-turn walk (with sensor errors). For each detector and threshold, the table lists the percentage of truly stationary samples it detects, the percentage of moving samples it falsely declares stationary, and the fastest true foot speed among the samples it declares stationary. Detection never reaches $100\%$ at small $\gamma$, because windows at the edges of each foot-flat interval contain some motion.
@@ -1005,7 +1004,7 @@ def _(detector_stats, mo, np, score_detector, sim):
     _shoe_moving = detector_stats["SHOE"][~sim["still"]]
     mo.md(
         "| Detector | $\\gamma$ | Stationary samples detected | Moving samples flagged | Fastest flagged speed |\n"
-        "|---|---|---|---|---|\n" + "\n".join(_rows) + "\n\n"
+        "|:---|:---:|:---:|:---:|:---:|\n" + "\n".join(_rows) + "\n\n"
         f"On this walk the SHOE statistic has median {np.median(_shoe_still):.1f} on stationary samples "
         f"and never falls below {_shoe_moving.min():.0f} on moving ones, a gap of more than two orders "
         f"of magnitude. The acceleration-magnitude test, by contrast, starts declaring mid-swing samples "
@@ -1018,6 +1017,7 @@ def _(detector_stats, mo, np, score_detector, sim):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-interactive-detector-explorer -->
     ### Interactive: Detector Explorer
 
     Choose a detector and move the threshold. The top panel shows the statistic (log scale) over five strides, the threshold $\gamma$ (dashed), the true foot-flat intervals (gray), and the samples declared stationary (orange band). The bottom panel shows the true foot speed; red crosses mark false detections, moving samples declared stationary.
@@ -1090,7 +1090,6 @@ def _(det_choice, det_log_gamma, detector_stats, mo, score_detector):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The detectors assume:
 
     1. **A foot that is truly still for at least a window.** In running, foot flat can last only a few samples, and every window that covers it also covers motion; the statistic never drops below the walking threshold, and stances are missed. Raising $\gamma$ to catch them invites false detections. [Chapter 21](ch21_zero_velocity_updates.md) shows the consequences.
@@ -1105,6 +1104,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-dead-reckoning-a-walking-foot -->
     ## Dead Reckoning a Walking Foot
 
     We now have everything needed to try pure dead reckoning on the U-turn walk with realistic sensor errors: level with the first second of standing, set $\psi = 0$, $\hat{\mathbf v} = \hat{\mathbf p} = \mathbf 0$, and run the mechanization. As a first attempt to use the stationary moments, we also try the crudest possible fix: whenever SHOE declares a sample stationary, overwrite the computed velocity with zero.
@@ -1114,7 +1114,7 @@ def _(mo):
 
 @app.cell
 def _(G_N, np, quat_exp, quat_mult, quat_to_rotmat):
-    # jb: echo=true
+    # jb: editor=true
     def strapdown_with_reset(omega_m, f_m, dt, q0, stationary):
         """Strapdown mechanization that sets the velocity to zero at every stationary sample."""
         N = len(omega_m)
@@ -1226,7 +1226,6 @@ def _(mo):
     A Kalman filter fixes the first two. It treats "velocity is zero" as a measurement, and because its covariance matrix records how velocity errors were caused by attitude and bias errors (and how they leaked into position), a single measurement of the velocity error corrects all of them. The third is a question of observability, and its answer is less comforting.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The stationary moments carry information about every error that produced the velocity error, not just the velocity error itself. Extracting that information requires a model of how errors propagate, which is exactly what a Kalman filter provides.
     ///
     """)
@@ -1236,6 +1235,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-summary -->
     ## Summary
 
     - **Strapdown inertial navigation** integrates $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega]$, $\dot{\mathbf v} = \mathbf R\mathbf f + \mathbf g^n$, $\dot{\mathbf p} = \mathbf v$ with measured rates and forces. At 100 Hz we use the exact quaternion update for the averaged rate, the trapezoidal rule for velocity and position, and leveling for the initial roll and pitch.
@@ -1251,6 +1251,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch20-sec-whats-next -->
     ## What's Next
 
     [Chapter 21](ch21_zero_velocity_updates.md) treats "the foot is stationary" as a measurement of the velocity, $\mathbf v = \mathbf 0$, and feeds it to an error-state extended Kalman filter with fifteen states: errors in position, velocity, attitude, and both sensor biases. We derive how those errors propagate, see which ones the zero-velocity measurements can and cannot correct, and finally turn the corrected trajectory into the numbers a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle.

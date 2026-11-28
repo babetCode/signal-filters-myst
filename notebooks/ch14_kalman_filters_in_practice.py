@@ -66,7 +66,6 @@ def _(mo):
     [Chapter 13](ch13_kalman_filter.md) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A Kalman filter is only as good as its model. Tune $\mathbf Q$, $\mathbf R$, and $\mathbf P_0$ from physical reasoning, then *check* them: when the model is right, the normalized errors $\mathbf e^\top\mathbf P^{-1}\mathbf e$ and normalized innovations $\tilde{\mathbf y}^\top\mathbf S^{-1}\tilde{\mathbf y}$ follow known chi-squared distributions, and departures from those distributions reveal what is wrong.
     ///
     """)
@@ -77,14 +76,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular the state-space model and its assumptions (A1)–(A6), the Joseph form, the Kalman gain, observability, and the piecewise-constant acceleration model.
     - [Chapter 9](ch9_noise_levels.md): the normalized innovation squared, the chi-squared distribution, filter consistency, and what $Q = 0$ does to the gain.
     - [Chapter 10](ch10_process_models.md): discretization of continuous-time models.
     - [Chapter 12](ch12_vectors_matrices_covariance.md): affine transformations of multivariate normal vectors; Mahalanobis distance.
     - [Chapter 5](ch5_random_variables.md): independence; the distribution of a sum of independent random variables.
-    - [Appendix C: The Fundamental Theorem of Calculus; Multiple Integrals](appendix_c_calculus.md): only for the derivation of the continuous white-noise acceleration model.
-    - [Appendix D: Cholesky Decomposition; The Matrix Exponential](appendix_d_linear_algebra.md).
+    - Appendix C: [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus); [Multiple Integrals](#appc-sec-multiple-integrals): only for the derivation of the continuous white-noise acceleration model.
+    - Appendix D: [Cholesky Decomposition](#appd-sec-cholesky-decomposition); [The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
     """)
     return
@@ -93,6 +91,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-the-1-d-cart -->
     ## The 1-D Cart
 
     A cart rolls along a straight track. It starts at rest at position 0, accelerates at $0.5\ \text{m/s}^2$ from $t = 2$ s to $t = 6$ s, cruises at 2 m/s, brakes at $-0.5\ \text{m/s}^2$ from $t = 12$ s to $t = 16$ s, and stops at 20 m. Two sensors watch it:
@@ -174,7 +173,7 @@ def make_cart_fig(
     _axes[1].set_ylabel("velocity (m/s)")
     _axes[2].plot(cart_t, _u[0], color="C0", lw=0.5, label="accelerometer (100 Hz)")
     _axes[2].plot(cart_t, cart_accel, color="black", lw=1.2, label="truth")
-    _axes[2].set_ylabel("acceleration (m/s²)")
+    _axes[2].set_ylabel("acceleration (m/s$^2$)")
     _axes[2].set_xlabel("time (s)")
     for _ax, _loc in zip(_axes, ["upper left", "upper left", "lower left"]):
         _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -189,7 +188,7 @@ def make_cart_fig(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/ch14_cart.svg" class="graphic" alt="Three stacked plots over 20 seconds. Position rises from 0 to 20 m along an S-shaped curve, with noisy position readings scattered about half a meter around it. Velocity ramps from 0 to 2 m/s between 2 and 6 s, stays at 2 m/s, and ramps back to 0 between 12 and 16 s. The true acceleration is a pair of rectangular pulses of plus and minus 0.5 m/s², and the accelerometer readings jitter around it." />
+    <img src="public/ch14_cart.svg" class="graphic" alt="Three stacked plots over 20 seconds. Position rises from 0 to 20 m along an S-shaped curve, with noisy position readings scattered about half a meter around it. Velocity ramps from 0 to 2 m/s between 2 and 6 s, stays at 2 m/s, and ramps back to 0 between 12 and 16 s. The true acceleration is a pair of rectangular pulses of plus and minus 0.5 m/s squared, and the accelerometer readings jitter around it." />
     """)
     return
 
@@ -197,6 +196,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-an-implementation-for-many-runs-at-once -->
     ### An Implementation for Many Runs at Once
 
     Several sections below run the same filter on many independent simulated data sets. Because the Kalman gain and the covariances do not depend on the measurements (Chapter 13), all runs share one $\mathbf P_k$, and only the estimates differ. The implementation therefore stores the estimates of $N$ runs as the *rows* of an $N\times n$ array, so that `x @ F.T` applies $\mathbf F$ to every run at once. For a single run, $N = 1$. A missing position reading is marked by `NaN`. The update returns each run's normalized innovation squared $\tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$, which the sections on gating and consistency use.
@@ -206,7 +206,7 @@ def _(mo):
 
 @app.cell
 def kf_impl(np):
-    # jb: echo=true
+    # jb: editor=true
     def kf_predict(x, P, F, Q, B=None, u=None):
         """Predict. x holds one state per row (N x n); all N runs share P."""
         x = x @ F.T if B is None else x @ F.T + u @ B.T
@@ -264,6 +264,7 @@ def kf_impl(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-initialization -->
     ## Initialization
 
     The filter needs $\hat{\mathbf x}_0$ and $\mathbf P_0$ before the first measurement. Assumption (A5) of Chapter 13 says they are the true mean and covariance of $\mathbf x_0$; in practice they encode what you know before the data arrive. The two ways to get them wrong are not symmetric:
@@ -273,26 +274,26 @@ def _(mo):
 
     So when in doubt, choose $\mathbf P_0$ large. In the limit the choice of $\hat{\mathbf x}_0$ stops mattering:
 
-    /// important | 📐 **Theorem (Diffuse Initialization, Scalar Case)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Diffuse Initialization, Scalar Case)**
+        attrs: {class: theorem, id: ch14-thm-diffuse-initialization-scalar-case}
     For the scalar filter with $\hat x_1^- = a\hat x_0 + bu_1$, $P_1^- = a^2P_0 + Q$, and $R > 0$, $a \ne 0$: as $P_0 \to \infty$, the first estimate $\hat x_1 \to z_1$ and $P_1 \to R$, whatever $\hat x_0$ is.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $K_1 = P_1^-/(P_1^- + R) = 1 - R/(P_1^- + R) \to 1$ because $P_1^- \to \infty$. Then $\hat x_1 = (1 - K_1)\hat x_1^- + K_1z_1$, and $(1 - K_1)\hat x_1^- = R\,(a\hat x_0 + bu_1)/(a^2P_0 + Q + R) \to 0$, so $\hat x_1 \to z_1$. Also $P_1 = (1 - K_1)P_1^- = RP_1^-/(P_1^- + R) \to R$. $\blacksquare$
     ///
 
     This is the Introduction's *first-measurement initialization*, recovered as the limit of a vague prior. With a state vector, one measurement may not determine the whole state. For the cart's position-only measurement, two readings $\Delta t$ apart determine both position and velocity:
 
-    /// important | 📐 **Lemma (Two-Point Initialization)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Two-Point Initialization)**
+        attrs: {class: lemma, id: ch14-lem-two-point-initialization}
     Let $z_j = p_j + v_j$ for $j = 1, 2$, where the measurement noises $v_1, v_2$ are uncorrelated with variance $R$, and suppose the true velocity is constant between the two readings: $p_2 = p_1 + \Delta t\,\dot p$. Then the estimate $\hat{\mathbf x}_2 := [z_2,\ (z_2 - z_1)/\Delta t]^\top$ of $[p_2, \dot p]^\top$ is unbiased with error covariance
     $$\mathbf P_2 = R\begin{bmatrix}1 & 1/\Delta t \\ 1/\Delta t & 2/\Delta t^2\end{bmatrix}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The error is $\hat{\mathbf x}_2 - [p_2, \dot p]^\top = [v_2,\ (v_2 - v_1)/\Delta t]^\top$, which has mean $\mathbf 0$. Its entries have variances $R$ and $2R/\Delta t^2$ and covariance $\operatorname{Cov}(v_2, (v_2 - v_1)/\Delta t) = R/\Delta t$ (Chapter 13's Covariance Rules, using $\operatorname{Cov}(v_1, v_2) = 0$). $\blacksquare$
     ///
 
@@ -328,7 +329,7 @@ def _(init_rows, init_z, mo):
         rf"Readings: $z_1 = {init_z[0]:.2f}$ m, $z_2 = {init_z[1]:.2f}$ m.",
         "",
         r"| $\lambda$ | $\hat p_2$ (m) | $\hat v_2$ (m/s) | $P_{11}$ | $P_{12}$ | $P_{22}$ |",
-        "|---|---|---|---|---|---|",
+        "|:---|:---:|:---:|:---:|:---:|:---:|",
     ]
     for _name, _p, _v, _p11, _p12, _p22 in init_rows:
         _lines.append(f"| {_name} | {_p:.4f} | {_v:.4f} | {_p11:.4f} | {_p12:.4f} | {_p22:.3f} |")
@@ -342,7 +343,6 @@ def _(mo):
     For the cart we know more than this: it starts at rest near the origin. The filters below use $\hat{\mathbf x}_0 = \mathbf 0$ and $\mathbf P_0 = \operatorname{diag}(1\ \text{m}^2,\ 0.25\ \text{m}^2/\text{s}^2)$, honest but not tight.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The theorem and the lemma assume the first readings are valid.** If the first reading is an outlier, a diffuse prior hands the filter that outlier as its estimate. Gating (below) cannot help, because with a huge $\mathbf P^-$ every reading looks plausible. Robust start-ups use the median of a few readings.
     - **The two-point lemma assumes constant velocity between the readings.** If the object accelerates, add the process noise accumulated over $\Delta t$ to $\mathbf P_2$.
     - **Unobservable states are not initialized by data.** Their initial uncertainty persists (Chapter 13, Observability), so $\mathbf P_0$ for them must be honest.
@@ -354,16 +354,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-choosing-q -->
     ## Choosing Q
 
     $\mathbf Q$ is the covariance of everything the process model leaves out. For a constant-velocity model, what is left out is the acceleration, so $\mathbf Q$ is a statement about how the acceleration behaves between samples. There are two standard statements, and they lead to different matrices.
 
+    <!-- label: ch14-sec-piecewise-constant-acceleration -->
     ### Piecewise-constant acceleration
 
     Chapter 13 assumed that the acceleration is constant during each step, $a(t) = a_k$ on $(t_{k-1}, t_k]$, with the $a_k$ uncorrelated, mean 0, variance $\sigma_a^2$. Then $\mathbf w_k = \boldsymbol\Gamma a_k$ with $\boldsymbol\Gamma = [\tfrac12\Delta t^2, \Delta t]^\top$ and
     $$\mathbf Q_{\text{pc}} = \sigma_a^2\begin{bmatrix}\tfrac14\Delta t^4 & \tfrac12\Delta t^3 \\ \tfrac12\Delta t^3 & \Delta t^2\end{bmatrix}.$$
     This matrix has rank 1: position and velocity errors are perfectly correlated within a step, because both come from the same $a_k$.
 
+    <!-- label: ch14-sec-continuous-white-noise-acceleration -->
     ### Continuous white-noise acceleration
 
     Real accelerations do not change once per sample. The second model treats $a(t)$ as *continuous-time white noise*: a signal so erratic that its values at any two different times are uncorrelated, however close the times are. Such a signal is not an ordinary function, and making it precise takes stochastic calculus[^cwn]. We use only the property that defines it for our purpose:
@@ -375,22 +378,22 @@ def _(mo):
 
     [^cwn]: The integrals in (W) are defined as stochastic integrals with respect to a Wiener process, and the covariance formula is the [Itô isometry](https://en.wikipedia.org/wiki/It%C3%B4_isometry). For an accessible treatment, see @barshalom2002 [Ch. 6].
 
-    /// important | 📐 **Theorem (Discretized Continuous White-Noise Acceleration)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Discretized Continuous White-Noise Acceleration)**
+        attrs: {class: theorem, id: ch14-thm-discretized-continuous-white-noise-acceleration}
     Let $\ddot p = a(t)$, with $a$ satisfying (W), be sampled at $t_k = k\Delta t$. Then $\mathbf x_k = [p(t_k), \dot p(t_k)]^\top$ satisfies $\mathbf x_k = \mathbf F\mathbf x_{k-1} + \mathbf w_k$ with $\mathbf F = \begin{bmatrix}1 & \Delta t \\ 0 & 1\end{bmatrix}$ and white $\mathbf w_k$ with covariance
     $$\mathbf Q_{\text{cw}} = q\begin{bmatrix}\tfrac13\Delta t^3 & \tfrac12\Delta t^2 \\ \tfrac12\Delta t^2 & \Delta t\end{bmatrix}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    For a continuous input $a$, integrating $\ddot p = a$ from $t_{k-1}$ gives $\dot p(t) = \dot p(t_{k-1}) + \int_{t_{k-1}}^t a(s)\,ds$ ([Appendix C: The Fundamental Theorem of Calculus](appendix_c_calculus.md)). Integrating once more and exchanging the order of integration over the triangle $t_{k-1} \le s \le t \le t_k$ ([Appendix C: Multiple Integrals](appendix_c_calculus.md)),
+        attrs: {class: proof}
+    For a continuous input $a$, integrating $\ddot p = a$ from $t_{k-1}$ gives $\dot p(t) = \dot p(t_{k-1}) + \int_{t_{k-1}}^t a(s)\,ds$ ([Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus)). Integrating once more and exchanging the order of integration over the triangle $t_{k-1} \le s \le t \le t_k$ ([Appendix C: Multiple Integrals](#appc-sec-multiple-integrals)),
     $$p(t_k) = p(t_{k-1}) + \Delta t\,\dot p(t_{k-1}) + \int_{t_{k-1}}^{t_k}\int_{t_{k-1}}^{t}a(s)\,ds\,dt = p(t_{k-1}) + \Delta t\,\dot p(t_{k-1}) + \int_{t_{k-1}}^{t_k}(t_k - s)\,a(s)\,ds.$$
     For white noise these formulas are taken as the definition of the solution. So $\mathbf x_k = \mathbf F\mathbf x_{k-1} + \mathbf w_k$ with $\mathbf w_k = \int_{t_{k-1}}^{t_k}\mathbf g(s)a(s)\,ds$ and $\mathbf g(s) := [t_k - s,\ 1]^\top$. By (W), applied entry by entry, and the substitution $\tau = t_k - s$,
     $$\mathbf Q_{\text{cw}} = q\int_{t_{k-1}}^{t_k}\mathbf g(s)\mathbf g(s)^\top ds = q\int_0^{\Delta t}\begin{bmatrix}\tau^2 & \tau \\ \tau & 1\end{bmatrix}d\tau = q\begin{bmatrix}\tfrac13\Delta t^3 & \tfrac12\Delta t^2 \\ \tfrac12\Delta t^2 & \Delta t\end{bmatrix}.$$
     For $j \ne k$, $\mathbf w_j$ and $\mathbf w_k$ are integrals over disjoint intervals, hence uncorrelated by (W): the sequence is white. $\blacksquare$
     ///
 
-    The same argument works for any linear model $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf G a(t)$: the transition matrix is the {term}`matrix exponential` $\mathbf F = e^{\mathbf A\Delta t}$ ([Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md)) and
+    The same argument works for any linear model $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf G a(t)$: the transition matrix is the {term}`matrix exponential` $\mathbf F = e^{\mathbf A\Delta t}$ ([Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential)) and
     $$\mathbf Q = q\int_0^{\Delta t}e^{\mathbf A\tau}\mathbf G\mathbf G^\top e^{\mathbf A^\top\tau}\,d\tau,$$
     which can be evaluated with a single matrix exponential of a block matrix [@vanloan1978]. For the constant-velocity model, $\mathbf A = \begin{bmatrix}0 & 1 \\ 0 & 0\end{bmatrix}$ satisfies $\mathbf A^2 = \mathbf 0$, so the exponential series stops after two terms, $e^{\mathbf A\tau} = \mathbf I + \mathbf A\tau = \begin{bmatrix}1 & \tau \\ 0 & 1\end{bmatrix}$, and the general formula reduces to the theorem.
     """)
@@ -433,10 +436,11 @@ def _(mo, q_mc_err, q_vanloan_err):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-which-one -->
     ### Which one?
 
     | | Piecewise-constant acceleration | Continuous white-noise acceleration |
-    |---|---|---|
+    |:---:|:---|:---|
     | Assumption | $a$ constant within each step, uncorrelated between steps | $a(t)$ white in continuous time |
     | Parameter | $\sigma_a$ ($\text{m/s}^2$) | $q$ ($\text{m}^2/\text{s}^3$) |
     | $\mathbf Q$ | $\sigma_a^2\begin{bmatrix}\Delta t^4/4 & \Delta t^3/2 \\ \Delta t^3/2 & \Delta t^2\end{bmatrix}$ | $q\begin{bmatrix}\Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t\end{bmatrix}$ |
@@ -455,51 +459,51 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-sequential-updates -->
     ## Sequential Updates
 
     When a measurement vector has several components whose noises are uncorrelated, so that $\mathbf R$ is block diagonal, the update can process them one block at a time. With scalar blocks, $\mathbf S$ is a number and the gain needs only a division, and each block can be handled on its own: one can be skipped or rejected while the others are used. The proof goes through a second form of the update.
 
-    /// important | 📐 **Lemma (Information Form of the Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Information Form of the Update)**
+        attrs: {class: lemma, id: ch14-lem-information-form-of-the-update}
     Let $\mathbf P^-$ and $\mathbf R$ be positive definite, $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$, $\mathbf K = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$, $\hat{\mathbf x} = \hat{\mathbf x}^- + \mathbf K(\mathbf z - \mathbf H\hat{\mathbf x}^-)$, and $\mathbf P = (\mathbf I - \mathbf K\mathbf H)\mathbf P^-$. Then $\mathbf P$ is invertible, $\mathbf K = \mathbf P\mathbf H^\top\mathbf R^{-1}$, and
     $$\mathbf P^{-1} = (\mathbf P^-)^{-1} + \mathbf H^\top\mathbf R^{-1}\mathbf H, \qquad \mathbf P^{-1}\hat{\mathbf x} = (\mathbf P^-)^{-1}\hat{\mathbf x}^- + \mathbf H^\top\mathbf R^{-1}\mathbf z.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $\mathbf A := \mathbf P^-$, so $\mathbf P = \mathbf A - \mathbf A\mathbf H^\top\mathbf S^{-1}\mathbf H\mathbf A$. Multiplying out and collecting terms,
     $$\mathbf P\big(\mathbf A^{-1} + \mathbf H^\top\mathbf R^{-1}\mathbf H\big) = \mathbf I + \mathbf A\mathbf H^\top\Big[\mathbf R^{-1} - \mathbf S^{-1} - \mathbf S^{-1}\mathbf H\mathbf A\mathbf H^\top\mathbf R^{-1}\Big]\mathbf H.$$
-    The bracket is $\mathbf R^{-1} - \mathbf S^{-1}(\mathbf R + \mathbf H\mathbf A\mathbf H^\top)\mathbf R^{-1} = \mathbf R^{-1} - \mathbf S^{-1}\mathbf S\mathbf R^{-1} = \mathbf 0$, so the product is $\mathbf I$. For square matrices a one-sided inverse is two-sided (the Invertible Matrix Theorem in [Appendix D: Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md)), which proves the first formula. Next,
+    The bracket is $\mathbf R^{-1} - \mathbf S^{-1}(\mathbf R + \mathbf H\mathbf A\mathbf H^\top)\mathbf R^{-1} = \mathbf R^{-1} - \mathbf S^{-1}\mathbf S\mathbf R^{-1} = \mathbf 0$, so the product is $\mathbf I$. For square matrices a one-sided inverse is two-sided (the Invertible Matrix Theorem in [Appendix D: Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank)), which proves the first formula. Next,
     $$\mathbf P\mathbf H^\top\mathbf R^{-1} = \mathbf A\mathbf H^\top\big(\mathbf I - \mathbf S^{-1}\mathbf H\mathbf A\mathbf H^\top\big)\mathbf R^{-1} = \mathbf A\mathbf H^\top\mathbf S^{-1}\big(\mathbf S - \mathbf H\mathbf A\mathbf H^\top\big)\mathbf R^{-1} = \mathbf A\mathbf H^\top\mathbf S^{-1} = \mathbf K.$$
     Finally, $\mathbf P^{-1}\hat{\mathbf x} = \mathbf P^{-1}\hat{\mathbf x}^- + \mathbf P^{-1}\mathbf K(\mathbf z - \mathbf H\hat{\mathbf x}^-) = (\mathbf A^{-1} + \mathbf H^\top\mathbf R^{-1}\mathbf H)\hat{\mathbf x}^- + \mathbf H^\top\mathbf R^{-1}(\mathbf z - \mathbf H\hat{\mathbf x}^-) = \mathbf A^{-1}\hat{\mathbf x}^- + \mathbf H^\top\mathbf R^{-1}\mathbf z$. $\blacksquare$
     ///
 
-    In words: inverse covariances (*information*) add. The prediction contributes $(\mathbf P^-)^{-1}$, the measurement contributes $\mathbf H^\top\mathbf R^{-1}\mathbf H$. This is the matrix version of [Chapter 7](ch7_optimal_alpha.md)'s $1/P = 1/P^- + 1/R$. The covariance formula is also an instance of the matrix inversion lemma ([Appendix D: Block Matrices and the Schur Complement](appendix_d_linear_algebra.md)); the direct check above avoids needing it.
+    In words: inverse covariances (*information*) add. The prediction contributes $(\mathbf P^-)^{-1}$, the measurement contributes $\mathbf H^\top\mathbf R^{-1}\mathbf H$. This is the matrix version of [Chapter 7](ch7_optimal_alpha.md)'s $1/P = 1/P^- + 1/R$. The covariance formula is also an instance of the matrix inversion lemma ([Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement)); the direct check above avoids needing it.
 
-    /// important | 📐 **Theorem (Sequential Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Sequential Update)**
+        attrs: {class: theorem, id: ch14-thm-sequential-update}
     Let $\mathbf P^-$ be positive definite, and split the measurement as $\mathbf z = \begin{bmatrix}\mathbf z_a \\ \mathbf z_b\end{bmatrix}$, $\mathbf H = \begin{bmatrix}\mathbf H_a \\ \mathbf H_b\end{bmatrix}$, $\mathbf R = \begin{bmatrix}\mathbf R_a & \mathbf 0 \\ \mathbf 0 & \mathbf R_b\end{bmatrix}$ with $\mathbf R_a, \mathbf R_b$ positive definite. Updating $(\hat{\mathbf x}^-, \mathbf P^-)$ with $(\mathbf z_a, \mathbf H_a, \mathbf R_a)$, and then updating the result with $(\mathbf z_b, \mathbf H_b, \mathbf R_b)$, with no prediction in between, gives the same estimate and covariance as one update with $(\mathbf z, \mathbf H, \mathbf R)$. By induction, the same holds for any number of blocks.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Because $\mathbf R^{-1} = \operatorname{diag}(\mathbf R_a^{-1}, \mathbf R_b^{-1})$, block multiplication gives $\mathbf H^\top\mathbf R^{-1}\mathbf H = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf H_b$ and $\mathbf H^\top\mathbf R^{-1}\mathbf z = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf z_b$. By the Lemma, the first update produces $\mathbf P_a$ with $\mathbf P_a^{-1} = (\mathbf P^-)^{-1} + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a$, which is positive definite, and $\mathbf P_a^{-1}\hat{\mathbf x}_a = (\mathbf P^-)^{-1}\hat{\mathbf x}^- + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a$. Applying the Lemma again with $(\hat{\mathbf x}_a, \mathbf P_a)$ as the prediction adds the $b$ terms, so the final $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$ equal those of the single update. These two quantities determine $\mathbf P$ and $\hat{\mathbf x}$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sequential update**</u>
 
     The processing of a measurement $\mathbf z_k = [\mathbf z_k^{(1)}; \ldots; \mathbf z_k^{(p)}]$ whose noise covariance is block diagonal, $\mathbf R_k = \operatorname{diag}(\mathbf R_k^{(1)}, \ldots, \mathbf R_k^{(p)})$, as $p$ successive Kalman updates, the $i$-th using $(\mathbf z_k^{(i)}, \mathbf H_k^{(i)}, \mathbf R_k^{(i)})$ and starting from the result of the $(i-1)$-th, with no prediction in between.
     ///
 
-    /// important | 📐 **Corollary (Decorrelating the Noise)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Decorrelating the Noise)**
+        attrs: {class: corollary, id: ch14-cor-decorrelating-the-noise}
     Let $\mathbf R = \mathbf L\mathbf L^\top$ be the {term}`Cholesky decomposition` of a positive definite $\mathbf R$. The transformed measurement $\mathbf z' := \mathbf L^{-1}\mathbf z = (\mathbf L^{-1}\mathbf H)\mathbf x + \mathbf L^{-1}\mathbf v$ has noise covariance $\mathbf I$, and updating with $(\mathbf z', \mathbf L^{-1}\mathbf H, \mathbf I)$ gives the same result as updating with $(\mathbf z, \mathbf H, \mathbf R)$. So any measurement can be processed one scalar at a time.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $\operatorname{Cov}(\mathbf L^{-1}\mathbf v) = \mathbf L^{-1}\mathbf L\mathbf L^\top\mathbf L^{-\top} = \mathbf I$. The transformed update has $(\mathbf L^{-1}\mathbf H)^\top(\mathbf L^{-1}\mathbf H) = \mathbf H^\top(\mathbf L\mathbf L^\top)^{-1}\mathbf H = \mathbf H^\top\mathbf R^{-1}\mathbf H$ and $(\mathbf L^{-1}\mathbf H)^\top\mathbf z' = \mathbf H^\top\mathbf R^{-1}\mathbf z$, so by the Lemma it produces the same $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$. $\blacksquare$
     ///
     """)
@@ -549,6 +553,7 @@ def _(mo, seq_decor_diff, seq_diff, seq_naive_diff):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-missing-measurements-and-multi-rate-data -->
     ## Missing Measurements and Multi-Rate Data
 
     Chapter 13's derivation never assumed that every step has the same measurement model; each proof used one step at a time. So a step may have a measurement of any dimension $m_k$, including $m_k = 0$: **no measurement**. Then there is no innovation, and the update leaves the prediction unchanged,
@@ -559,7 +564,6 @@ def _(mo):
     - **Multi-rate data.** Different sensors report at different rates. Predict at the fastest rate and update with each sensor when, and only when, it reports. If several report at the same instant, process them with sequential updates. The cart does exactly this: it predicts at 100 Hz with each accelerometer sample and updates at 10 Hz with each position reading.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Missing must not mean informative.** Skipping is correct when *whether* a reading arrives does not depend on its value. A sensor that drops out exactly when its reading would be extreme (for example, a range sensor that loses its target when the target is far) removes the large values selectively, and skipping then biases the estimate.
     - **Timestamps must be right.** Multi-rate filtering assumes each reading is applied at the step when it was *taken*. A reading that arrives late must either be applied at its true time (by re-running the filter from that time) or have its delay modeled.
     ///
@@ -570,10 +574,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-sensor-fusion-on-the-cart -->
     ## Sensor Fusion on the Cart
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sensor fusion**</u>
 
     The combination of measurements from two or more sensors into a single estimate of a state.
@@ -591,13 +595,13 @@ def _(mo):
     q_scale_slider = mo.ui.slider(
         steps=[0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0],
         value=1.0,
-        label=r"filter's $\sigma_{\text{acc}}$ ÷ true",
+        label=r"filter's $\sigma_{\text{acc}} \div$ true",
         show_value=True,
     )
     r_scale_slider = mo.ui.slider(
         steps=[0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 4.0],
         value=1.0,
-        label=r"filter's $\sigma_p$ ÷ true",
+        label=r"filter's $\sigma_p \div$ true",
         show_value=True,
     )
     dropout_slider = mo.ui.slider(
@@ -714,6 +718,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-an-unmodeled-bias -->
     ### An Unmodeled Bias
 
     Real accelerometers have a bias; Part VI's default is $0.05\ \text{m/s}^2$. Dead reckoning turns a constant bias $b$ into a position error of $\tfrac12bt^2$, which is 10 m after 20 s. The filter above assumes zero-mean accelerometer noise, assumption (A2), so a bias violates its model. The remedy suggested in Chapter 13 is to make the bias a state. With $\mathbf x = [p, \dot p, b]^\top$, a constant bias, and $u_k = a_k + b + n_k$,
@@ -789,7 +794,7 @@ def bias_demo(
     _ax2.plot(cart_t, _x3[:, 0, 2], color="C1", label="estimated bias")
     _ax2.set_ylim(-0.15, 0.2)
     _ax2.set_xlabel("time (s)")
-    _ax2.set_ylabel("accelerometer bias (m/s²)")
+    _ax2.set_ylabel("accelerometer bias (m/s$^2$)")
     _ax2.set_title("Bias estimate of the 3-state filter (one run)", style="italic")
     _ax2.legend(loc="upper right", fontsize=8)
     for _ax in (_ax1, _ax2):
@@ -841,31 +846,31 @@ def _(mo):
     mo.md(r"""
     This is the pattern of Part VI in miniature: an inertial sensor that is excellent over short times, an aiding measurement that bounds its drift, and sensor biases estimated as extra states, as far as they are observable.
 
+    <!-- label: ch14-sec-outlier-gating -->
     ## Outlier Gating
 
     Real sensors occasionally produce readings that have nothing to do with the model: a reflection, a loose connector, a person bumping the scale. Chapter 13's filter has no defense against them. The innovation tells us when a reading is implausible, and under the Gaussian assumption we know exactly how implausible. Recall ([Chapter 9](ch9_noise_levels.md), [Chapter 12](ch12_vectors_matrices_covariance.md)) that the {term}`chi-squared distribution` with $d$ degrees of freedom, $\chi^2_{d}$, is the distribution of the sum of squares of $d$ independent standard normal random variables; its mean is $d$. The {term}`normalized innovation squared` $\epsilon_k = \tilde y_k^2/S_k$ of Chapter 9 generalizes to $\epsilon_k := \tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$.
 
-    /// important | 📐 **Lemma (Normalized Quadratic Forms Are Chi-Squared)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Normalized Quadratic Forms Are Chi-Squared)**
+        attrs: {class: lemma, id: ch14-lem-normalized-quadratic-forms-are-chi-squared}
     If $\mathbf y \sim \mathcal N(\mathbf 0, \boldsymbol\Sigma)$ with $\boldsymbol\Sigma \in \mathbb R^{d\times d}$ positive definite, then $\mathbf y^\top\boldsymbol\Sigma^{-1}\mathbf y \sim \chi^2_{d}$. In particular, under (A1)–(A6), the normalized innovation squared $\tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$ of a Kalman filter has distribution $\chi^2_{m}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\boldsymbol\Sigma = \mathbf L\mathbf L^\top$ be the Cholesky decomposition and $\mathbf u := \mathbf L^{-1}\mathbf y$. Since $\mathbf L^{-1}$ is invertible, $\mathbf u$ is normal with mean $\mathbf 0$ and covariance $\mathbf L^{-1}\boldsymbol\Sigma\mathbf L^{-\top} = \mathbf I$ (Chapter 12, Theorem: Invertible Affine Maps Preserve Normality). Its density is therefore a product of $d$ standard normal densities, so its components are independent standard normals ([Chapter 5](ch5_random_variables.md)). Then $\mathbf y^\top\boldsymbol\Sigma^{-1}\mathbf y = \mathbf y^\top\mathbf L^{-\top}\mathbf L^{-1}\mathbf y = \mathbf u^\top\mathbf u = \sum_i u_i^2 \sim \chi^2_{d}$.
 
     For the innovation: by Chapter 13, $\tilde{\mathbf y}_k$ is a constant matrix $\mathbf A$ times the stacked vector $\boldsymbol\xi$ of the independent normal sources of assumption (A6), and $\boldsymbol\xi$ is multivariate normal (Chapter 12, Corollary: Stacking Independent Normal Vectors). Its covariance $\mathbf A\operatorname{Cov}(\boldsymbol\xi)\mathbf A^\top = \mathbf S_k$ is positive definite, which forces the rows of $\mathbf A$ to be linearly independent (if $\mathbf a^\top\mathbf A = \mathbf 0$ then $\mathbf a^\top\mathbf S_k\mathbf a = 0$, so $\mathbf a = \mathbf 0$). For such $\mathbf A$, Chapter 12 states that $\mathbf A\boldsymbol\xi$ is again normal. So $\tilde{\mathbf y}_k \sim \mathcal N(\mathbf 0, \mathbf S_k)$, and the first part applies. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gating**</u>
 
     The practice of updating a filter with a measurement only if its normalized innovation squared $\tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k$ is at most a chosen threshold $\gamma$, and otherwise discarding the measurement (keeping $\hat{\mathbf x}_k = \hat{\mathbf x}_k^-$, $\mathbf P_k = \mathbf P_k^-$).
     ///
 
-    /// important | 📐 **Corollary (False Rejection Rate)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (False Rejection Rate)**
+        attrs: {class: corollary, id: ch14-cor-false-rejection-rate}
     Under (A1)–(A6), a gate with threshold $\gamma$ rejects a valid measurement with probability $1 - F_{\chi^2_{m}}(\gamma)$, where $F_{\chi^2_{m}}$ is the cumulative distribution function of $\chi^2_{m}$.
     ///
 
@@ -958,7 +963,6 @@ def _(gate_counts, gate_gamma, gate_rms, gate_rms_clean, mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Lock-out.** A gate trusts the filter's own $\mathbf S_k$. If the filter has diverged, or its covariance is too small for any other reason, *valid* readings fail the gate, the filter never gets corrected, and it rejects everything from then on. Monitor the rejection rate and re-initialize when it is far above $1 - F_{\chi^2_{m}}(\gamma)$.
     - **Gating makes the gain data-dependent.** Whether a reading is used depends on its value, so Chapter 13's proofs no longer apply exactly, and $\mathbf P_k$ becomes slightly optimistic. For rare, large outliers the effect is negligible.
     - **Small outliers pass.** A glitch of one or two $\sqrt S$ is indistinguishable from noise and is used. If such errors are common, the measurement noise is not Gaussian, and $\mathbf R$ or the noise model should change instead.
@@ -971,12 +975,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-consistency-tests -->
     ## Consistency Tests
 
     A filter reports not only an estimate but also how uncertain it is. [Chapter 9](ch9_noise_levels.md) called a filter *consistent* when its estimation errors have mean zero and the variance it reports ({term}`filter consistency`); for vectors, $\mathbb E\mathbf e_k = \mathbf 0$ and $\operatorname{Cov}(\mathbf e_k) = \mathbf P_k$. Chapter 9 tested this with the normalized innovation squared. With a state vector there are two such tests: one that needs the truth and is therefore available only in simulation, and one that needs only the data.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Normalized estimation error squared**</u>
 
     For an estimate $\hat{\mathbf x}_k$ of a state $\mathbf x_k \in \mathbb R^n$ whose reported error covariance $\mathbf P_k$ is positive definite, the number
@@ -985,25 +989,25 @@ def _(mo):
 
     It is the squared {term}`Mahalanobis distance` of the true state from the estimate, measured with the filter's own covariance. Since it needs the true state, it can be computed only when the truth is known, as in a simulation.
 
-    /// important | 📐 **Theorem (NEES and NIS of a Correct Filter)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (NEES and NIS of a Correct Filter)**
+        attrs: {class: theorem, id: ch14-thm-nees-and-nis-of-a-correct-filter}
     Assume (A1)–(A6), and suppose the filter uses the true $\mathbf F, \mathbf B, \mathbf H, \mathbf Q, \mathbf R$, $\hat{\mathbf x}_0 = \mathbb E\mathbf x_0$, and $\mathbf P_0 = \operatorname{Cov}(\mathbf x_0)$, with $\mathbf P_k$ positive definite. Then $\epsilon^{\mathbf x}_k \sim \chi^2_{n}$ and $\epsilon_k := \tilde{\mathbf y}_k^\top\mathbf S_k^{-1}\tilde{\mathbf y}_k \sim \chi^2_{m}$ for every $k$. In particular, their means are $n$ and $m$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Chapter 13, $\mathbf e_k = \hat{\mathbf x}_k - \mathbf x_k$ is a sum of constant matrices times $\mathbf e_0 = \hat{\mathbf x}_0 - \mathbf x_0, \mathbf w_1, \ldots, \mathbf w_k, \mathbf v_1, \ldots, \mathbf v_k$, so under (A6) it is a constant matrix times the stacked vector of independent normal sources. Its mean is $\mathbf 0$ and its covariance is $\mathbf P_k$ (Chapter 13, because the filter's matrices are the true ones), which is positive definite. Exactly as for the innovation in the proof of the Lemma on normalized quadratic forms, $\mathbf e_k \sim \mathcal N(\mathbf 0, \mathbf P_k)$, and that Lemma gives $\epsilon^{\mathbf x}_k \sim \chi^2_{n}$. The statement for the innovation is part of the same Lemma. $\blacksquare$
     ///
 
     One run gives one $\epsilon^{\mathbf x}_k$ per step, which scatters widely. Averaging $N$ independent simulated runs sharpens the test.
 
-    /// important | 📐 **Theorem (Monte Carlo Average)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Monte Carlo Average)**
+        attrs: {class: theorem, id: ch14-thm-monte-carlo-average}
     If $s^{(1)}, \ldots, s^{(N)}$ are independent and each has distribution $\chi^2_{d}$, then $\sum_{i=1}^N s^{(i)} \sim \chi^2_{Nd}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The distribution of a sum of independent random variables is determined by their individual distributions ([Chapter 5](ch5_random_variables.md)). So we may take $s^{(i)} = \sum_{j=1}^d u_{ij}^2$ with all $Nd$ variables $u_{ij}$ independent standard normal. The total is then a sum of $Nd$ such squares, which has distribution $\chi^2_{Nd}$ by definition. $\blacksquare$
     ///
 
@@ -1099,7 +1103,6 @@ def _(mo):
     - **Filter's $\sigma_{\text{acc}}$ too small** (0.2) or **too large** (5): NEES moves clearly out of the band, but NIS barely moves. The reason is in $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + R$: for this cart, $R = 0.25\ \text{m}^2$ dominates $\mathbf H\mathbf P^-\mathbf H^\top \approx 0.007\ \text{m}^2$, so the innovation's spread hardly depends on $\mathbf Q$. **A passing NIS test does not prove that $\mathbf Q$ is right.** On real data, where NEES is unavailable, a wrong $\mathbf Q$ shows up instead as innovations that are correlated over time (Chapter 10's whiteness test).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The bands assume Gaussian errors**, assumption (A6). With other noise distributions the NEES and NIS means are still $n$ and $m$ for a correctly tuned filter (the trace of $\mathbf P^{-1}\mathbf P$ is $n$), but the 95% bands are wrong.
     - **NEES needs the truth.** It tests a filter design in simulation, and the simulation must include the effects the real system has (biases, maneuvers, outliers). A filter that passes on idealized simulated data can fail on real data.
     - **Averages hide structure.** A filter can be consistent on average and badly inconsistent during maneuvers. Look at the time series, not only the average.
@@ -1111,6 +1114,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-numerical-stability -->
     ## Numerical Stability
 
     Chapter 13's formulas are exact in exact arithmetic. Computers round, and the covariance recursion can amplify rounding until $\mathbf P_k$ is no longer a covariance matrix at all: not symmetric, or with a negative eigenvalue, which claims a negative variance for some combination of states. Once that happens, the gains are meaningless. Three habits prevent most of the trouble, and `run_filter` above uses all three:
@@ -1202,14 +1206,14 @@ def _(mo):
 def _(mo, stab_first, stab_rows):
     _lines = [
         "| Variant | Steps (of 300) where $\\mathbf P$ is not positive semidefinite | Largest relative error of $P_{11}$ | Relative error at step 300 |",
-        "|---|---|---|---|",
+        "|:---|:---:|:---:|:---:|",
     ]
     for _name, _bad, _max, _last in stab_rows:
         _lines.append(f"| {_name} | {_bad} | {_max:.1e} | {_last:.1e} |")
     _lines += [
         "",
         f"After the very first update, the single-precision simplified form reports a position variance of "
-        f"{stab_first[0]:.1e} m² (the correct value is {stab_first[1]:.2e} m²): the gain rounds to exactly 1, "
+        f"{stab_first[0]:.1e} m$^2$ (the correct value is {stab_first[1]:.2e} m$^2$): the gain rounds to exactly 1, "
         "and $1 - K$ rounds to 0. The filter claims perfect knowledge of the position. Symmetrizing does not repair "
         "this, because the damage is not asymmetry. The Joseph form recovers, because its $\\mathbf K\\mathbf R\\mathbf K^\\top$ "
         "term restores the measurement's own variance.",
@@ -1229,10 +1233,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-filter-divergence -->
     ## Filter Divergence
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Filter divergence**</u>
 
     The failure of a Kalman filter in which its actual estimation errors become, and remain, much larger than its reported error covariance $\mathbf P_k$ allows, so that the filter, trusting its small $\mathbf P_k$, keeps its gains too small for the measurements to correct those errors.
@@ -1250,7 +1254,7 @@ def _(mo):
     div_sigma_a_slider = mo.ui.slider(
         steps=[0.001, 0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0],
         value=0.01,
-        label=r"filter's $\sigma_a$ (m/s²)",
+        label=r"filter's $\sigma_a$ (m/s$^2$)",
         show_value=True,
     )
     return (div_sigma_a_slider,)
@@ -1301,7 +1305,7 @@ def divergence_interactive(
     _ax1.plot(cart_t_pos, div_err[:, 0], color="C1", label="position error")
     _ax1.axhline(0, color="black", lw=0.6)
     _ax1.set_ylabel("position error (m)")
-    _ax1.set_title(rf"Position-only filter, $\sigma_a = {div_sigma_a_slider.value:g}$ m/s²", style="italic")
+    _ax1.set_title(rf"Position-only filter, $\sigma_a = {div_sigma_a_slider.value:g}$ m/s$^2$", style="italic")
     _ax1.legend(loc="upper left", fontsize=8)
     _ax2.axhspan(*div_band, color="gray", alpha=0.25, label="95% band for one run")
     _ax2.plot(cart_t_pos, np.maximum(div_nees, 1e-3), color="C1", lw=1.0, label="NEES")
@@ -1339,7 +1343,6 @@ def _(mo):
     - **Never let $\mathbf P$ collapse.** A floor on the diagonal of $\mathbf P$, or a *fading-memory* factor that multiplies $\mathbf P^-$ by a number slightly above 1, keeps the gains from going to zero.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Divergence is invisible to the filter.** Its own $\mathbf P_k$ says everything is fine. Only external checks, the NIS on real data or the NEES in simulation, reveal it.
     - **Gating makes divergence permanent.** A diverged filter with a gate rejects the very readings that could rescue it (lock-out, above).
     - **Other causes.** Besides a small $\mathbf Q$: unmodeled biases (as in the two-state cart filter above), wrong $\mathbf F$ or $\mathbf H$, a $\mathbf P_0$ that is too small, and numerical loss of positive definiteness.
@@ -1351,6 +1354,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-smoothing -->
     ## Smoothing
 
     The filter's estimate $\hat{\mathbf x}_k$ uses $\mathbf z_1, \ldots, \mathbf z_k$ only, because a real-time filter cannot see the future. When the whole record is available afterwards, as in the gait analysis of Part VI, the estimate of $\mathbf x_k$ can also use $\mathbf z_{k+1}, \ldots, \mathbf z_K$. The **Rauch–Tung–Striebel smoother** does this with one backward pass over the filter's stored output. Starting from $\hat{\mathbf x}_K^s = \hat{\mathbf x}_K$ and $\mathbf P_K^s = \mathbf P_K$, for $k = K-1, \ldots, 1$:
@@ -1446,7 +1450,7 @@ def rts_demo(
     _ax.plot(cart_t_pos, _xs_s[:, 1], color="C1", lw=1.4, label="RTS smoother (all readings)")
     _ax.set_xlabel("time (s)")
     _ax.set_ylabel("velocity (m/s)")
-    _ax.set_title(r"Velocity from position readings alone, $\sigma_a = 1$ m/s²", style="italic")
+    _ax.set_title(r"Velocity from position readings alone, $\sigma_a = 1$ m/s$^2$", style="italic")
     _ax.legend(loc="upper right", fontsize=8)
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _fig.tight_layout()
@@ -1474,6 +1478,7 @@ def _(mo, rts_check, rts_rms):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch14-sec-summary -->
     ## Summary
 
     - **Initialization:** when in doubt, choose $\mathbf P_0$ large. A diffuse prior reproduces first-measurement (scalar) or two-point (position and velocity) initialization.
@@ -1487,6 +1492,7 @@ def _(mo):
     - **Divergence:** a $\mathbf Q$ too small for the real motion makes the filter confidently wrong. Only external checks reveal it.
     - **Smoothing:** with the whole record available, the RTS smoother's backward pass uses future measurements too.
 
+    <!-- label: ch14-sec-whats-next -->
     ## What's Next
 
     Every model in Parts II and III was linear: $\mathbf F\mathbf x$, $\mathbf H\mathbf x$. A pendulum's acceleration depends on the *sine* of its angle, a range sensor measures a square root, and an orientation is not a vector at all. [Chapter 15](ch15_extended_kalman_filter.md) begins Part IV by linearizing such models around the current estimate. That gives the extended Kalman filter, and with it a new set of failure modes that the consistency tests of this chapter will help detect.

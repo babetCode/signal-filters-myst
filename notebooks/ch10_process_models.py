@@ -60,13 +60,12 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Introduction](introduction.md): the bulking example, the prediction $\hat x_k^-$, and the alpha-beta filter.
     - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, the variance of a sum, and the fact that independent random variables are uncorrelated.
     - [Chapter 7](ch7_optimal_alpha.md): the estimation error $e_k = \hat x_k - x_k$ and the optimal gain $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
     - [Chapter 9](ch9_noise_levels.md): process noise, the random-walk model, white noise, the scalar Kalman filter, the innovation variance $S_k = P_k^- + R$, the fact that innovations are uncorrelated over time, and the normalized innovation squared.
-    - [Appendix C: Derivatives](appendix_c_calculus.md), [Appendix C: The Mean Value Theorem and Extrema](appendix_c_calculus.md), [Appendix C: Taylor's Theorem](appendix_c_calculus.md), [Appendix C: Exponential and Logarithm](appendix_c_calculus.md), and [Appendix C: Linear Differential Equations](appendix_c_calculus.md): only for the section on continuous-time models.
+    - [Appendix C: Derivatives](#appc-sec-derivatives), [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema), [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations): only for the section on continuous-time models.
     ///
     """)
     return
@@ -80,7 +79,6 @@ def _(mo):
     The rule that turns the previous state, and everything we know about outside influences, into a prediction of the next state is called a **process model**. Whatever the model gets wrong becomes process noise. So a better model means a smaller $Q$, a prediction the filter can trust more, and less need to trade noise against lag. A *wrong* model, on the other hand, quietly biases every estimate. We therefore also need a way to tell, from data alone, whether a model is wrong.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A process model predicts the next state from the current state and the known inputs. Everything the model does not capture becomes process noise. A good model makes $Q$ small; a biased model makes the innovations stop looking like white noise.
     ///
 
@@ -92,12 +90,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-systems-states-and-inputs -->
     ## Systems, States, and Inputs
 
     To predict tomorrow's weight, we first have to decide what we are describing and what counts as an outside influence.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**System**</u>
 
     A part of the world that we choose to study, specified by a boundary that decides, for every object or quantity under consideration, whether it belongs to the system (is *inside*) or to the system's *environment* (is *outside*).
@@ -114,7 +112,6 @@ def _(mo):
     Outside quantities matter when they push the system around. Some of them we know, and some we don't.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Control input**</u>
 
     A quantity outside a system that affects how the system's state changes, and whose value at each step is known to whoever is making the prediction, because it was either chosen (commanded) or measured.
@@ -131,7 +128,6 @@ def _(mo):
     The most important modeling decision is which numbers to keep track of. We want a summary of the present that is good enough to predict the future, so that the past can be forgotten. That is exactly what makes a recursive filter possible: each new estimate is computed from the previous estimate and the new data only, as in the recursion theorem of [Chapter 2](ch2_axioms_of_set_theory.md).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**System state**</u>
 
     A list of numbers $x_k$, defined at every step $k$, is a *state* of a system iff (1) every quantity of the system we care about at step $k$ is a function of $x_k$, and (2) for all steps $j > k$, the value of $x_j$ (or, if the system involves randomness, its conditional distribution) is determined by $x_k$ together with the control inputs $u_{k+1}, \ldots, u_j$, and would not change if we also knew $x_0, \ldots, x_{k-1}$ or any other information about the system's past.
@@ -155,7 +151,6 @@ def _(mo):
     Once we have a state, a model of the system is a rule for how the state moves.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Process model**</u>
 
     A mathematical rule that determines how a system's state evolves, given its control inputs. In discrete time it is an equation
@@ -166,7 +161,6 @@ def _(mo):
     Chapter 9's random-walk model $x_k = x_{k-1} + \Delta x_k + w_k$ is a process model, with the expected change $\Delta x_k$ playing the role of a known input. The constant-weight model of Chapter 7 is the process model $x_k = x_{k-1}$, which has no noise at all. That distinction has a name.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Deterministic**</u>
 
     A process model is *deterministic* iff it contains no random term: the state at each step is a fixed function of the previous state and the input, so the initial state and the inputs determine every later state exactly. A process model that is not deterministic is called *stochastic*.
@@ -180,12 +174,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-linear-process-models -->
     ## Linear Process Models
 
     The Kalman filter of Chapter 9 relied on a model in which the new state is the old state plus known and random terms. The natural generalization lets the old state be scaled.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Linear system**</u>
 
     A system whose process model has the form
@@ -203,27 +197,27 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Superposition)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Superposition)**
+        attrs: {class: theorem, id: ch10-thm-superposition}
     Consider the deterministic linear model $x_k = a_k x_{k-1} + b_k u_k$. Suppose the initial state $x_0$ with inputs $u_1, u_2, \ldots$ produces the states $x_1, x_2, \ldots$, and the initial state $x_0'$ with inputs $u_1', u_2', \ldots$ produces $x_1', x_2', \ldots$. Then for all numbers $\alpha$ and $\beta$, the initial state $\alpha x_0 + \beta x_0'$ with inputs $\alpha u_k + \beta u_k'$ produces the states $\alpha x_k + \beta x_k'$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $y_0 := \alpha x_0 + \beta x_0'$ and $y_k := a_k y_{k-1} + b_k(\alpha u_k + \beta u_k')$ be the states produced by the combined initial state and inputs. We show $y_k = \alpha x_k + \beta x_k'$ by induction on $k$. For $k = 0$ it holds by definition. If it holds for $k - 1$, then
     $$y_k = a_k(\alpha x_{k-1} + \beta x_{k-1}') + b_k(\alpha u_k + \beta u_k') = \alpha(a_k x_{k-1} + b_k u_k) + \beta(a_k x_{k-1}' + b_k u_k') = \alpha x_k + \beta x_k'. \;\blacksquare$$
     ///
 
     When the coefficients do not change with $k$ we can also write the solution down explicitly.
 
-    /// important | 📐 **Lemma (Solution of a Linear Model)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Solution of a Linear Model)**
+        attrs: {class: lemma, id: ch10-lem-solution-of-a-linear-model}
     If $x_k = a x_{k-1} + b u_k + w_k$ for every $k \ge 1$, with constant $a$ and $b$, then for every $k \ge 0$
     $$x_k = a^k x_0 + \sum_{j=1}^{k} a^{k-j}\,(b u_j + w_j).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $k = 0$ the sum is empty and the formula reads $x_0 = x_0$. If the formula holds for $k - 1$, then
     $$x_k = a\Big(a^{k-1}x_0 + \sum_{j=1}^{k-1} a^{k-1-j}(b u_j + w_j)\Big) + b u_k + w_k = a^k x_0 + \sum_{j=1}^{k} a^{k-j}(b u_j + w_j),$$
     since the last term is the $j = k$ term of the sum ($a^0 = 1$). $\blacksquare$
@@ -237,6 +231,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-predicting-with-a-linear-model -->
     ### Predicting with a Linear Model
 
     Now let the estimate $\hat x_{k-1}$ of $x_{k-1}$ have the {term}`estimation error` $e_{k-1} := \hat x_{k-1} - x_{k-1}$ with mean $0$ and {term}`error variance` $P_{k-1}$, and suppose the state evolves as
@@ -251,8 +246,8 @@ def _(mo):
 
     We drop the subscripts on $a$ and $b$ only to keep the notation light: the theorem below uses one step at a time, so it holds unchanged for time-varying coefficients.
 
-    /// important | 📐 **Theorem (Linear Prediction)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Linear Prediction)**
+        attrs: {class: theorem, id: ch10-thm-linear-prediction}
     Under (A1)–(A3), with $\mathbb E[e_{k-1}] = 0$ and $\operatorname{Var}(e_{k-1}) = P_{k-1}$:
 
     1. The prediction $\hat x_k^- := a\,\hat x_{k-1} + b\,u_k$ has prediction error $e_k^- := \hat x_k^- - x_k$ with mean $0$ and variance
@@ -261,7 +256,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Subtracting the process model from the prediction,
     $$e_k^- = a\,\hat x_{k-1} + b\,u_k - (a\,x_{k-1} + b\,u_k + w_k) = a\,e_{k-1} - w_k.$$
     By linearity of expectation, $\mathbb E[e_k^-] = a\cdot 0 - 0 = 0$. By the rule for the variance of a sum ([Chapter 6](ch6_expectation_and_variance.md)),
@@ -280,7 +275,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **(A1) fails: the coefficients or the input are not known exactly.** Then the prediction uses the wrong numbers. If the error is random and unbiased (for example, an imperfect food log), move it into $w_k$ and increase $Q$ accordingly; the next section does exactly this. If the error is systematic (for example, a wrong value of $a$), the prediction is biased, as in the next bullet.
     - **(A2) fails: the process noise has a nonzero mean $\mu_w$.** Then $\mathbb E[e_k^-] = a\,\mathbb E[e_{k-1}] - \mu_w \neq 0$. The bias enters at every step, so the estimate lags behind the truth, just like the exponential moving average lags behind a ramp ([Chapter 6](ch6_expectation_and_variance.md)). The last section of this chapter shows how to detect this from the innovations.
     - **(A3) fails: the process noise is correlated with past errors.** This happens when the same unmodeled effect pushes the state on several consecutive steps, so that $w_k$ is correlated with $w_{k-1}$. Then $P_k^-$ is wrong (usually too small), and the innovations become correlated in time.
@@ -295,8 +289,8 @@ def _(mo):
     mo.md(r"""
     The variance recursion also tells us how fast a prediction goes stale when no measurements arrive at all, which is the situation on every day you skip the scale.
 
-    /// important | 📐 **Corollary (Prediction Without Measurements)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Prediction Without Measurements)**
+        attrs: {class: corollary, id: ch10-cor-prediction-without-measurements}
     If no measurement is incorporated, so that $P_k = P_k^- = a^2 P_{k-1} + Q$ for every $k$, with $Q > 0$ and $P_0 \ge 0$, then:
 
     1. if $|a| < 1$, $P_k \to Q/(1 - a^2)$ as $k \to \infty$;
@@ -305,8 +299,8 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    1. Let $P^* := Q/(1 - a^2)$, which satisfies $P^* = a^2 P^* + Q$. Subtracting, $P_k - P^* = a^2(P_{k-1} - P^*)$, so by induction $P_k - P^* = a^{2k}(P_0 - P^*) \to 0$ because $0 \le a^2 < 1$ ([Appendix C: Sequences and Limits](appendix_c_calculus.md)).
+        attrs: {class: proof}
+    1. Let $P^* := Q/(1 - a^2)$, which satisfies $P^* = a^2 P^* + Q$. Subtracting, $P_k - P^* = a^2(P_{k-1} - P^*)$, so by induction $P_k - P^* = a^{2k}(P_0 - P^*) \to 0$ because $0 \le a^2 < 1$ ([Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits)).
     2. With $a^2 = 1$ the recursion reads $P_k = P_{k-1} + Q$; induct.
     3. The recursion $P_k = a^2 P_{k-1} + Q$ has the form of the lemma above (with $a^2$ in place of $a$ and $Q$ in place of $b u_j + w_j$), so $P_k = a^{2k}P_0 + \sum_{j=1}^{k} a^{2(k-j)} Q$. Every term is nonnegative, and the $j = 1$ term is $a^{2(k-1)}Q$. $\blacksquare$
     ///
@@ -319,6 +313,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-the-kalman-filter-with-a-process-model -->
     ### The Kalman Filter with a Process Model
 
     The update step of Chapter 9 uses only the prediction $\hat x_k^-$, its variance $P_k^-$, and the measurement $z_k = x_k + v_k$; it does not care how the prediction was made. So the scalar {term}`Kalman filter` for a linear process model is Chapter 9's filter with a new prediction step:
@@ -337,7 +332,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def kalman_filter_1d(z, u, a, b, Q, R, x0, P0, c=0.0):
         """Scalar Kalman filter for x_k = a x_{k-1} + b u_k + c + w_k, z_k = x_k + v_k.
 
@@ -373,6 +368,7 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-the-energy-balance-model -->
     ## The Energy-Balance Model
 
     The Introduction's footnote estimated a daily weight gain from the energy you eat and the energy you burn. Let us turn that recipe into a process model for the 28-day bulk: a 23-year-old man, 175 cm tall, with a moderate activity level, starting at 155 lb. Weight $x_k$ is in pounds and is measured each morning; the input $u_k$ is the energy eaten on day $k$, in kcal.
@@ -397,7 +393,7 @@ def _(mo):
 
 @app.cell
 def _():
-    # jb: echo=true
+    # jb: editor=true
     def energy_balance_coefficients(age, height_cm, activity, kcal_per_lb=3500.0):
         """Coefficients of x_k = a x_{k-1} + b u_k + c for a man (Mifflin-St Jeor
         BMR times an activity multiplier); x in lb, u in kcal/day, one-day steps."""
@@ -460,7 +456,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Population formulas.** Mifflin–St Jeor predicts the *average* BMR of people with your age, height, and weight. Individuals typically differ by around 10%. A wrong $\gamma$ or $\delta$ is a *bias*, not noise: it adds the same error every day, so the estimate drifts away from the truth instead of scattering around it. The last section shows how to detect this.
     - **The activity multiplier is a guess,** and it changes when your training changes.
     - **The 3500 kcal/lb rule** treats every pound gained or lost as the same tissue. Over months it overestimates weight change, because expenditure adapts and the composition of the change varies [@hall2011]. For four weeks it is a reasonable approximation.
@@ -474,12 +469,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-comparing-models-on-simulated-data -->
     ## Comparing Models on Simulated Data
 
     Which model should the filter use: Chapter 9's random walk, or the energy-balance model? We simulate 28 days of bulking in which the intake changes halfway through, which is exactly the kind of change a fixed expected change $\Delta x_k$ cannot anticipate. So, unlike the straight-line weigh-ins of the Introduction and Chapter 9, the true weight here is not a straight line; the plotted month does reuse their measurement noise.
 
     - **Truth.** The true weight follows the energy-balance model, starting from $x_0 \sim \mathcal N(155, 1)$. The planned intake is $2880$ kcal/day for days 1–14 and $3580$ kcal/day for days 15–28, a surplus of about $350$ and then $1050$ kcal/day at 155 lb (about $0.1$ and then $0.3$ lb/day, so $0.2$ lb/day on average). The actual intake varies around the plan from day to day with a standard deviation of $300$ kcal, and the model misses a little extra (process noise $w_k^{\text{m}}$ with standard deviation $0.05$ lb).
-    - **Measurements.** One weigh-in each morning, $z_k = x_k + v_k$ with $v_k \sim \mathcal N(0, 1)$, so $R = 1$ lb², displayed to 0.1 lb.
+    - **Measurements.** One weigh-in each morning, $z_k = x_k + v_k$ with $v_k \sim \mathcal N(0, 1)$, so $R = 1$ lb$^2$, displayed to 0.1 lb.
     - **Food log.** The logged intake is the actual intake plus a logging error with standard deviation $\sigma_u$ (the slider).
     - **Random-walk filter** (Chapter 9): $\hat x_k^- = \hat x_{k-1} + 0.2$, using the plan's average gain. Its $Q$ is set to the value that gives the smallest error on these simulations, found by trying a grid of values. This is an advantage it would not have in practice, since there we cannot compare with the truth.
     - **Energy-balance filter:** $a$, $b$, $c$ from above, the logged intake, and $Q = q_{\text{m}} + b^2\sigma_u^2$.
@@ -652,7 +648,7 @@ def _(Q_rw, mo, sigma_u_crossover):
     mo.md(rf"""
     Some things to notice:
 
-    - **The random walk lags the diet change.** It predicts $0.2$ lb/day throughout, so in the first two weeks it overestimates the gain and in the last two it underestimates it. To keep up, it needs a large $Q$ (its best value here is $Q \approx {Q_rw:.3f}$ lb²), which in turn makes it follow the noise more.
+    - **The random walk lags the diet change.** It predicts $0.2$ lb/day throughout, so in the first two weeks it overestimates the gain and in the last two it underestimates it. To keep up, it needs a large $Q$ (its best value here is $Q \approx {Q_rw:.3f}$ lb$^2$), which in turn makes it follow the noise more.
     - **The energy-balance model knows about the change the day it happens,** because the change is in the input. A known input can do the work of a quantity we would otherwise have to estimate.
     - **A model is only as good as its inputs.** As $\sigma_u$ grows, so does the energy-balance model's $Q = q_{{\text{{m}}}} + b^2\sigma_u^2$. Beyond a logging error of about ${sigma_u_crossover:.0f}$ kcal/day, the simple random walk wins in these simulations, even though the energy model is the "true" one, because a very noisy input carries less information than a well-tuned constant drift.
     """)
@@ -662,14 +658,14 @@ def _(Q_rw, mo, sigma_u_crossover):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-continuous-time-models-and-discretization -->
     ## Continuous-Time Models and Discretization
 
     The energy balance does not really happen once a day: you burn energy continuously. Writing $x(t)$ for the weight at time $t$ (in days) and $u(t)$ for the rate of eating (kcal/day), the physics says that the rate of change of stored energy, $\rho\,\dot x(t)$, equals intake minus expenditure:
     $$\rho\,\dot x(t) = u(t) - \gamma\,x(t) - \delta \quad\Longleftrightarrow\quad \dot x(t) = \lambda\,x(t) + g\,\tilde u(t), \qquad \lambda := -\frac{\gamma}{\rho}, \quad g := \frac{1}{\rho},$$
-    with the effective input $\tilde u(t) = u(t) - \delta$. This is a linear {term}`differential equation` ([Appendix C: Linear Differential Equations](appendix_c_calculus.md)). Most physical laws come in this continuous-time form, while a filter runs in discrete steps. Converting one into the other has a name.
+    with the effective input $\tilde u(t) = u(t) - \delta$. This is a linear {term}`differential equation` ([Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations)). Most physical laws come in this continuous-time form, while a filter runs in discrete steps. Converting one into the other has a name.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Discretization**</u>
 
     Given a continuous-time process model and a sample period $\Delta t > 0$, a *discretization* is a discrete-time process model whose state $x_k$ is meant to represent the continuous-time state at the sample times $t_k := t_0 + k\,\Delta t$. A discretization is *exact* if $x_k = x(t_k)$ for every $k$ (under stated assumptions about the input between samples); otherwise it is an approximation, and its error $x_k - x(t_k)$ must be analyzed.
@@ -677,20 +673,20 @@ def _(mo):
 
     The daily bookkeeping we did above, which uses the weight at the *start* of each day for the whole day, is one discretization. The next theorem gives the exact one.
 
-    /// important | 📐 **Theorem (Exact Discretization)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Exact Discretization)**
+        attrs: {class: theorem, id: ch10-thm-exact-discretization}
     Let $\lambda \neq 0$ and $g$ be numbers, and let $\tilde u$ be constant on each sample interval: $\tilde u(t) = \tilde u_k$ for $t_{k-1} < t < t_k$. If $x$ is continuous on $[t_{k-1}, t_k]$ and satisfies $\dot x(t) = \lambda\,x(t) + g\,\tilde u_k$ for $t_{k-1} < t < t_k$, then
     $$x(t_k) = e^{\lambda\Delta t}\,x(t_{k-1}) + \frac{e^{\lambda\Delta t} - 1}{\lambda}\,g\,\tilde u_k.$$
     So the exact discretization is $x_k = a\,x_{k-1} + b\,\tilde u_k$ with $a = e^{\lambda\Delta t}$ and $b = g\,(e^{\lambda\Delta t} - 1)/\lambda$. (For $\lambda = 0$ it is $x_k = x_{k-1} + g\,\Delta t\,\tilde u_k$.)
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     On $[t_{k-1}, t_k]$ define
     $$G(t) := e^{-\lambda t}\,x(t) + \frac{g\,\tilde u_k}{\lambda}\,e^{-\lambda t}.$$
-    By the product and chain rules and $\tfrac{d}{dt}e^{-\lambda t} = -\lambda e^{-\lambda t}$ ([Appendix C: Derivatives](appendix_c_calculus.md), [Appendix C: Exponential and Logarithm](appendix_c_calculus.md)), for $t_{k-1} < t < t_k$
+    By the product and chain rules and $\tfrac{d}{dt}e^{-\lambda t} = -\lambda e^{-\lambda t}$ ([Appendix C: Derivatives](#appc-sec-derivatives), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm)), for $t_{k-1} < t < t_k$
     $$G'(t) = e^{-\lambda t}\big(\dot x(t) - \lambda\,x(t)\big) - g\,\tilde u_k\,e^{-\lambda t} = e^{-\lambda t}\,g\,\tilde u_k - g\,\tilde u_k\,e^{-\lambda t} = 0.$$
-    $G$ is continuous on $[t_{k-1}, t_k]$ (because $x$ is) and has derivative $0$ inside, so it is constant there by the mean value theorem ([Appendix C: The Mean Value Theorem and Extrema](appendix_c_calculus.md)). Hence $G(t_k) = G(t_{k-1})$, that is,
+    $G$ is continuous on $[t_{k-1}, t_k]$ (because $x$ is) and has derivative $0$ inside, so it is constant there by the mean value theorem ([Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema)). Hence $G(t_k) = G(t_{k-1})$, that is,
     $$e^{-\lambda t_k}\,x(t_k) - e^{-\lambda t_{k-1}}\,x(t_{k-1}) = \frac{g\,\tilde u_k}{\lambda}\big(e^{-\lambda t_{k-1}} - e^{-\lambda t_k}\big).$$
     Multiplying by $e^{\lambda t_k}$ and using $t_k - t_{k-1} = \Delta t$ gives the claim. For $\lambda = 0$, $\dot x$ is the constant $g\,\tilde u_k$, and the same argument with $G(t) := x(t) - g\,\tilde u_k\,t$ applies. $\blacksquare$
     ///
@@ -699,7 +695,7 @@ def _(mo):
     $$x_k = (1 + \lambda\,\Delta t)\,x_{k-1} + g\,\Delta t\,\tilde u_k.$$
     Our daily bookkeeping was exactly Euler's method with $\Delta t = 1$ day: $1 + \lambda = 1 - \gamma/\rho = a$ and $g = 1/\rho = b$.
 
-    How far apart are the two? By Taylor's theorem with the Lagrange remainder ([Appendix C: Taylor's Theorem](appendix_c_calculus.md)), $e^{\lambda\Delta t} = 1 + \lambda\Delta t + \tfrac12 e^{\xi}(\lambda\Delta t)^2$ for some $\xi$ between $0$ and $\lambda\Delta t$. So Euler's coefficient differs from the exact one by a term proportional to $\Delta t^2$ in each step (the same holds for $b$). Over a fixed time span of $T/\Delta t$ steps these errors accumulate to an error proportional to $\Delta t$ ([Wikipedia: Euler method](https://en.wikipedia.org/wiki/Euler_method)). What makes $\Delta t$ "small" is its size relative to the system's own time scale. For $\lambda < 0$ that time scale is the **time constant** $\tau := -1/\lambda$, the time it takes $e^{\lambda t}$ to shrink by a factor of $e$.
+    How far apart are the two? By Taylor's theorem with the Lagrange remainder ([Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem)), $e^{\lambda\Delta t} = 1 + \lambda\Delta t + \tfrac12 e^{\xi}(\lambda\Delta t)^2$ for some $\xi$ between $0$ and $\lambda\Delta t$. So Euler's coefficient differs from the exact one by a term proportional to $\Delta t^2$ in each step (the same holds for $b$). Over a fixed time span of $T/\Delta t$ steps these errors accumulate to an error proportional to $\Delta t$ ([Wikipedia: Euler method](https://en.wikipedia.org/wiki/Euler_method)). What makes $\Delta t$ "small" is its size relative to the system's own time scale. For $\lambda < 0$ that time scale is the **time constant** $\tau := -1/\lambda$, the time it takes $e^{\lambda t}$ to shrink by a factor of $e$.
     """)
     return
 
@@ -709,8 +705,8 @@ def _(mo):
     mo.md(r"""
     Accuracy is not the only issue. Euler's method can turn a decaying system into an exploding one.
 
-    /// important | 📐 **Theorem (Stability of the Two Discretizations)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Stability of the Two Discretizations)**
+        attrs: {class: theorem, id: ch10-thm-stability-of-the-two-discretizations}
     Let $\lambda < 0$, $\tau = -1/\lambda$, and $\tilde u_k = 0$ for every $k$ (equivalently, look at the deviation from an equilibrium), with $x_0 \neq 0$. Then:
 
     1. the exact discretization gives $x_k = e^{-k\Delta t/\tau}x_0$, which decays to $0$ without changing sign, for every $\Delta t > 0$;
@@ -723,7 +719,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Both recursions have the form $x_k = r\,x_{k-1}$, so $x_k = r^k x_0$ by induction. For the exact one, $r = e^{-\Delta t/\tau} \in (0, 1)$. For Euler's, $r = 1 - \Delta t/\tau$, which is in $(0,1)$ iff $\Delta t < \tau$, is $0$ iff $\Delta t = \tau$, is in $(-1, 0)$ iff $\tau < \Delta t < 2\tau$, is $-1$ iff $\Delta t = 2\tau$, and is less than $-1$ iff $\Delta t > 2\tau$. Finally, $|r^k| = |r|^k \to 0$ when $|r| < 1$, and $|r|^k \to \infty$ when $|r| > 1$. $\blacksquare$
     ///
 
@@ -787,7 +783,6 @@ def _(a_bulk, b_bulk, c_bulk, delta_bulk, gamma_bulk, mo, np):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Constant input between samples.** The exact discretization assumes $\tilde u$ is constant on each interval (a *zero-order hold*). Meals are not spread evenly over the day, so this is an approximation too. For a linear system it hardly matters when $|\lambda|\Delta t \ll 1$, because then essentially only the total energy eaten during the interval affects $x(t_k)$.
     - **Euler needs $\Delta t \ll \tau$** for accuracy and $\Delta t < 2\tau$ for stability. A model can be correct in continuous time and still produce nonsense after a careless discretization.
     - **The noise must be discretized too.** If continuous-time disturbances act throughout the interval, the variance $Q$ of the discrete-time process noise depends on $\Delta t$; [Chapter 14](ch14_kalman_filters_in_practice.md) derives it.
@@ -800,6 +795,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-rate-models-when-the-state-needs-two-numbers -->
     ## Rate Models: When the State Needs Two Numbers
 
     The energy-balance model needs a food log. Without one, what can we say about how weight changes? A natural assumption is that you gain at some rate $r_k$ that persists from day to day but drifts slowly:
@@ -825,6 +821,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-validating-a-model-are-the-innovations-white -->
     ## Validating a Model: Are the Innovations White?
 
     On simulated data we can compare every estimate with the truth. On real data we cannot, so how do we know whether a model is any good? The {term}`innovations <innovation>` $\tilde y_k = z_k - \hat x_k^-$ are the answer, because we can compute them and we know how they should behave. Chapter 9 showed that if the model, $Q$, and $R$ are all correct, the innovations have mean $0$ and variance $S_k = P_k^- + R$, and are uncorrelated over time. So the *normalized innovations*
@@ -832,7 +829,6 @@ def _(mo):
     should have mean $0$ and variance $1$, and be uncorrelated with each other. A wrong model breaks this pattern. If the model's prediction is too low every day, for example, the innovations are positive for many days in a row, so neighboring innovations are positively correlated. To measure this we need a name for the correlation between different times of the same process.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Autocorrelation**</u>
 
     For a {term}`stochastic process` $(y_k)$ whose terms have finite, positive variances, the autocorrelation between steps $j$ and $k$ is the {term}`correlation coefficient` of $y_j$ and $y_k$:
@@ -846,14 +842,14 @@ def _(mo):
     $$r(\ell) := \frac{\sum_{k=1}^{N-\ell} \nu_k\,\nu_{k+\ell}}{\sum_{k=1}^{N} \nu_k^2}, \qquad \ell = 1, 2, \ldots$$
     Even for perfect white noise, $r(\ell)$ is not exactly $0$. How far from $0$ should we expect it to be?
 
-    /// important | 📐 **Lemma (Sample Autocorrelation of White Noise)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Sample Autocorrelation of White Noise)**
+        attrs: {class: lemma, id: ch10-lem-sample-autocorrelation-of-white-noise}
     Let $\nu_1, \ldots, \nu_N$ be {term}`independent <independent random variables>`, each with mean $0$ and variance $\sigma^2 > 0$. For every lag $1 \le \ell < N$, the numerator $C_\ell := \sum_{k=1}^{N-\ell}\nu_k\nu_{k+\ell}$ satisfies
     $$\mathbb E[C_\ell] = 0, \qquad \operatorname{Var}(C_\ell) = (N - \ell)\,\sigma^4.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $\ell \ge 1$, the two factors of each term $\nu_k\nu_{k+\ell}$ are independent, so $\mathbb E[\nu_k\nu_{k+\ell}] = \mathbb E[\nu_k]\,\mathbb E[\nu_{k+\ell}] = 0$ ([Chapter 6](ch6_expectation_and_variance.md)), and $\mathbb E[C_\ell] = 0$ by linearity. Each term has variance $\mathbb E[\nu_k^2\nu_{k+\ell}^2] = \mathbb E[\nu_k^2]\,\mathbb E[\nu_{k+\ell}^2] = \sigma^4$. Two different terms, with $j < k$, are uncorrelated: the index $j$ is smaller than each of $j + \ell$, $k$, and $k + \ell$, so $\nu_j$ is independent of the product $\nu_{j+\ell}\nu_k\nu_{k+\ell}$ (the $\nu$'s are mutually independent, so $\nu_j$ is independent of any function of the others), and
     $$\mathbb E\big[\nu_j\nu_{j+\ell}\,\nu_k\nu_{k+\ell}\big] = \mathbb E[\nu_j]\;\mathbb E\big[\nu_{j+\ell}\nu_k\nu_{k+\ell}\big] = 0.$$
     The variance of a sum of uncorrelated terms is the sum of their variances, which is $(N - \ell)\sigma^4$. $\blacksquare$
@@ -868,7 +864,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// tip | **The whiteness test**
-        attrs: {class: no-icon}
     1. Run the filter and compute the normalized innovations $\nu_k = \tilde y_k/\sqrt{S_k}$.
     2. Compute $r(\ell)$ for the first few lags, say $\ell = 1, \ldots, 20$.
     3. If the model is right, about 95% of these values should lie within $\pm 1.96/\sqrt N$. Many values outside the band, or a run of values with the same sign at small lags, is evidence that the model is wrong.
@@ -882,7 +877,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def sample_autocorrelation(nu, max_lag):
         """r(l) for l = 1..max_lag of a sequence whose mean should be 0."""
         nu = np.asarray(nu, dtype=float)
@@ -1004,7 +999,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Passing is not proof.** White innovations mean the data do not contradict the model; they do not show that the model is right. Small errors (here, a few percent in TDEE) pass easily, and the test has little power with little data.
     - **Failing does not say what is wrong.** A wrong model, a wrong $Q$, a wrong $R$, or correlated measurement noise all produce correlated innovations. Combine the test with the mean and NIS checks, and with what you know about the system.
     - **The band is approximate.** It relies on a large-$N$ approximation and on the innovations being independent with a common distribution. With 20 lags, about one value outside the band is expected by chance alone.
@@ -1017,6 +1011,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-there-is-no-best-model -->
     ## There Is No Best Model
 
     Is the energy-balance model better than the random walk? The simulations say: it depends. With an accurate food log and an accurate TDEE formula it is clearly better. With a sloppy food log, or with a TDEE that is off by 7–10%, the random walk does as well or better. Every model leaves something out ([Wikipedia: All models are wrong](https://en.wikipedia.org/wiki/All_models_are_wrong)), so the useful question is not "is this model true?" but "is this model good enough for this purpose, with these data?" Some practical criteria:
@@ -1035,6 +1030,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch10-sec-summary -->
     ## Summary
 
     - A **system** is the part of the world inside a chosen boundary. A **control input** is an outside influence whose value we know; unknown influences become **process noise**. A **state** summarizes the past well enough to predict the future, and a **process model** says how the state evolves.
@@ -1045,6 +1041,7 @@ def _(mo):
     - When a quantity changes at an unknown rate, the state needs two numbers, and their errors become correlated.
     - A correct model produces white innovations. The sample **autocorrelation** of the normalized innovations, compared with $\pm 1.96/\sqrt N$, tests this without knowing the truth.
 
+    <!-- label: ch10-sec-whats-next -->
     ## What's Next
 
     So far every measurement has been the state plus noise, $z_k = x_k + v_k$. But a scale does not output pounds: its load cell and analog-to-digital converter output a raw number of *counts*, related to your weight through a sensitivity and an offset that must themselves be measured. [Chapter 11](ch11_measurement_functions.md) adds a **measurement function** to the filter, calibrates it by least squares, and finds that a drifting offset is a second unknown that a single reading cannot separate from the weight. That is the second reason, after this chapter's rate model, to move to state vectors.

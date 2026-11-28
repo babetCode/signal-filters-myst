@@ -71,7 +71,6 @@ def _(mo):
     The payoff is larger than it looks. A velocity measurement corrects more than the velocity, because the filter's covariance matrix records how attitude errors and sensor biases *produced* the velocity error during the preceding swing. One update therefore corrects all of them. The result is a trajectory accurate to millimeters per stride, from which we compute the quantities a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle. We will also meet a hard limit: no number of zero-velocity updates can tell the filter which way it is facing.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     "The foot is not moving" is a measurement. Fed to an error-state Kalman filter once per stride, it bounds the velocity error and, through the filter's cross-covariances, corrects position, tilt, and sensor biases too. Heading is the exception: it is unobservable from zero-velocity information.
     ///
     """)
@@ -82,14 +81,13 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 20](ch20_strapdown_inertial_navigation.md): the navigation equations and their discrete mechanization, the drift laws, the gait cycle, the gait simulator, and the SHOE detector.
     - [Chapter 19](ch19_ahrs.md): the error-state Kalman filter with the right (body-frame) attitude perturbation $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, its injection and reset steps, and the magnetometer.
     - [Chapter 13](ch13_kalman_filter.md): the Kalman filter, the Joseph form, observability, and the rank test.
     - [Chapter 15](ch15_extended_kalman_filter.md): linearization and the extended Kalman filter.
     - [Chapter 10](ch10_process_models.md): discretization of continuous-time models.
     - [Chapter 17](ch17_rotations.md) and [Chapter 18](ch18_quaternions.md): $\operatorname{Exp}$, $\operatorname{Exp}_q$, $\operatorname{Log}_q$, the small-angle approximation $\operatorname{Exp}(\delta\boldsymbol\theta) \approx \mathbf I + [\delta\boldsymbol\theta]_\times$, and the identity $[\mathbf R\mathbf a]_\times = \mathbf R[\mathbf a]_\times\mathbf R^\top$.
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md), [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md), and [Appendix D: Block Matrices and the Schur Complement](appendix_d_linear_algebra.md).
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices), [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential), and [Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement).
     ///
     """)
     return
@@ -98,6 +96,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-tools-from-chapter-20 -->
     ## Tools from Chapter 20
 
     We use Chapter 20's conventions (ENU navigation frame, FLU body frame, $\mathbf R := \mathbf R^n_b$, specific force $\mathbf f = \mathbf R^\top(\mathbf a^n - \mathbf g^n)$, IMU model $\boldsymbol\omega_m = \boldsymbol\omega + \mathbf b_g + \mathbf n_g$, $\mathbf f_m = \mathbf f + \mathbf b_a + \mathbf n_a$ at 100 Hz) and its code. Notebooks are self-contained, so the quaternion helpers, the mechanization with leveling, the gait simulator, and the detectors are copied verbatim into hidden cells of this notebook; see [Chapter 20](ch20_strapdown_inertial_navigation.md) for the code and its derivations. Our running example is again the U-turn walk with the default sensor errors, and SHOE with threshold $\gamma = 10^3$ decides which samples are stationary.
@@ -117,7 +116,7 @@ def helpers(np):
         return np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
 
     def quat_mult(p, q):
-        """Hamilton product p ⊗ q of scalar-first quaternions."""
+        """Hamilton product of scalar-first quaternions p and q."""
         pw, px, py, pz = p
         qw, qx, qy, qz = q
         return np.array([
@@ -332,7 +331,7 @@ def detectors(G, np):
 
 @app.cell
 def _(np, simulate_gait, stat_shoe):
-    # jb: echo=true
+    # jb: editor=true
     walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
     sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
     GAMMA = 1e3
@@ -343,12 +342,12 @@ def _(np, simulate_gait, stat_shoe):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-zero-velocity-as-a-measurement -->
     ## Zero Velocity as a Measurement
 
     A Kalman filter combines a prediction with measurements, and a measurement is anything with a known relationship to the state plus noise of known covariance. Nothing requires a sensor to produce it.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Pseudo-measurement**</u>
 
     A measurement $\mathbf z_k$ used in a filter's update step whose value is not produced by a sensor reading of $h(\mathbf x_k)$ but is known from a constraint on the system, together with a measurement model $\mathbf z_k = h(\mathbf x_k) + \mathbf v_k$ whose noise $\mathbf v_k$ represents how well the constraint holds.
@@ -359,7 +358,6 @@ def _(mo):
     The noise does not come from a sensor. It represents everything that makes the constraint imperfect: the sole compresses, the strap and skin move, and samples at the edges of a detected stance may belong to a foot that is just starting or finishing a motion.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Zero-velocity update**</u>
 
     The update step of a navigation filter that uses the pseudo-measurement $\mathbf z_k = \mathbf 0$ of the IMU's velocity, with model $\mathbf z_k = \mathbf v_k + \mathbf n_{z,k}$, at the samples $k$ that a zero-velocity detector declares stationary.
@@ -373,6 +371,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-the-error-state-filter -->
     ## The Error-State Filter
 
     An {term}`error-state Kalman filter` keeps two things apart:
@@ -393,12 +392,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-the-linearized-error-model -->
     ### The Linearized Error Model
 
     One identity does most of the work: [Chapter 19](ch19_ahrs.md)'s commutator lemma, $[\mathbf a]_\times[\mathbf b]_\times - [\mathbf b]_\times[\mathbf a]_\times = [\mathbf a\times\mathbf b]_\times$ for all $\mathbf a, \mathbf b \in \mathbb R^3$. The attitude row below is Chapter 19's attitude-error theorem; we repeat its short proof so that the whole model is derived in one place.
 
-    /// important | 📐 **Theorem (Linearized INS Error Model)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Linearized INS Error Model)**
+        attrs: {class: theorem, id: ch21-thm-linearized-ins-error-model}
     Neglecting products of two or more of the small quantities $\delta\mathbf x$, $\mathbf n_a$, $\mathbf n_g$, the error state obeys
     $$\begin{aligned}
     \dot{\delta\mathbf p} &= \delta\mathbf v,\\
@@ -409,7 +409,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Position.* $\dot{\delta\mathbf p} = \dot{\mathbf p} - \dot{\hat{\mathbf p}} = \mathbf v - \hat{\mathbf v} = \delta\mathbf v$.
 
     *Velocity.* Write $\mathbf f_m - \mathbf b_a - \mathbf n_a = \hat{\mathbf f} - \delta\mathbf b_a - \mathbf n_a$ and $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta) = \hat{\mathbf R}(\mathbf I + [\delta\boldsymbol\theta]_\times) + O(\lVert\delta\boldsymbol\theta\rVert^2)$ ([Chapter 17](ch17_rotations.md)). Then
@@ -457,7 +457,7 @@ def _(mo):
 
 @app.cell
 def ekf_model(G_N, np, quat_conj, quat_exp, quat_log, quat_mult, quat_to_rotmat, skew):
-    # jb: echo=true
+    # jb: editor=true
     I3 = np.eye(3)
 
     def error_state_F(R_hat, f_hat, omega_hat):
@@ -481,13 +481,13 @@ def ekf_model(G_N, np, quat_conj, quat_exp, quat_log, quat_mult, quat_to_rotmat,
         return (p + 0.5 * (v + v_new) * dt, v_new, q_new, b_a, b_g)
 
     def inject(x, dx):
-        """x ⊕ dx: apply a 15-element error state to a nominal state."""
+        """Apply a 15-element error state dx to a nominal state x (x oplus dx)."""
         p, v, q, b_a, b_g = x
         q_new = quat_mult(q, quat_exp(dx[6:9]))
         return (p + dx[0:3], v + dx[3:6], q_new / np.linalg.norm(q_new), b_a + dx[9:12], b_g + dx[12:15])
 
     def error_between(x, x_hat):
-        """The error state dx with x = x_hat ⊕ dx."""
+        """The error state dx with x = x_hat oplus dx."""
         dtheta = quat_log(quat_mult(quat_conj(x_hat[2]), x[2]))
         return np.concatenate([x[0] - x_hat[0], x[1] - x_hat[1], dtheta, x[3] - x_hat[3], x[4] - x_hat[4]])
 
@@ -496,7 +496,7 @@ def ekf_model(G_N, np, quat_conj, quat_exp, quat_log, quat_mult, quat_to_rotmat,
 
 @app.cell
 def _(error_between, error_state_F, inject, nominal_step, np, quat_to_rotmat):
-    # jb: echo=true
+    # jb: editor=true
     _rng = np.random.default_rng(3)
     _q = _rng.standard_normal(4)
     _x_hat = (_rng.standard_normal(3), _rng.standard_normal(3), _q / np.linalg.norm(_q),
@@ -539,9 +539,10 @@ def _(F_check_error, F_check_scale, Phi_check_error, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-discretization-and-process-noise -->
     ### Discretization and Process Noise
 
-    Over one sample period we hold $\mathbf F$ constant at its value $\mathbf F_k$ at the start of the period. The exact transition matrix of $\dot{\delta\mathbf x} = \mathbf F_k\delta\mathbf x$ is then the matrix exponential $e^{\mathbf F_k\Delta t} = \mathbf I + \mathbf F_k\Delta t + \tfrac12\mathbf F_k^2\Delta t^2 + \cdots$ ([Chapter 10](ch10_process_models.md), [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md)). We keep the first two terms,
+    Over one sample period we hold $\mathbf F$ constant at its value $\mathbf F_k$ at the start of the period. The exact transition matrix of $\dot{\delta\mathbf x} = \mathbf F_k\delta\mathbf x$ is then the matrix exponential $e^{\mathbf F_k\Delta t} = \mathbf I + \mathbf F_k\Delta t + \tfrac12\mathbf F_k^2\Delta t^2 + \cdots$ ([Chapter 10](ch10_process_models.md), [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential)). We keep the first two terms,
     $$\boldsymbol\Phi_k = \mathbf I + \mathbf F_k\,\Delta t,$$
     which the check above showed to be accurate to about $10^{-3}$ per step at 100 Hz.
 
@@ -550,7 +551,6 @@ def _(mo):
     and the predict step of [Chapter 13](ch13_kalman_filter.md) becomes $\mathbf P_k^- = \boldsymbol\Phi_k\mathbf P_{k-1}\boldsymbol\Phi_k^\top + \mathbf Q$. Only the covariance needs predicting: after every update the error estimate is reset to zero (below), and $\boldsymbol\Phi_k\mathbf 0 = \mathbf 0$. We use $\sigma_a = 0.05\ \text{m/s}^2$ and $\sigma_g = 0.01$ rad/s as in the IMU model. Our simulated biases are constant, so we choose small bias random walks, $\sigma_{ba} = 10^{-4}\ \text{m/s}^2/\sqrt{\text{s}}$ and $\sigma_{bg} = 10^{-5}\ \text{rad/s}/\sqrt{\text{s}}$, which still let the filter follow a slowly changing bias.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The error model and its discretization assume:
 
     1. **Small errors.** Every product of two error terms was dropped. Frequent updates and resets keep the attitude error at milliradians; after a long gap without updates, or a poor initial alignment, tilt errors of several degrees make the linearization, and with it the gain, wrong ([Chapter 15](ch15_extended_kalman_filter.md)).
@@ -566,6 +566,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-update-injection-and-reset -->
     ### Update, Injection, and Reset
 
     **Update.** At a stationary sample, the innovation is $\tilde{\mathbf y}_k = \mathbf z_k - \hat{\mathbf v}_k = -\hat{\mathbf v}_k$. Since $\mathbf v_k = \hat{\mathbf v}_k + \delta\mathbf v_k$,
@@ -581,7 +582,6 @@ def _(mo):
     The corrections $\delta\hat{\boldsymbol\theta}$ are milliradians, so $\mathbf G_r \approx \mathbf I$ and many implementations skip this step; it costs nothing, so we keep it. (We also checked $\mathbf G_r$ numerically. For the derivation in full, see @sola2017 [Section 7].)
 
     /// tip | **The filter, one sample at a time**
-        attrs: {class: no-icon}
     1. Build $\boldsymbol\Phi_k = \mathbf I + \mathbf F_k\Delta t$ from the nominal state and the bias-corrected readings at the start of the period.
     2. Propagate the nominal state with Chapter 20's mechanization.
     3. Predict the covariance: $\mathbf P \leftarrow \boldsymbol\Phi_k\mathbf P\boldsymbol\Phi_k^\top + \mathbf Q$.
@@ -603,7 +603,7 @@ def _(mo):
 
 @app.cell
 def ekf_cell(I3, error_state_F, inject, nominal_step, np, quat_to_rotmat, skew):
-    # jb: echo=true
+    # jb: editor=true
     def zupt_ekf(omega_m, f_m, dt, stationary, q0, zaru=False, sigma_a=0.05, sigma_g=0.01,
                  sigma_ba=1e-4, sigma_bg=1e-5, sigma_z=0.01):
         """15-state error-state EKF with zero-velocity updates (and optional ZARU)."""
@@ -643,7 +643,7 @@ def ekf_cell(I3, error_state_F, inject, nominal_step, np, quat_to_rotmat, skew):
                 dx = K @ y
                 A = np.eye(15) - K @ H
                 P = A @ P @ A.T + K @ R_meas @ K.T                      # Joseph form
-                x = inject(x, dx)                                       # x_hat <- x_hat ⊕ dx_hat
+                x = inject(x, dx)                                       # x_hat <- x_hat oplus dx_hat
                 G_r = np.eye(15)
                 G_r[6:9, 6:9] = I3 - 0.5 * skew(dx[6:9])
                 P = G_r @ P @ G_r.T                                     # reset
@@ -656,6 +656,7 @@ def ekf_cell(I3, error_state_F, inject, nominal_step, np, quat_to_rotmat, skew):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-results-with-and-without-zero-velocity-updates -->
     ## Results: With and Without Zero-Velocity Updates
 
     We run the filter twice on the same U-turn walk, once with no updates at all (the nominal state is then exactly Chapter 20's free strapdown solution) and once with zero-velocity updates at every sample that SHOE declares stationary.
@@ -665,7 +666,7 @@ def _(mo):
 
 @app.cell
 def _(align_level, np, quat_to_rotmat, rotmat_to_euler, sim, stationary, zupt_ekf):
-    # jb: echo=true
+    # jb: editor=true
     q0 = align_level(sim["f_m"][:100])
     run_free = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], np.zeros(len(sim["t"]), bool), q0)
     run_zupt = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0)
@@ -757,24 +758,26 @@ def _(mo, np, run_free, run_zupt, sim):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-observability-what-zero-velocity-cannot-see -->
     ## Observability: What Zero Velocity Cannot See
 
     The top view shows a pattern that tuning cannot remove: the return leg is displaced sideways, as if the whole path had been rotated slightly. That is a heading error, and it is not the filter's fault.
 
-    /// important | 📐 **Theorem (Heading and Position Are Unobservable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Heading and Position Are Unobservable)**
+        attrs: {class: theorem, id: ch21-thm-heading-and-position-are-unobservable}
     Let $(\mathbf p(t), \mathbf v(t), \mathbf R(t), \mathbf b_a, \mathbf b_g)$ be a trajectory of the true-state model, let $\varepsilon \in \mathbb R$, $\mathbf c \in \mathbb R^3$, and let $\mathbf R_\varepsilon := \mathbf R_z(\varepsilon)$. Then the rotated and translated trajectory
     $$\big(\mathbf R_\varepsilon\mathbf p(t) + \mathbf c,\ \ \mathbf R_\varepsilon\mathbf v(t),\ \ \mathbf R_\varepsilon\mathbf R(t),\ \ \mathbf b_a,\ \ \mathbf b_g\big)$$
     produces exactly the same IMU measurements and the same zero-velocity pseudo-measurements, for the same noise. Consequently these data cannot distinguish a trajectory from its copies rotated about the vertical or translated: heading and horizontal position are known only through the initial condition and the integrated gyroscope readings, and the uncertainty that gyroscope noise adds to the heading is never removed by later measurements.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $\mathbf R' := \mathbf R_\varepsilon\mathbf R$ and $\mathbf a' := \mathbf R_\varepsilon\mathbf a^n$ (the second derivative of the new position, since $\mathbf R_\varepsilon$ and $\mathbf c$ are constant). *Angular rate:* $\mathbf R'^\top\dot{\mathbf R}' = \mathbf R^\top\mathbf R_\varepsilon^\top\mathbf R_\varepsilon\dot{\mathbf R} = \mathbf R^\top\dot{\mathbf R} = [\boldsymbol\omega]_\times$, so the true body rate, and hence $\boldsymbol\omega_m$, is unchanged. *Specific force:* $\mathbf R'^\top(\mathbf a' - \mathbf g^n) = \mathbf R^\top(\mathbf a^n - \mathbf R_\varepsilon^\top\mathbf g^n) = \mathbf R^\top(\mathbf a^n - \mathbf g^n) = \mathbf f$, because a rotation about the vertical leaves $\mathbf g^n = [0, 0, -g]^\top$ fixed. So $\mathbf f_m$ is unchanged. *Zero velocity:* $\mathbf R_\varepsilon\mathbf v = \mathbf 0$ exactly when $\mathbf v = \mathbf 0$, so the stationary samples and the pseudo-measurements $\mathbf z_k = \mathbf 0$ are the same. Two different states thus produce identical measurements, which is exactly what [Chapter 13](ch13_kalman_filter.md)'s definition of {term}`observability` rules out. $\blacksquare$
     ///
 
     The proof uses only that gravity is vertical and that "zero" looks the same in every direction. Gravity defines *down*, so tilt can be observed; nothing in the data defines *North*.
 
+    <!-- label: ch21-sec-which-other-errors-are-hidden -->
     ### Which Other Errors Are Hidden?
 
     The theorem finds two symmetries of the nonlinear problem. The linearized model may hide more. Take the simplest case, a foot resting level with heading zero: $\hat{\mathbf R} = \mathbf I$, $\hat{\mathbf f} = [0, 0, g]^\top$, $\hat{\boldsymbol\omega} = \mathbf 0$. Then $\mathbf F$ is constant, and we can see what the measured $\delta\mathbf v$ reveals by differentiating it with the error model (without noise):
@@ -793,7 +796,7 @@ def _(mo):
 
 @app.cell
 def _(G, I3, error_state_F, np):
-    # jb: echo=true
+    # jb: editor=true
     _Phi = np.eye(15) + error_state_F(np.eye(3), np.array([0.0, 0.0, G]), np.zeros(3)) * 0.01
     _H_zupt = np.hstack([np.zeros((3, 3)), I3, np.zeros((3, 9))])
     _H_zaru = np.hstack([np.zeros((3, 12)), I3])
@@ -831,12 +834,12 @@ def _(mo):
     mo.md(r"""
     The resting foot is the worst case. During the swing the foot pitches and accelerates, $\hat{\mathbf f}$ and $\hat{\mathbf R}$ change, and over a whole stride more combinations become visible. The tilt and accelerometer-bias pairs separate, and the gyroscope's body $z$ axis tilts away from vertical during the swing, so $\delta b_{g,z}$ becomes **weakly** observable: it leaves a small tilt signature that the next stance detects. Yaw and position stay hidden, because the theorem holds for every motion. In practice the vertical gyroscope bias is learned slowly and imperfectly, and the heading error keeps growing in the meantime.
 
+    <!-- label: ch21-sec-zero-angular-rate-updates -->
     ### Zero Angular Rate Updates
 
     Zero velocity is not the only thing we know at rest: the foot is not rotating either.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Zero angular rate update**</u>
 
     The update step of a navigation filter that, at the samples a zero-velocity detector declares stationary, uses the gyroscope reading $\mathbf z_k := \boldsymbol\omega_{m,k}$ as a pseudo-measurement of the gyroscope bias, with model $\mathbf z_k = \mathbf b_g + \mathbf n_{g,k}$, which follows from the IMU model with the true angular rate $\boldsymbol\omega_k = \mathbf 0$.
@@ -851,7 +854,7 @@ def _(mo):
 
 @app.cell
 def _(q0, sim, stationary, zupt_ekf):
-    # jb: echo=true
+    # jb: editor=true
     run_zaru = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0, zaru=True)
     return (run_zaru,)
 
@@ -922,6 +925,7 @@ def _(mo):
     mo.md(r"""
     One detail in the right panel deserves a comment. With zero-velocity updates only, the heading uncertainty grows during the initial standing period and then *drops* after the first stride. While the foot stood still, the vertical gyroscope bias turned the computed heading, so the heading error and the bias error became strongly correlated. When the first swing makes the bias weakly observable, the update learns part of the bias error and, through that correlation, part of the heading error it caused. This is the same cross-covariance mechanism by which a velocity measurement corrects tilt. It does not contradict the theorem: what is recovered is drift whose cause became visible, not the heading itself.
 
+    <!-- label: ch21-sec-heading-aids -->
     ### Heading Aids
 
     Bounding the heading error requires a measurement that depends on heading. The common options:
@@ -938,12 +942,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-gait-parameters -->
     ## Gait Parameters
 
     The corrected trajectory turns into clinical numbers stride by stride. First we segment it: a **detected stance** is a run of at least five consecutive stationary samples (50 ms). For detected stance $j$, let $\hat{\mathbf P}_j$ be the mean estimated position over the stance and $\hat\psi_j$ the mean estimated heading (a circular mean, so that headings near $\pm180^\circ$ average correctly). Stride $i$ is the motion between detected stances $i-1$ and $i$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Stride length**</u>
 
     The horizontal distance between the positions of a specified point on a foot during the foot-flat periods of two consecutive stance phases of that foot.
@@ -952,7 +956,6 @@ def _(mo):
     We estimate it as $\lVert(\hat{\mathbf P}_i - \hat{\mathbf P}_{i-1})_{xy}\rVert$, the horizontal part of the displacement between stance positions. The **stride time** is the duration of the stride. A foot-mounted IMU cannot see heel strike precisely, but it sees the start of each detected stance (foot flat) with a nearly constant delay, so we measure stride time between consecutive stance onsets. The first stride starts from standing and has no previous onset, so time-based parameters start with the second stride; clinical protocols usually discard the first strides of a walk anyway, as the walker is still accelerating.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Cadence**</u>
 
     The number of steps (heel strikes of either foot) per unit time, usually expressed in steps per minute.
@@ -961,7 +964,6 @@ def _(mo):
     One instrumented foot sees one heel strike per stride. Assuming the two legs take steps of equal duration, each stride contains two steps, so we estimate cadence as $2\cdot 60/T_{\text{stride}}$ steps per minute, with $T_{\text{stride}}$ in seconds.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gait speed**</u>
 
     The horizontal distance a walker travels per unit time.
@@ -970,7 +972,6 @@ def _(mo):
     Per stride, it is the stride length divided by the stride time.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Foot clearance**</u>
 
     For a stride and a specified point on the foot, the maximum height of that point during the swing phase above its height during the foot-flat period of the preceding stance phase.
@@ -983,7 +984,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def stance_segments(stationary, min_len=5):
         """Start and end (exclusive) indices of runs of at least min_len stationary samples."""
         edges = np.diff(np.r_[False, stationary, False].astype(int))
@@ -1043,7 +1044,7 @@ def _(gait_truth, gait_zaru, gait_zupt, mo, np):
         f"Means are over strides; errors compare each stride's estimate with its true value.\n\n"
         "| Parameter | True mean | Estimated mean (ZUPT + ZARU) | Mean abs. error, ZUPT | "
         "Mean abs. error, ZUPT + ZARU | Max abs. error, ZUPT + ZARU |\n"
-        "|---|---|---|---|---|---|\n" + "\n".join(_rows)
+        "|:---|:---:|:---:|:---:|:---:|:---:|\n" + "\n".join(_rows)
     )
     return
 
@@ -1083,6 +1084,7 @@ def _(IMAGES_DIR, gait_truth, gait_zaru, gait_zupt, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-interactive-tuning-the-detector -->
     ## Interactive: Tuning the Detector
 
     The whole pipeline (simulate, detect, filter, segment) runs again for each setting. The noise slider scales both IMU noise levels; the detector and the filter are told the true noise level, so the SHOE statistic and $\mathbf Q$ scale with it. Try a threshold of $10^{1.5}$ or $10^{4.5}$, and then raise the noise to see that a threshold that worked for one sensor fails for another.
@@ -1171,10 +1173,10 @@ def _(interactive_result, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-failure-modes -->
     ## Failure Modes
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     Zero-velocity-aided inertial navigation rests on these assumptions:
 
     1. **The foot is truly still during every detected stance, and every stance is detected.** False detections inject false zero-velocity measurements; missed detections leave the INS free-running for longer. Both depend on the threshold, the sensor noise, and the gait.
@@ -1239,7 +1241,7 @@ def _(failure_results, mo):
     ]
     mo.md(
         "| Scenario | Stances found (true) | Mean stride length, m (true) | Mean foot clearance, m (true) "
-        "| Final position error, m |\n|---|---|---|---|---|\n" + "\n".join(_rows)
+        "| Final position error, m |\n|:---|:---:|:---:|:---:|:---:|\n" + "\n".join(_rows)
     )
     return
 
@@ -1261,6 +1263,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-further-reading -->
     ## Further Reading
 
     - @foxlin2005, *Pedestrian Tracking with Shoe-Mounted Inertial Sensors*: the paper that introduced zero-velocity updates in a Kalman filter for foot-mounted IMUs.
@@ -1276,6 +1279,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-summary -->
     ## Summary
 
     - A **pseudo-measurement** is a measurement known from a constraint rather than read from a sensor. The **zero-velocity update** uses $\mathbf z = \mathbf 0 = \mathbf v + \mathbf n_z$ at every sample a detector declares stationary.
@@ -1291,6 +1295,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch21-sec-whats-next -->
     ## What's Next
 
     This chapter ends the main path. We started in the [Introduction](introduction.md) with a bathroom scale and the question of how much to trust a new measurement, and we end with a fifteen-state filter that tracks a walking foot. It runs on the same predict-and-update structure, and its gain answers the same question. Natural next steps go beyond this book. An offline gait analysis can smooth each stride with the Rauch–Tung–Striebel smoother mentioned in [Chapter 14](ch14_kalman_filters_in_practice.md), using measurements on both sides of every swing. Real recordings bring the effects our simulator leaves out: impacts, soft tissue, and walkers who shuffle, stop, and turn on the spot. If any foundation along the way felt thin, the [appendices](appendix_c_calculus.md) build it from the ground up.

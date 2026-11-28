@@ -68,7 +68,6 @@ def _(mo):
     This appendix builds all of these from the axioms of the real numbers in [Chapter 3](ch3_sets_for_probability.md). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A limit is the exact value that a family of approximations approaches: every tolerance, however small, is eventually met. Every concept in this appendix (the sum of a series, the derivative, the integral, the exponential function) is a limit.
     ///
     """)
@@ -79,17 +78,17 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): functions, the natural numbers $\mathbb N = \{0, 1, 2, \ldots\}$, induction, and the Recursion Theorem.
     - [Chapter 3](ch3_sets_for_probability.md): sequences, finite sums $\sum$, countable sets, $\mathbb R$ as a complete ordered field (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), the Archimedean property and the density of $\mathbb Q$, absolute value and the triangle inequality, intervals, and the extended real numbers $[0, \infty]$.
     ///
 
+    <!-- label: appc-sec-how-to-read-this-appendix -->
     ### How to Read This Appendix
 
     You don't need to read this appendix in one sitting. Each main-path chapter's Prerequisites box names the sections it uses:
 
     | Before reading | Read these sections |
-    |---|---|
+    |:---|:---|
     | Chapter 4 | Sequences and Limits; Series |
     | Chapters 5 and 6 | Limits of Functions and Continuity through Improper Integrals; Multiple Integrals |
     | Chapters 7 and 13 | Derivatives; The Mean Value Theorem and Extrema |
@@ -105,6 +104,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-sequences-and-limits -->
     ## Sequences and Limits
 
     Recall the {term}`exponential moving average` from the [Introduction](introduction.md): starting from an initial value $\hat x_0$, it computes $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ with a smoothing factor $0 < \alpha < 1$. Suppose there is no noise at all, so every measurement equals the true weight, $z_k = x$, but the initial value $\hat x_0$ is wrong. Subtracting $x$ from both sides of the update shows that the error $e_k := \hat x_k - x$ satisfies
@@ -114,7 +114,6 @@ def _(mo):
     by induction on $k$. With $\alpha = 0.2$, each step removes 20% of the remaining error. The error is never exactly zero (unless $e_0 = 0$), yet it becomes as small as we like: for any tolerance, say $0.1$ lb, there is a step after which the error stays below that tolerance forever. "Eventually within any tolerance" is exactly what a limit is.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Limit of a sequence**</u>
 
     A real number $L$ is a limit of a {term}`sequence` $(a_n)_{n \in \mathbb N}$ of real numbers if and only if for every $\varepsilon > 0$ there exists $N \in \mathbb N$ such that $|a_n - L| < \varepsilon$ for every $n \ge N$:
@@ -124,20 +123,19 @@ def _(mo):
 
     Read the definition as a game. A skeptic names a tolerance $\varepsilon$; we must answer with an index $N$ after which every term stays within $\varepsilon$ of $L$. A smaller $\varepsilon$ may require a larger $N$, but we must be able to answer every $\varepsilon$. The order of the quantifiers matters ([Chapter 1](ch1_language_of_logic.md)): $N$ may depend on $\varepsilon$, but not the other way around.
 
-    /// important | 📐 **Lemma (Uniqueness of Limits)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Uniqueness of Limits)**
+        attrs: {class: lemma, id: appc-lem-uniqueness-of-limits}
     A sequence has at most one limit.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose $L \ne L'$ are both limits of $(a_n)$, and let $\varepsilon := |L - L'|/2 > 0$. There are $N$ and $N'$ with $|a_n - L| < \varepsilon$ for $n \ge N$ and $|a_n - L'| < \varepsilon$ for $n \ge N'$. For $n = \max(N, N')$ the triangle inequality gives $|L - L'| \le |L - a_n| + |a_n - L'| < 2\varepsilon = |L - L'|$, a contradiction. $\blacksquare$
     ///
 
     So we may speak of *the* limit and write $\lim_{n\to\infty} a_n = L$ or $a_n \to L$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Convergent**</u>
 
     A sequence of real numbers is convergent if and only if it has a {term}`limit <limit of a sequence>` that is a real number. A sequence that is not convergent is called *divergent*.
@@ -151,15 +149,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Three Basic Sequences)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Three Basic Sequences)**
+        attrs: {class: lemma, id: appc-lem-three-basic-sequences}
     1. $\lim_{n\to\infty} 1/n = 0$ (for $n \ge 1$).
     2. If $|q| < 1$, then $\lim_{n\to\infty} q^n = 0$.
     3. The sequence $\big((-1)^n\big)_{n\in\mathbb N}$ is divergent.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Let $\varepsilon > 0$. By the Archimedean property there is $N \in \mathbb N^+$ with $N > 1/\varepsilon$. For $n \ge N$, $|1/n - 0| = 1/n \le 1/N < \varepsilon$.
     2. If $q = 0$ there is nothing to prove. Otherwise $1/|q| > 1$, so $1/|q| = 1 + h$ with $h > 0$. *Bernoulli's inequality* $(1 + h)^n \ge 1 + nh$ holds for every $n \in \mathbb N$ by induction: it is an equality for $n = 0$, and $(1+h)^{n+1} \ge (1 + nh)(1 + h) = 1 + (n+1)h + nh^2 \ge 1 + (n+1)h$. Hence for $n \ge 1$,
     $$|q^n - 0| = \frac{1}{(1+h)^n} \le \frac{1}{1 + nh} < \frac{1}{nh}.$$
@@ -178,12 +176,12 @@ def _(mo):
 def _(mo):
     eps_seq = mo.ui.dropdown(
         options={
-            "EMA error fraction 0.8ⁿ": "ema",
+            "EMA error fraction 0.8^n": "ema",
             "cumulative-average gain 1/n": "inv",
-            "alternating (−1)ⁿ/n": "alt",
-            "divergent (−1)ⁿ": "div",
+            "alternating (-1)^n/n": "alt",
+            "divergent (-1)^n": "div",
         },
-        value="EMA error fraction 0.8ⁿ",
+        value="EMA error fraction 0.8^n",
         label="sequence",
     )
     eps_slider = mo.ui.slider(
@@ -246,22 +244,23 @@ def _(eps_seq, eps_slider, graphic, mo, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-limit-laws -->
     ### Limit Laws
 
     Limits would be of little use if each one had to be computed from the definition. The limit laws let us combine known limits.
 
-    /// important | 📐 **Lemma (Convergent Sequences Are Bounded)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Convergent Sequences Are Bounded)**
+        attrs: {class: lemma, id: appc-lem-convergent-sequences-are-bounded}
     If $(a_n)$ converges, there is $M \in \mathbb R$ with $|a_n| \le M$ for every $n$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $a_n \to L$. With $\varepsilon = 1$ there is $N$ with $|a_n - L| < 1$, hence $|a_n| < |L| + 1$, for $n \ge N$. Take $M := \max(|a_0|, \ldots, |a_{N-1}|, |L| + 1)$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Limit Laws for Sequences)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Limit Laws for Sequences)**
+        attrs: {class: theorem, id: appc-thm-limit-laws-for-sequences}
     Let $a_n \to a$ and $b_n \to b$, and let $c \in \mathbb R$. Then:
     1. $a_n + b_n \to a + b$ and $c\,a_n \to c\,a$.
     2. $a_n b_n \to ab$.
@@ -271,7 +270,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\varepsilon > 0$. In each part, "for large $n$" means "for all $n$ beyond some index", and finitely many such conditions can be met at once by taking the largest of the indices.
     1. For large $n$, $|a_n - a| < \varepsilon/2$ and $|b_n - b| < \varepsilon/2$, so $|(a_n + b_n) - (a + b)| \le |a_n - a| + |b_n - b| < \varepsilon$. If $c = 0$ the second claim is trivial; otherwise for large $n$, $|a_n - a| < \varepsilon/|c|$, so $|c\,a_n - c\,a| < \varepsilon$.
     2. Write $a_n b_n - ab = a_n(b_n - b) + b(a_n - a)$. By the lemma, $|a_n| \le M$ for some $M > 0$. For large $n$, $|b_n - b| < \varepsilon/(2M)$ and $|a_n - a| < \varepsilon/(2|b| + 2)$, so $|a_n b_n - ab| < \varepsilon/2 + \varepsilon/2 = \varepsilon$.
@@ -288,27 +287,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-monotone-sequences-and-completeness -->
     ### Monotone Sequences and Completeness
 
     A sequence $(a_n)$ is **increasing** if $a_n \le a_{n+1}$ for every $n$, **decreasing** if $a_n \ge a_{n+1}$ for every $n$, and **monotone** if it is one of the two; with strict inequalities it is *strictly* increasing or decreasing. It is **bounded above** if the set $\{a_n : n \in \mathbb N\}$ has an {term}`upper bound`, and **bounded** if $|a_n| \le M$ for some $M$ and every $n$.
 
     In probability, increasing sequences appear naturally: if $A_1 \subseteq A_2 \subseteq \cdots$ are events, their probabilities increase and never exceed $1$. Do such numbers have to converge? Yes, and this is precisely where the completeness of $\mathbb R$ enters.
 
-    /// important | 📐 **Theorem (Monotone Convergence)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Monotone Convergence)**
+        attrs: {class: theorem, id: appc-thm-monotone-convergence}
     1. An increasing sequence that is bounded above converges, and its limit is $\sup\{a_n : n \in \mathbb N\}$.
     2. A decreasing sequence that is bounded below converges, and its limit is $\inf\{a_n : n \in \mathbb N\}$.
     3. An increasing sequence that is not bounded above diverges to $\infty$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. The set $\{a_n\}$ is nonempty and bounded above, so its {term}`supremum` $S$ exists because $\mathbb R$ is a {term}`complete ordered field`. Let $\varepsilon > 0$. Since $S$ is the *least* upper bound, $S - \varepsilon$ is not an upper bound, so $a_N > S - \varepsilon$ for some $N$. For $n \ge N$, monotonicity gives $S - \varepsilon < a_N \le a_n \le S$, so $|a_n - S| < \varepsilon$.
     2. Apply part 1 to the increasing sequence $(-a_n)$, using $\inf A = -\sup(-A)$.
     3. Given $M$, some $a_N > M$ because $M$ is not an upper bound, and then $a_n \ge a_N > M$ for every $n \ge N$. $\blacksquare$
     ///
 
-    The theorem fails in $\mathbb Q$. The decimal truncations $1, 1.4, 1.41, 1.414, \ldots$ of $\sqrt 2$ form an increasing sequence of rationals bounded above by $2$, but no rational number is its limit ([Appendix B: Incompleteness of the Rationals](appendix_b_number_systems.md)). Every theorem below that relies on Monotone Convergence (Bolzano–Weierstrass, the Cauchy criterion, the intermediate and extreme value theorems, and everything built on them) is ultimately a consequence of completeness.
+    The theorem fails in $\mathbb Q$. The decimal truncations $1, 1.4, 1.41, 1.414, \ldots$ of $\sqrt 2$ form an increasing sequence of rationals bounded above by $2$, but no rational number is its limit ([Appendix B: Incompleteness of the Rationals](#appb-sec-incompleteness-of-the-rationals)). Every theorem below that relies on Monotone Convergence (Bolzano–Weierstrass, the Cauchy criterion, the intermediate and extreme value theorems, and everything built on them) is ultimately a consequence of completeness.
 
     Because an increasing sequence always converges either to a real number or to $\infty$, we can assign it a limit in the extended real numbers in every case: $\lim a_n = \sup\{a_n\} \in (-\infty, \infty]$. The same convention applies to increasing sequences with values in $[0, \infty]$, which may contain the term $\infty$ itself.
     """)
@@ -318,27 +318,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-subsequences-and-cauchy-sequences -->
     ### Subsequences and Cauchy Sequences
 
     The sequence $(-1)^n$ diverges, but its even-indexed terms $1, 1, 1, \ldots$ converge. Given a sequence $(a_n)$ and a strictly increasing sequence of indices $n_0 < n_1 < n_2 < \cdots$ in $\mathbb N$, the sequence $(a_{n_k})_{k \in \mathbb N}$ is a **subsequence** of $(a_n)$. By induction, $n_k \ge k$ for every $k$.
 
-    /// important | 📐 **Lemma (Subsequences of Convergent Sequences)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Subsequences of Convergent Sequences)**
+        attrs: {class: lemma, id: appc-lem-subsequences-of-convergent-sequences}
     If $a_n \to L$, then every subsequence $a_{n_k} \to L$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Given $\varepsilon > 0$, choose $N$ with $|a_n - L| < \varepsilon$ for $n \ge N$. For $k \ge N$ we have $n_k \ge k \ge N$, so $|a_{n_k} - L| < \varepsilon$. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Monotone Subsequence)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Monotone Subsequence)**
+        attrs: {class: lemma, id: appc-lem-monotone-subsequence}
     Every sequence of real numbers has a monotone subsequence.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Call an index $m$ a *peak* if $a_m \ge a_n$ for every $n > m$.
 
     *Case 1: there are infinitely many peaks.* Let $m_0$ be the least peak and, recursively, $m_{k+1}$ the least peak greater than $m_k$ (the Recursion Theorem of [Chapter 2](ch2_axioms_of_set_theory.md)). Each $m_k$ is a peak and $m_{k+1} > m_k$, so $a_{m_k} \ge a_{m_{k+1}}$: the subsequence is decreasing.
@@ -346,32 +347,31 @@ def _(mo):
     *Case 2: there are finitely many peaks.* Let $n_0$ be larger than every peak. Recursively, since $n_k$ is not a peak, there is an $n > n_k$ with $a_n > a_{n_k}$; let $n_{k+1}$ be the least such $n$. Then $n_{k+1} > n_k$ is again not a peak, and $(a_{n_k})$ is strictly increasing. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Bolzano–Weierstrass)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Bolzano–Weierstrass)**
+        attrs: {class: theorem, id: appc-thm-bolzanoweierstrass}
     Every bounded sequence of real numbers has a convergent subsequence.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the previous lemma the sequence has a monotone subsequence, which is bounded because the sequence is. By Monotone Convergence it converges. $\blacksquare$
     ///
 
     To prove that a sequence converges using the definition, we must already know the limit. The next definition tests convergence using only the terms themselves.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Cauchy sequence**</u>
 
     A sequence $(a_n)$ of real numbers is a Cauchy sequence if and only if for every $\varepsilon > 0$ there exists $N \in \mathbb N$ such that $|a_m - a_n| < \varepsilon$ for all $m, n \ge N$.
     ///
 
-    /// important | 📐 **Theorem (Cauchy Criterion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Cauchy Criterion)**
+        attrs: {class: theorem, id: appc-thm-cauchy-criterion}
     A sequence of real numbers is {term}`convergent` if and only if it is a {term}`Cauchy sequence`.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Let $a_n \to L$ and $\varepsilon > 0$. Choose $N$ with $|a_n - L| < \varepsilon/2$ for $n \ge N$. For $m, n \ge N$, $|a_m - a_n| \le |a_m - L| + |L - a_n| < \varepsilon$.
 
     ($\Leftarrow$) Let $(a_n)$ be Cauchy. It is bounded: with $\varepsilon = 1$ there is $N$ with $|a_n| < |a_N| + 1$ for $n \ge N$, and only finitely many terms come before $N$. By Bolzano–Weierstrass, some subsequence $a_{n_k} \to L$. Let $\varepsilon > 0$. Choose $N$ with $|a_m - a_n| < \varepsilon/2$ for $m, n \ge N$, and then $k$ with $k \ge N$ and $|a_{n_k} - L| < \varepsilon/2$. Since $n_k \ge k \ge N$, every $n \ge N$ satisfies $|a_n - L| \le |a_n - a_{n_k}| + |a_{n_k} - L| < \varepsilon$. $\blacksquare$
@@ -384,7 +384,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Convergence says nothing about speed.** For the EMA error $(1-\alpha)^k$, the index $N$ needed for a given $\varepsilon$ grows roughly like $1/\alpha$ as $\alpha$ shrinks. A convergent filter can still take an impractically long time to forget a bad initial value.
     - **Limits preserve $\le$, not $<$.** A sequence of positive numbers may have limit $0$.
     - **Completeness is essential.** In $\mathbb Q$, Monotone Convergence, Bolzano–Weierstrass, and the Cauchy criterion all fail; the decimal truncations of $\sqrt 2$ are a Cauchy sequence of rationals with no rational limit.
@@ -392,7 +391,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     $a_n \to L$ means that every tolerance $\varepsilon > 0$ is eventually met forever. The limit laws combine limits; the completeness of $\mathbb R$ guarantees limits for bounded monotone sequences and for Cauchy sequences, even when we cannot name the limit in advance.
     ///
     """)
@@ -402,6 +400,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-series -->
     ## Series
 
     The EMA's estimate is a weighted sum of every measurement it has seen. Unrolling the recursion ([Introduction](introduction.md)) gives
@@ -411,7 +410,6 @@ def _(mo):
     so the measurement from $n$ steps ago has weight $\alpha(1-\alpha)^n$. As $k$ grows, the list of weights $\alpha,\ \alpha(1-\alpha),\ \alpha(1-\alpha)^2, \ldots$ grows without end. In what sense do infinitely many weights "add up to $1$"? The answer is a limit: their finite sums approach $1$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Series**</u>
 
     Let $(a_n)_{n\in\mathbb N}$ be a sequence of real numbers. The series $\sum_{n=0}^\infty a_n$ is the sequence $(s_N)_{N\in\mathbb N}$ of its *partial sums* $s_N := \sum_{n=0}^{N} a_n$. The series converges if and only if $(s_N)$ is {term}`convergent`; its limit $S$ is then called the *sum* of the series, and we write $\sum_{n=0}^\infty a_n = S$. Otherwise the series diverges. Series that start at another index are defined in the same way.
@@ -422,49 +420,49 @@ def _(mo):
     - **Linearity.** If $\sum a_n$ and $\sum b_n$ converge and $c \in \mathbb R$, then $\sum (a_n + b_n) = \sum a_n + \sum b_n$ and $\sum c\,a_n = c\sum a_n$, because partial sums add and scale.
     - **Finitely many terms don't matter for convergence.** Changing, adding, or removing finitely many terms changes every partial sum beyond some index by the same constant, so it changes the sum but not whether the series converges.
 
-    /// important | 📐 **Lemma (Term Test)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Term Test)**
+        attrs: {class: lemma, id: appc-lem-term-test}
     If $\sum a_n$ converges, then $a_n \to 0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $s_N \to S$. The shifted sequence $(s_{N-1})_{N \ge 1}$ also converges to $S$, so $a_N = s_N - s_{N-1} \to S - S = 0$ by the limit laws. $\blacksquare$
     ///
 
     The term test gives a {term}`necessary condition` for convergence. The harmonic series below shows that it is not a {term}`sufficient condition`.
 
-    /// important | 📐 **Lemma (Finite Geometric Sum)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Finite Geometric Sum)**
+        attrs: {class: lemma, id: appc-lem-finite-geometric-sum}
     For every real $q \ne 1$ and every $N \in \mathbb N$,
     $$\sum_{n=0}^{N} q^n = \frac{1 - q^{N+1}}{1 - q}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $s_N := \sum_{n=0}^{N} q^n$. Then $q\,s_N = \sum_{n=1}^{N+1} q^n$, and every term except $q^0$ and $q^{N+1}$ cancels in the difference: $s_N - q\,s_N = 1 - q^{N+1}$. Divide by $1 - q \ne 0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Geometric Series)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Geometric Series)**
+        attrs: {class: theorem, id: appc-thm-geometric-series}
     The series $\sum_{n=0}^\infty q^n$ converges if and only if $|q| < 1$, and then
     $$\sum_{n=0}^\infty q^n = \frac{1}{1 - q}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     If $|q| < 1$, then $q^{N+1} \to 0$ (Lemma: Three Basic Sequences), so by the limit laws $s_N = (1 - q^{N+1})/(1-q) \to 1/(1-q)$. If $|q| \ge 1$, then $|q^n| \ge 1$ for every $n$, so $q^n \not\to 0$ and the series diverges by the term test. $\blacksquare$
     ///
 
     **Back to the EMA.** With $q = 1 - \alpha \in (0, 1)$, the finite geometric sum gives $\sum_{n=0}^{k-1} \alpha(1-\alpha)^n = \alpha\cdot\frac{1 - (1-\alpha)^k}{\alpha} = 1 - (1-\alpha)^k$, and the initial value receives the remaining weight $(1-\alpha)^k$, so the $k + 1$ weights always add up to exactly $1$. The infinite list of measurement weights adds up to $1$ in the sense of the definition: $\sum_{n=0}^\infty \alpha(1-\alpha)^n = \alpha\cdot\frac{1}{1 - (1-\alpha)} = 1$. The weight on the initial value, $(1-\alpha)^k \to 0$, is exactly the forgetting we found in Sequences and Limits.
 
-    /// important | 📐 **Theorem (Harmonic Series)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Harmonic Series)**
+        attrs: {class: theorem, id: appc-thm-harmonic-series}
     $\sum_{n=1}^\infty \frac1n$ diverges to $\infty$, even though $\frac1n \to 0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For each $j \ge 1$ there are $2^{j-1}$ integers $n$ with $2^{j-1} < n \le 2^j$, and each has $\frac1n \ge \frac{1}{2^j}$, so their terms add up to at least $\frac12$. Hence the partial sum up to $n = 2^m$ is at least $1 + \frac m2$. The partial sums are increasing and unbounded, so they diverge to $\infty$ by Monotone Convergence. $\blacksquare$
     ///
     """)
@@ -474,47 +472,49 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-series-with-nonnegative-terms -->
     ### Series with Nonnegative Terms
 
     If every $a_n \ge 0$, the partial sums increase. By Monotone Convergence the series converges if and only if its partial sums are bounded, and otherwise it diverges to $\infty$. In both cases we write
     $$\sum_{n=0}^\infty a_n = \sup_N s_N \in [0, \infty],$$
     a value in the {term}`extended real numbers`. The same definition applies when some terms equal $\infty$, using the convention $x + \infty = \infty$ from Chapter 3.
 
-    /// important | 📐 **Theorem (Comparison Test)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Comparison Test)**
+        attrs: {class: theorem, id: appc-thm-comparison-test}
     If $0 \le a_n \le b_n$ for every $n$, then $\sum a_n \le \sum b_n$ in $[0, \infty]$. In particular, if $\sum b_n$ converges then so does $\sum a_n$, and if $\sum a_n$ diverges then so does $\sum b_n$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For every $N$, $\sum_{n=0}^N a_n \le \sum_{n=0}^N b_n \le \sup_M \sum_{n=0}^M b_n = \sum b_n$. Taking the supremum over $N$ gives $\sum a_n \le \sum b_n$. $\blacksquare$
     ///
 
     **Example.** $\sum_{n=1}^\infty \frac{1}{n^2}$ converges and is at most $2$. For $n \ge 2$, $\frac{1}{n^2} \le \frac{1}{n(n-1)} = \frac{1}{n-1} - \frac1n$, and the partial sums of the right side *telescope*: $\sum_{n=2}^N \big(\frac{1}{n-1} - \frac1n\big) = 1 - \frac1N \le 1$. By comparison, $\sum_{n=2}^\infty \frac{1}{n^2} \le 1$; adding the term for $n = 1$ gives at most $2$. (The exact value is $\pi^2/6 \approx 1.645$.)
 
+    <!-- label: appc-sec-absolute-convergence -->
     ### Absolute Convergence
 
     A series $\sum a_n$ **converges absolutely** if $\sum |a_n|$ converges.
 
-    /// important | 📐 **Theorem (Absolute Convergence Implies Convergence)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Absolute Convergence Implies Convergence)**
+        attrs: {class: theorem, id: appc-thm-absolute-convergence-implies-convergence}
     If $\sum |a_n|$ converges, then $\sum a_n$ converges and $\left|\sum a_n\right| \le \sum |a_n|$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $s_N$ and $t_N$ be the partial sums of $\sum a_n$ and $\sum |a_n|$. Since $(t_N)$ converges, it is a {term}`Cauchy sequence`. For $M > N$, the triangle inequality (extended to finitely many terms by induction) gives
     $$|s_M - s_N| = \Big|\sum_{n=N+1}^M a_n\Big| \le \sum_{n=N+1}^M |a_n| = |t_M - t_N|,$$
     so $(s_N)$ is Cauchy as well and converges by the Cauchy Criterion. Finally $|s_N| \le t_N \le \sum|a_n|$ for every $N$, and $|s_N| \to \left|\sum a_n\right|$ by the reverse triangle inequality, so the order law gives the inequality. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Ratio Test)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Ratio Test)**
+        attrs: {class: lemma, id: appc-lem-ratio-test}
     If there are $N \in \mathbb N$ and $0 \le q < 1$ such that $|a_{n+1}| \le q\,|a_n|$ for every $n \ge N$, then $\sum a_n$ converges absolutely.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction, $|a_n| \le |a_N|\,q^{n-N}$ for every $n \ge N$. The series $\sum_{n \ge N} |a_N|\,q^{n-N} = |a_N|/(1-q)$ converges (geometric series and linearity), so $\sum_{n \ge N} |a_n|$ converges by comparison. The first $N$ terms don't affect convergence. $\blacksquare$
     ///
 
@@ -526,6 +526,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-sums-in-any-order -->
     ### Sums in Any Order
 
     A series adds its terms in a specific order: $a_0$ first, then $a_1$, and so on. Probability often needs sums with no natural order, such as the total probability of the outcomes in a countable set, or a sum over all pairs $(m, n) \in \mathbb N \times \mathbb N$. For nonnegative terms the order never matters, and the cleanest way to see this is to define the sum without using any order.
@@ -536,8 +537,8 @@ def _(mo):
 
     For finite $I$, this is the ordinary finite sum, since adding nonnegative terms never decreases a finite sum.
 
-    /// important | 📐 **Theorem (Nonnegative Sums in Any Order)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Nonnegative Sums in Any Order)**
+        attrs: {class: theorem, id: appc-thm-nonnegative-sums-in-any-order}
     Let $I$ be a countable set and $a: I \to [0, \infty]$.
     1. *(Order)* If $I$ is infinite and $\sigma: \mathbb N \to I$ is a {term}`bijection <bijective>`, then $\sum_{n=0}^\infty a_{\sigma(n)} = \sum_{i \in I} a_i$.
     2. *(Grouping)* If $J$ is countable and $(I_j)_{j \in J}$ is an {term}`indexed family` of pairwise disjoint sets with $\bigcup_{j \in J} I_j = I$, then
@@ -545,7 +546,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Let $S := \sum_{i\in I} a_i$ and $s_N := \sum_{n=0}^N a_{\sigma(n)}$. Because $\sigma$ is injective, $s_N$ is the sum over the finite set $F_N := \sigma[\{0, \ldots, N\}]$, so $s_N \le S$, and therefore $\sum_n a_{\sigma(n)} = \sup_N s_N \le S$. Conversely, a finite $F \subseteq I$ is contained in $F_N$ for $N := \max \sigma^{-1}[F]$ (any $N$ if $F = \emptyset$), so $\sum_{i\in F} a_i \le s_N \le \sup_N s_N$. Taking the supremum over $F$ gives $S \le \sup_N s_N$.
     2. Let $b_j := \sum_{i\in I_j} a_i$, $S := \sum_{i \in I} a_i$, and $T := \sum_{j \in J} b_j$.
         - $S \le T$: Let $F \subseteq I$ be finite. Each $i \in F$ lies in exactly one $I_j$, so $F$ meets $I_j$ only for $j$ in a finite set $G \subseteq J$. Regrouping the finite sum, $\sum_{i \in F} a_i = \sum_{j \in G} \sum_{i \in F \cap I_j} a_i \le \sum_{j\in G} b_j \le T$.
@@ -554,28 +555,28 @@ def _(mo):
 
     For real terms of both signs, write $a_i^+ := \max(a_i, 0)$ and $a_i^- := \max(-a_i, 0)$, so that $a_i = a_i^+ - a_i^-$, $|a_i| = a_i^+ + a_i^-$, and $0 \le a_i^\pm \le |a_i|$. A family $a: I \to \mathbb R$ is **absolutely summable** if $\sum_{i \in I} |a_i| < \infty$. Then $\sum_{i\in I} a_i^\pm \le \sum_{i\in I}|a_i| < \infty$, and we define $\sum_{i \in I} a_i := \sum_{i\in I} a_i^+ - \sum_{i\in I} a_i^-$. For an absolutely summable family, writing it as a difference of *any* two summable nonnegative families gives the same sum, by enumerating the index set and using part 1 together with the linearity of series.
 
-    /// important | 📐 **Corollary (Absolutely Convergent Sums in Any Order)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Absolutely Convergent Sums in Any Order)**
+        attrs: {class: corollary, id: appc-cor-absolutely-convergent-sums-in-any-order}
     Let $a: I \to \mathbb R$ be absolutely summable.
     1. For every bijection $\sigma: \mathbb N \to I$, the series $\sum_n a_{\sigma(n)}$ converges absolutely, with sum $\sum_{i\in I} a_i$. In particular, rearranging an absolutely convergent series does not change its sum.
     2. Under the hypotheses of part 2 of the theorem, each family $(a_i)_{i \in I_j}$ and the family of inner sums $\big(\sum_{i\in I_j} a_i\big)_{j\in J}$ are absolutely summable, and $\sum_{i\in I} a_i = \sum_{j\in J}\sum_{i\in I_j} a_i$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. By part 1 of the theorem, $\sum_n |a_{\sigma(n)}| = \sum_{i\in I}|a_i| < \infty$ and $\sum_n a^\pm_{\sigma(n)} = \sum_{i\in I} a_i^\pm$. Subtracting these two convergent series gives $\sum_n a_{\sigma(n)} = \sum_{i \in I} a_i$.
     2. Each $\sum_{i\in I_j}|a_i| \le \sum_{i\in I}|a_i| < \infty$. The inner sums $b_j := \sum_{i \in I_j} a_i = b_j^+ - b_j^-$, with $b_j^\pm := \sum_{i\in I_j} a_i^\pm$, satisfy $|b_j| \le \sum_{i\in I_j} |a_i|$, so by part 2 of the theorem (applied to $|a|$) $\sum_j |b_j| \le \sum_{i\in I} |a_i| < \infty$. Applying part 2 of the theorem to $a^+$ and to $a^-$ and subtracting, $\sum_{j} b_j = \sum_j b_j^+ - \sum_j b_j^- = \sum_{i\in I} a_i^+ - \sum_{i\in I} a_i^- = \sum_{i\in I} a_i$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Cauchy Product)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Cauchy Product)**
+        attrs: {class: corollary, id: appc-cor-cauchy-product}
     1. If $a_n, b_n \ge 0$ for every $n$, then $\sum_{(k, m) \in \mathbb N\times\mathbb N} a_k\,b_m = \Big(\sum_{n=0}^\infty a_n\Big)\Big(\sum_{n=0}^\infty b_n\Big)$ in $[0, \infty]$, with Chapter 3's convention $0 \cdot \infty = 0$.
     2. If $\sum a_n$ and $\sum b_n$ converge absolutely and $c_n := \sum_{k=0}^n a_k\,b_{n-k}$, then $\sum c_n$ converges absolutely and
     $$\sum_{n=0}^\infty c_n = \Big(\sum_{n=0}^\infty a_n\Big)\Big(\sum_{n=0}^\infty b_n\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The index set $\mathbb N \times \mathbb N$ is countable by Chapter 3.
     1. Let $B := \sum_m b_m$. Group by rows $\{k\}\times\mathbb N$. Each row sum is $\sum_m a_k b_m = a_k B$: by linearity if $B < \infty$, and because both sides are $0$ (if $a_k = 0$) or $\infty$ (if $a_k > 0$) when $B = \infty$. In the same way, $\sum_k a_k B = \big(\sum_k a_k\big)B$.
     2. By part 1 applied to $|a_n|$ and $|b_n|$, the family $(a_k b_m)$ is absolutely summable. By the previous corollary, grouping by rows gives $\sum_{(k,m)} a_k b_m = \sum_k a_k \sum_m b_m$ (using linearity for each row), while grouping by the finite diagonals $\{(k, m) : k + m = n\}$ gives $\sum_n c_n$, which converges absolutely. $\blacksquare$
@@ -588,7 +589,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Terms tending to $0$ is not enough.** The harmonic series diverges although $\frac1n \to 0$.
     - **The geometric series needs $|q| < 1$.** For an EMA-style recursion $e_k = (1-\alpha)e_{k-1}$ with $\alpha \le 0$ or $\alpha \ge 2$, we have $|1 - \alpha| \ge 1$: the weights never decay, and an initial error is never forgotten.
     - **The comparison test needs nonnegative terms.** $-n \le 0$ for every $n$ and $\sum 0$ converges, but $\sum(-n)$ diverges.
@@ -596,7 +596,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A series is the sequence of its partial sums, and its sum is their limit. The geometric series $\sum q^n = \frac{1}{1-q}$ for $|q| < 1$ explains why the EMA's weights add up to $1$. Sums of nonnegative terms, and absolutely convergent sums, do not depend on order or grouping, which is exactly what countable additivity in probability needs.
     ///
     """)
@@ -606,6 +605,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-limits-of-functions-and-continuity -->
     ## Limits of Functions and Continuity
 
     A scale's display rounds the true weight to a step of $\Delta = 0.1$ lb ([Chapter 4](ch4_probability_spaces.md) starts from this example). The display shows $Q(x) := \Delta\lfloor x/\Delta + \tfrac12\rfloor$, where $\lfloor y\rfloor$ denotes the greatest integer $\le y$ (it exists by the Archimedean property). Near a true weight of $155.02$ lb, small changes in weight don't change the display at all. Near $155.05$ lb, an arbitrarily small increase flips the display from $155.0$ to $155.1$. *Continuity* makes "small changes in the input cause small changes in the output" precise. It is built on the limit of a function.
@@ -615,7 +615,6 @@ def _(mo):
     A point $a \in \mathbb R$ is an **accumulation point** of a set $D \subseteq \mathbb R$ if for every $\delta > 0$ there is an $x \in D$ with $0 < |x - a| < \delta$. For example, $0$ is an accumulation point of $\mathbb R \setminus \{0\}$, and every point of an {term}`interval` with more than one point, including its endpoints, is an accumulation point of the interval.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Limit of a function**</u>
 
     Let $D \subseteq \mathbb R$ and $f: D \to \mathbb R$.
@@ -630,13 +629,13 @@ def _(mo):
 
     **Infinite limits:** $\lim_{x \to a} f(x) = \infty$ means that for every $M \in \mathbb R$ there is a $\delta > 0$ with $f(x) > M$ for every $x \in D$ with $0 < |x - a| < \delta$. The variants for $-\infty$, for one-sided limits, and for $x \to \pm\infty$ are analogous. For example, $\lim_{x \to 0^+} 1/x = \infty$.
 
-    /// important | 📐 **Lemma (Sequential Characterization of Limits)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Sequential Characterization of Limits)**
+        attrs: {class: lemma, id: appc-lem-sequential-characterization-of-limits}
     Let $a$ be an accumulation point of $D$, $f: D \to \mathbb R$, and $L \in \mathbb R$. Then $\lim_{x\to a} f(x) = L$ if and only if $f(x_n) \to L$ for every sequence $(x_n)$ in $D \setminus\{a\}$ with $x_n \to a$. The analogous statement holds at $\pm\infty$, with sequences $x_n \to \pm\infty$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Let $\varepsilon > 0$ and take $\delta$ from the definition. Since $x_n \to a$, there is $N$ with $|x_n - a| < \delta$ for $n \ge N$; as $x_n \ne a$, this gives $|f(x_n) - L| < \varepsilon$.
 
     ($\Leftarrow$) Suppose the limit is not $L$. Then there is an $\varepsilon > 0$ for which no $\delta$ works: for every $n \ge 1$ there is an $x_n \in D$ with $0 < |x_n - a| < 1/n$ but $|f(x_n) - L| \ge \varepsilon$[^countable-choice]. Then $x_n \to a$ with $x_n \ne a$, but $f(x_n) \not\to L$.
@@ -644,13 +643,13 @@ def _(mo):
     The proof at $\pm\infty$ is the same, with $|x - a| < \delta$ replaced by $x > M$ (or $x < M$). $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Limit Laws for Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Limit Laws for Functions)**
+        attrs: {class: corollary, id: appc-cor-limit-laws-for-functions}
     The Limit Laws for Sequences (sums, scalar multiples, products, quotients with nonzero limit and nonvanishing denominator, order, and squeeze) hold for limits of functions at a point, at $\pm\infty$, and for one-sided limits.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For example, if $f(x) \to A$ and $g(x) \to B$ as $x \to a$, then for every sequence $x_n \to a$ in $D\setminus\{a\}$ we have $f(x_n) \to A$ and $g(x_n) \to B$, so $f(x_n) + g(x_n) \to A + B$ by the sequence laws; by the lemma, $f(x) + g(x) \to A + B$. The other laws follow in the same way. $\blacksquare$
     ///
 
@@ -662,10 +661,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-continuity -->
     ### Continuity
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Continuous**</u>
 
     Let $D \subseteq \mathbb R$, $f: D \to \mathbb R$, and $a \in D$. The function $f$ is continuous at $a$ if and only if for every $\varepsilon > 0$ there exists $\delta > 0$ such that $|f(x) - f(a)| < \varepsilon$ for every $x \in D$ with $|x - a| < \delta$. It is continuous (on $D$) if and only if it is continuous at every point of $D$.
@@ -673,8 +672,8 @@ def _(mo):
 
     If $a \in D$ is an accumulation point of $D$, continuity at $a$ says exactly that $\lim_{x\to a} f(x) = f(a)$: the limit exists *and* equals the value. (At a point of $D$ that is not an accumulation point, every function is continuous.) The proof of the Sequential Characterization gives: $f$ is continuous at $a$ if and only if $f(x_n) \to f(a)$ for every sequence $(x_n)$ in $D$ with $x_n \to a$.
 
-    /// important | 📐 **Lemma (Building Continuous Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Building Continuous Functions)**
+        attrs: {class: lemma, id: appc-lem-building-continuous-functions}
     1. Constant functions, the identity $x \mapsto x$, and $x \mapsto |x|$ are continuous on $\mathbb R$.
     2. If $f, g: D \to \mathbb R$ are continuous at $a$ and $c \in \mathbb R$, then $f + g$, $cf$, and $fg$ are continuous at $a$, and so is $f/g$ if $g(x) \ne 0$ for every $x \in D$.
     3. If $g: D \to E$ is continuous at $a$ and $f: E \to \mathbb R$ is continuous at $g(a)$, then the {term}`composition` $f \circ g$ is continuous at $a$.
@@ -683,7 +682,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. For a constant any $\delta$ works. For the identity take $\delta := \varepsilon$; for $|x|$ also take $\delta := \varepsilon$, since $\big||x| - |a|\big| \le |x - a|$.
     2. Use the sequential characterization of continuity and the Limit Laws for Sequences.
     3. Let $\varepsilon > 0$. Continuity of $f$ at $g(a)$ gives $\eta > 0$ with $|f(y) - f(g(a))| < \varepsilon$ for $y \in E$ with $|y - g(a)| < \eta$. Continuity of $g$ at $a$ (with tolerance $\eta$) gives $\delta > 0$ with $|g(x) - g(a)| < \eta$ for $x \in D$ with $|x - a| < \delta$. For such $x$, $|f(g(x)) - f(g(a))| < \varepsilon$. $\blacksquare$
@@ -697,15 +696,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-intermediate-value-theorem -->
     ### The Intermediate Value Theorem
 
-    /// important | 📐 **Theorem (Intermediate Value Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Intermediate Value Theorem)**
+        attrs: {class: theorem, id: appc-thm-intermediate-value-theorem}
     Let $f: [a, b] \to \mathbb R$ be continuous and let $y$ lie between $f(a)$ and $f(b)$ (inclusive). Then $f(c) = y$ for some $c \in [a, b]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Replacing $f$ and $y$ by $-f$ and $-y$ if necessary, assume $f(a) \le y \le f(b)$. The set $S := \{x \in [a,b] : f(x) \le y\}$ contains $a$ and is bounded above by $b$, so $c := \sup S$ exists and $c \in [a, b]$.
 
     - *$f(c) \le y$:* Suppose $f(c) > y$. Continuity at $c$ with $\varepsilon := f(c) - y$ gives $\delta > 0$ with $f(x) > y$ for every $x \in [a,b]$ with $|x - c| < \delta$. Since $c$ is the least upper bound of $S$, some $x \in S$ has $c - \delta < x \le c$; then $f(x) > y$, contradicting $x \in S$.
@@ -714,25 +714,25 @@ def _(mo):
     Hence $f(c) = y$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Square Roots)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Square Roots)**
+        attrs: {class: corollary, id: appc-cor-square-roots}
     For every $y \ge 0$ there is exactly one $x \ge 0$ with $x^2 = y$. We write $\sqrt y := x$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $b := \max(1, y)$. The polynomial $x \mapsto x^2$ is continuous on $[0, b]$, with $0^2 = 0 \le y$ and $b^2 \ge b \ge y$, so the intermediate value theorem gives existence. Uniqueness: if $0 \le x < x'$ then $x^2 < x'^2$, so $x \mapsto x^2$ is strictly increasing on $[0, \infty)$. $\blacksquare$
     ///
 
     The next lemma shows that inverses of strictly increasing functions between intervals are automatically continuous. We use it for $\sqrt{\phantom{y}}$ now and for the natural logarithm later.
 
-    /// important | 📐 **Lemma (Continuous Inverse)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Continuous Inverse)**
+        attrs: {class: lemma, id: appc-lem-continuous-inverse}
     Let $I$ and $J$ be intervals and let $f: I \to J$ be a strictly increasing bijection. Then the {term}`inverse function` $f^{-1}: J \to I$ is strictly increasing and continuous.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     If $y < y'$ in $J$, then $f^{-1}(y) \ge f^{-1}(y')$ would give $y \ge y'$ because $f$ is increasing; so $f^{-1}$ is strictly increasing. For continuity, let $y_0 \in J$, $x_0 := f^{-1}(y_0)$, and $\varepsilon > 0$. If $x_0$ is not the least element of $I$, pick $p \in I$ with $p < x_0$ and set $x_- := \max(p, x_0 - \varepsilon/2)$; it lies in $I$ because $I$ is an interval, and $x_0 - \varepsilon < x_- < x_0$. Set $\delta_- := y_0 - f(x_-) > 0$. Symmetrically, if $x_0$ is not the greatest element of $I$, pick $x_+ \in I$ with $x_0 < x_+ < x_0 + \varepsilon$ and set $\delta_+ := f(x_+) - y_0 > 0$. Let $\delta$ be the smaller of the $\delta_\pm$ that are defined (if neither is, $I = \{x_0\}$ and there is nothing to prove).
 
     Let $y \in J$ with $|y - y_0| < \delta$. If $y < y_0$, then $x_0 = f^{-1}(y_0)$ is not the least element of $I$ (since $f^{-1}(y) < x_0$), so $x_-$ is defined, and $f(x_-) = y_0 - \delta_- < y < y_0$ gives $x_- < f^{-1}(y) < x_0$. The case $y > y_0$ is symmetric. In every case $|f^{-1}(y) - x_0| < \varepsilon$. $\blacksquare$
@@ -746,22 +746,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-uniform-continuity -->
     ### Uniform Continuity
 
     In the definition of continuity, $\delta$ may depend on the point $a$ as well as on $\varepsilon$. A function $f: D \to \mathbb R$ is **uniformly continuous** if one $\delta$ works for all points at once: for every $\varepsilon > 0$ there is $\delta > 0$ such that $|f(x) - f(x')| < \varepsilon$ for all $x, x' \in D$ with $|x - x'| < \delta$. For example, $x \mapsto x^2$ is continuous on $\mathbb R$ but not uniformly continuous: for $x = n$ and $x' = n + \frac1n$, the inputs are within $\frac1n$ of each other, yet $x'^2 - x^2 = 2 + \frac{1}{n^2} \ge 2$. On a closed bounded interval this cannot happen. Uniform continuity is what makes continuous functions integrable.
 
-    /// important | 📐 **Theorem (Uniform Continuity on Closed Bounded Intervals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Uniform Continuity on Closed Bounded Intervals)**
+        attrs: {class: theorem, id: appc-thm-uniform-continuity-on-closed-bounded-intervals}
     Every continuous function $f: [a, b] \to \mathbb R$ is uniformly continuous.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose not. Then there is an $\varepsilon > 0$ such that for every $n \ge 1$ there are $x_n, x_n' \in [a, b]$ with $|x_n - x_n'| < 1/n$ but $|f(x_n) - f(x_n')| \ge \varepsilon$. The sequence $(x_n)$ is bounded, so by Bolzano–Weierstrass some subsequence $x_{n_k} \to c$, and $c \in [a, b]$ by the order law. Also $|x'_{n_k} - c| \le 1/n_k + |x_{n_k} - c| \to 0$, so $x'_{n_k} \to c$. By continuity at $c$, $f(x_{n_k}) - f(x'_{n_k}) \to f(c) - f(c) = 0$, contradicting $|f(x_{n_k}) - f(x'_{n_k})| \ge \varepsilon$. $\blacksquare$
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The intermediate value theorem needs continuity.** The display $Q$ jumps from $155.0$ to $155.1$ but never shows $155.05$.
     - **It also needs an interval.** $f(x) = 1/x$ is continuous on $[-1, 0) \cup (0, 1]$ with $f(-1) < 0 < f(1)$, yet it is never $0$.
     - **Uniform continuity needs a closed bounded interval.** $x^2$ on $\mathbb R$ fails (shown above), and so does $1/x$ on $(0, 1]$: near $0$, inputs $\frac1n$ and $\frac{1}{2n}$ are close but their values differ by $n$.
@@ -769,7 +769,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     $\lim_{x\to a} f(x) = L$ means $f(x)$ is eventually within any tolerance of $L$ once $x \ne a$ is close enough to $a$; continuity at $a$ means the limit is the value $f(a)$. On a closed bounded interval, a continuous function takes every intermediate value and is uniformly continuous; both facts rest on the completeness of $\mathbb R$.
     ///
     """)
@@ -779,16 +778,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-derivatives -->
     ## Derivatives
 
-    A cart starts at rest and accelerates at a constant $a$ (in m/s²), so its position after $t$ seconds is $p(t) = \frac12 a t^2$. Its average velocity over the time interval from $t$ to $t + h$ is
+    A cart starts at rest and accelerates at a constant $a$ (in m/s$^2$), so its position after $t$ seconds is $p(t) = \frac12 a t^2$. Its average velocity over the time interval from $t$ to $t + h$ is
 
     $$\frac{p(t+h) - p(t)}{h} = \frac{\frac12 a(t^2 + 2th + h^2) - \frac12 a t^2}{h} = at + \tfrac12 a h \qquad (h \ne 0),$$
 
     which tends to $at$ as $h \to 0$. That limit is the cart's velocity at time $t$. The alpha–beta filter of the [Introduction](introduction.md) estimates such a rate from differences of noisy positions; the derivative is the exact quantity those differences approximate.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Derivative**</u>
 
     Let $D \subseteq \mathbb R$, $f: D \to \mathbb R$, and let $a \in D$ be an accumulation point of $D$. The derivative of $f$ at $a$ is the {term}`limit <limit of a function>`
@@ -797,7 +796,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Differentiable**</u>
 
     A function $f: D \to \mathbb R$ is differentiable at $a \in D$ if and only if $a$ is an accumulation point of $D$ and the {term}`derivative` $f'(a)$ exists. It is differentiable on a set $E \subseteq D$ if and only if it is differentiable at every point of $E$, and differentiable if and only if it is differentiable on $D$.
@@ -811,27 +809,27 @@ def _(mo):
 
     For the cart, $\dot p(t) = at$ is the velocity and $\ddot p(t) = a$ is the acceleration.
 
-    /// important | 📐 **Lemma (Carathéodory's Criterion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Carathéodory's Criterion)**
+        attrs: {class: lemma, id: appc-lem-caratheodorys-criterion}
     Let $f: D \to \mathbb R$ and let $a \in D$ be an accumulation point of $D$. Then $f$ is differentiable at $a$ if and only if there is a function $\varphi: D \to \mathbb R$ that is continuous at $a$ and satisfies
     $$f(x) - f(a) = \varphi(x)\,(x - a) \qquad \text{for every } x \in D.$$
     In that case $f'(a) = \varphi(a)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Define $\varphi(x) := \frac{f(x) - f(a)}{x - a}$ for $x \ne a$ and $\varphi(a) := f'(a)$. The identity holds for $x \ne a$ by construction and for $x = a$ because both sides are $0$. Writing $x = a + h$, the statement $\lim_{x\to a}\varphi(x) = \varphi(a)$ is exactly the definition of $f'(a)$, so $\varphi$ is continuous at $a$.
 
     ($\Leftarrow$) For $x \ne a$, $\frac{f(x) - f(a)}{x - a} = \varphi(x)$, which tends to $\varphi(a)$ as $x \to a$ because $\varphi$ is continuous at $a$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Differentiable Implies Continuous)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Differentiable Implies Continuous)**
+        attrs: {class: corollary, id: appc-cor-differentiable-implies-continuous}
     If $f$ is differentiable at $a$, then $f$ is continuous at $a$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $f(x) = f(a) + \varphi(x)(x - a)$, and the right side is continuous at $a$ by the Building Continuous Functions lemma. $\blacksquare$
     ///
 
@@ -847,10 +845,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-rules-of-differentiation -->
     ### Rules of Differentiation
 
-    /// important | 📐 **Theorem (Differentiation Rules)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Differentiation Rules)**
+        attrs: {class: theorem, id: appc-thm-differentiation-rules}
     Let $f, g: D \to \mathbb R$ be differentiable at $a \in D$ and let $c \in \mathbb R$.
     1. *(Linearity)* $(f + g)'(a) = f'(a) + g'(a)$ and $(cf)'(a) = c\,f'(a)$.
     2. *(Product rule)* $(fg)'(a) = f'(a)\,g(a) + f(a)\,g'(a)$.
@@ -859,7 +858,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Carathéodory's criterion, write $f(x) - f(a) = \varphi(x)(x - a)$ and $g(x) - g(a) = \psi(x)(x - a)$ with $\varphi, \psi$ continuous at $a$, $\varphi(a) = f'(a)$, and $\psi(a) = g'(a)$. In each part we exhibit a function that is continuous at $a$ (by the Building Continuous Functions lemma, using that $g$ is continuous at $a$) and apply the criterion again.
     1. $(f+g)(x) - (f+g)(a) = (\varphi + \psi)(x)\,(x - a)$ and $(cf)(x) - (cf)(a) = c\,\varphi(x)\,(x - a)$.
     2. $f(x)g(x) - f(a)g(a) = \big(f(x) - f(a)\big)g(x) + f(a)\big(g(x) - g(a)\big) = \big[\varphi(x)\,g(x) + f(a)\,\psi(x)\big](x - a)$, and the bracket has value $f'(a)g(a) + f(a)g'(a)$ at $a$.
@@ -871,24 +870,24 @@ def _(mo):
 
     The tempting proof of the chain rule, multiplying and dividing by $g(x) - g(a)$, fails when $g(x) = g(a)$ for $x$ arbitrarily close to $a$ (for example, when $g$ is constant). Carathéodory's criterion avoids dividing by anything.
 
-    /// important | 📐 **Corollary (Power Rule for Integer Exponents)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Power Rule for Integer Exponents)**
+        attrs: {class: corollary, id: appc-cor-power-rule-for-integer-exponents}
     For every $n \in \mathbb N^+$, $\frac{d}{dx}x^n = n\,x^{n-1}$ on $\mathbb R$, and $\frac{d}{dx}x^{-n} = -n\,x^{-n-1}$ for $x \ne 0$. Consequently, every polynomial is differentiable with $\frac{d}{dx}\sum_{k=0}^m c_k x^k = \sum_{k=1}^m k\,c_k\,x^{k-1}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Constants have derivative $0$ (the difference quotient is $0$), and $\frac{d}{dx}x = 1$ (the difference quotient is $h/h = 1$). By induction with the product rule, $\frac{d}{dx}x^{n+1} = \frac{d}{dx}(x^n \cdot x) = n x^{n-1}\cdot x + x^n \cdot 1 = (n+1)x^n$. For negative exponents, the quotient rule gives $\frac{d}{dx}\frac{1}{x^n} = \frac{0 \cdot x^n - 1\cdot n x^{n-1}}{x^{2n}} = -n x^{-n-1}$. The statement about polynomials follows by linearity. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Derivative of an Inverse Function)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Derivative of an Inverse Function)**
+        attrs: {class: theorem, id: appc-thm-derivative-of-an-inverse-function}
     Let $I$ and $J$ be intervals with more than one point, let $f: I \to J$ be a strictly increasing bijection, let $a \in I$, and let $b := f(a)$. If $f$ is differentiable at $a$ with $f'(a) \ne 0$, then $f^{-1}$ is differentiable at $b$ and
     $$(f^{-1})'(b) = \frac{1}{f'(a)}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Continuous Inverse lemma, $f^{-1}$ is continuous. Write $f(x) - f(a) = \varphi(x)(x - a)$ with $\varphi$ continuous at $a$ and $\varphi(a) = f'(a) \ne 0$. For $x \ne a$, $\varphi(x) = \frac{f(x) - f(a)}{x - a} \ne 0$ because $f$ is injective, so $\varphi$ is nonzero on all of $I$. Substituting $x = f^{-1}(y)$ for $y \in J$ gives $y - b = \varphi(f^{-1}(y))\,\big(f^{-1}(y) - f^{-1}(b)\big)$, that is,
     $$f^{-1}(y) - f^{-1}(b) = \left[\frac{1}{\varphi(f^{-1}(y))}\right](y - b).$$
     The bracket is continuous at $b$ (composition of $f^{-1}$, continuous at $b$, with $1/\varphi$, continuous at $a = f^{-1}(b)$), with value $1/f'(a)$. Apply Carathéodory's criterion. $\blacksquare$
@@ -897,14 +896,12 @@ def _(mo):
     **Example.** With $f(x) = x^2$ on $I = J = [0, \infty)$, for every $y > 0$ we get $\frac{d}{dy}\sqrt y = \frac{1}{2\sqrt y}$. At $y = 0$ the theorem does not apply because $f'(0) = 0$, and indeed $\sqrt{\phantom{y}}$ is not differentiable at $0$: the difference quotient $\frac{\sqrt h - 0}{h} = \frac{1}{\sqrt h}$ tends to $\infty$ as $h \to 0^+$.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Continuous does not imply differentiable.** $|x|$ is continuous at $0$, but its difference quotient $|h|/h$ is $1$ for $h > 0$ and $-1$ for $h < 0$, so it has no limit.
     - **Differentiating noisy data amplifies noise.** If $z_k = x(t_k) + v_k$ with noise of typical size $\sigma$, the difference quotient $(z_k - z_{k-1})/\Delta t$ contains the noise term $(v_k - v_{k-1})/\Delta t$, whose typical size grows like $\sigma/\Delta t$ as the sample period shrinks[^typical-size]. Rates must be estimated, not differentiated, which is what the alpha–beta filter and the Kalman filter do.
     - **Quantized signals are useless for slopes.** The display $Q$ has derivative $0$ wherever it is differentiable and is not differentiable at the jumps.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The derivative $f'(a)$ is the limit of the difference quotients $\frac{f(a+h) - f(a)}{h}$. Equivalently, $f(a + h) = f(a) + f'(a)h + r(h)$ with $r(h)/h \to 0$: the tangent line is the best linear approximation near $a$. The sum, product, quotient, and chain rules all follow from writing $f(x) - f(a) = \varphi(x)(x - a)$.
     ///
 
@@ -916,6 +913,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-mean-value-theorem-and-extrema -->
     ## The Mean Value Theorem and Extrema
 
     [Chapter 7](ch7_optimal_alpha.md) combines a prediction with error variance $P^- > 0$ and a measurement with noise variance $R > 0$, and shows that the gain $\alpha$ produces the error variance[^variance-informal]
@@ -926,13 +924,13 @@ def _(mo):
 
     Let $f: D \to \mathbb R$. The function has a **(global) maximum** at $c \in D$ if $f(c) \ge f(x)$ for every $x \in D$, and a **local maximum** at $c$ if there is $\delta > 0$ such that $f(c) \ge f(x)$ for every $x \in D$ with $|x - c| < \delta$. Minima are defined with $\le$, and an **extremum** is a maximum or a minimum. A point $c$ is an **interior point** of $D$ if $(c - \delta, c + \delta) \subseteq D$ for some $\delta > 0$.
 
-    /// important | 📐 **Theorem (Extreme Value Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Extreme Value Theorem)**
+        attrs: {class: theorem, id: appc-thm-extreme-value-theorem}
     Let $a \le b$ and let $f: [a, b] \to \mathbb R$ be continuous. Then $f$ is bounded, and there are $c_1, c_2 \in [a, b]$ with $f(c_1) \le f(x) \le f(c_2)$ for every $x \in [a, b]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Bounded above:* otherwise, for every $n$ there is $x_n \in [a, b]$ with $f(x_n) > n$. By Bolzano–Weierstrass some subsequence $x_{n_k} \to c$, and $c \in [a, b]$ by the order law. By continuity $f(x_{n_k}) \to f(c)$, so the convergent sequence $(f(x_{n_k}))$ is bounded; but $f(x_{n_k}) > n_k \ge k$, a contradiction.
 
     *Maximum attained:* let $M := \sup\{f(x) : x \in [a, b]\}$. For every $n \ge 1$, $M - \frac1n$ is not an upper bound, so there is $x_n$ with $M - \frac1n < f(x_n) \le M$. Again some subsequence $x_{n_k} \to c_2 \in [a,b]$. By the squeeze law $f(x_{n_k}) \to M$, and by continuity $f(x_{n_k}) \to f(c_2)$. By uniqueness of limits, $f(c_2) = M$.
@@ -940,41 +938,41 @@ def _(mo):
     Applying both parts to $-f$ gives boundedness below and $c_1$. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Interior Extremum)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Interior Extremum)**
+        attrs: {class: lemma, id: appc-lem-interior-extremum}
     If $f: D \to \mathbb R$ has a local maximum or local minimum at an interior point $c$ of $D$ and is differentiable at $c$, then $f'(c) = 0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Consider a local maximum (for a minimum, apply this to $-f$). Choose $\delta > 0$ with $(c - \delta, c + \delta) \subseteq D$ and $f(x) \le f(c)$ on that interval. For $0 < h < \delta$ the difference quotient $\frac{f(c + h) - f(c)}{h}$ is $\le 0$, and for $-\delta < h < 0$ it is $\ge 0$. Both one-sided limits of the difference quotient equal $f'(c)$, so the order law for limits of functions gives $f'(c) \le 0$ and $f'(c) \ge 0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Rolle's Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Rolle's Theorem)**
+        attrs: {class: theorem, id: appc-thm-rolles-theorem}
     Let $a < b$, and let $f: [a, b] \to \mathbb R$ be continuous on $[a,b]$ and differentiable on $(a, b)$, with $f(a) = f(b)$. Then $f'(c) = 0$ for some $c \in (a, b)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Extreme Value Theorem, $f$ attains a minimum at some $c_1$ and a maximum at some $c_2$. If both lie in $\{a, b\}$, then the minimum and maximum both equal $f(a) = f(b)$, so $f$ is constant and $f'(c) = 0$ for every $c \in (a, b)$. Otherwise one of them, say $c$, lies in $(a, b)$, which is an interior point of $[a, b]$, and the Interior Extremum lemma gives $f'(c) = 0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Mean Value Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Mean Value Theorem)**
+        attrs: {class: theorem, id: appc-thm-mean-value-theorem}
     Let $a < b$, and let $f: [a, b] \to \mathbb R$ be continuous on $[a,b]$ and differentiable on $(a,b)$. Then there is $c \in (a, b)$ with
     $$f'(c) = \frac{f(b) - f(a)}{b - a}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $m := \frac{f(b) - f(a)}{b - a}$ and $g(x) := f(x) - f(a) - m(x - a)$. Then $g$ is continuous on $[a,b]$, differentiable on $(a, b)$ with $g' = f' - m$, and $g(a) = g(b) = 0$. Rolle's Theorem gives $c \in (a,b)$ with $0 = g'(c) = f'(c) - m$. $\blacksquare$
     ///
 
     In words: a cart that travels 100 m in 10 s has velocity exactly 10 m/s at some instant, whatever it does in between.
 
-    /// important | 📐 **Corollary (Monotonicity and Constant Functions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Monotonicity and Constant Functions)**
+        attrs: {class: corollary, id: appc-cor-monotonicity-and-constant-functions}
     Let $I$ be an interval and let $f: I \to \mathbb R$ be continuous and differentiable at every interior point of $I$.
     1. If $f'(x) = 0$ for every interior point $x$, then $f$ is constant.
     2. If $f'(x) \ge 0$ for every interior point $x$, then $f$ is increasing ($x < y \Rightarrow f(x) \le f(y)$); if $f'(x) > 0$, then $f$ is strictly increasing. The analogous statements hold for $\le 0$ and $< 0$ with decreasing.
@@ -982,7 +980,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $x < y$ in $I$. Since $I$ is an interval, $[x, y] \subseteq I$, and every point of $(x, y)$ is an interior point of $I$. The Mean Value Theorem gives $c \in (x, y)$ with $f(y) - f(x) = f'(c)\,(y - x)$, whose sign is the sign of $f'(c)$. This proves parts 1 and 2. For part 3, apply part 1 to $f - g$. $\blacksquare$
     ///
 
@@ -991,7 +989,6 @@ def _(mo):
     Let $\alpha^* := \frac{P^-}{P^- + R}$. Then $P' < 0$ on $(-\infty, \alpha^*)$ and $P' > 0$ on $(\alpha^*, \infty)$, so by the corollary $P$ is strictly decreasing on $(-\infty, \alpha^*]$ and strictly increasing on $[\alpha^*, \infty)$. Hence $\alpha^*$ is the unique minimizer of $P$ over all of $\mathbb R$. Substituting $1 - \alpha^* = \frac{R}{P^- + R}$ gives the minimum value $P(\alpha^*) = \frac{R^2 P^- + (P^-)^2 R}{(P^- + R)^2} = \frac{P^- R}{P^- + R}$, in agreement with Chapter 7.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **A zero derivative does not imply an extremum.** $f(x) = x^3$ has $f'(0) = 0$, but it is strictly increasing. The Interior Extremum lemma gives a necessary condition only.
     - **Extrema on the boundary need not be critical points.** On $[0, 1]$, $f(x) = x$ has its maximum at $1$ where $f'(1) = 1$. The lemma requires an interior point.
     - **The Extreme Value Theorem needs a closed bounded interval and continuity.** $f(x) = x$ on $(0,1)$ has no maximum, $1/x$ on $(0, 1]$ is unbounded, and $f(x) = x$ for $x < 1$ with $f(1) := 0$ has supremum $1$ on $[0, 1]$ but never reaches it.
@@ -1000,7 +997,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Continuous functions on closed bounded intervals attain their extremes, and at an interior extremum the derivative vanishes. The Mean Value Theorem, $f(b) - f(a) = f'(c)(b - a)$, converts knowledge of the derivative into knowledge of the function: its sign gives monotonicity, and a zero derivative on an interval means a constant function.
     ///
 
@@ -1012,6 +1008,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-taylors-theorem -->
     ## Taylor's Theorem
 
     [Chapter 6](ch6_expectation_and_variance.md) shows that an EMA with smoothing factor $\alpha$, fed constant-plus-noise measurements, ends up with noise {term}`variance` $\sigma^2 g(\alpha)$, where $g(\alpha) := \frac{\alpha}{2 - \alpha}$ (only the function $g$ matters here). For small $\alpha$ engineers use $g(\alpha) \approx \frac{\alpha}{2}$. Where does that come from, and how wrong can it be?
@@ -1019,7 +1016,6 @@ def _(mo):
     By the quotient and chain rules, $g'(\alpha) = \frac{2}{(2-\alpha)^2}$ and $g''(\alpha) = \frac{4}{(2-\alpha)^3}$ for $\alpha < 2$. So $g(0) = 0$ and $g'(0) = \frac12$, and $\frac\alpha2$ is the tangent line at $0$. Taylor's Theorem generalizes tangent lines to polynomials of any degree and, crucially, says how large the error is.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Taylor polynomial**</u>
 
     Let $n \in \mathbb N$ and let $f$ be a function whose derivatives $f', f'', \ldots, f^{(n)}$ exist at the point $a$ (with $f^{(0)} := f$). The Taylor polynomial of degree $n$ of $f$ at $a$ is
@@ -1028,14 +1024,14 @@ def _(mo):
 
     The factorials make $T_{n,a}f$ match $f$ to order $n$ at $a$: by the power and chain rules, the $j$-th derivative of $(x - a)^k$ at $x = a$ is $k!$ if $j = k$ and $0$ otherwise, so $(T_{n,a}f)^{(j)}(a) = f^{(j)}(a)$ for $j = 0, 1, \ldots, n$. The degree-$1$ Taylor polynomial is the tangent line.
 
-    /// important | 📐 **Theorem (Taylor's Theorem with Lagrange Remainder)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Taylor's Theorem with Lagrange Remainder)**
+        attrs: {class: theorem, id: appc-thm-taylors-theorem-with-lagrange-remainder}
     Let $I$ be an interval, $n \in \mathbb N$, and $f: I \to \mathbb R$ be $n + 1$ times differentiable on $I$. For all $a, x \in I$ with $x \ne a$, there is a $\xi$ strictly between $a$ and $x$ with
     $$f(x) = T_{n,a}f(x) + \frac{f^{(n+1)}(\xi)}{(n+1)!}\,(x - a)^{n+1}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Fix $x$. For $t \in I$ define
     $$G(t) := f(x) - \sum_{k=0}^{n} \frac{f^{(k)}(t)}{k!}(x - t)^k - K\,\frac{(x - t)^{n+1}}{(n+1)!},$$
     with the constant $K$ chosen so that $G(a) = 0$ (possible because $(x - a)^{n+1} \ne 0$). Also $G(x) = 0$, because at $t = x$ only the $k = 0$ term survives and it equals $f(x)$. Each $f^{(k)}$ with $k \le n$ is differentiable on $I$, so the product and chain rules give, for $k \ge 1$,
@@ -1047,14 +1043,14 @@ def _(mo):
 
     For $n = 0$ the theorem is the Mean Value Theorem. Its main use is an error bound:
 
-    /// important | 📐 **Corollary (Taylor Error Bound)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Taylor Error Bound)**
+        attrs: {class: corollary, id: appc-cor-taylor-error-bound}
     Under the hypotheses of the theorem, if $|f^{(n+1)}(t)| \le M$ for every $t$ between $a$ and $x$, then
     $$\big|f(x) - T_{n,a}f(x)\big| \le \frac{M\,|x - a|^{n+1}}{(n+1)!}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Take absolute values in the theorem. $\blacksquare$
     ///
 
@@ -1066,20 +1062,19 @@ def _(mo):
     $$T_{n,0}f(x) = 1 + x + x^2 + \cdots + x^n.$$
     By the finite geometric sum, the error is exactly $f(x) - T_{n,0}f(x) = \frac{1}{1-x} - \frac{1 - x^{n+1}}{1-x} = \frac{x^{n+1}}{1 - x}$. For $|x| < 1$ it tends to $0$ as $n \to \infty$; for $x \le -1$ it does not, no matter how large $n$ is.
 
-    /// important | 📐 **Corollary (Second-Derivative Test)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Second-Derivative Test)**
+        attrs: {class: corollary, id: appc-cor-second-derivative-test}
     Let $I$ be an interval, let $f: I \to \mathbb R$ be twice differentiable on $I$, and let $c \in I$ with $f'(c) = 0$. If $f''(t) \ge 0$ for every $t \in I$, then $f$ has a global minimum on $I$ at $c$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $x \in I$ with $x \ne c$, Taylor's Theorem with $n = 1$ gives $f(x) = f(c) + 0 + \frac{f''(\xi)}{2}(x - c)^2 \ge f(c)$. $\blacksquare$
     ///
 
     For Chapter 7's error variance, $P''(\alpha) = 2(P^- + R) > 0$ on all of $\mathbb R$, which confirms once more that the critical point $\alpha^*$ is the global minimizer. An interactive comparison of Taylor polynomials of different degrees appears in Exponential and Logarithm, once the exponential, sine, and cosine functions have been defined; that section also derives the power series of $\sin$ and $\cos$ and remainder bounds such as $|\sin x - x| \le |x|^3/6$.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Taylor polynomials are local.** The error bound grows like $|x - a|^{n+1}$, so it says nothing useful far from $a$. For $\frac{1}{1-x}$ the polynomials never converge when $x \le -1$, however large the degree.
     - **The bound needs a bound on $f^{(n+1)}$** between $a$ and $x$. For $\frac{\alpha}{2-\alpha}$, $g''$ blows up as $\alpha \to 2$, and so does the error.
     - **The theorem needs $n+1$ derivatives on the whole interval.** $f(x) = x|x|$ is differentiable with $f'(x) = 2|x|$, but $f''(0)$ does not exist, so the degree-$1$ remainder formula is unavailable on intervals containing $0$.
@@ -1087,7 +1082,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The Taylor polynomial $T_{n,a}f$ is the polynomial of degree $n$ that matches $f$ and its first $n$ derivatives at $a$. Its error is $\frac{f^{(n+1)}(\xi)}{(n+1)!}(x - a)^{n+1}$ for some $\xi$ between $a$ and $x$, so a bound on the next derivative turns "approximately" into a guaranteed error bar.
     ///
     """)
@@ -1097,6 +1091,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-riemann-integral -->
     ## The Riemann Integral
 
     A foot-mounted inertial sensor ([Chapter 20](ch20_strapdown_inertial_navigation.md)) knows its velocity $v(t)$ but not its position. If the velocity were constant on each short time interval $[t_{i-1}, t_i]$, the distance traveled would be exactly $\sum_i v(t_i)\,(t_i - t_{i-1})$: the total area of rectangles under the graph of $v$. For a velocity that varies continuously, these sums approach a single number as the intervals shrink, and that number is the distance. The *integral* is this limit.
@@ -1110,7 +1105,6 @@ def _(mo):
     Let $a < b$. A **subdivision** $P$ of $[a, b]$ is a finite list of points $a = x_0 < x_1 < \cdots < x_n = b$. (Many books call this a *partition*; we avoid that word because Chapter 3 uses {term}`partition` for something else.) It cuts $[a, b]$ into the subintervals $[x_{i-1}, x_i]$ of widths $\Delta x_i := x_i - x_{i-1}$, and its **mesh** is $\operatorname{mesh}(P) := \max_i \Delta x_i$. A **tagged subdivision** $(P, t)$ also chooses a *tag* $t_i \in [x_{i-1}, x_i]$ in each subinterval. The *uniform* subdivision into $n$ pieces has $x_i = a + i\,\frac{b-a}{n}$ and mesh $\frac{b-a}{n}$, which by the Archimedean property is smaller than any given $\delta > 0$ once $n$ is large.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Riemann sum**</u>
 
     Let $a < b$, $f: [a, b] \to \mathbb R$, and let $(P, t)$ be a tagged subdivision of $[a, b]$ with points $a = x_0 < x_1 < \cdots < x_n = b$ and tags $t_i \in [x_{i-1}, x_i]$. The Riemann sum of $f$ for $(P, t)$ is
@@ -1119,7 +1113,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Riemann integral**</u>
 
     Let $a < b$ and $f: [a, b] \to \mathbb R$. The function $f$ is *Riemann integrable* on $[a, b]$ with Riemann integral $I \in \mathbb R$ if and only if for every $\varepsilon > 0$ there exists $\delta > 0$ such that
@@ -1138,10 +1131,10 @@ def _(mo):
 def _(mo):
     riemann_fn = mo.ui.dropdown(
         options={
-            "x² on [0, 1]": "unit",
-            "x² on [−½, ½] (quantization)": "quant",
+            "x^2 on [0, 1]": "unit",
+            "x^2 on [-1/2, 1/2] (quantization)": "quant",
         },
-        value="x² on [0, 1]",
+        value="x^2 on [0, 1]",
         label="integrand",
     )
     riemann_n = mo.ui.slider(start=1, stop=50, step=1, value=6, label="subintervals $n$")
@@ -1199,29 +1192,30 @@ def _(graphic, mo, np, plt, riemann_fn, riemann_n, riemann_tag):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-which-functions-are-integrable -->
     ### Which Functions Are Integrable?
 
     Proving integrability from the definition requires knowing $I$ in advance. As with sequences, a Cauchy criterion avoids this.
 
-    /// important | 📐 **Lemma (Cauchy Criterion for Integrals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Cauchy Criterion for Integrals)**
+        attrs: {class: lemma, id: appc-lem-cauchy-criterion-for-integrals}
     A function $f: [a, b] \to \mathbb R$ is Riemann integrable if and only if for every $\varepsilon > 0$ there is $\delta > 0$ such that $|R(f, P, t) - R(f, P', t')| < \varepsilon$ for all tagged subdivisions $(P, t)$ and $(P', t')$ of $[a,b]$ with meshes below $\delta$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Rightarrow$) Take $\delta$ for $\varepsilon/2$ in the definition and use the triangle inequality.
 
     ($\Leftarrow$) For each $n \ge 1$, let $\delta_n$ be a $\delta$ that works for $\varepsilon = \frac1n$. Let $(P_n, t^{(n)})$ be a uniform subdivision with mesh below $\min(\delta_1, \ldots, \delta_n)$, tagged at the left endpoints, and let $r_n := R(f, P_n, t^{(n)})$. For $m \ge n$, both $P_m$ and $P_n$ have mesh below $\delta_n$, so $|r_m - r_n| < \frac1n$. Thus $(r_n)$ is a Cauchy sequence and converges to some $I$. Given $\varepsilon > 0$, choose $n$ with $\frac1n < \frac\varepsilon2$ and $|r_n - I| < \frac\varepsilon2$. Every tagged subdivision $(P, t)$ with mesh below $\delta_n$ satisfies $|R(f, P, t) - I| \le |R(f, P, t) - r_n| + |r_n - I| < \frac1n + \frac\varepsilon2 < \varepsilon$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Continuous Functions Are Integrable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Continuous Functions Are Integrable)**
+        attrs: {class: theorem, id: appc-thm-continuous-functions-are-integrable}
     Every continuous function $f: [a, b] \to \mathbb R$ is Riemann integrable on $[a, b]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\varepsilon > 0$. By uniform continuity there is $\delta > 0$ with $|f(x) - f(x')| < \frac{\varepsilon}{2(b - a)}$ whenever $|x - x'| < \delta$. Let $(P, t)$ and $(P', t')$ be tagged subdivisions with meshes below $\delta$, and let $a = y_0 < y_1 < \cdots < y_m = b$ list the points of $P$ and $P'$ together. Each $[y_{j-1}, y_j]$ lies inside exactly one subinterval $[x_{i-1}, x_i]$ of $P$; let $\tau_j := t_i$ be that subinterval's tag. The pieces of $[x_{i-1}, x_i]$ have widths adding up to $\Delta x_i$, so $R(f, P, t) = \sum_j f(\tau_j)\,\Delta y_j$, and likewise $R(f, P', t') = \sum_j f(\tau'_j)\,\Delta y_j$. Both $\tau_j$ and $\tau'_j$ lie in a subinterval of width less than $\delta$ that contains $y_j$, so
     $$|f(\tau_j) - f(\tau'_j)| \le |f(\tau_j) - f(y_j)| + |f(y_j) - f(\tau'_j)| < \frac{\varepsilon}{b - a}.$$
     Hence $|R(f, P, t) - R(f, P', t')| < \sum_j \frac{\varepsilon}{b-a}\,\Delta y_j = \varepsilon$, and the Cauchy criterion applies. $\blacksquare$
@@ -1229,8 +1223,8 @@ def _(mo):
 
     In particular $x^2$ is integrable on $[0,1]$, so the uniform right-endpoint sums computed above (whose meshes $\frac1n$ tend to $0$) converge to the integral: $\int_0^1 x^2\,dx = \frac13$.
 
-    /// important | 📐 **Theorem (Properties of the Integral)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of the Integral)**
+        attrs: {class: theorem, id: appc-thm-properties-of-the-integral}
     Let $f, g: [a,b] \to \mathbb R$ be Riemann integrable and $c \in \mathbb R$.
     1. *(Linearity)* $f + g$ and $cf$ are integrable, with $\int_a^b (f + g) = \int_a^b f + \int_a^b g$ and $\int_a^b cf = c\int_a^b f$.
     2. *(Monotonicity)* If $f(x) \le g(x)$ for every $x$, then $\int_a^b f \le \int_a^b g$. In particular, constants $m \le f \le M$ give $m(b - a) \le \int_a^b f \le M(b - a)$.
@@ -1238,7 +1232,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Riemann sums are linear in the function: $R(f + g, P, t) = R(f, P, t) + R(g, P, t)$ and $R(cf, P, t) = c\,R(f, P, t)$. Use the smaller of the two $\delta$'s, as in the limit laws.
     2. A constant function $m$ has every Riemann sum equal to $m(b - a)$, so $\int_a^b m = m(b-a)$. Suppose $\int f > \int g$ and let $\varepsilon := \frac12(\int f - \int g)$. A tagged subdivision with mesh below both $\delta$'s has $R(f, P, t) > \int f - \varepsilon = \int g + \varepsilon > R(g, P, t)$, contradicting $R(f, P, t) \le R(g, P, t)$, which holds term by term.
     3. Apply part 2 to $-|f| \le f \le |f|$. $\blacksquare$
@@ -1250,27 +1244,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-splitting-the-interval -->
     ### Splitting the Interval
 
-    /// important | 📐 **Lemma (Integrable Functions Are Bounded)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Integrable Functions Are Bounded)**
+        attrs: {class: lemma, id: appc-lem-integrable-functions-are-bounded}
     If $f$ is Riemann integrable on $[a, b]$, then $f$ is bounded on $[a, b]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Take $\varepsilon = 1$ with its $\delta$, and fix a tagged subdivision $(P, t)$ with mesh below $\delta$. For any $i$ and any $s \in [x_{i-1}, x_i]$, replacing the tag $t_i$ by $s$ gives another admissible tagged subdivision whose Riemann sum differs by $(f(s) - f(t_i))\,\Delta x_i$. Both sums are within $1$ of the integral, so $|f(s) - f(t_i)|\,\Delta x_i < 2$, that is, $|f(s)| < |f(t_i)| + 2/\Delta x_i$. The largest of these finitely many bounds bounds $|f|$ on $[a, b]$. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Additivity over Intervals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Additivity over Intervals)**
+        attrs: {class: lemma, id: appc-lem-additivity-over-intervals}
     Let $a < b < c$ and $f: [a, c] \to \mathbb R$. Then $f$ is integrable on $[a, c]$ if and only if it is integrable on $[a, b]$ and on $[b, c]$, and in that case
     $$\int_a^c f(x)\,dx = \int_a^b f(x)\,dx + \int_b^c f(x)\,dx.$$
     Consequently, if $f$ is integrable on every closed bounded subinterval of an interval $J$, this formula holds for all $a, b, c \in J$ in any order.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     ($\Leftarrow$) Let $I_1$ and $I_2$ be the integrals over $[a, b]$ and $[b, c]$. By the previous lemma, $|f| \le M$ on $[a, c]$ for some $M > 0$. Given $\varepsilon > 0$, let $\delta_1, \delta_2$ work for $\varepsilon/3$ on the two pieces, and let $\delta := \min(\delta_1, \delta_2, \varepsilon/(6M))$. Let $(P, t)$ be a tagged subdivision of $[a, c]$ with mesh below $\delta$. If $b$ is one of its points, $(P, t)$ splits into tagged subdivisions of $[a, b]$ and $[b, c]$ with mesh below $\delta$, and its Riemann sum, the sum of theirs, is within $\frac{2\varepsilon}3$ of $I_1 + I_2$. Otherwise $b$ lies inside exactly one subinterval $[x_{j-1}, x_j]$. Inserting $b$ as a new point and tagging both new pieces with $b$ changes the Riemann sum by $(f(b) - f(t_j))\,\Delta x_j$, which has absolute value below $2M\delta \le \frac\varepsilon3$, and produces a tagged subdivision that splits as before. Either way, $|R(f, P, t) - (I_1 + I_2)| < \varepsilon$.
 
     ($\Rightarrow$) We check the Cauchy criterion on $[a, b]$ (the case $[b, c]$ is symmetric). Given $\varepsilon > 0$, let $\delta$ work for $\varepsilon/2$ on $[a, c]$, and fix a tagged subdivision $(Q, s)$ of $[b, c]$ with mesh below $\delta$. If $(P, t)$ and $(P', t')$ are tagged subdivisions of $[a, b]$ with meshes below $\delta$, appending $(Q, s)$ to each gives two tagged subdivisions of $[a, c]$ with meshes below $\delta$. Their Riemann sums are within $\frac\varepsilon2$ of the integral over $[a, c]$, so they differ by less than $\varepsilon$; and their difference is exactly $R(f, P, t) - R(f, P', t')$. The formula then follows from the first part.
@@ -1278,51 +1273,49 @@ def _(mo):
     For the last sentence: the cases with two equal points are trivial, and every other ordering reduces to $a < b < c$ by the convention $\int_q^p = -\int_p^q$ (for example, if $b < a < c$, then $\int_b^c = \int_b^a + \int_a^c$ rearranges to the claim). $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Changing Finitely Many Values)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Changing Finitely Many Values)**
+        attrs: {class: lemma, id: appc-lem-changing-finitely-many-values}
     If $f$ is integrable on $[a, b]$ and $g: [a, b] \to \mathbb R$ differs from $f$ at only finitely many points, then $g$ is integrable with the same integral.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction it suffices to treat one point $p$, with $d := |g(p) - f(p)| > 0$. In a tagged subdivision, $p$ can be the tag of at most two subintervals (subintervals overlap only at endpoints), so $|R(g, P, t) - R(f, P, t)| \le 2d\,\operatorname{mesh}(P)$. If $\delta$ works for $f$ with $\varepsilon/2$, then $\min(\delta, \varepsilon/(4d))$ works for $g$ with $\varepsilon$. $\blacksquare$
     ///
 
     A function $f: [a,b] \to \mathbb R$ is **piecewise continuous** if there is a subdivision $a = c_0 < c_1 < \cdots < c_m = b$ such that, for each $j$, the restriction of $f$ to $(c_{j-1}, c_j)$ agrees there with some continuous function $g_j: [c_{j-1}, c_j] \to \mathbb R$. In other words, $f$ has finitely many jumps, and the one-sided limits exist at each of them. A density that is $1$ on $[0, 1]$ and $0$ elsewhere, viewed on $[-1, 2]$, is a typical example.
 
-    /// important | 📐 **Corollary (Piecewise Continuous Functions Are Integrable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Piecewise Continuous Functions Are Integrable)**
+        attrs: {class: corollary, id: appc-cor-piecewise-continuous-functions-are-integrable}
     A piecewise continuous $f$ as above is integrable on $[a, b]$, and $\int_a^b f(x)\,dx = \sum_{j=1}^m \int_{c_{j-1}}^{c_j} g_j(x)\,dx$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     On $[c_{j-1}, c_j]$, $f$ differs from the continuous (hence integrable) $g_j$ at most at the two endpoints, so it is integrable there with the same integral. Additivity, applied $m - 1$ times, finishes the proof. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Mean Value Theorem for Integrals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Mean Value Theorem for Integrals)**
+        attrs: {class: lemma, id: appc-lem-mean-value-theorem-for-integrals}
     If $f: [a, b] \to \mathbb R$ is continuous, then $\int_a^b f(x)\,dx = f(c)\,(b - a)$ for some $c \in [a, b]$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Extreme Value Theorem, $f(c_1) \le f(x) \le f(c_2)$ for all $x$, for some $c_1, c_2 \in [a, b]$. By monotonicity, $y := \frac{1}{b - a}\int_a^b f$ lies in $[f(c_1), f(c_2)]$, and the intermediate value theorem on the closed interval between $c_1$ and $c_2$ gives a $c$ with $f(c) = y$. $\blacksquare$
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Too many discontinuities.** Let $f(x) = 1$ for rational $x$ and $0$ for irrational $x$, on $[0, 1]$. Every subinterval contains rationals and irrationals[^irrationals], so for every subdivision, all-rational tags give Riemann sum $1$ and all-irrational tags give $0$. The Cauchy criterion fails, so $f$ is not Riemann integrable. The exact condition is [Lebesgue's criterion](https://en.wikipedia.org/wiki/Riemann_integral#Integrability): a bounded function is Riemann integrable if and only if its set of discontinuities has measure zero (it can be covered by countably many intervals of total length as small as we like). The [Lebesgue integral](https://en.wikipedia.org/wiki/Lebesgue_integral) integrates this $f$ (to $0$) and is the general tool of probability theory; Chapters 5 and 6 only need the Riemann integral.
     - **Unbounded functions** are never Riemann integrable, by the boundedness lemma; $1/\sqrt x$ on $(0, 1]$ needs an *improper* integral.
     - **Infinite intervals** are not covered by the definition; $\int_{-\infty}^\infty e^{-x^2/2}\,dx$ also needs an improper integral.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The Riemann integral $\int_a^b f(x)\,dx$ is the limit of Riemann sums $\sum f(t_i)\,\Delta x_i$ as the mesh tends to $0$, uniformly over all choices of tags. Continuous and piecewise continuous functions are integrable, and the integral is linear, monotone, and additive over adjacent intervals.
     ///
 
-    [^irrationals]: Chapter 3 shows every interval $(p, q)$ contains a rational. It also contains an irrational: pick a rational $r \in (p - \sqrt2, q - \sqrt2)$; then $r + \sqrt 2 \in (p, q)$, and it is irrational because $\sqrt2$ is ([Appendix B: Incompleteness of the Rationals](appendix_b_number_systems.md)).
+    [^irrationals]: Chapter 3 shows every interval $(p, q)$ contains a rational. It also contains an irrational: pick a rational $r \in (p - \sqrt2, q - \sqrt2)$; then $r + \sqrt 2 \in (p, q)$, and it is irrational because $\sqrt2$ is ([Appendix B: Incompleteness of the Rationals](#appb-sec-incompleteness-of-the-rationals)).
     """)
     return
 
@@ -1330,12 +1323,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-fundamental-theorem-of-calculus -->
     ## The Fundamental Theorem of Calculus
 
     An inertial sensor measures acceleration $a(t)$ and must recover velocity. If $v(0)$ is known, the velocity at time $t$ is the initial velocity plus the accumulated acceleration, $v(t) = v(0) + \int_0^t a(s)\,ds$, and differentiating this accumulated integral should give back the acceleration. The Fundamental Theorem of Calculus makes this precise: integration and differentiation undo each other. As a bonus, it replaces the page of algebra we needed for $\int_0^1 x^2\,dx$ with one line.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Antiderivative**</u>
 
     Let $J$ be an interval with more than one point and $f: J \to \mathbb R$. A function $F: J \to \mathbb R$ is an antiderivative of $f$ on $J$ if and only if $F$ is {term}`differentiable` on $J$ and $F'(x) = f(x)$ for every $x \in J$.
@@ -1343,15 +1336,15 @@ def _(mo):
 
     By the Monotonicity and Constant Functions corollary, two antiderivatives of the same $f$ on an interval differ by a constant. The *indefinite integral* notation $\int f(x)\,dx = F(x) + C$ expresses this: it stands for "$F$ is an antiderivative of $f$, and so is $F + C$ for every constant $C$, and these are all of them".
 
-    /// important | 📐 **Theorem (Fundamental Theorem of Calculus, Part 1)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Fundamental Theorem of Calculus, Part 1)**
+        attrs: {class: theorem, id: appc-thm-fundamental-theorem-of-calculus-part-1}
     Let $J$ be an interval with more than one point, $f: J \to \mathbb R$ continuous, and $c \in J$. Then
     $$F(x) := \int_c^x f(s)\,ds \qquad (x \in J)$$
     is an antiderivative of $f$ on $J$: $F'(x) = f(x)$ for every $x \in J$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $F$ is defined because $f$ is continuous, hence integrable, on every closed bounded subinterval of $J$. Let $x \in J$ and $\varepsilon > 0$. Continuity of $f$ at $x$ gives $\delta > 0$ with $|f(s) - f(x)| < \varepsilon$ for $s \in J$ with $|s - x| < \delta$. Let $h \ne 0$ with $x + h \in J$ and $|h| < \delta$. By additivity, $F(x + h) - F(x) = \int_x^{x+h} f(s)\,ds$, and $\int_x^{x+h} f(x)\,ds = f(x)\,h$ (the integral of a constant). Therefore, using parts 2 and 3 of Properties of the Integral on the interval between $x$ and $x + h$,
     $$\left|\frac{F(x+h) - F(x)}{h} - f(x)\right| = \frac{1}{|h|}\left|\int_x^{x+h} \big(f(s) - f(x)\big)\,ds\right| \le \frac{1}{|h|}\,\varepsilon\,|h| = \varepsilon.$$
     As $\varepsilon > 0$ was arbitrary, the difference quotient tends to $f(x)$. $\blacksquare$
@@ -1359,24 +1352,24 @@ def _(mo):
 
     In particular, every continuous function on an interval has an antiderivative. Even without continuity, accumulated integrals are continuous:
 
-    /// important | 📐 **Lemma (Integrals Are Continuous in Their Limits)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Integrals Are Continuous in Their Limits)**
+        attrs: {class: lemma, id: appc-lem-integrals-are-continuous-in-their-limits}
     Let $J$ be an interval, let $f$ be Riemann integrable on every closed bounded subinterval of $J$, and let $c \in J$. Then $F(x) := \int_c^x f(s)\,ds$ is continuous on $J$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $x \in J$ and $\varepsilon > 0$. Choose $\eta > 0$ smaller than the distance from $x$ to each endpoint of $J$ that does not belong to $J$; then $[p, q] := J \cap [x - \eta, x + \eta]$ is a closed bounded interval. By the boundedness lemma, $|f| \le M$ on $[p, q]$ for some $M > 0$. For $y \in J$ with $|y - x| < \min(\eta, \varepsilon/M)$, we have $y \in [p, q]$, and additivity and monotonicity give $|F(y) - F(x)| = \left|\int_x^y f\right| \le M|y - x| < \varepsilon$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Fundamental Theorem of Calculus, Part 2)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Fundamental Theorem of Calculus, Part 2)**
+        attrs: {class: theorem, id: appc-thm-fundamental-theorem-of-calculus-part-2}
     Let $a < b$, let $f: [a, b] \to \mathbb R$ be Riemann integrable, and let $F: [a, b] \to \mathbb R$ be continuous on $[a, b]$ and differentiable on $(a, b)$ with $F'(x) = f(x)$ for every $x \in (a, b)$. Then
     $$\int_a^b f(x)\,dx = F(b) - F(a) =: \Big[F(x)\Big]_a^b.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\varepsilon > 0$ and take $\delta$ from the definition of the integral. Let $P$ be any subdivision with mesh below $\delta$. On each $[x_{i-1}, x_i]$, the Mean Value Theorem gives a $t_i \in (x_{i-1}, x_i)$ with $F(x_i) - F(x_{i-1}) = F'(t_i)\,\Delta x_i = f(t_i)\,\Delta x_i$. With these tags the Riemann sum telescopes:
     $$R(f, P, t) = \sum_{i=1}^n \big(F(x_i) - F(x_{i-1})\big) = F(b) - F(a).$$
     Hence $\left|F(b) - F(a) - \int_a^b f\right| < \varepsilon$ for every $\varepsilon > 0$, so the two numbers are equal. $\blacksquare$
@@ -1386,7 +1379,7 @@ def _(mo):
 
     **Quantization noise.** A quantizer with step $\Delta$ (like the scale's $0.1$ lb display) makes a rounding error between $-\frac\Delta2$ and $\frac\Delta2$. If the error is spread evenly over that interval, its average square is
     $$\frac{1}{\Delta}\int_{-\Delta/2}^{\Delta/2} x^2\,dx = \frac{1}{\Delta}\Big[\frac{x^3}{3}\Big]_{-\Delta/2}^{\Delta/2} = \frac{1}{\Delta}\Big(\frac{\Delta^3}{24} + \frac{\Delta^3}{24}\Big) = \frac{\Delta^2}{12}.$$
-    For $\Delta = 0.1$ lb this is about $0.00083$ lb², whose square root is about $0.029$ lb. [Chapter 9](ch9_noise_levels.md) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
+    For $\Delta = 0.1$ lb this is about $0.00083$ lb$^2$, whose square root is about $0.029$ lb. [Chapter 9](ch9_noise_levels.md) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
     """)
     return
 
@@ -1394,29 +1387,30 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-integration-by-parts-and-substitution -->
     ### Integration by Parts and Substitution
 
     Each differentiation rule, read backwards through the Fundamental Theorem, becomes an integration rule. The product rule gives integration by parts, and the chain rule gives substitution.
 
-    /// important | 📐 **Theorem (Integration by Parts)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Integration by Parts)**
+        attrs: {class: theorem, id: appc-thm-integration-by-parts}
     Let $f, g: [a, b] \to \mathbb R$ be continuously differentiable. Then
     $$\int_a^b f(x)\,g'(x)\,dx = \Big[f(x)\,g(x)\Big]_a^b - \int_a^b f'(x)\,g(x)\,dx.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the product rule, $fg$ is an antiderivative of $f'g + fg'$, which is continuous and hence integrable. By Part 2, $\int_a^b (f'g + fg') = [fg]_a^b$. Since $f'g$ and $fg'$ are continuous, linearity splits the left side, and rearranging gives the claim. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Integration by Substitution)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Integration by Substitution)**
+        attrs: {class: theorem, id: appc-thm-integration-by-substitution}
     Let $\varphi: [a, b] \to \mathbb R$ be continuously differentiable, and let $f$ be continuous on an interval $J$ that contains $\varphi(t)$ for every $t \in [a, b]$. Then
     $$\int_a^b f(\varphi(t))\,\varphi'(t)\,dt = \int_{\varphi(a)}^{\varphi(b)} f(x)\,dx.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Part 1, $F(y) := \int_{\varphi(a)}^y f(x)\,dx$ is an antiderivative of $f$ on $J$. By the chain rule, $(F \circ \varphi)'(t) = f(\varphi(t))\,\varphi'(t)$, which is continuous and hence integrable on $[a, b]$. By Part 2, the left side equals $F(\varphi(b)) - F(\varphi(a)) = \int_{\varphi(a)}^{\varphi(b)} f(x)\,dx$. $\blacksquare$
     ///
 
@@ -1425,14 +1419,12 @@ def _(mo):
     which [Chapter 5](ch5_random_variables.md) uses to reduce every normal density to the standard one.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Part 1 needs continuity.** For the step function $f = 0$ on $[-1, 0]$ and $f = 1$ on $(0, 1]$, the accumulated integral is $F(x) = \int_{-1}^x f = \max(x, 0)$, which has a corner at $0$: $F'(0)$ does not exist.
     - **Part 2 needs $F' = f$ at every point of $(a, b)$, and an integrable $f$.** $F(x) = -1/x$ has $F'(x) = 1/x^2 > 0$ for every $x \ne 0$, yet $F(1) - F(-1) = -2 < 0$. There is no contradiction: $F$ is undefined at $0$, and $1/x^2$ is unbounded on $[-1, 1]$, so it is not Riemann integrable there.
     - **"$+ C$" is only valid on an interval**, for the reason given in the Mean Value Theorem section.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Accumulating a continuous $f$ produces an antiderivative ($\frac{d}{dx}\int_c^x f = f$), and integrating a derivative recovers the net change ($\int_a^b F' = F(b) - F(a)$). Integrals are therefore computed by finding antiderivatives, and the product and chain rules become integration by parts and substitution.
     ///
     """)
@@ -1442,14 +1434,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-exponential-and-logarithm -->
     ## Exponential and Logarithm
 
     Many quantities change at a rate proportional to their own size: the voltage on a capacitor discharging through a resistor, the temperature difference between a sensor and its surroundings, or the influence of an old measurement on an EMA. In continuous time this is the differential equation $\dot y = a\,y$. The simplest case, $a = 1$ and $y(0) = 1$, asks for a function $E$ with $E' = E$ and $E(0) = 1$.
 
     No polynomial works, because differentiating lowers the degree. So try an "infinite polynomial" $E(x) = \sum_n c_n x^n$ and differentiate it term by term (which we must justify): $\sum_n (n+1)\,c_{n+1}\,x^n = \sum_n c_n\,x^n$ suggests $c_{n+1} = \frac{c_n}{n+1}$, and $c_0 = E(0) = 1$ then forces $c_n = \frac{1}{n!}$. We take this guess as the definition and prove that it works.
 
-    /// important | 📐 **Lemma (Differentiating a Power Series)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Differentiating a Power Series)**
+        attrs: {class: lemma, id: appc-lem-differentiating-a-power-series}
     Let $(c_n)$ be a sequence of real numbers such that $\sum_n |c_n|\,r^n$ converges for every $r \ge 0$. Then:
     1. For every $x \in \mathbb R$ the series $\sum_n c_n x^n$ converges absolutely, so $f(x) := \sum_{n=0}^\infty c_n x^n$ defines a function $f: \mathbb R \to \mathbb R$.
     2. The coefficients $c'_n := (n+1)\,c_{n+1}$ of the term-by-term derivative satisfy the same hypothesis.
@@ -1457,7 +1450,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $|c_n x^n| = |c_n|\,|x|^n$; use the hypothesis with $r = |x|$.
     2. By induction, $n \le 2^n$ and $n(n-1) \le 2^n$ for every $n \in \mathbb N$. (For the second, check $n \le 3$ directly; for $n \ge 3$, $(n+1)n = n(n-1)\cdot\frac{n+1}{n-1} \le 2^n \cdot 2$.) For $r > 0$, $n\,r^{n-1} = \frac{n\,r^n}{r} \le \frac{(2r)^n}{r}$, so $\sum_n |c'_n|\,r^n = \sum_{n \ge 1} n\,|c_n|\,r^{n-1} \le \frac1r\sum_n |c_n|\,(2r)^n < \infty$ by comparison. The case $r = 0$ is trivial.
     3. Fix $x$, let $0 < |h| \le 1$, and let $\rho := |x| + 1$. For $n \ge 2$, Taylor's Theorem with degree $1$, applied to the polynomial $t \mapsto t^n$ at $x$, gives $(x + h)^n = x^n + n x^{n-1} h + \frac12 n(n-1)\,\xi^{n-2} h^2$ for some $\xi$ between $x$ and $x + h$, so $|\xi| \le \rho$ and
@@ -1468,7 +1461,6 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Exponential function**</u>
 
     The exponential function $\exp: \mathbb R \to \mathbb R$ is defined by the power series
@@ -1482,8 +1474,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Properties of the Exponential Function)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of the Exponential Function)**
+        attrs: {class: theorem, id: appc-thm-properties-of-the-exponential-function}
     1. $\exp$ is differentiable, with $\exp' = \exp$ and $\exp(0) = 1$.
     2. $\exp(x)\exp(-x) = 1$ for every $x$; in particular $\exp(x) \ne 0$.
     3. $\exp(a + b) = \exp(a)\exp(b)$ for all $a, b \in \mathbb R$.
@@ -1494,7 +1486,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. The coefficients $\frac{1}{n!}$ satisfy the lemma's hypothesis (the exponential series converges absolutely at $x = r$). By the lemma, $\exp'(x) = \sum_{n \ge 1} \frac{n\,x^{n-1}}{n!} = \sum_{n\ge1}\frac{x^{n-1}}{(n-1)!} = \exp(x)$. Every term with $n \ge 1$ vanishes at $0$, so $\exp(0) = 1$.
     2. Let $g(x) := \exp(x)\exp(-x)$. By the product and chain rules, $g'(x) = \exp(x)\exp(-x) - \exp(x)\exp(-x) = 0$, so $g$ is constant on $\mathbb R$ and equals $g(0) = 1$.
     3. Fix $b$ and let $h(x) := \exp(x + b)\exp(-x)$. As in part 2, $h' = 0$, so $h(x) = h(0) = \exp(b)$. Multiplying by $\exp(x)$ and using part 2 gives $\exp(x + b) = \exp(x)\exp(b)$.
@@ -1507,14 +1499,13 @@ def _(mo):
     **The number $e$ and the notation $e^x$.** Let $e := \exp(1) = \sum_n \frac{1}{n!} \approx 2.718281828$. By part 3 and induction, $\exp(nx) = \exp(x)^n$ for $n \in \mathbb N$, so $\exp(n) = e^n$ and $\exp(-n) = e^{-n}$. For a rational number $p/q$ with $q \in \mathbb N^+$, $\exp(p/q)^q = \exp(p) = e^p$, so $\exp(p/q)$ is the unique positive $q$-th root of $e^p$, which is what $e^{p/q}$ means. Thus $\exp$ extends the powers of $e$ from rational to real exponents, and we write $e^x := \exp(x)$ for every real $x$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Natural logarithm**</u>
 
     The natural logarithm $\ln: (0, \infty) \to \mathbb R$ is the {term}`inverse function` of the bijection $\exp: \mathbb R \to (0, \infty)$. That is, for $y > 0$, $\ln y$ is the unique real number $x$ with $e^x = y$.
     ///
 
-    /// important | 📐 **Theorem (Properties of the Natural Logarithm)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of the Natural Logarithm)**
+        attrs: {class: theorem, id: appc-thm-properties-of-the-natural-logarithm}
     1. $\ln 1 = 0$, $\ln e = 1$, $\ln(yz) = \ln y + \ln z$, and $\ln(1/y) = -\ln y$ for all $y, z > 0$.
     2. $\ln$ is strictly increasing, continuous, and differentiable, with $\frac{d}{dy}\ln y = \frac1y$.
     3. $\lim_{y\to\infty} \ln y = \infty$ and $\lim_{y \to 0^+}\ln y = -\infty$.
@@ -1522,7 +1513,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $e^0 = 1$ and $e^1 = e$. Also $e^{\ln y + \ln z} = e^{\ln y}\,e^{\ln z} = yz$, so $\ln(yz) = \ln y + \ln z$; with $z = 1/y$ this gives $\ln y + \ln(1/y) = \ln 1 = 0$.
     2. $\exp$ is a strictly increasing bijection between the intervals $\mathbb R$ and $(0, \infty)$, so $\ln$ is strictly increasing and continuous by the Continuous Inverse lemma. Since $\exp'(x) = e^x \ne 0$, the Derivative of an Inverse Function theorem gives $\ln'(y) = \frac{1}{\exp'(\ln y)} = \frac{1}{e^{\ln y}} = \frac1y$.
     3. Given $M$, every $y > e^M$ has $\ln y > M$, and every $y \in (0, e^{-M})$ has $\ln y < -M$, because $\ln$ is increasing.
@@ -1539,21 +1530,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-sine-and-cosine -->
     ### Sine and Cosine
 
     Sine and cosine can be defined by power series in the same way. For every real $x$, let
     $$\sin x := \sum_{n=0}^\infty (-1)^n\frac{x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots, \qquad \cos x := \sum_{n=0}^\infty (-1)^n \frac{x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots.$$
     Written as $\sum_k c_k x^k$, each has $|c_k| \le \frac{1}{k!}$, so by comparison with the exponential series both satisfy the hypothesis of the Differentiating a Power Series lemma.
 
-    /// important | 📐 **Theorem (Properties of Sine and Cosine)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Properties of Sine and Cosine)**
+        attrs: {class: theorem, id: appc-thm-properties-of-sine-and-cosine}
     1. $\sin$ and $\cos$ are differentiable, with $\sin' = \cos$ and $\cos' = -\sin$; also $\sin 0 = 0$ and $\cos 0 = 1$.
     2. $\sin(-x) = -\sin x$ and $\cos(-x) = \cos x$.
     3. $\sin^2 x + \cos^2 x = 1$ for every $x$; consequently $|\sin x| \le 1$ and $|\cos x| \le 1$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. By the lemma, $\sin'(x) = \sum_n (-1)^n \frac{(2n+1)x^{2n}}{(2n+1)!} = \sum_n (-1)^n\frac{x^{2n}}{(2n)!} = \cos x$, and $\cos'(x) = \sum_{n\ge1}(-1)^n\frac{x^{2n-1}}{(2n-1)!} = -\sum_{m \ge 0}(-1)^m\frac{x^{2m+1}}{(2m+1)!} = -\sin x$, with $m = n - 1$. The values at $0$ are the constant terms.
     2. $(-x)^{2n+1} = -x^{2n+1}$ and $(-x)^{2n} = x^{2n}$, term by term.
     3. $\frac{d}{dx}\big(\sin^2 x + \cos^2 x\big) = 2\sin x\cos x - 2\cos x \sin x = 0$, so $\sin^2 + \cos^2$ is constant and equals its value $0 + 1$ at $0$. Then $\sin^2 x \le 1$, so $|\sin x| \le 1$, and likewise for $\cos$. $\blacksquare$
@@ -1565,6 +1557,7 @@ def _(mo):
     $$|\sin x - x| \le \frac{|x|^3}{6}.$$
     At $10^\circ \approx 0.1745$ rad the error is at most $0.00089$, about $0.5\%$ of $\sin x$. The pendulum of [Chapter 15](ch15_extended_kalman_filter.md) and the small rotations of [Chapter 17](ch17_rotations.md) rely on this approximation.
 
+    <!-- label: appc-sec-taylor-polynomials-in-action -->
     ### Taylor Polynomials in Action
 
     For $\exp$, $\sin$, and $\cos$, the Taylor polynomials at $0$ are exactly the partial sums of the defining series, so they converge to the function at every $x$. The error bound confirms it: every derivative of $\sin$ and $\cos$ is bounded by $1$, and every derivative of $\exp$ on $[-r, r]$ by $e^r$, so the error at $|x| \le r$ is at most $e^r\frac{r^{n+1}}{(n+1)!}$, which tends to $0$ by the term test applied to the exponential series. For $\ln(1 + x)$, the derivatives $\frac{(-1)^{k-1}(k-1)!}{(1+x)^k}$ give $T_{n,0}(x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \cdots \pm \frac{x^n}{n}$, which converge only for $-1 < x \le 1$. Move the slider to watch the polynomials hug each function near $0$ and peel away far from it.
@@ -1580,7 +1573,7 @@ def _(mo):
             "sin(x)": "sin",
             "cos(x)": "cos",
             "ln(1 + x)": "log1p",
-            "1/(1 − x)": "geom",
+            "1/(1 - x)": "geom",
         },
         value="sin(x)",
         label="function",
@@ -1646,7 +1639,6 @@ def _(factorial, graphic, mo, np, plt, taylor_deg, taylor_fn):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Taylor series need not converge.** For $x > 1$, the terms $\frac{x^n}{n}$ of the series for $\ln(1 + x)$ satisfy $\frac{x^n}{n} \ge x - 1 > 0$ (by Bernoulli's inequality $x^n \ge 1 + n(x-1)$), so they do not tend to $0$ and the polynomials diverge, although $\ln(1+x)$ is perfectly well behaved there.
     - **Infinitely many derivatives are not enough.** The function equal to $e^{-1/x^2}$ for $x \ne 0$ and $0$ at $x = 0$ has derivatives of every order, all equal to $0$ at $x = 0$ ([Wikipedia: Non-analytic smooth function](https://en.wikipedia.org/wiki/Non-analytic_smooth_function)). Every Taylor polynomial at $0$ is therefore the zero polynomial, although the function is positive everywhere except $0$.
     - **Real powers need a positive base.** $a^x$ is defined only for $a > 0$; for example, $(-1)^{1/2}$ is not a real number.
@@ -1654,7 +1646,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The exponential function $e^x = \sum_n \frac{x^n}{n!}$ is the unique solution of $y' = y$ with $y(0) = 1$. It turns sums into products ($e^{a+b} = e^a e^b$), it is a bijection from $\mathbb R$ onto $(0, \infty)$, and its inverse is the natural logarithm, with $\frac{d}{dy}\ln y = \frac1y$. Every solution of $\dot y = ay$ is $y(t) = y(t_0)\,e^{a(t - t_0)}$, and the EMA's weights $\alpha(1-\alpha)^n = \alpha e^{-\lambda n}$ decay exponentially.
     ///
     """)
@@ -1664,6 +1655,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-improper-integrals -->
     ## Improper Integrals
 
     An analog low-pass filter with time constant $\tau > 0$ gives an input from $t$ seconds ago the weight $\frac1\tau e^{-t/\tau}$ (Linear Differential Equations derives this). Like the EMA's weights, these weights should add up to $1$, but "adding up" now means integrating over the unbounded interval $[0, \infty)$, which the Riemann integral does not cover. Likewise, the normal density lives on all of $\mathbb R$. We extend the integral by one more limit.
@@ -1671,7 +1663,6 @@ def _(mo):
     A function $f$ is **locally integrable** on an interval $(a, b)$ if it is Riemann integrable on every closed bounded interval $[s, t] \subseteq (a, b)$. Continuous functions, and functions that are piecewise continuous on every such $[s,t]$, are locally integrable.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Improper integral**</u>
 
     Let $-\infty \le a < b \le \infty$, and let $f$ be a real-valued function that is defined at least on $(a, b)$ and is Riemann integrable on every closed bounded interval $[s, t] \subseteq (a, b)$. Fix $c \in (a, b)$. The improper integral $\int_a^b f(x)\,dx$ converges if and only if both limits
@@ -1683,13 +1674,13 @@ def _(mo):
 
     For **nonnegative** $f$, the integral $\int_c^t f$ increases with $t$ and $\int_s^c f$ increases as $s$ decreases. The next lemma shows that such limits always exist in $(-\infty, \infty]$, so for $f \ge 0$ we may write $\int_a^b f(x)\,dx = \infty$ when the improper integral diverges.
 
-    /// important | 📐 **Lemma (Monotone Functions Have One-Sided Limits)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Monotone Functions Have One-Sided Limits)**
+        attrs: {class: lemma, id: appc-lem-monotone-functions-have-one-sided-limits}
     Let $c < b \le \infty$ and let $F: [c, b) \to \mathbb R$ be increasing. If $F$ is bounded above, then $\lim_{t \to b^-} F(t) = \sup\{F(t) : c \le t < b\}$; otherwise $\lim_{t\to b^-}F(t) = \infty$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     This is the proof of Monotone Convergence with $t$ in place of $n$. If $S$ is the supremum and $\varepsilon > 0$, some $t_0$ has $F(t_0) > S - \varepsilon$, and every $t \in (t_0, b)$ has $S - \varepsilon < F(t_0) \le F(t) \le S$. If $F$ is unbounded and $M \in \mathbb R$, some $t_0$ has $F(t_0) > M$, and then $F(t) > M$ for all $t \in (t_0, b)$. $\blacksquare$
     ///
 
@@ -1699,33 +1690,33 @@ def _(mo):
     2. *Power tails.* For $p \ne 1$, $\int_1^t x^{-p}\,dx = \frac{t^{1-p} - 1}{1 - p}$, which tends to $\frac{1}{p-1}$ if $p > 1$ and to $\infty$ if $p < 1$ (because $t^{1-p} = e^{(1-p)\ln t}$). For $p = 1$, $\int_1^t \frac{dx}{x} = \ln t \to \infty$. So $\int_1^\infty x^{-p}\,dx$ converges if and only if $p > 1$, mirroring the series $\sum \frac{1}{n^2}$ and $\sum \frac1n$.
     3. *Unbounded integrands.* $\int_0^1 x^{-1/2}\,dx = \lim_{s\to0^+}\big[2\sqrt x\big]_s^1 = 2$: the integrand is unbounded near $0$, but the area is finite. By contrast, $\int_s^1 \frac{dx}{x} = -\ln s \to \infty$ as $s \to 0^+$.
 
-    /// important | 📐 **Theorem (Comparison Test for Integrals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Comparison Test for Integrals)**
+        attrs: {class: theorem, id: appc-thm-comparison-test-for-integrals}
     Let $f$ and $g$ be locally integrable on $(a, b)$ with $0 \le f(x) \le g(x)$ for every $x \in (a, b)$. Then $\int_a^b f \le \int_a^b g$ in $[0, \infty]$. In particular, if $\int_a^b g$ converges, so does $\int_a^b f$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $c \le t < b$, monotonicity gives $\int_c^t f \le \int_c^t g \le \lim_{t' \to b^-}\int_c^{t'} g$, since $\int_c^{t'} g$ increases with $t'$. By the lemma, $\lim_{t\to b^-}\int_c^t f$ exists in $[0, \infty]$ and is at most the corresponding limit for $g$. The same argument applies at $a$, and adding the two pieces gives the claim. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Absolute Convergence of Integrals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Absolute Convergence of Integrals)**
+        attrs: {class: theorem, id: appc-thm-absolute-convergence-of-integrals}
     Let $f$ and $|f|$ be locally integrable on $(a, b)$ (for example, $f$ piecewise continuous on every closed bounded subinterval). If $\int_a^b |f(x)|\,dx$ converges, then $\int_a^b f(x)\,dx$ converges and $\left|\int_a^b f\right| \le \int_a^b |f|$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $f^\pm := \frac12(|f| \pm f)$. These are locally integrable by linearity, and $0 \le f^\pm \le |f|$, so $\int_a^b f^+$ and $\int_a^b f^-$ converge by comparison. Since $f = f^+ - f^-$, the limit laws show that $\int_a^b f$ converges, with value $\int_a^b f^+ - \int_a^b f^-$. Finally, $\left|\int_s^t f\right| \le \int_s^t |f|$ for every $[s, t] \subseteq (a, b)$, and the order law carries this inequality to the limits. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Gaussian Moments Converge)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Gaussian Moments Converge)**
+        attrs: {class: corollary, id: appc-cor-gaussian-moments-converge}
     For every $n \in \mathbb N$, the improper integral $\int_{-\infty}^{\infty} |x|^n e^{-x^2/2}\,dx$ converges. In particular (with $n = 0$), $\int_{-\infty}^\infty e^{-x^2/2}\,dx$ converges.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Choose $m \in \mathbb N$ with $2m \ge n$. For $x \ge 0$, $e^{x^2/4} \ge \frac{(x^2/4)^m}{m!}$, because the right side is one term of a series with nonnegative terms whose sum is the left side; so $x^{2m} \le 4^m m!\,e^{x^2/4}$. Also $x^n \le 1 + x^{2m}$ (check $x \le 1$ and $x \ge 1$ separately) and $1 \le e^{x^2/4}$, so $x^n \le C e^{x^2/4}$ with $C := 1 + 4^m m!$. Finally $(x - 2)^2 \ge 0$ gives $\frac{x^2}{4} \ge x - 1$. Altogether, for $x \ge 0$,
     $$0 \le x^n e^{-x^2/2} \le C e^{-x^2/4} \le C e^{1 - x},$$
     and $\int_0^\infty C e^{1 - x}\,dx = Ce$ converges by Example 1. By comparison, $\int_0^\infty x^n e^{-x^2/2}\,dx$ converges. The substitution $x = -u$ shows that $\int_{-t}^0 |x|^n e^{-x^2/2}\,dx = \int_0^t u^n e^{-u^2/2}\,du$ for every $t > 0$, so the left tail converges too. $\blacksquare$
@@ -1734,14 +1725,12 @@ def _(mo):
     The value of $\int_{-\infty}^\infty e^{-x^2/2}\,dx$ is computed in Multiple Integrals.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Both tails must converge separately.** $\int_{-t}^t x\,dx = 0$ for every $t$, yet $\int_{-\infty}^\infty x\,dx$ diverges because $\int_0^t x\,dx = t^2/2 \to \infty$. The same happens for the Cauchy density $\frac{1}{\pi(1 + x^2)}$: by the substitution $u = 1 + x^2$, $\int_0^t \frac{x}{1 + x^2}\,dx = \frac12\ln(1 + t^2) \to \infty$, so $\int |x|/(\pi(1 + x^2))\,dx$ diverges, which is why the Cauchy distribution has no mean ([Chapter 6](ch6_expectation_and_variance.md)).
     - **A convergent integral does not force $f(x) \to 0$**, unlike the term test for series. A continuous function made of triangular spikes, one of height $1$ and base width $2/n^2$ centered at each integer $n \ge 2$ and $0$ elsewhere, has $\int_0^\infty f = \sum_{n\ge2}\frac{1}{n^2} < \infty$, but $f(n) = 1$ for every such $n$.
     - **Comparison needs nonnegative integrands**, as for series.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     An improper integral is a limit of ordinary integrals over growing bounded intervals, taken separately at each problematic endpoint. For nonnegative integrands it always exists in $[0, \infty]$, and comparison with a known convergent integral, such as $\int_0^\infty e^{-x}\,dx$, proves convergence. In particular, all the integrals $\int |x|^n e^{-x^2/2}\,dx$ needed for the normal distribution converge.
     ///
     """)
@@ -1751,6 +1740,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-functions-of-several-variables -->
     ## Functions of Several Variables
 
     The pendulum of [Chapter 15](ch15_extended_kalman_filter.md) has length $L = 1$ m, and its sensor measures the horizontal position of the bob, $h(\theta) = L\sin\theta$, where $\theta$ is the angle from vertical. A Kalman filter needs a *linear* measurement function, so the extended Kalman filter replaces $h$ near its current estimate $\theta_0$ by the tangent line:
@@ -1818,9 +1808,10 @@ def _(mo):
     $$f(\theta, \omega) = \Big(\theta + \Delta t\,\omega,\ \ \omega - \Delta t\,\tfrac{g}{L}\sin\theta - \Delta t\,c\,\omega\Big).$$
     To linearize $f$, we need to know how each output responds to a small change in each input separately. This section extends derivatives to functions of several variables.
 
+    <!-- label: appc-sec-points-distances-and-continuity-in-r-n -->
     ### Points, Distances, and Continuity in $\mathbb R^n$
 
-    An element $\mathbf x = (x_1, \ldots, x_n)$ of $\mathbb R^n$ is an $n$-tuple of real numbers (a function $\{1, \ldots, n\} \to \mathbb R$, as in Chapter 3). Sums and real multiples are taken coordinatewise, and $\mathbf e_i$ denotes the point with $1$ in coordinate $i$ and $0$ elsewhere. The *Euclidean length* of $\mathbf x$ is $\|\mathbf x\| := \sqrt{x_1^2 + \cdots + x_n^2}$, and $\|\mathbf x - \mathbf y\|$ is the distance between $\mathbf x$ and $\mathbf y$. [Appendix D: Vectors](appendix_d_linear_algebra.md) studies this {term}`norm` and proves the triangle inequality $\|\mathbf x + \mathbf y\| \le \|\mathbf x\| + \|\mathbf y\|$. We also use the elementary bounds
+    An element $\mathbf x = (x_1, \ldots, x_n)$ of $\mathbb R^n$ is an $n$-tuple of real numbers (a function $\{1, \ldots, n\} \to \mathbb R$, as in Chapter 3). Sums and real multiples are taken coordinatewise, and $\mathbf e_i$ denotes the point with $1$ in coordinate $i$ and $0$ elsewhere. The *Euclidean length* of $\mathbf x$ is $\|\mathbf x\| := \sqrt{x_1^2 + \cdots + x_n^2}$, and $\|\mathbf x - \mathbf y\|$ is the distance between $\mathbf x$ and $\mathbf y$. [Appendix D: Vectors](#appd-sec-vectors) studies this {term}`norm` and proves the triangle inequality $\|\mathbf x + \mathbf y\| \le \|\mathbf x\| + \|\mathbf y\|$. We also use the elementary bounds
     $$|x_i| \le \|\mathbf x\| \le |x_1| + \cdots + |x_n|,$$
     which hold because $x_i^2 \le \sum_j x_j^2 \le \big(\sum_j |x_j|\big)^2$ and $\sqrt{\phantom{y}}$ is increasing. For $n = 1$, $\|x\| = |x|$.
 
@@ -1832,10 +1823,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-partial-derivatives-gradients-and-jacobians -->
     ### Partial Derivatives, Gradients, and Jacobians
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Partial derivative**</u>
 
     Let $U \subseteq \mathbb R^n$ be open, $f: U \to \mathbb R$, $\mathbf a \in U$, and $i \in \{1, \ldots, n\}$. The partial derivative of $f$ with respect to $x_i$ at $\mathbf a$ is
@@ -1848,20 +1839,19 @@ def _(mo):
     The shorthand $\partial_i f := \partial f/\partial x_i$ is also common.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gradient**</u>
 
     Let $U \subseteq \mathbb R^n$ be open and $f: U \to \mathbb R$. If all $n$ partial derivatives of $f$ exist at $\mathbf a \in U$, the gradient of $f$ at $\mathbf a$ is the $n$-tuple of those partial derivatives:
     $$\nabla f(\mathbf a) := \Big(\frac{\partial f}{\partial x_1}(\mathbf a), \ldots, \frac{\partial f}{\partial x_n}(\mathbf a)\Big).$$
     ///
 
-    /// important | 📐 **Corollary (Interior Extremum in Several Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Interior Extremum in Several Variables)**
+        attrs: {class: corollary, id: appc-cor-interior-extremum-in-several-variables}
     Let $U \subseteq \mathbb R^n$ be open and let $f: U \to \mathbb R$ have a local minimum or maximum at $\mathbf a \in U$ (that is, $f(\mathbf a) \le f(\mathbf x)$ for every $\mathbf x$ in some ball around $\mathbf a$, or $\ge$ for every such $\mathbf x$). If $\frac{\partial f}{\partial x_i}(\mathbf a)$ exists, it equals $0$. In particular, if $\nabla f(\mathbf a)$ exists, then $\nabla f(\mathbf a) = (0, \ldots, 0)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The one-variable function $h \mapsto f(\mathbf a + h\mathbf e_i)$ is defined on an interval around $0$ and has a local extremum at the interior point $0$. Apply the Interior Extremum lemma. $\blacksquare$
     ///
 
@@ -1870,7 +1860,6 @@ def _(mo):
     At a minimizer the gradient is $(0, 0)$, which gives two linear equations for $m$ and $c$, the *normal equations*.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Jacobian**</u>
 
     Let $U \subseteq \mathbb R^n$ be open and $f = (f_1, \ldots, f_m): U \to \mathbb R^m$. If all partial derivatives $\frac{\partial f_i}{\partial x_j}$ exist at $\mathbf a \in U$, the Jacobian of $f$ at $\mathbf a$ is the rectangular array with $m$ rows and $n$ columns whose entry in row $i$ and column $j$ is $\frac{\partial f_i}{\partial x_j}(\mathbf a)$:
@@ -1878,18 +1867,18 @@ def _(mo):
     Row $i$ is the gradient of the coordinate function $f_i$.
     ///
 
-    Such an array is a {term}`matrix`, studied in [Appendix D: Matrices and Linear Maps](appendix_d_linear_algebra.md). Some books use "Jacobian" for the {term}`determinant` of this array when $m = n$; we call that the *Jacobian determinant*, $\det\mathbf J_f(\mathbf a)$. For the pendulum, with state $(\theta, \omega)$,
+    Such an array is a {term}`matrix`, studied in [Appendix D: Matrices and Linear Maps](#appd-sec-matrices-and-linear-maps). Some books use "Jacobian" for the {term}`determinant` of this array when $m = n$; we call that the *Jacobian determinant*, $\det\mathbf J_f(\mathbf a)$. For the pendulum, with state $(\theta, \omega)$,
     $$\mathbf J_f(\theta, \omega) = \begin{bmatrix} 1 & \Delta t \\ -\Delta t\,\frac gL\cos\theta & 1 - c\,\Delta t\end{bmatrix}, \qquad \mathbf J_h(\theta, \omega) = \begin{bmatrix} L\cos\theta & 0 \end{bmatrix},$$
     where $h(\theta, \omega) := L\sin\theta$ is the measurement function viewed as a function of the whole state. These are the matrices $\mathbf F_k = \partial f/\partial\mathbf x$ and $\mathbf H_k = \partial h/\partial \mathbf x$ of Chapter 15.
 
-    Since a partial derivative is a limit of difference quotients, a Jacobian can be checked numerically. The code below compares the analytic Jacobian of the pendulum step with central differences $\frac{f(\mathbf x + h\mathbf e_j) - f(\mathbf x - h\mathbf e_j)}{2h}$, using the constants of Chapter 15 ($\Delta t = 0.01$ s, $g = 9.81$ m/s², $L = 1$ m, $c = 0.1$ s⁻¹). This is a standard guard against the "bad Jacobian" failure mode of the extended Kalman filter.
+    Since a partial derivative is a limit of difference quotients, a Jacobian can be checked numerically. The code below compares the analytic Jacobian of the pendulum step with central differences $\frac{f(\mathbf x + h\mathbf e_j) - f(\mathbf x - h\mathbf e_j)}{2h}$, using the constants of Chapter 15 ($\Delta t = 0.01$ s, $g = 9.81$ m/s$^2$, $L = 1$ m, $c = 0.1$ s$^{-1}$). This is a standard guard against the "bad Jacobian" failure mode of the extended Kalman filter.
     """)
     return
 
 
 @app.cell
 def _(mo, np):
-    # jb: echo=true
+    # jb: editor=true server-output=false
     def pendulum_step(x, dt=0.01, g=9.81, L=1.0, c=0.1):
         """One Euler step of the damped pendulum; x = (theta, omega)."""
         theta, omega = x
@@ -1922,14 +1911,14 @@ def _(mo, np):
     _x0 = np.array([0.5, 0.1])
     _J_exact = pendulum_jacobian(_x0)
     _J_numeric = numerical_jacobian(pendulum_step, _x0)
-    _names = ["∂f₁/∂θ", "∂f₁/∂ω", "∂f₂/∂θ", "∂f₂/∂ω"]
+    _names = [r"$\partial f_1/\partial \theta$", r"$\partial f_1/\partial \omega$", r"$\partial f_2/\partial \theta$", r"$\partial f_2/\partial \omega$"]
     _rows = [
         f"| {_name} | {_a:.8f} | {_b:.8f} |"
         for _name, _a, _b in zip(_names, _J_exact.ravel(), _J_numeric.ravel())
     ]
     mo.md(
-        "Jacobian entries at θ = 0.5, ω = 0.1:\n\n"
-        "| entry | analytic | central differences |\n|---|---|---|\n"
+        r"Jacobian entries at $\theta = 0.5$, $\omega = 0.1$:" "\n\n"
+        "| entry | analytic | central differences |\n|:---|:---:|:---:|\n"
         + "\n".join(_rows)
         + f"\n\nLargest difference: {np.max(np.abs(_J_exact - _J_numeric)):.1e}"
     )
@@ -1939,22 +1928,23 @@ def _(mo, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-differentiability-and-the-first-order-taylor-approximation -->
     ### Differentiability and the First-Order Taylor Approximation
 
-    For $\mathbf h \in \mathbb R^n$, write $\mathbf J_f(\mathbf a)\,\mathbf h$ for the point of $\mathbb R^m$ whose $i$-th coordinate is $\sum_{j=1}^n \frac{\partial f_i}{\partial x_j}(\mathbf a)\,h_j$ ([Appendix D: Matrix Multiplication](appendix_d_linear_algebra.md) calls this the product of the matrix with the vector $\mathbf h$). We extend the word *differentiable* to several variables: a function $f: U \to \mathbb R^m$ on an open $U \subseteq \mathbb R^n$ whose partial derivatives all exist at $\mathbf a \in U$ is differentiable at $\mathbf a$ if
+    For $\mathbf h \in \mathbb R^n$, write $\mathbf J_f(\mathbf a)\,\mathbf h$ for the point of $\mathbb R^m$ whose $i$-th coordinate is $\sum_{j=1}^n \frac{\partial f_i}{\partial x_j}(\mathbf a)\,h_j$ ([Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication) calls this the product of the matrix with the vector $\mathbf h$). We extend the word *differentiable* to several variables: a function $f: U \to \mathbb R^m$ on an open $U \subseteq \mathbb R^n$ whose partial derivatives all exist at $\mathbf a \in U$ is differentiable at $\mathbf a$ if
     $$\lim_{\mathbf h \to \mathbf 0} \frac{\|f(\mathbf a + \mathbf h) - f(\mathbf a) - \mathbf J_f(\mathbf a)\,\mathbf h\|}{\|\mathbf h\|} = 0.$$
     For $n = m = 1$, $\mathbf J_f(a)h = f'(a)h$, and the condition says exactly that $\frac{f(a+h) - f(a)}{h} - f'(a) \to 0$; so it agrees with the definition of {term}`differentiable` in Derivatives. The approximation $f(\mathbf x) \approx f(\mathbf a) + \mathbf J_f(\mathbf a)(\mathbf x - \mathbf a)$ is the **first-order Taylor approximation** of $f$ at $\mathbf a$; Chapter 15 calls using it in place of $f$ {term}`linearization`.
 
     Existence of the partial derivatives alone is not enough. Let $f(x, y) := \frac{xy}{x^2 + y^2}$ for $(x, y) \ne (0, 0)$ and $f(0, 0) := 0$. Then $f = 0$ on both axes, so both partial derivatives at $(0, 0)$ exist and equal $0$; but $f(t, t) = \frac12$ for every $t \ne 0$, so $f$ is not even continuous at the origin, and the first-order approximation $f \approx 0$ is wrong along the diagonal. Continuity of the partial derivatives repairs this.
 
-    /// important | 📐 **Theorem (First-Order Taylor Approximation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (First-Order Taylor Approximation)**
+        attrs: {class: theorem, id: appc-thm-first-order-taylor-approximation}
     Let $U \subseteq \mathbb R^n$ be open and $f: U \to \mathbb R^m$. If all partial derivatives $\frac{\partial f_i}{\partial x_j}$ exist on $U$ and are continuous at $\mathbf a \in U$, then $f$ is differentiable at $\mathbf a$:
     $$f(\mathbf a + \mathbf h) = f(\mathbf a) + \mathbf J_f(\mathbf a)\,\mathbf h + \mathbf r(\mathbf h), \qquad \lim_{\mathbf h \to \mathbf 0}\frac{\|\mathbf r(\mathbf h)\|}{\|\mathbf h\|} = 0.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $\|\mathbf r\| \le \sum_i |r_i|$, it suffices to treat one coordinate, so let $m = 1$. Choose $\rho > 0$ with $B(\mathbf a, \rho) \subseteq U$ and let $0 < \|\mathbf h\| < \rho$. Set $\mathbf p_0 := \mathbf a$ and $\mathbf p_j := \mathbf a + (h_1, \ldots, h_j, 0, \ldots, 0)$ for $j = 1, \ldots, n$, so that $\mathbf p_n = \mathbf a + \mathbf h$ and $\mathbf p_j - \mathbf p_{j-1} = h_j\mathbf e_j$. Each point $\mathbf p_{j-1} + s\mathbf e_j$ with $s$ between $0$ and $h_j$ differs from $\mathbf a$ by $(h_1, \ldots, h_{j-1}, s, 0, \ldots, 0)$, whose length is at most $\|\mathbf h\|$, so it lies in the ball. On that segment, the one-variable function $s \mapsto f(\mathbf p_{j-1} + s\mathbf e_j)$ has derivative $\frac{\partial f}{\partial x_j}(\mathbf p_{j-1} + s\mathbf e_j)$, so the Mean Value Theorem gives a point $\mathbf q_j$ on the segment with $f(\mathbf p_j) - f(\mathbf p_{j-1}) = \frac{\partial f}{\partial x_j}(\mathbf q_j)\,h_j$ (if $h_j = 0$, take $\mathbf q_j := \mathbf p_{j-1}$). Summing the telescoping differences,
     $$r(\mathbf h) := f(\mathbf a + \mathbf h) - f(\mathbf a) - \sum_{j=1}^n \frac{\partial f}{\partial x_j}(\mathbf a)\,h_j = \sum_{j=1}^n \Big(\frac{\partial f}{\partial x_j}(\mathbf q_j) - \frac{\partial f}{\partial x_j}(\mathbf a)\Big)h_j.$$
     Since $|h_j| \le \|\mathbf h\|$, we get $|r(\mathbf h)| \le \|\mathbf h\|\sum_j \big|\frac{\partial f}{\partial x_j}(\mathbf q_j) - \frac{\partial f}{\partial x_j}(\mathbf a)\big|$. Given $\varepsilon > 0$, continuity of the $n$ partial derivatives at $\mathbf a$ gives $\delta \le \rho$ such that each term of the last sum is below $\varepsilon/n$ whenever $\|\mathbf q_j - \mathbf a\| < \delta$, which holds when $\|\mathbf h\| < \delta$. Hence $|r(\mathbf h)|/\|\mathbf h\| < \varepsilon$ for $0 < \|\mathbf h\| < \delta$. $\blacksquare$
@@ -1968,33 +1958,32 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-chain-rule -->
     ### The Chain Rule
 
     Chapter 15 composes nonlinear functions (for example, a measurement function applied to a predicted state). The chain rule says that the Jacobian of a composition is the product of the Jacobians.
 
-    /// important | 📐 **Theorem (Chain Rule in Several Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Chain Rule in Several Variables)**
+        attrs: {class: theorem, id: appc-thm-chain-rule-in-several-variables}
     Let $U \subseteq \mathbb R^n$ and $V \subseteq \mathbb R^m$ be open, let $g: U \to \mathbb R^m$ with $g(\mathbf x) \in V$ for every $\mathbf x \in U$, let $f: V \to \mathbb R^p$, and let $\mathbf a \in U$. If all partial derivatives of $g$ exist at $\mathbf a$ and $f$ is differentiable at $g(\mathbf a)$, then all partial derivatives of $f \circ g$ exist at $\mathbf a$, and
     $$\frac{\partial (f\circ g)_i}{\partial x_j}(\mathbf a) = \sum_{k=1}^m \frac{\partial f_i}{\partial y_k}\big(g(\mathbf a)\big)\,\frac{\partial g_k}{\partial x_j}(\mathbf a).$$
     In matrix form, $\mathbf J_{f\circ g}(\mathbf a) = \mathbf J_f\big(g(\mathbf a)\big)\,\mathbf J_g(\mathbf a)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Fix $j$, let $\mathbf b := g(\mathbf a)$, and let $\boldsymbol\gamma(s) := g(\mathbf a + s\mathbf e_j)$ for $s$ near $0$. Each coordinate $\gamma_k$ is differentiable at $0$ with $\gamma_k'(0) = \frac{\partial g_k}{\partial x_j}(\mathbf a)$, hence continuous at $0$. Write $f(\mathbf b + \mathbf k) = f(\mathbf b) + \mathbf J_f(\mathbf b)\mathbf k + \mathbf r(\mathbf k)$, and let $\rho(\mathbf k) := \|\mathbf r(\mathbf k)\|/\|\mathbf k\|$ for $\mathbf k \ne \mathbf 0$ and $\rho(\mathbf 0) := 0$. Differentiability of $f$ at $\mathbf b$ says that $\rho$ is continuous at $\mathbf 0$, and $\|\mathbf r(\mathbf k)\| = \rho(\mathbf k)\,\|\mathbf k\|$ for every $\mathbf k$ (including $\mathbf k = \mathbf 0$, where $\mathbf r(\mathbf 0) = \mathbf 0$). With $\mathbf k(s) := \boldsymbol\gamma(s) - \mathbf b$, for $s \ne 0$,
     $$\frac{f(\boldsymbol\gamma(s)) - f(\mathbf b)}{s} = \mathbf J_f(\mathbf b)\,\frac{\mathbf k(s)}{s} + \frac{\mathbf r(\mathbf k(s))}{s}.$$
     As $s \to 0$, the $i$-th coordinate of the first term, $\sum_k \frac{\partial f_i}{\partial y_k}(\mathbf b)\,\frac{k_k(s)}{s}$, tends to $\sum_k \frac{\partial f_i}{\partial y_k}(\mathbf b)\,\gamma_k'(0)$ by the limit laws. The second term has length $\rho(\mathbf k(s))\,\frac{\|\mathbf k(s)\|}{|s|} \le \rho(\mathbf k(s))\sum_k \frac{|k_k(s)|}{|s|}$. Here $\mathbf k(s) \to \mathbf 0$, so $\rho(\mathbf k(s)) \to 0$ by continuity of $\rho$ at $\mathbf 0$, while $\sum_k |k_k(s)/s| \to \sum_k|\gamma_k'(0)|$ stays bounded; so the second term tends to $\mathbf 0$. $\blacksquare$
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Linearization is local.** The first-order error is bounded by the second derivatives times the squared distance from the operating point. For the pendulum it is at most $\frac{(\theta - \theta_0)^2}{2}$ m, which is negligible near $\theta_0$ but can exceed the sensor noise once $|\theta - \theta_0|$ is more than about $0.3$ rad (try $\theta_0$ near $\pi/2$ in the figure above). An extended Kalman filter whose uncertainty is that large is linearizing in a region where the approximation fails ([Chapter 15](ch15_extended_kalman_filter.md)).
     - **Partial derivatives alone are not enough.** $\frac{xy}{x^2+y^2}$ has both partial derivatives at the origin but is not continuous there. The theorems above assume continuous partial derivatives, or differentiability.
     - **Jacobians are easy to get wrong** by a sign or a missing factor; a central-difference check like the one above catches most mistakes.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A partial derivative is an ordinary derivative in one coordinate with the others frozen. Arranging all of them in the Jacobian $\mathbf J_f(\mathbf a)$ gives the first-order Taylor approximation $f(\mathbf a + \mathbf h) \approx f(\mathbf a) + \mathbf J_f(\mathbf a)\mathbf h$, valid when the partial derivatives are continuous, and the Jacobian of a composition is the product of Jacobians.
     ///
     """)
@@ -2004,32 +1993,34 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-multiple-integrals -->
     ## Multiple Integrals
 
     [Chapter 5](ch5_random_variables.md) defines the normal density as $c\,e^{-x^2/2}$, where the constant $c$ must make the total probability $1$: $c = 1/\int_{-\infty}^\infty e^{-x^2/2}\,dx$. The Fundamental Theorem cannot compute this integral, because $e^{-x^2/2}$ has no antiderivative that can be written with finitely many elementary functions ([Wikipedia: Nonelementary integral](https://en.wikipedia.org/wiki/Nonelementary_integral)). The classic trick is to square the integral, which turns it into an integral over the plane, and then switch to polar coordinates, where an extra factor $r$ makes an antiderivative appear. Integrals over the plane are needed anyway: the joint density of two random variables is integrated over regions of $\mathbb R^2$.
 
+    <!-- label: appc-sec-integrals-over-boxes -->
     ### Integrals over Boxes
 
     A **box** in $\mathbb R^n$ is a set $B = [a_1, b_1] \times \cdots \times [a_n, b_n]$ with $a_i < b_i$. A **grid** on $B$ consists of a subdivision $P_i$ of each side $[a_i, b_i]$. It cuts $B$ into *cells*, each a product of one subinterval from every $P_i$, and the *volume* $\operatorname{vol}(C)$ of a cell $C$ is the product of its side lengths. The mesh of the grid is the largest mesh of the $P_i$. A tagged grid chooses a tag $\mathbf t_C \in C$ in every cell, and its Riemann sum is $R(f, P, \mathbf t) := \sum_C f(\mathbf t_C)\operatorname{vol}(C)$. Replacing tagged subdivisions by tagged grids in the definition of the {term}`Riemann integral` defines $\int_B f(\mathbf x)\,d\mathbf x$, also written $\iint_B f(x, y)\,d(x, y)$ when $n = 2$. For $n = 1$ nothing changes.
 
-    /// important | 📐 **Theorem (Continuous Functions on Boxes Are Integrable)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Continuous Functions on Boxes Are Integrable)**
+        attrs: {class: theorem, id: appc-thm-continuous-functions-on-boxes-are-integrable}
     Every continuous $f: B \to \mathbb R$ on a box $B \subseteq \mathbb R^n$ is Riemann integrable on $B$. The integral over boxes is linear and monotone, and if a box is cut into two boxes by a hyperplane $x_i = c$, the integral is the sum of the integrals over the two pieces.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not repeated here: the one-variable proofs (Cauchy Criterion for Integrals, Uniform Continuity on Closed Bounded Intervals, Continuous Functions Are Integrable, Properties of the Integral, Additivity over Intervals) carry over word for word. The two ingredients they need hold in $\mathbb R^n$: Bolzano–Weierstrass (apply the one-variable theorem to the first coordinates, then to the second coordinates of the resulting subsequence, and so on), and the fact that all the points of two grids together form a grid that refines both. See [Wikipedia: Multiple integral](https://en.wikipedia.org/wiki/Multiple_integral).
     ///
 
-    /// important | 📐 **Theorem (Fubini's Theorem for Continuous Functions on Rectangles)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Fubini's Theorem for Continuous Functions on Rectangles)**
+        attrs: {class: theorem, id: appc-thm-fubinis-theorem-for-continuous-functions-on-rectangles}
     Let $f: [a, b] \times [c, d] \to \mathbb R$ be continuous. Then $G(x) := \int_c^d f(x, y)\,dy$ is continuous on $[a, b]$, and
     $$\iint_{[a,b]\times[c,d]} f(x, y)\,d(x, y) = \int_a^b \left(\int_c^d f(x, y)\,dy\right)dx = \int_c^d \left(\int_a^b f(x, y)\,dx\right)dy.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $G$ is defined because $y \mapsto f(x, y)$ is continuous. By uniform continuity on the rectangle, for every $\varepsilon > 0$ there is $\delta > 0$ with $|f(x, y) - f(x', y)| < \frac{\varepsilon}{d - c}$ whenever $|x - x'| < \delta$, so $|G(x) - G(x')| \le \int_c^d |f(x, y) - f(x', y)|\,dy \le \varepsilon$; thus $G$ is continuous, hence integrable.
 
     For the equality, let $\varepsilon > 0$ and let $\delta$ be small enough for $\varepsilon/2$ both in the definition of the double integral and in the definition of $\int_a^b G$. Take a subdivision $a = x_0 < \cdots < x_N = b$ with tags $s_i$, and a subdivision $c = y_0 < \cdots < y_M = d$, both with mesh below $\delta$. For each $i$ and $j$, the Mean Value Theorem for Integrals, applied to the continuous function $y \mapsto f(s_i, y)$, gives $u_{ij} \in [y_{j-1}, y_j]$ with $\int_{y_{j-1}}^{y_j} f(s_i, y)\,dy = f(s_i, u_{ij})\,\Delta y_j$. By additivity,
@@ -2039,14 +2030,15 @@ def _(mo):
 
     By induction on the dimension, the integral of a continuous function over a box in $\mathbb R^n$ equals the iterated integral in any order of the coordinates.
 
+    <!-- label: appc-sec-integrals-over-the-whole-space -->
     ### Integrals over the Whole Space
 
     For a continuous $f: \mathbb R^n \to [0, \infty)$, the integrals $\int_{[-R, R]^n} f$ increase with $R$ (the larger box splits into the smaller one and pieces with nonnegative integrals), so by the lemma on monotone functions the limit
     $$\int_{\mathbb R^n} f(\mathbf x)\,d\mathbf x := \lim_{R\to\infty}\int_{[-R, R]^n} f(\mathbf x)\,d\mathbf x$$
     exists in $[0, \infty]$. For $n = 1$ it agrees with the improper integral $\int_{-\infty}^\infty f(x)\,dx$. The two theorems below are standard results of Lebesgue integration theory, which we state without proof. They are phrased with Lebesgue integrals; for the continuous functions in this book, every Lebesgue integral that also exists as an (improper) Riemann integral in the sense above has the same value ([Wikipedia: Lebesgue integral](https://en.wikipedia.org/wiki/Lebesgue_integral)).
 
-    /// important | 📐 **Theorem (Tonelli and Fubini)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Tonelli and Fubini)**
+        attrs: {class: theorem, id: appc-thm-tonelli-and-fubini}
     Let $D \subseteq \mathbb R^2$ be a closed set (for example $\mathbb R^2$ itself, a quadrant, a disk, or a triangle), and let $f: \mathbb R^2 \to \mathbb R$ be continuous on $D$ and $0$ outside $D$.
     1. *(Tonelli)* If $f \ge 0$, then in $[0, \infty]$,
     $$\int_{\mathbb R^2} f = \int_{-\infty}^\infty\left(\int_{-\infty}^\infty f(x, y)\,dy\right)dx = \int_{-\infty}^\infty\left(\int_{-\infty}^\infty f(x, y)\,dx\right)dy.$$
@@ -2056,7 +2048,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not proved here. For continuous functions on rectangles, this is the previous theorem; the general statements are Tonelli's and Fubini's theorems for the Lebesgue integral, which apply to every function of this form. See [Wikipedia: Fubini's theorem](https://en.wikipedia.org/wiki/Fubini%27s_theorem).
     ///
 
@@ -2064,29 +2056,29 @@ def _(mo):
     $$\int_{t_0}^{t_1}\left(\int_{t_0}^{t} f(s, t)\,ds\right)dt = \int_{t_0}^{t_1}\left(\int_{s}^{t_1} f(s, t)\,dt\right)ds.$$
     With $f(s, t) := g(s)$ for a continuous $g$, the inner integral on the right is $(t_1 - s)\,g(s)$, so $\int_{t_0}^{t_1}\int_{t_0}^{t} g(s)\,ds\,dt = \int_{t_0}^{t_1}(t_1 - s)\,g(s)\,ds$. This special case, used in [Chapter 14](ch14_kalman_filters_in_practice.md), also follows from integration by parts with $G(t) := \int_{t_0}^t g(s)\,ds$ and $t \mapsto t - t_1$.
 
-    /// important | 📐 **Theorem (Change of Variables)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Change of Variables)**
+        attrs: {class: theorem, id: appc-thm-change-of-variables}
     Let $U, V \subseteq \mathbb R^n$ be open, and let $T: U \to V$ be a bijection such that $T$ and $T^{-1}$ are continuously differentiable. Then for every continuous $f: V \to [0, \infty)$,
     $$\int_V f(\mathbf x)\,d\mathbf x = \int_U f\big(T(\mathbf u)\big)\,\big|\det \mathbf J_T(\mathbf u)\big|\,d\mathbf u,$$
-    where both sides are Lebesgue integrals with values in $[0, \infty]$, and $\det$ is the {term}`determinant` ([Appendix D: Determinants](appendix_d_linear_algebra.md)).
+    where both sides are Lebesgue integrals with values in $[0, \infty]$, and $\det$ is the {term}`determinant` ([Appendix D: Determinants](#appd-sec-determinants)).
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not proved here. See [Wikipedia: Integration by substitution, substitution for multiple variables](https://en.wikipedia.org/wiki/Integration_by_substitution#Substitution_for_multiple_variables). For $n = 1$ and an increasing $T$ it is the substitution rule of The Fundamental Theorem of Calculus.
     ///
 
     The factor $|\det\mathbf J_T|$ measures how $T$ stretches volume near $\mathbf u$: a tiny box of volume $v$ around $\mathbf u$ is mapped to a region of volume approximately $|\det\mathbf J_T(\mathbf u)|\,v$. For an affine map $T(\mathbf u) = \mathbf A\mathbf u + \mathbf b$ with an invertible matrix $\mathbf A$, the Jacobian is $\mathbf A$ everywhere, which [Chapter 12](ch12_vectors_matrices_covariance.md) uses for the multivariate normal density.
 
-    /// important | 📐 **Corollary (Polar Coordinates)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Polar Coordinates)**
+        attrs: {class: corollary, id: appc-cor-polar-coordinates}
     Let $f: \mathbb R^2 \to [0, \infty)$ be continuous and $0 < \rho \le \infty$, and let $D_\rho := \{(x, y) : x^2 + y^2 < \rho^2\}$ be the open disk of radius $\rho$ (with $D_\infty := \mathbb R^2$). Then
     $$\int_{D_\rho} f = \int_0^{2\pi}\left(\int_0^\rho f(r\cos\theta, r\sin\theta)\,r\,dr\right)d\theta.$$
     For $\rho = \infty$ the left side is $\int_{\mathbb R^2} f$ as defined above.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $T(r, \theta) := (r\cos\theta, r\sin\theta)$ on $U := (0, \rho) \times (0, 2\pi)$. By the cited facts about sine and cosine, $T$ is a bijection from $U$ onto $V := D_\rho$ minus the ray $\{(x, 0) : x \ge 0\}$, and its inverse is continuously differentiable (also cited). Its Jacobian determinant is
     $$\det\begin{bmatrix}\cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta\end{bmatrix} = r\cos^2\theta + r\sin^2\theta = r > 0.$$
     The removed ray has zero area (it can be covered by rectangles of arbitrarily small total area), so $\int_V f = \int_{D_\rho} f$. Apply Change of Variables, then Tonelli on $U$. $\blacksquare$
@@ -2098,15 +2090,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-the-gaussian-integral -->
     ### The Gaussian Integral
 
-    /// important | 📐 **Theorem (Gaussian Integral)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Gaussian Integral)**
+        attrs: {class: theorem, id: appc-thm-gaussian-integral}
     $$\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $I := \int_{-\infty}^\infty e^{-x^2/2}\,dx$, which converges by Gaussian Moments Converge, and $I_R := \int_{-R}^R e^{-x^2/2}\,dx$, so that $I_R \to I$ as $R \to \infty$. Let $f(x, y) := e^{-(x^2 + y^2)/2} = e^{-x^2/2}\,e^{-y^2/2}$, a positive continuous function.
 
     *Cartesian coordinates.* By Fubini on the square and linearity (the inner integral $I_R$ is a constant),
@@ -2120,8 +2113,8 @@ def _(mo):
     Hence $I^2 = 2\pi$. Since the integrand is positive, $I > 0$, so $I = \sqrt{2\pi}$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Normal Density Integrals)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Normal Density Integrals)**
+        attrs: {class: corollary, id: appc-cor-normal-density-integrals}
     For every $\mu \in \mathbb R$ and $\sigma > 0$:
     1. $\displaystyle\int_{-\infty}^\infty \frac{1}{\sigma\sqrt{2\pi}}\,e^{-(x-\mu)^2/(2\sigma^2)}\,dx = 1$.
     2. $\displaystyle\int_{-\infty}^\infty x\,e^{-x^2/2}\,dx = 0$.
@@ -2129,7 +2122,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     All three integrands are continuous, and the integrals converge absolutely by Gaussian Moments Converge (after the substitution below for part 1). By the substitution $x = -u$, the integral of an even integrand over $[-t, 0]$ equals its integral over $[0, t]$, and for an odd integrand it equals the negative.
     1. The substitution $x = \mu + \sigma u$ gives $\int_{\mu + \sigma s}^{\mu + \sigma t} e^{-(x-\mu)^2/(2\sigma^2)}\,dx = \sigma\int_s^t e^{-u^2/2}\,du$. Letting $s \to -\infty$ and $t \to \infty$, the left side tends to the integral in part 1 times $\sigma\sqrt{2\pi}$, and the right side to $\sigma\sqrt{2\pi}$ by the theorem.
     2. $\int_0^t x\,e^{-x^2/2}\,dx = 1 - e^{-t^2/2} \to 1$, and by oddness the left tail tends to $-1$. The sum is $0$.
@@ -2139,14 +2132,12 @@ def _(mo):
     Part 1 says that the {term}`normal distribution`'s density integrates to $1$ ([Chapter 5](ch5_random_variables.md)). Dividing parts 2 and 3 by $\sqrt{2\pi}$ shows that the standard normal distribution has mean $0$ and variance $1$ ([Chapter 6](ch6_expectation_and_variance.md)).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Fubini needs absolute integrability.** For $f(x, y) = \frac{x^2 - y^2}{(x^2 + y^2)^2}$ on $(0, 1]^2$, the inner integral is $\int_0^1 f(x, y)\,dy = \big[\frac{y}{x^2 + y^2}\big]_0^1 = \frac{1}{1 + x^2}$, so integrating $y$ first gives $\frac\pi4$, while integrating $x$ first gives $-\frac\pi4$ by the symmetry $f(y, x) = -f(x, y)$. Here $\iint |f| = \infty$.
     - **Change of variables needs a bijection with nonzero Jacobian determinant.** Letting $\theta$ run over $(0, 4\pi)$ would count every point twice, and the factor $r$ vanishes at $r = 0$, which is why $r = 0$ is excluded from $U$ (a set of zero area, so nothing is lost).
     - **No closed form for normal probabilities.** Because $e^{-x^2/2}$ has no elementary antiderivative, probabilities such as $\int_a^b e^{-x^2/2}\,dx/\sqrt{2\pi}$ are computed numerically (via the [error function](https://en.wikipedia.org/wiki/Error_function)), not by the Fundamental Theorem.
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Integrals over boxes are limits of Riemann sums over grids, and for continuous functions they can be computed one coordinate at a time (Fubini). Changing variables multiplies the integrand by $|\det\mathbf J_T|$; in polar coordinates that factor is $r$, which turns the squared Gaussian integral into an elementary one and proves $\int_{-\infty}^\infty e^{-x^2/2}\,dx = \sqrt{2\pi}$.
     ///
     """)
@@ -2156,6 +2147,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-linear-differential-equations -->
     ## Linear Differential Equations
 
     Before a sensor's voltage reaches an analog-to-digital converter, it often passes through an analog low-pass filter: a resistor $R_\Omega$ in series with a capacitor $C$. If $u(t)$ is the input voltage and $y(t)$ the capacitor voltage, the current through the resistor is $\frac{u - y}{R_\Omega}$, and it charges the capacitor at the rate $C\dot y$, so
@@ -2167,7 +2159,6 @@ def _(mo):
     Throughout this section the unknown is a function of time $t$, and $\dot x := \frac{dx}{dt}$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Differential equation**</u>
 
     Let $J$ be an interval with more than one point, $n \in \mathbb N^+$, and $F$ a given real-valued function of $n + 2$ real variables. The (ordinary) differential equation of order $n$
@@ -2179,14 +2170,14 @@ def _(mo):
     $$\dot x(t) = a\,x(t) + b\,u(t),$$
     where $a, b \in \mathbb R$ are constants and $u: J \to \mathbb R$ is a given input ([Chapter 10](ch10_process_models.md) calls it a {term}`control input`). Written as $F(t, x, \dot x) := \dot x - a x - b\,u(t) = 0$, it fits the definition with $n = 1$. "Linear" refers to the right side being a linear combination of $x$ and $u$. The case $u = 0$ was solved in Exponential and Logarithm: the only solutions are $x(t) = x(t_0)\,e^{a(t - t_0)}$.
 
-    /// important | 📐 **Theorem (Solution of the Linear Differential Equation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Solution of the Linear Differential Equation)**
+        attrs: {class: theorem, id: appc-thm-solution-of-the-linear-differential-equation}
     Let $J$ be an interval with more than one point, $t_0 \in J$, $a, b, x_0 \in \mathbb R$, and let $u: J \to \mathbb R$ be continuous. The differential equation $\dot x(t) = a\,x(t) + b\,u(t)$ has exactly one solution on $J$ with $x(t_0) = x_0$, namely
     $$x(t) = e^{a(t - t_0)}\,x_0 + \int_{t_0}^t e^{a(t - s)}\,b\,u(s)\,ds.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Any solution has this form.* Let $x$ be a solution and multiply the equation by the *integrating factor* $e^{-at}$. By the product rule,
     $$\frac{d}{dt}\Big(e^{-at}x(t)\Big) = e^{-at}\big(\dot x(t) - a\,x(t)\big) = e^{-at}\,b\,u(t).$$
     The right side is continuous, hence integrable on the interval between $t_0$ and $t$, so Part 2 of the Fundamental Theorem gives $e^{-at}x(t) - e^{-at_0}x_0 = \int_{t_0}^t e^{-as}\,b\,u(s)\,ds$. Multiplying by $e^{at}$ (a constant with respect to $s$) gives the formula.
@@ -2202,18 +2193,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-exact-discretization -->
     ### Exact Discretization
 
     A digital filter runs in steps of $\Delta t$, so we want a recursion for the samples $x_k := x(t_k)$ at $t_k := t_0 + k\,\Delta t$. Suppose the input is held constant during each sample period, $u(t) = u_k$ for $t_{k-1} < t \le t_k$ (a *zero-order hold*, which is what a digital-to-analog converter or a once-per-step control command produces). Such an input jumps at the sample times, so we solve one period at a time: on $[t_{k-1}, t_k]$, let $x$ be the solution of $\dot x = a\,x + b\,u_k$ that starts from the value $x(t_{k-1})$ reached at the end of the previous period.
 
-    /// important | 📐 **Theorem (Exact Discretization)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Exact Discretization)**
+        attrs: {class: theorem, id: appc-thm-exact-discretization}
     Under a zero-order hold, the samples satisfy exactly
     $$x_k = a_d\,x_{k-1} + b_d\,u_k, \qquad a_d := e^{a\Delta t}, \qquad b_d := \begin{cases} b\,\dfrac{e^{a\Delta t} - 1}{a} & a \ne 0, \\[1ex] b\,\Delta t & a = 0. \end{cases}$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Apply the previous theorem on $[t_{k-1}, t_k]$ with the constant input $u_k$: $x_k = e^{a\Delta t}x_{k-1} + \int_{t_{k-1}}^{t_k} e^{a(t_k - s)}\,b\,u_k\,ds$. The substitution $\sigma = t_k - s$ turns the integral into $b\,u_k\int_0^{\Delta t} e^{a\sigma}\,d\sigma$, which equals $b\,u_k\frac{e^{a\Delta t} - 1}{a}$ for $a \ne 0$ (antiderivative $e^{a\sigma}/a$) and $b\,u_k\,\Delta t$ for $a = 0$. $\blacksquare$
     ///
 
@@ -2278,10 +2270,9 @@ def _(graphic, mo, np, ode_ratio, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Vector states.** For a state vector $\mathbf x(t) \in \mathbb R^d$ and the system $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf B\mathbf u$, the same integrating-factor argument, with the {term}`matrix exponential` $e^{\mathbf A t}$ in place of $e^{at}$, gives $\mathbf x(t) = e^{\mathbf A(t - t_0)}\mathbf x_0 + \int_{t_0}^t e^{\mathbf A(t-s)}\mathbf B\,\mathbf u(s)\,ds$ and the exact discretization $\mathbf x_k = e^{\mathbf A\Delta t}\mathbf x_{k-1} + \big(\int_0^{\Delta t} e^{\mathbf A\sigma}\,d\sigma\big)\mathbf B\,\mathbf u_k$ under a zero-order hold. [Appendix D: The Matrix Exponential](appendix_d_linear_algebra.md) develops $e^{\mathbf A t}$, and Chapters 10 and 14 use these formulas.
+    **Vector states.** For a state vector $\mathbf x(t) \in \mathbb R^d$ and the system $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf B\mathbf u$, the same integrating-factor argument, with the {term}`matrix exponential` $e^{\mathbf A t}$ in place of $e^{at}$, gives $\mathbf x(t) = e^{\mathbf A(t - t_0)}\mathbf x_0 + \int_{t_0}^t e^{\mathbf A(t-s)}\mathbf B\,\mathbf u(s)\,ds$ and the exact discretization $\mathbf x_k = e^{\mathbf A\Delta t}\mathbf x_{k-1} + \big(\int_0^{\Delta t} e^{\mathbf A\sigma}\,d\sigma\big)\mathbf B\,\mathbf u_k$ under a zero-order hold. [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential) develops $e^{\mathbf A t}$, and Chapters 10 and 14 use these formulas.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The zero-order hold is an assumption.** If the input varies within a sample period (a measured acceleration, say), the recursion $x_k = a_d x_{k-1} + b_d u_k$ is only an approximation, whose error depends on how fast $u$ changes.
     - **Euler's method can be unstable.** For $a < 0$ the exact factor $e^{a\Delta t}$ always lies in $(0, 1)$, but Euler's factor $1 + a\Delta t$ is negative for $\Delta t > \tau$ and below $-1$ for $\Delta t > 2\tau$, where the recursion diverges like a geometric sequence with $|q| > 1$.
     - **Time-varying coefficients.** If $a$ depends on $t$, the same proof works with the integrating factor $e^{-\int_{t_0}^t a(s)\,ds}$.
@@ -2289,7 +2280,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The integrating factor $e^{-at}$ turns $\dot x = ax + bu$ into $\frac{d}{dt}(e^{-at}x) = e^{-at}bu$, which the Fundamental Theorem solves: $x(t) = e^{a(t-t_0)}x_0 + \int_{t_0}^t e^{a(t-s)}\,b\,u(s)\,ds$. Under a zero-order hold, the samples obey the exact recursion $x_k = e^{a\Delta t}x_{k-1} + b\frac{e^{a\Delta t} - 1}{a}u_k$. For an RC low-pass filter this recursion is precisely the EMA.
     ///
     """)
@@ -2299,6 +2289,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appc-sec-summary -->
     ## Summary
 
     - **Limits.** $a_n \to L$ means every tolerance $\varepsilon > 0$ is eventually met for good. Limit laws combine limits, and the completeness of $\mathbb R$ yields Monotone Convergence, Bolzano–Weierstrass, and the Cauchy criterion.
@@ -2309,6 +2300,7 @@ def _(mo):
     - **Several variables.** Partial derivatives, gradients, and Jacobians give the first-order Taylor approximation $f(\mathbf a + \mathbf h) \approx f(\mathbf a) + \mathbf J_f(\mathbf a)\mathbf h$, and the chain rule multiplies Jacobians. Fubini's theorem and polar coordinates prove $\int_{-\infty}^\infty e^{-x^2/2}\,dx = \sqrt{2\pi}$.
     - **Linear differential equations.** $\dot x = ax + bu$ has the solution $x(t) = e^{a(t-t_0)}x_0 + \int_{t_0}^t e^{a(t-s)}\,b\,u(s)\,ds$, whose exact discretization under a zero-order hold turns an RC low-pass filter into an EMA.
 
+    <!-- label: appc-sec-whats-next -->
     ## What's Next
 
     If you came here from a main-path chapter, return to it now: [Chapter 4](ch4_probability_spaces.md) uses Sequences and Limits and Series for countable additivity and the continuity of probability; [Chapter 5](ch5_random_variables.md) and [Chapter 6](ch6_expectation_and_variance.md) use the integrals and the Gaussian integral for densities and expectations; [Chapter 10](ch10_process_models.md) uses Linear Differential Equations; and [Chapter 15](ch15_extended_kalman_filter.md) uses Functions of Several Variables. The vector and matrix versions of these ideas, including the matrix exponential for $\dot{\mathbf x} = \mathbf A\mathbf x + \mathbf B\mathbf u$ and derivatives with respect to matrices for the Kalman gain, are in [Appendix D: Linear Algebra](appendix_d_linear_algebra.md).

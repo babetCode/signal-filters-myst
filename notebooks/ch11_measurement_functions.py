@@ -62,13 +62,12 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 5](ch5_random_variables.md): measurement noise and the normal distribution.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, $\operatorname{Var}(aX + b)$, variances and covariances of sums, and unbiased estimators.
     - [Chapter 7](ch7_optimal_alpha.md): the optimal gain by completing the square, and what correlated errors do to an average.
     - [Chapter 9](ch9_noise_levels.md): the scalar Kalman filter and the innovation variance.
     - [Chapter 10](ch10_process_models.md): system state, process model, and control input.
-    - [Appendix C: Functions of Several Variables](appendix_c_calculus.md) (optional; only for the partial-derivative route to the normal equations) and [Appendix C: Taylor's Theorem](appendix_c_calculus.md) (only for the preview of nonlinear measurement functions).
+    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) (optional; only for the partial-derivative route to the normal equations) and [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) (only for the preview of nonlinear measurement functions).
     ///
     """)
     return
@@ -82,7 +81,6 @@ def _(mo):
     The bridge between the two is a **measurement function**: the reading the sensor should produce for a given state. This chapter writes it down for the scale, estimates its unknown parameters from weights we know (calibration by least squares), and adds it to the Kalman filter. Along the way we meet a problem the scalar filter cannot solve. If the scale's offset drifts, it becomes a second unknown, and a reading cannot tell a heavier person on a scale with a low offset from a lighter person on a scale with a high one.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A measurement function $h$ predicts what the sensor should read for a given state. The filter compares the actual reading with that prediction and converts the surprise back into state units through the gain $K = P^-h/(h^2P^- + R)$. Errors in $h$ are not noise: they are bias, and no amount of averaging removes them.
     ///
     """)
@@ -92,6 +90,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-from-pounds-to-counts -->
     ## From Pounds to Counts
 
     A bathroom scale's load cells are strain gauges wired as a bridge whose output voltage is proportional to the force on the platform, plus a small imbalance even when the platform is empty. The HX711 converter samples that voltage at 10 or 80 SPS and outputs a 24-bit signed integer [@avia_hx711_datasheet]. Over the scale's working range the count is, to a good approximation, a straight-line function of the weight on the platform:
@@ -108,14 +107,12 @@ def _(mo):
     The straight line $x \mapsto hx + c$ is an example of the following idea.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Measurement function**</u>
 
     For a sensor that measures a system, the function $h$ that maps each possible state $x$ to the reading the sensor would produce in state $x$ if there were no noise.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Measurement model**</u>
 
     An equation that describes each measurement as the {term}`measurement function` of the state plus a random error:
@@ -131,12 +128,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-calibration-by-least-squares -->
     ## Calibration by Least Squares
 
     The manufacturer does not know $h$ and $c$ exactly: they vary from one load cell to the next. They have to be measured.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Calibration**</u>
 
     The process of estimating the unknown parameters of a sensor's measurement function (such as $h$ and $c$ in $z = hx + c + v$) from readings taken while the measured quantity has known values.
@@ -145,7 +142,6 @@ def _(mo):
     To calibrate the scale we place known weights on it: an empty platform and plates of $45$, $90$, and $135$ lb, taking $m$ readings each. That gives $n = 4m$ pairs $(x_i, z_i)$, where $x_i$ is the known plate weight and $z_i = h x_i + c + v_i$. Each pair alone is noisy. Which line fits all of them best? The standard answer is to make the misfits, squared, as small as possible.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Least squares**</u>
 
     A method of fitting a family of functions $g_\theta$, indexed by parameters $\theta$, to data pairs $(x_1, z_1), \ldots, (x_n, z_n)$: the *least-squares estimate* is a parameter value $\hat\theta$ that minimizes the sum of squared residuals
@@ -155,14 +151,14 @@ def _(mo):
     For a straight line, $\theta = (h, c)$ and $g_\theta(x) = hx + c$. Write
     $$\bar x := \frac1n\sum_{i=1}^n x_i, \qquad \bar z := \frac1n\sum_{i=1}^n z_i, \qquad S_{xx} := \sum_{i=1}^n (x_i - \bar x)^2, \qquad S_{xz} := \sum_{i=1}^n (x_i - \bar x)(z_i - \bar z).$$
 
-    /// important | 📐 **Theorem (Least-Squares Line)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Least-Squares Line)**
+        attrs: {class: theorem, id: ch11-thm-least-squares-line}
     If the $x_i$ are not all equal, then $J(h, c) = \sum_{i=1}^n (z_i - h x_i - c)^2$ has exactly one minimizer,
     $$\hat h = \frac{S_{xz}}{S_{xx}}, \qquad \hat c = \bar z - \hat h\,\bar x.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     We complete the square twice, first in $c$ and then in $h$, as Chapter 7 did for the gain.
 
     *Step 1 (best $c$ for a fixed $h$).* Let $r_i := z_i - h x_i$ and $\bar r := \frac1n\sum_i r_i = \bar z - h\bar x$. Then $r_i - c = (r_i - \bar r) + (\bar r - c)$, and since $\sum_i (r_i - \bar r) = 0$, the cross term vanishes:
@@ -176,16 +172,16 @@ def _(mo):
     *Conclusion.* For every $(h, c)$, $J(h, c) \ge J(h, \bar z - h\bar x) \ge J(\hat h, \bar z - \hat h\bar x) = J(\hat h, \hat c)$. Equality throughout requires $h = \hat h$ (Step 2) and then $c = \bar z - \hat h\bar x = \hat c$ (Step 1). $\blacksquare$
     ///
 
-    The same answer comes from calculus ([Appendix C: Functions of Several Variables](appendix_c_calculus.md)): at a minimum both partial derivatives vanish,
+    The same answer comes from calculus ([Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables)): at a minimum both partial derivatives vanish,
     $$\frac{\partial J}{\partial c} = -2\sum_{i=1}^n (z_i - h x_i - c) = 0, \qquad \frac{\partial J}{\partial h} = -2\sum_{i=1}^n x_i\,(z_i - h x_i - c) = 0.$$
-    These are the **normal equations**. Vanishing derivatives are only a *necessary* condition for a minimum; the proof above shows that here they are also sufficient. The name comes from geometry: the equations say that the list of residuals $(z_i - hx_i - c)_i$ has dot product $0$ with the lists $(1, \ldots, 1)$ and $(x_1, \ldots, x_n)$, that is, it is perpendicular ("normal") to both ([Appendix D: Vectors](appendix_d_linear_algebra.md)).
+    These are the **normal equations**. Vanishing derivatives are only a *necessary* condition for a minimum; the proof above shows that here they are also sufficient. The name comes from geometry: the equations say that the list of residuals $(z_i - hx_i - c)_i$ has dot product $0$ with the lists $(1, \ldots, 1)$ and $(x_1, \ldots, x_n)$, that is, it is perpendicular ("normal") to both ([Appendix D: Vectors](#appd-sec-vectors)).
     """)
     return
 
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def fit_line(x, z):
         """Least-squares line z ~ h x + c through the points (x_i, z_i).
 
@@ -208,14 +204,14 @@ def _(mo):
     mo.md(r"""
     How accurate is the calibration? The answer depends on the noise, on the number of readings, and on how spread out the plates are.
 
-    /// important | 📐 **Theorem (Accuracy of the Calibration)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Accuracy of the Calibration)**
+        attrs: {class: theorem, id: ch11-thm-accuracy-of-the-calibration}
     Suppose the plate weights $x_i$ are known exactly, not all equal, and $z_i = h x_i + c + v_i$, where the $v_i$ have mean $0$, variance $R$, and are pairwise {term}`uncorrelated`. Then $\hat h$ and $\hat c$ are {term}`unbiased`, and
     $$\operatorname{Var}(\hat h) = \frac{R}{S_{xx}}, \qquad \operatorname{Var}(\hat c) = R\Big(\frac1n + \frac{\bar x^2}{S_{xx}}\Big), \qquad \operatorname{Cov}(\hat h, \hat c) = -\frac{\bar x\,R}{S_{xx}}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $\sum_i (x_i - \bar x) = 0$, we have $S_{xz} = \sum_i (x_i - \bar x)\,z_i$ and $\sum_i (x_i - \bar x)\,x_i = S_{xx}$. Substituting $z_i = h x_i + c + v_i$,
     $$\hat h = \frac{1}{S_{xx}}\sum_{i=1}^n (x_i - \bar x)(h x_i + c + v_i) = h + \frac{1}{S_{xx}}\sum_{i=1}^n (x_i - \bar x)\,v_i.$$
     So $\mathbb E[\hat h] = h$, and, the $v_i$ being uncorrelated, $\operatorname{Var}(\hat h) = \frac{1}{S_{xx}^2}\sum_i (x_i - \bar x)^2 R = R/S_{xx}$ ([Chapter 6](ch6_expectation_and_variance.md)). Next, with $\bar v := \frac1n\sum_i v_i$, we have $\bar z = h\bar x + c + \bar v$, so
@@ -223,14 +219,14 @@ def _(mo):
     and $\mathbb E[\hat c] = c$. The covariance of $\bar v$ and $\hat h - h$ is $\frac{1}{n S_{xx}}\sum_i (x_i - \bar x)R = 0$. Hence $\operatorname{Var}(\hat c) = \operatorname{Var}(\bar v) + \bar x^2\operatorname{Var}(\hat h) = R/n + \bar x^2 R/S_{xx}$, and $\operatorname{Cov}(\hat h, \hat c) = \operatorname{Cov}(\hat h, \bar v) - \bar x\operatorname{Var}(\hat h) = -\bar x R/S_{xx}$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Calibration Error at a Given Weight)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Calibration Error at a Given Weight)**
+        attrs: {class: corollary, id: ch11-cor-calibration-error-at-a-given-weight}
     Under the same assumptions, the calibrated line's error at a weight $x$, $(\hat h x + \hat c) - (hx + c)$, has mean $0$ and variance
     $$R\Big(\frac1n + \frac{(x - \bar x)^2}{S_{xx}}\Big).$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The error is $(\hat h - h)x + (\hat c - c)$, with mean $0$ and variance $x^2\operatorname{Var}(\hat h) + \operatorname{Var}(\hat c) + 2x\operatorname{Cov}(\hat h, \hat c) = R\big(x^2 + \bar x^2 - 2x\bar x\big)/S_{xx} + R/n$. $\blacksquare$
     ///
 
@@ -344,7 +340,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The plate weights are exact.** Certified calibration weights are accurate to a tiny fraction of a percent. If the $x_i$ themselves have random errors, the fitted slope is biased toward $0$ ([Wikipedia: Errors-in-variables models](https://en.wikipedia.org/wiki/Errors-in-variables_models)).
     - **The noise has mean $0$, a common variance, and no correlation.** If some plates are read more noisily than others, least squares is still unbiased but no longer the most accurate; weighting each squared residual by the inverse of its noise variance is better ([Wikipedia: Weighted least squares](https://en.wikipedia.org/wiki/Weighted_least_squares)). If the offset drifts *during* the calibration, the readings share a slowly changing error, which biases $\hat c$, and the variance formulas no longer apply.
     - **The sensor is linear.** Real load cells deviate slightly from a straight line, and they show hysteresis (the reading depends on whether the load was increasing or decreasing) and creep (a slow drift under constant load). Use plates spanning the whole working range, since the corollary shows that extrapolation amplifies errors.
@@ -358,6 +353,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-filtering-in-counts -->
     ## Filtering in Counts
 
     Now let a person stand on the calibrated scale. For the moment we take $h$ and $c$ as known exactly; the next section relaxes this. The process model is that of a constant weight, $x_k = x_{k-1} + w_k$ with process-noise variance $Q$ ($Q = 0$ for someone standing perfectly still), and the measurement model is
@@ -366,8 +362,8 @@ def _(mo):
     $$\tilde y_k := z_k - (h\,\hat x_k^- + c), \qquad \hat x_k = \hat x_k^- + K_k\,\tilde y_k.$$
     The innovation is in counts and the estimate in pounds, so the gain $K_k$ is in pounds per count. Which gain is best?
 
-    /// important | 📐 **Theorem (Optimal Gain with a Measurement Function)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Optimal Gain with a Measurement Function)**
+        attrs: {class: theorem, id: ch11-thm-optimal-gain-with-a-measurement-function}
     Suppose the prediction error $e_k^- := \hat x_k^- - x_k$ has mean $0$ and variance $P_k^- > 0$, and the measurement noise $v_k$ has mean $0$, variance $R > 0$, and is uncorrelated with $e_k^-$. Then:
 
     1. For every gain $K$, the updated estimate is unbiased, with error variance
@@ -378,7 +374,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The estimation error is
     $$e_k = \hat x_k^- + K\big(h x_k + c + v_k - h\hat x_k^- - c\big) - x_k = e_k^- + K\,(v_k - h\,e_k^-) = (1 - Kh)\,e_k^- + K\,v_k.$$
     Its mean is $0$ by linearity, and since $e_k^-$ and $v_k$ are uncorrelated its variance is $(1 - Kh)^2 P_k^- + K^2 R$ ([Chapter 6](ch6_expectation_and_variance.md)). Expanding and completing the square in $K$, with $S := h^2 P_k^- + R > 0$,
@@ -390,13 +386,13 @@ def _(mo):
 
     In fact, filtering in counts is the same as converting to pounds first.
 
-    /// important | 📐 **Theorem (Filtering in Counts Equals Filtering in Pounds)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Filtering in Counts Equals Filtering in Pounds)**
+        attrs: {class: theorem, id: ch11-thm-filtering-in-counts-equals-filtering-in-pounds}
     Let $h \neq 0$. Running the filter above on the counts $z_k$ produces the same estimates and error variances as running Chapter 9's filter on the converted readings $y_k := (z_k - c)/h$ with measurement variance $R/h^2$, from the same $\hat x_0$ and $P_0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The two filters share the prediction step, so it suffices to show that one update step gives the same result from the same $\hat x_k^-$ and $P_k^-$; the claim then follows by induction on $k$. Chapter 9's gain for $y_k$ is $K' = P_k^-/(P_k^- + R/h^2)$, and its estimate is
     $$\hat x_k^- + K'\Big(\frac{z_k - c}{h} - \hat x_k^-\Big) = \hat x_k^- + \frac{K'}{h}\big(z_k - (h\hat x_k^- + c)\big).$$
     Now $K'/h = P_k^-/(hP_k^- + R/h) = hP_k^-/(h^2P_k^- + R) = K_k$, so the estimates agree, and $(1 - K')P_k^- = \frac{R/h^2}{P_k^- + R/h^2}P_k^- = \frac{P_k^- R}{h^2P_k^- + R} = P_k$. $\blacksquare$
@@ -409,7 +405,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def kalman_filter_counts(z, h, c, Q, R, x0, P0):
         """Scalar Kalman filter: x_k = x_{k-1} + w_k (lb), z_k = h x_k + c + v_k (counts)."""
         x_hat, P = float(x0), float(P0)
@@ -433,12 +429,12 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-sensor-bias-and-a-drifting-tare -->
     ## Sensor Bias and a Drifting Tare
 
     The filter above assumed that $h$ and $c$ are known. In reality we use the calibrated $\hat h$ and $\hat c$, and the true offset may since have moved: load cells and converters drift with temperature, and the platform's own weight can change (a bath mat left on it). The filter then interprets the readings with the wrong measurement function.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sensor bias**</u>
 
     Given the measurement function $h$ used to interpret a sensor, the sensor's *bias* at step $k$ is the mean difference between the actual reading and the reading $h$ predicts when the true state is $x_k$:
@@ -448,20 +444,20 @@ def _(mo):
 
     A bias is a property of the sensor *together with* the function we use to interpret it, just as {term}`estimator bias` in [Chapter 6](ch6_expectation_and_variance.md) is a property of an estimator. If the true readings are $z_k = h x_k + c + v_k$ with zero-mean $v_k$, but we interpret them with $x \mapsto \hat h x + \hat c$, the bias is $b_k = (h - \hat h)\,x_k + (c - \hat c)$: a gain error contributes a bias proportional to the weight, and an offset error a constant one.
 
-    /// important | 📐 **Theorem (Bias Does Not Average Out)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Bias Does Not Average Out)**
+        attrs: {class: theorem, id: ch11-thm-bias-does-not-average-out}
     Let the true readings of a constant weight $x$ be $z_k = h x + c + v_k$ with $\mathbb E[v_k] = 0$, and let the filter use $\hat h \neq 0$ and $\hat c$ with $Q = 0$ and first-measurement initialization. Then for every number of readings $N$,
     $$\mathbb E[\hat x_N] - x = \frac{(h - \hat h)\,x + (c - \hat c)}{\hat h}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the previous theorem, the filter's estimates are those of Chapter 9's filter applied to $y_k = (z_k - \hat c)/\hat h$. With $Q = 0$ and first-measurement initialization that filter's gains are $1/k$ ([Chapter 7](ch7_optimal_alpha.md), [Chapter 9](ch9_noise_levels.md)), so $\hat x_N$ is the average $\frac1N\sum_{k=1}^N y_k$. By linearity of expectation, $\mathbb E[\hat x_N] = (hx + c - \hat c)/\hat h$; subtract $x = \hat h x/\hat h$. $\blacksquare$
     ///
 
     The filter's reported variance $P_N$ shrinks like $1/N$, but the bias stays. The filter becomes *confidently wrong*. A 1% error in $h$ is an error of about 1.5 lb at 155 lb; an offset that has drifted by 10,000 counts is a 0.5 lb error for everyone.
 
-    The plot below filters 3 seconds of readings (30 samples at 10 SPS) from a 155 lb person, interpreted with the calibration from the previous plot; move the calibration sliders there and this plot changes too. The slider here shifts the true offset away from its calibrated value. The circles are the readings converted with the calibrated function, $(z_k - \hat c)/\hat h$; the right axis shows the corresponding counts. The filter starts with no information ($\hat x_0 = 0$, $P_0 = 10^6$ lb²), which is equivalent to first-measurement initialization.
+    The plot below filters 3 seconds of readings (30 samples at 10 SPS) from a 155 lb person, interpreted with the calibration from the previous plot; move the calibration sliders there and this plot changes too. The slider here shifts the true offset away from its calibrated value. The circles are the readings converted with the calibrated function, $(z_k - \hat c)/\hat h$; the right axis shows the corresponding counts. The filter starts with no information ($\hat x_0 = 0$, $P_0 = 10^6$ lb$^2$), which is equivalent to first-measurement initialization.
     """)
     return
 
@@ -514,7 +510,7 @@ def _(
     _fig.tight_layout()
 
     _text = mo.md(
-        f"After 3 s the filter reports **{_est[-1]:.2f} ± {2 * np.sqrt(_P[-1]):.2f} lb** (±2 s.d.); "
+        rf"After 3 s the filter reports **{_est[-1]:.2f} $\pm$ {2 * np.sqrt(_P[-1]):.2f} lb** ($\pm 2$ s.d.); "
         f"the true weight is 155 lb, an error of **{_est[-1] - _x_true:+.2f} lb**. "
         f"The bias predicted by the theorem is **{_bias:+.2f} lb**; the rest is noise."
     )
@@ -526,7 +522,6 @@ def _(
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The measurement function is known.** Calibration errors and offset drift are biases. They do not show up in $P_k$, so the filter reports more confidence than it deserves. Re-zeroing ("taring") the scale before each use removes offset drift; periodic recalibration catches changes in $h$.
     - **The noise is white with known variance $R$.** Body sway is slow, so consecutive readings share part of their error. As in [Chapter 7](ch7_optimal_alpha.md), ignoring that correlation makes the filter overconfident. Estimating $R$ from data ([Chapter 9](ch9_noise_levels.md)) at the sampling rate actually used helps; so does sampling more slowly.
     - **The sensor stays in its linear range.** The HX711's 24-bit output tops out at $2^{23} - 1 = 8{,}388{,}607$ counts, which on our scale is about $(8{,}388{,}607 - 85{,}000)/20{,}000 \approx 415$ lb. Beyond that every reading is the same, and the model fails silently.
@@ -538,6 +533,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-two-unknowns-one-reading -->
     ## Two Unknowns, One Reading
 
     Suppose the offset drifts enough that we cannot trust the last tare, and we try to estimate it along with the weight. Every reading of a person on the platform has the form $z = hx + c + v$. For any number $\delta$, the pair $(x + \delta,\; c - h\delta)$ predicts *exactly* the same reading as $(x, c)$:
@@ -587,7 +583,7 @@ def _(IMAGES_DIR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    What if the offset drifts *while* the person stands on the scale, as it might for a scale that monitors a patient's weight around the clock? Then there is no empty-platform reading to lean on, and treating the last tare value $\hat c$ as exact makes every converted reading $y_k = (z_k - \hat c)/h$ share the same error $(c - \hat c)/h$. If the tare is uncertain with variance $\sigma_c^2$ (in counts²), the average of $N$ converted readings has error variance
+    What if the offset drifts *while* the person stands on the scale, as it might for a scale that monitors a patient's weight around the clock? Then there is no empty-platform reading to lean on, and treating the last tare value $\hat c$ as exact makes every converted reading $y_k = (z_k - \hat c)/h$ share the same error $(c - \hat c)/h$. If the tare is uncertain with variance $\sigma_c^2$ (in counts$^2$), the average of $N$ converted readings has error variance
     $$\frac{\sigma_c^2}{h^2} + \frac{R}{N h^2},$$
     which never falls below $\sigma_c^2/h^2$. A scalar filter that ignores the shared error reports only the second term, exactly the overconfidence that [Chapter 7](ch7_optimal_alpha.md) predicted for correlated errors.
 
@@ -599,6 +595,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-sensors-that-measure-something-else -->
     ## Sensors That Measure Something Else
 
     In general a sensor reports some function of the state, $z_k = h(x_k) + v_k$, and $h$ need not be a straight line. Two examples we will meet again:
@@ -606,11 +603,11 @@ def _(mo):
     - **A swinging pendulum** ([Chapter 15](ch15_extended_kalman_filter.md)). The state is the angle $\theta$, but a camera reports the horizontal position of the bob, $h(\theta) = L\sin\theta$ for a rod of length $L$.
     - **An inertial sensor** ([Chapter 19](ch19_ahrs.md)). An accelerometer at rest reports gravity as seen in the sensor's own tilted axes, a nonlinear function of the attitude.
 
-    The gain formula needs a slope, and a curve has a different slope at each point. Near the prediction, the curve is close to its tangent line (first-order Taylor approximation, [Appendix C: Taylor's Theorem](appendix_c_calculus.md)):
+    The gain formula needs a slope, and a curve has a different slope at each point. Near the prediction, the curve is close to its tangent line (first-order Taylor approximation, [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem)):
     $$h(x) \approx h(\hat x_k^-) + h'(\hat x_k^-)\,(x - \hat x_k^-).$$
     This is a measurement function of this chapter's form, with sensitivity $h'(\hat x_k^-)$ and an offset chosen so that the line passes through $(\hat x_k^-, h(\hat x_k^-))$. So the natural filter uses the innovation $z_k - h(\hat x_k^-)$ and the gain $P_k^- h'(\hat x_k^-)\big/\big(h'(\hat x_k^-)^2 P_k^- + R\big)$. That is the extended Kalman filter of [Chapter 15](ch15_extended_kalman_filter.md), which also explains when the tangent line is a poor substitute.
 
-    The slope also tells us how informative a reading is. The figure shows $h(\theta) = \sin\theta$ (with $L = 1$ m) and readings with noise standard deviation $0.05$ m. Near $\theta = 30°$ the curve is steep, and the readings consistent with a given angle ($\pm 2$ standard deviations, shaded) correspond to a narrow range of angles. Near $\theta = 85°$ the curve is nearly flat, and the same reading is consistent with every angle from about $64°$ to $116°$. There the linearized gain is almost $0$, and rightly so: one reading cannot tell the angles apart, the same obstacle as the drifting offset, now caused by a flat slope instead of a second unknown.
+    The slope also tells us how informative a reading is. The figure shows $h(\theta) = \sin\theta$ (with $L = 1$ m) and readings with noise standard deviation $0.05$ m. Near $\theta = 30^\circ$ the curve is steep, and the readings consistent with a given angle ($\pm 2$ standard deviations, shaded) correspond to a narrow range of angles. Near $\theta = 85^\circ$ the curve is nearly flat, and the same reading is consistent with every angle from about $64^\circ$ to $116^\circ$. There the linearized gain is almost $0$, and rightly so: one reading cannot tell the angles apart, the same obstacle as the drifting offset, now caused by a flat slope instead of a second unknown.
     """)
     return
 
@@ -633,7 +630,7 @@ def _(IMAGES_DIR, np, plt):
     for _th0, _col in [(30.0, "C1"), (85.0, "C3")]:
         _z0 = np.sin(np.radians(_th0))
         _slope = np.cos(np.radians(_th0)) * np.pi / 180  # per degree
-        _ax.plot(_th, _z0 + _slope * (_th - _th0), color=_col, ls="--", lw=1.2, label=f"tangent at {_th0:.0f}°")
+        _ax.plot(_th, _z0 + _slope * (_th - _th0), color=_col, ls="--", lw=1.2, label=rf"tangent at {_th0:.0f}$^\circ$")
         _ax.axhspan(_z0 - 2 * _sig, _z0 + 2 * _sig, color=_col, alpha=0.12)
         _lo = np.degrees(np.arcsin(max(-1.0, _z0 - 2 * _sig)))
         _hi_val = _z0 + 2 * _sig
@@ -656,6 +653,7 @@ def _(IMAGES_DIR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch11-sec-summary -->
     ## Summary
 
     - A **measurement function** $h$ gives the reading a sensor would produce in each state; a **measurement model** $z_k = h(x_k) + v_k$ adds the noise. A bathroom scale's HX711 reports counts, $z = hx + c + v$, with sensitivity $h$ and offset $c$.
@@ -664,6 +662,7 @@ def _(mo):
     - **Sensor bias** (from calibration error or a drifting offset) does not average out, and the filter's $P_k$ does not include it.
     - A drifting offset is a second unknown that standing readings cannot separate from the weight; an empty-platform reading can. Likewise, a flat stretch of a nonlinear $h$ makes readings uninformative.
 
+    <!-- label: ch11-sec-whats-next -->
     ## What's Next
 
     Twice now one number has not been enough: Chapter 10's weight and rate, and this chapter's weight and offset. In both cases the uncertainties of the two unknowns are correlated, and the correlation is exactly what lets a filter learn about one unknown from a reading of the other. [Chapter 12](ch12_vectors_matrices_covariance.md) introduces the tools for this: random vectors, covariance matrices, and the multivariate normal distribution. It ends by showing that conditioning a joint normal distribution on a measurement is the Kalman update in disguise.

@@ -46,6 +46,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-motivation -->
     ## Motivation
 
     My goal for this project was to write an intuitive (and mostly rigorous) guide to Kalman filtering. I was inspired by *Kalman and Bayesian Filters in Python* [@labbe_kalman_filters], a fantastic book by Roger Labbe. However, I wanted to do a couple of things differently:
@@ -71,6 +72,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-guiding-principles -->
     ## Guiding Principles
 
     In my pursuit of a middle ground between introduction and textbook, I've made the following notes-to-self:
@@ -91,6 +93,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-definitions -->
     ### Definitions
 
     - Provide precise definitions whenever a word's intended meaning is different or more specific than its colloquial one.
@@ -98,7 +101,6 @@ def _(mo):
     - Each definition of a word is a set of requirements which are necessary and sufficient[^necessary-sufficient] to be in the category labeled by the word:
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Definition**</u>
     (Of a word or symbol) a set of requirements which are necessary and sufficient to be in the category labeled by the word or symbol.
     ///
@@ -111,6 +113,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-understanding -->
     ### Understanding
 
     - Order concepts by dependency so that nothing is used before it is introduced.
@@ -125,6 +128,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-prerequisites -->
     ### Prerequisites
 
     - Assume minimal knowledge from the reader; it is preferable to build all concepts from the ground up.
@@ -136,6 +140,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-concision -->
     ### Concision
 
     - Establish the key concept and its purpose up-front.
@@ -149,13 +154,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-how-this-book-is-organized -->
     ## How This Book Is Organized
 
-    The [Introduction](introduction.md) builds one idea through a sequence of simple examples: a filter forms a *prediction* of the true value, compares it with a new *measurement*, and moves its estimate toward the measurement by some weight, called α. Every filter we build in this book, up to and including the Kalman filter, has that shape. The rest of the book is organized into six parts, each answering one question about it:
+    The [Introduction](introduction.md) builds one idea through a sequence of simple examples: a filter forms a *prediction* of the true value, compares it with a new *measurement*, and moves its estimate toward the measurement by some weight, called $\alpha$. Every filter we build in this book, up to and including the Kalman filter, has that shape. The rest of the book is organized into six parts, each answering one question about it:
 
     | Part | Chapters | Question it answers |
-    |---|---|---|
-    | Part I: Choosing α | [1](ch1_language_of_logic.md)–[8](ch8_bayesian_view.md) | Given how noisy a prediction and a measurement are, how much weight should each get? |
+    |:---|:---|:---|
+    | Part I: Choosing Alpha | [1](ch1_language_of_logic.md)–[8](ch8_bayesian_view.md) | Given how noisy a prediction and a measurement are, how much weight should each get? |
     | Part II: The Scalar Kalman Filter | [9](ch9_noise_levels.md)–[11](ch11_measurement_functions.md) | How noisy are the prediction and the measurement, how should we predict, and what if the sensor measures something other than what we want to know? |
     | Part III: State Vectors | [12](ch12_vectors_matrices_covariance.md)–[14](ch14_kalman_filters_in_practice.md) | What if what we want to know can't be represented by a single number? |
     | Part IV: Nonlinearity | [15](ch15_extended_kalman_filter.md)–[16](ch16_unscented_kalman_filter.md) | What if it changes, or is measured, in nonlinear ways? |
@@ -170,6 +176,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-optional-appendices -->
     ### Optional Appendices
 
     The appendices build foundational material from the ground up that many readers will already know. You don't need to read them front to back: read a section when a Prerequisites box points to it and the material is new to you.
@@ -188,7 +195,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// tip | **Tips for reading online**
-        attrs: {class: no-icon}
     As you have likely already figured out if you are reading this on a computer with a cursor, you can hover over terms with a dotted underline to view information about them. The information may be a {term}`definition` or a [Wikipedia](https://en.wikipedia.org/wiki/Wikipedia) preview. If they are blue, you may also click on these terms to navigate to the source link as normal.
     ///
     """)
@@ -198,6 +204,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: index-sec-feedback -->
     ## Feedback
 
     If you have any questions, comments, or think you've found an error in this book, I'd love to know!

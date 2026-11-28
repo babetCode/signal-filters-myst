@@ -44,7 +44,7 @@ def imports():
 
 
 @app.cell
-def display_format(dedent, mo):
+def display_settings(dedent, mo):
     # jb: include=false
     mo.latex(dedent(
         r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}
@@ -60,7 +60,6 @@ def display_format(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Introduction](introduction.md): the notation $z_k$, $\hat x_k$, $\hat x_k^-$ and the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
     - [Appendix A: Formal Logic](appendix_a_formal_logic.md) (optional; the formal grammar, semantics, and deductive system behind this chapter).
     ///
@@ -74,7 +73,6 @@ def _(mo):
     A filter turns measurements $z_1, \ldots, z_k$ into estimates $\hat x_1, \ldots, \hat x_k$, and we want to know things about those estimates for certain: that an estimate never overshoots the measurement, that its error variance is as small as possible, that it settles down as data accumulates. "For certain" means *proved*. A proof is only as reliable as the statements it connects, so this chapter builds the language for writing statements with exactly one meaning, and the rules for proving them. Every later chapter is written in this language.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A mathematical statement has exactly one meaning, and a proof is a chain of steps, each justified by a rule that never leads from true statements to a false one.
     ///
 
@@ -86,6 +84,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-statements -->
     ## Statements
 
     Consider four lines of text[^informal-numbers]:
@@ -98,7 +97,6 @@ def _(mo):
     The first is true and the second is false. The third is a question, so it is neither. The fourth is neither true nor false *as written*: it becomes true or false only once we know which number $z$ is. We return to this kind of expression in Predicates and Variables below.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Statement**</u>
 
     A declarative sentence that is either true or false, but not both.
@@ -114,12 +112,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-connectives-and-truth-tables -->
     ## Connectives and Truth Tables
 
     Statements combine into compound statements using *connectives*. A connective's meaning is fixed completely by saying what truth value the compound statement has for each combination of truth values of its parts.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Truth table**</u>
 
     A table with one row for each way of assigning a truth value ($\text{T}$ or $\text{F}$) to each of the statement letters $P, Q, \ldots$ in a compound statement, listing the truth value of the compound statement under that assignment.
@@ -150,6 +148,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-vacuous-truth -->
     ### Vacuous Truth
 
     The last two rows of the conditional surprise most readers: when $P$ is false, $P \rightarrow Q$ is true whatever $Q$ is. Think of $P \rightarrow Q$ as a promise: "If it rains tomorrow, I will bring an umbrella." The promise is broken in exactly one situation: it rains and I don't bring one. If it doesn't rain, I have kept my promise whether or not I bring an umbrella. A conditional whose hypothesis is false is called *vacuously true*.
@@ -164,19 +163,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-necessary-and-sufficient-conditions -->
     ## Necessary and Sufficient Conditions
 
     When $P \rightarrow Q$ is true, knowing $P$ is enough to conclude $Q$, and $P$ cannot hold without $Q$ holding too. These two readings have names.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sufficient condition**</u>
 
     $P$ is a sufficient condition for $Q$ iff $P \rightarrow Q$ is true: whenever $P$ is true, $Q$ is true.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Necessary condition**</u>
 
     $Q$ is a necessary condition for $P$ iff $P \rightarrow Q$ is true: $P$ is never true while $Q$ is false.
@@ -194,12 +192,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-tautologies-and-logical-equivalence -->
     ## Tautologies and Logical Equivalence
 
     An expression built from statement letters with connectives, such as $\lnot(P \land Q)$, is a *statement form*. Replacing each letter by a statement turns it into a statement whose truth value depends only on the truth values substituted, so a truth table evaluates a statement form under every possible substitution at once. Some statement forms are true for reasons of form alone: $P \lor \lnot P$ is true whether $P$ is true or false.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Tautology**</u>
 
     A statement form that is true under every assignment of truth values to its statement letters.
@@ -208,7 +206,6 @@ def _(mo):
     A statement form that is false under every assignment, such as $P \land \lnot P$, is called a *contradiction*.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Logically equivalent**</u>
 
     Two statement forms $A$ and $B$ are logically equivalent, written $A \equiv B$, iff they have the same truth value under every assignment of truth values to their statement letters. Equivalently, $A \leftrightarrow B$ is a {term}`tautology`.
@@ -225,6 +222,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-the-laws-used-most -->
     ### The Laws Used Most
 
     1. **Double negation:** $\lnot\lnot P \equiv P$.
@@ -285,12 +283,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-contrapositive-versus-converse -->
     ### Contrapositive Versus Converse
 
     The *contrapositive* of $P \rightarrow Q$ is $\lnot Q \rightarrow \lnot P$, and law 4 says it is logically equivalent to the original. The *converse* of $P \rightarrow Q$ is $Q \rightarrow P$, and it is **not** equivalent: in the second table above, the columns $P \rightarrow Q$ and $Q \rightarrow P$ differ in the second and third rows. For example, "if $n$ is divisible by 4, then $n$ is even" is true for every integer $n$, but its converse "if $n$ is even, then $n$ is divisible by 4" is false for $n = 2$. Proving the converse of what was asked is one of the most common errors in mathematics.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A conditional and its contrapositive always have the same truth value. A conditional and its converse need not.
     ///
     """)
@@ -300,15 +298,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-try-it-truth-table-generator -->
     ### Try It: Truth-Table Generator
 
     Choose an example or type your own statement form in the letters $P$, $Q$, $R$. The generator builds the full truth table, one column per sub-form, and reports whether the form is a tautology, a contradiction, or neither. To test whether two forms $A$ and $B$ are logically equivalent, enter $A \leftrightarrow B$ and check whether it is a tautology. You can type the connectives as follows (spaces are optional):
 
-    - $\lnot$: `~`, `!`, `¬`, or `not`
-    - $\land$: `&`, `∧`, or `and`
-    - $\lor$: `|`, `∨`, or `or`
-    - $\rightarrow$: `->`, `=>`, `→`, or `implies`
-    - $\leftrightarrow$: `<->`, `<=>`, `↔`, or `iff`
+    - $\lnot$: `~`, `!`, or `not`
+    - $\land$: `&` or `and`
+    - $\lor$: `|` or `or`
+    - $\rightarrow$: `->`, `=>`, or `implies`
+    - $\leftrightarrow$: `<->`, `<=>`, or `iff`
 
     Parentheses group as usual, and the precedence rules from Connectives and Truth Tables apply; a chain $P \rightarrow Q \rightarrow R$ is read $P \rightarrow (Q \rightarrow R)$. The input is read by a small parser that only understands these symbols; it never runs your text as code.
     """)
@@ -323,12 +322,12 @@ def truth_table_engine():
     TT_LETTERS = ("P", "Q", "R")
     _SYMBOLS = (
         ("<->", "iff"), ("<=>", "iff"), ("->", "imp"), ("=>", "imp"),
-        ("¬", "not"), ("~", "not"), ("!", "not"),
-        ("∧", "and"), ("&", "and"), ("∨", "or"), ("|", "or"),
-        ("→", "imp"), ("↔", "iff"), ("(", "("), (")", ")"),
+        ("~", "not"), ("!", "not"),
+        ("&", "and"), ("|", "or"),
+        ("(", "("), (")", ")"),
     )
     _WORDS = {"not": "not", "and": "and", "or": "or", "implies": "imp", "iff": "iff"}
-    _SHOW = {"not": "¬", "and": "∧", "or": "∨", "imp": "→", "iff": "↔", "(": "(", ")": ")"}
+    _SHOW = {"not": "~", "and": "&", "or": "|", "imp": "->", "iff": "<->", "(": "(", ")": ")"}
     _TEX = {"and": r"\land", "or": r"\lor", "imp": r"\rightarrow", "iff": r"\leftrightarrow"}
 
     def tt_tokenize(text):
@@ -508,17 +507,17 @@ def truth_table_engine():
 def _(mo):
     tt_preset = mo.ui.dropdown(
         options={
-            "Conditional: P → Q": "P -> Q",
-            "Contrapositive: (P → Q) ↔ (¬Q → ¬P)": "(P -> Q) <-> (~Q -> ~P)",
-            "Converse: (P → Q) ↔ (Q → P)": "(P -> Q) <-> (Q -> P)",
-            "De Morgan: ¬(P ∧ Q) ↔ (¬P ∨ ¬Q)": "~(P & Q) <-> (~P | ~Q)",
-            "Distributive: P ∧ (Q ∨ R) ↔ (P ∧ Q) ∨ (P ∧ R)": "P & (Q | R) <-> (P & Q) | (P & R)",
-            "Excluded middle: P ∨ ¬P": "P | ~P",
-            "Contradiction: P ∧ ¬P": "P & ~P",
-            "Proof by cases: ((P ∨ Q) ∧ (P → R) ∧ (Q → R)) → R": "((P | Q) & (P -> R) & (Q -> R)) -> R",
-            "Proof by contradiction: (¬P → (Q ∧ ¬Q)) → P": "(~P -> (Q & ~Q)) -> P",
+            "Conditional": "P -> Q",
+            "Contrapositive": "(P -> Q) <-> (~Q -> ~P)",
+            "Converse": "(P -> Q) <-> (Q -> P)",
+            "De Morgan's law": "~(P & Q) <-> (~P | ~Q)",
+            "Distributive law": "P & (Q | R) <-> (P & Q) | (P & R)",
+            "Excluded middle": "P | ~P",
+            "Contradiction": "P & ~P",
+            "Proof by cases": "((P | Q) & (P -> R) & (Q -> R)) -> R",
+            "Proof by contradiction": "(~P -> (Q & ~Q)) -> P",
         },
-        value="Contrapositive: (P → Q) ↔ (¬Q → ¬P)",
+        value="Contrapositive",
         label="Example",
     )
     return (tt_preset,)
@@ -539,6 +538,7 @@ def _(mo, truth_table_markdown, tt_formula, tt_preset):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-predicates-and-variables -->
     ## Predicates and Variables
 
     The expression "$z > 150$" from the start of the chapter is not a statement, because $z$ has no fixed value. Once a value is supplied it becomes one: with $z = 155.3$ it is true, with $z = 149$ it is false.
@@ -546,7 +546,6 @@ def _(mo):
     A *variable* is a symbol, such as $x$, $z$, or $n$, that stands for an unspecified object. The objects a variable may stand for form the *domain of discourse*, which must be stated (or clear from context) before an expression involving variables has a meaning. (This is unrelated to the {term}`domain` of a function, defined in [Chapter 2](ch2_axioms_of_set_theory.md).)
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Predicate**</u>
 
     An expression containing one or more variables that becomes a {term}`statement` whenever each of its variables is replaced by a name of an object in the domain of discourse.
@@ -562,12 +561,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-quantifiers -->
     ## Quantifiers
 
     There are two ways to turn a predicate into a statement without choosing values for its variables: claim that it holds for every object, or that it holds for at least one.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Quantifier**</u>
 
     Either of the symbols $\forall$ ("for all") and $\exists$ ("there exists"), which form statements from a {term}`predicate` $P(x)$ as follows:
@@ -578,7 +577,7 @@ def _(mo):
 
     $\forall$ is the *universal* quantifier and $\exists$ the *existential* quantifier. The truth value depends on the domain of discourse: $\exists x\,(x \cdot x = 2)$ is false when $x$ ranges over the rational numbers and true when it ranges over the real numbers. The domain of discourse is always assumed to contain at least one object.
 
-    In $\forall x\, P(x)$, the variable $x$ is *bound* by the quantifier: the statement is about the whole domain of discourse, not about some particular $x$. Renaming a bound variable to a letter not already in use does not change the meaning, so $\forall x\, P(x)$ and $\forall y\, P(y)$ say the same thing. A variable that is not bound is *free*, and a predicate's free variables are the ones still waiting for values. Precise definitions of {term}`free <free variable>` and {term}`bound variables <bound variable>` are in [Appendix A: Formal Syntax](appendix_a_formal_logic.md).
+    In $\forall x\, P(x)$, the variable $x$ is *bound* by the quantifier: the statement is about the whole domain of discourse, not about some particular $x$. Renaming a bound variable to a letter not already in use does not change the meaning, so $\forall x\, P(x)$ and $\forall y\, P(y)$ say the same thing. A variable that is not bound is *free*, and a predicate's free variables are the ones still waiting for values. Precise definitions of {term}`free <free variable>` and {term}`bound variables <bound variable>` are in [Appendix A: Formal Syntax](#appa-sec-formal-syntax).
     """)
     return
 
@@ -586,6 +585,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-order-matters -->
     ### Order Matters
 
     Let the domain of discourse be the natural numbers $0, 1, 2, \ldots$, and compare
@@ -594,13 +594,14 @@ def _(mo):
 
     The first says every natural number has a larger one. It is true: for each $n$, take $m = n + 1$. The second says some single natural number is larger than every natural number, itself included. It is false: no $m$ satisfies $m > m$. The difference is what may depend on what. In $\forall n\, \exists m$, the $m$ may be chosen *after* $n$, so it may depend on $n$. In $\exists m\, \forall n$, one $m$ must work for every $n$. Quantifiers of the same kind do commute: $\forall x\, \forall y\, P(x, y)$ and $\forall y\, \forall x\, P(x, y)$ both say $P(a, b)$ holds for every pair of objects, and similarly for $\exists$.
 
+    <!-- label: ch1-sec-negating-quantified-statements -->
     ### Negating Quantified Statements
 
     $\forall x\, P(x)$ is false iff $P(a)$ is false for at least one $a$, that is, iff $\exists x\, \lnot P(x)$ is true. Likewise, $\exists x\, P(x)$ is false iff $P(a)$ is false for every $a$, that is, iff $\forall x\, \lnot P(x)$ is true. So
 
     $$\lnot \forall x\, P(x) \equiv \exists x\, \lnot P(x), \qquad \lnot \exists x\, P(x) \equiv \forall x\, \lnot P(x),$$
 
-    where $\equiv$ now means "has the same truth value for every domain of discourse and every predicate $P$" (made precise in [Appendix A: Formal Semantics](appendix_a_formal_logic.md)). Pushing $\lnot$ past a quantifier flips the quantifier. Applied repeatedly, this negates any statement mechanically:
+    where $\equiv$ now means "has the same truth value for every domain of discourse and every predicate $P$" (made precise in [Appendix A: Formal Semantics](#appa-sec-formal-semantics)). Pushing $\lnot$ past a quantifier flips the quantifier. Applied repeatedly, this negates any statement mechanically:
 
     $$\lnot \forall n\, \exists m\, (m > n) \equiv \exists n\, \lnot \exists m\, (m > n) \equiv \exists n\, \forall m\, \lnot(m > n) \equiv \exists n\, \forall m\, (m \le n).$$
 
@@ -612,6 +613,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-bounded-quantifiers -->
     ### Bounded Quantifiers
 
     Most quantifiers in mathematics range over part of the domain of discourse: "every element of the set $A$"[^informal-sets], or "every $\varepsilon > 0$". These are abbreviations:
@@ -636,13 +638,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-example-convergence-of-a-filter -->
     ### Example: Convergence of a Filter
 
     Suppose a filter estimates a constant true value $x$, producing estimates $\hat x_1, \hat x_2, \ldots$. With $\varepsilon$ ranging over real numbers and $K, k$ over step numbers, "the estimates converge to $x$" means
 
     $$\forall \varepsilon > 0\;\, \exists K\;\, \forall k \ge K\;\, (x - \varepsilon < \hat x_k < x + \varepsilon):$$
 
-    for every tolerance $\varepsilon$, however small, there is a step $K$ after which every estimate is within $\varepsilon$ of $x$. The step $K$ may depend on $\varepsilon$; smaller tolerances may take longer to reach. ([Appendix C: Sequences and Limits](appendix_c_calculus.md) studies this definition.)
+    for every tolerance $\varepsilon$, however small, there is a step $K$ after which every estimate is within $\varepsilon$ of $x$. The step $K$ may depend on $\varepsilon$; smaller tolerances may take longer to reach. ([Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) studies this definition.)
 
     *Swapping the quantifiers* gives $\exists K\;\, \forall \varepsilon > 0\;\, \forall k \ge K\;\, (x - \varepsilon < \hat x_k < x + \varepsilon)$: one step $K$ works for every tolerance. Then each $\hat x_k$ with $k \ge K$ is within *every* positive distance of $x$, so $\hat x_k = x$ exactly. That is a far stronger claim, which no filter fed noisy measurements can be expected to satisfy.
 
@@ -658,6 +661,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-unique-existence -->
     ### Unique Existence
 
     "There exists exactly one $x$ such that $P(x)$" is written $\exists! x\, P(x)$ and abbreviates
@@ -672,6 +676,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-definitions-and-longleftrightarrow -->
     ## Definitions: $:=$ and $:\Longleftrightarrow$
 
     A definition introduces a new symbol or word as an abbreviation for something already meaningful. There are two kinds.
@@ -681,7 +686,7 @@ def _(mo):
 
     Both $:=$ and $:\Longleftrightarrow$ belong to the metalanguage. The symbols $=$ and $\leftrightarrow$ appear *inside* statements and make claims; $:=$ and $:\Longleftrightarrow$ are announcements about notation and make no claim at all. A definition of a property is a biconditional, so it gives a condition that is necessary and sufficient for the property, exactly the test a {term}`definition` must pass. (Many texts write "if" in definitions where "iff" is meant; this book always means "iff".)
 
-    Naming an object with $:=$ requires that the right side names exactly one object. When an object is *described* by a property ("the set with no elements"), the $\exists!$ statement must be proved before the name may be used; [Chapter 2](ch2_axioms_of_set_theory.md) does exactly this. Because every defined symbol can be replaced by its definition, definitions add convenience but no new assumptions. [Appendix A: Extension by Definitions](appendix_a_formal_logic.md) proves this.
+    Naming an object with $:=$ requires that the right side names exactly one object. When an object is *described* by a property ("the set with no elements"), the $\exists!$ statement must be proved before the name may be used; [Chapter 2](ch2_axioms_of_set_theory.md) does exactly this. Because every defined symbol can be replaced by its definition, definitions add convenience but no new assumptions. [Appendix A: Extension by Definitions](#appa-sec-extension-by-definitions) proves this.
     """)
     return
 
@@ -689,18 +694,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-axioms-theorems-and-proofs -->
     ## Axioms, Theorems, and Proofs
 
     Mathematics sorts true statements by *how* they are known to be true. A few are assumed; everything else is proved from them.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Axiom**</u>
 
     A {term}`statement` assumed without proof as one of the starting points of a mathematical theory, where a *theory* is the subject determined by a chosen list of axioms.
     ///
 
-    For example, set theory (ZFC) is determined by the axioms in [Chapter 2](ch2_axioms_of_set_theory.md), and the theory of complete ordered fields by the axioms in [Chapter 3](ch3_sets_for_probability.md). An axiom is not claimed to be "self-evident", only assumed. Whether it is actually true depends on what objects we interpret it to be about. For instance, the axioms of a complete ordered field are all true of the real numbers, but not all true of the rational numbers. A theorem of the theory is then guaranteed to be true of any objects of which all the axioms are true. [Appendix A: Theories and Logical Consequence](appendix_a_formal_logic.md) makes this precise.
+    For example, set theory (ZFC) is determined by the axioms in [Chapter 2](ch2_axioms_of_set_theory.md), and the theory of complete ordered fields by the axioms in [Chapter 3](ch3_sets_for_probability.md). An axiom is not claimed to be "self-evident", only assumed. Whether it is actually true depends on what objects we interpret it to be about. For instance, the axioms of a complete ordered field are all true of the real numbers, but not all true of the rational numbers. A theorem of the theory is then guaranteed to be true of any objects of which all the axioms are true. [Appendix A: Theories and Logical Consequence](#appa-sec-theories-and-logical-consequence) makes this precise.
     """)
     return
 
@@ -708,6 +713,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-rules-of-inference -->
     ### Rules of Inference
 
     A *rule of inference* licenses writing down a conclusion once certain premises have been established. A rule is *valid* if it never leads from true premises to a false conclusion: in every situation in which all of its premises are true, its conclusion is true. The proofs in this book use these valid rules:
@@ -721,13 +727,12 @@ def _(mo):
     7. **Existential instantiation:** from $\exists x\, P(x)$, introduce a *new* name $c$ for an object with $P(c)$. The name $c$ must not already be in use, and the final conclusion must not mention $c$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Proof**</u>
 
     A proof of a statement $S$ in a theory is a finite sequence of statements ending with $S$, in which every statement is an {term}`axiom` of the theory, a statement proved earlier, an instance of a definition, an assumption in force, or the conclusion of a valid rule of inference applied to earlier statements in the sequence.
     ///
 
-    Proofs in this book are *rigorous informal arguments*: written in English and standard notation, with each step justified by a rule above, a definition, an axiom, or an earlier result, and with routine steps combined when the justification is clear. Each could be expanded into a fully formal proof, a sequence of formulas that a computer could check, in the deductive system of [Appendix A: Formal Proofs](appendix_a_formal_logic.md). The Soundness and Completeness Theorem stated there shows that formal proofs establish exactly the statements that are true in every situation where the axioms are true.
+    Proofs in this book are *rigorous informal arguments*: written in English and standard notation, with each step justified by a rule above, a definition, an axiom, or an earlier result, and with routine steps combined when the justification is clear. Each could be expanded into a fully formal proof, a sequence of formulas that a computer could check, in the deductive system of [Appendix A: Formal Proofs](#appa-sec-formal-proofs). The Soundness and Completeness Theorem stated there shows that formal proofs establish exactly the statements that are true in every situation where the axioms are true.
     """)
     return
 
@@ -735,24 +740,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-theorems-lemmas-and-corollaries -->
     ### Theorems, Lemmas, and Corollaries
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Theorem**</u>
 
     A {term}`statement` that has a {term}`proof` from the axioms of the theory under consideration.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Lemma**</u>
 
     A {term}`theorem` proved mainly in order to be used in proving other theorems.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Corollary**</u>
 
     A {term}`theorem` that follows from a preceding theorem by a short additional argument.
@@ -760,13 +763,13 @@ def _(mo):
 
     The laws of logic proved by truth tables earlier are theorems of logic alone, true in every theory. The labels Lemma and Corollary describe a theorem's role, not its importance. This book displays results and their proofs in boxes like these:
 
-    /// important | 📐 **Theorem (Name)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Name)**
+        attrs: {class: theorem, id: ch1-thm-name}
     The statement being proved.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The argument, ending with the symbol $\blacksquare$, which marks the end of a proof. $\blacksquare$
     ///
 
@@ -778,35 +781,38 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-proof-techniques -->
     ## Proof Techniques
 
     Each technique below is a pattern of the rules of inference, justified by a tautology. The examples use the integers and real numbers informally, together with the definitions of even and odd from Definitions above. The last technique in common use, proof by induction, needs the natural numbers and appears in [Chapter 2](ch2_axioms_of_set_theory.md).
 
+    <!-- label: ch1-sec-direct-proof -->
     ### Direct Proof
 
     To prove $\forall x\,(P(x) \rightarrow Q(x))$: let $x$ be arbitrary, assume $P(x)$, and derive $Q(x)$. This is conditional proof followed by universal generalization.
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Squares of Even Integers)**
+        attrs: {class: theorem, id: ch1-thm-squares-of-even-integers}
     For every integer $n$, if $n$ is even, then $n^2$ is even.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $n$ be an arbitrary integer, and assume $n$ is even. By the definition of even, there is an integer $m$ with $n = 2m$ (existential instantiation). Then $n^2 = 4m^2 = 2(2m^2)$, and $2m^2$ is an integer, so $n^2$ is even by the definition of even (existential generalization, with $2m^2$ as the witness). Since $n$ was arbitrary, the statement holds for every integer. $\blacksquare$
     ///
 
+    <!-- label: ch1-sec-proof-by-contrapositive -->
     ### Proof by Contrapositive
 
     Since $P \rightarrow Q \equiv \lnot Q \rightarrow \lnot P$, we may prove $\lnot Q \rightarrow \lnot P$ directly instead. This helps when $\lnot Q$ gives more to work with than $P$ does.
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (A Sum of at Least Two)**
+        attrs: {class: theorem, id: ch1-thm-a-sum-of-at-least-two}
     For all real numbers $x$ and $y$, if $x + y \ge 2$, then $x \ge 1$ or $y \ge 1$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $x$ and $y$ be arbitrary real numbers. We prove the contrapositive. By De Morgan's law, the negation of "$x \ge 1$ or $y \ge 1$" is "$x < 1$ and $y < 1$". Assume this. Adding the two inequalities gives $x + y < 2$, which is the negation of $x + y \ge 2$. $\blacksquare$
     ///
     """)
@@ -816,33 +822,35 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-proof-by-contradiction -->
     ### Proof by Contradiction
 
     To prove $S$: assume $\lnot S$ and derive a contradiction, a statement of the form $Q \land \lnot Q$. This is justified by the tautology $\big(\lnot S \rightarrow (Q \land \lnot Q)\big) \rightarrow S$: conditional proof establishes $\lnot S \rightarrow (Q \land \lnot Q)$, and modus ponens then gives $S$. (If $S$ were false, the hypothesis $\lnot S$ would be true and the conclusion $Q \land \lnot Q$ false, so $\lnot S \rightarrow (Q \land \lnot Q)$ would be false.)
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (No Smallest Positive Real Number)**
+        attrs: {class: theorem, id: ch1-thm-no-smallest-positive-real-number}
     There is no smallest positive real number: $\lnot\, \exists \varepsilon > 0\;\, \forall \delta > 0\;\, (\varepsilon \le \delta)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose, for contradiction, that some $\varepsilon > 0$ satisfies $\varepsilon \le \delta$ for every $\delta > 0$. Since $\varepsilon > 0$, also $\varepsilon/2 > 0$, so taking $\delta = \varepsilon/2$ gives $\varepsilon \le \varepsilon/2$. Subtracting $\varepsilon/2$ from both sides gives $\varepsilon/2 \le 0$, so $\varepsilon \le 0$, contradicting $\varepsilon > 0$. $\blacksquare$
     ///
 
     This is why statements about accuracy, like the convergence example above, quantify over *every* tolerance $\varepsilon > 0$: there is no smallest one to check instead.
 
+    <!-- label: ch1-sec-proof-by-cases -->
     ### Proof by Cases
 
     If $P \lor Q$ is known, and both $P \rightarrow R$ and $Q \rightarrow R$ are proved, then $R$ follows. The justifying tautology is $\big((P \lor Q) \land (P \rightarrow R) \land (Q \rightarrow R)\big) \rightarrow R$. The cases must be *exhaustive*: at least one of them must hold.
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Squares Are Nonnegative)**
+        attrs: {class: theorem, id: ch1-thm-squares-are-nonnegative}
     For every real number $x$, $x^2 \ge 0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $x$ be an arbitrary real number. Either $x \ge 0$ or $x < 0$.
 
     - *Case $x \ge 0$:* a product of two non-negative numbers is non-negative, so $x^2 = x \cdot x \ge 0$.
@@ -857,56 +865,58 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-proving-existence-by-example -->
     ### Proving Existence by Example
 
     To prove $\exists x\, P(x)$, exhibit one object $a$ and verify $P(a)$ (existential generalization).
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (A Solution of $n^2 = n + 2$)**
+        attrs: {class: theorem, id: ch1-thm-a-solution-of-n-2-n-2}
     There is a natural number $n$ with $n^2 = n + 2$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Take $n = 2$: $n^2 = 4 = 2 + 2 = n + 2$. $\blacksquare$
     ///
 
     The reverse does not work: checking examples, however many, never proves a universal statement about infinitely many objects. The expression $n^2 + n + 41$ is prime for every $n = 0, 1, \ldots, 39$, yet at $n = 40$ it equals $1681 = 41^2$.
 
+    <!-- label: ch1-sec-disproving-a-universal-statement-by-counterexample -->
     ### Disproving a Universal Statement by Counterexample
 
     Since $\lnot \forall x\, P(x) \equiv \exists x\, \lnot P(x)$, a universal statement is disproved by exhibiting one object for which it fails.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Counterexample**</u>
 
     For a statement $\forall x\, P(x)$, an object $a$ in the domain of discourse such that $P(a)$ is false. (For a bounded statement $\forallin{x}{A} P(x)$, the object must also satisfy $a \in A$.)
     ///
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Squaring Does Not Distribute over Addition)**
+        attrs: {class: theorem, id: ch1-thm-squaring-does-not-distribute-over-addition}
     The statement "for all real numbers $a$ and $b$, $(a + b)^2 = a^2 + b^2$" is false.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The pair $a = b = 1$ is a counterexample: $(1 + 1)^2 = 4$, but $1^2 + 1^2 = 2$. $\blacksquare$
     ///
 
     The value $n = 40$ above is a counterexample to "$n^2 + n + 41$ is prime for every natural number $n$".
 
+    <!-- label: ch1-sec-proving-a-biconditional-in-two-directions -->
     ### Proving a Biconditional in Two Directions
 
     Since $P \leftrightarrow Q \equiv (P \rightarrow Q) \land (Q \rightarrow P)$, prove each conditional separately. The two halves are labeled $(\Rightarrow)$ for $P \rightarrow Q$ and $(\Leftarrow)$ for $Q \rightarrow P$.
 
-    /// important | 📐 **Theorem**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Even and Odd Neighbors)**
+        attrs: {class: theorem, id: ch1-thm-even-and-odd-neighbors}
     For every integer $n$: $n$ is even iff $n + 1$ is odd.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $n$ be an arbitrary integer.
 
     - $(\Rightarrow)$ If $n$ is even, then $n = 2m$ for some integer $m$, so $n + 1 = 2m + 1$ is odd.
@@ -919,19 +929,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-a-filtering-proof -->
     ## A Filtering Proof
 
     The [Introduction](introduction.md) claimed that the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ always chooses a value between the previous estimate $\hat x_{k-1}$ and the new measurement $z_k$. We can now state this precisely and prove it. For real numbers $a$ and $b$, let $\min(a, b)$ be $a$ if $a \le b$ and $b$ otherwise, and let $\max(a, b)$ be $b$ if $a \le b$ and $a$ otherwise. "$u$ lies between $a$ and $b$" means $\min(a, b) \le u \le \max(a, b)$.
 
-    /// important | 📐 **Theorem (The Update Lies Between)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Update Lies Between)**
+        attrs: {class: theorem, id: ch1-thm-the-update-lies-between}
     Let $\alpha$ be a real number with $0 \le \alpha \le 1$. For all real numbers $a$ and $z$, the number $u := a + \alpha(z - a)$ lies between $a$ and $z$.
 
     In particular, with $a = \hat x_{k-1}$ and $z = z_k$, the estimate $\hat x_k$ lies between $\hat x_{k-1}$ and $z_k$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $a$ and $z$ be arbitrary real numbers, and write $m := \min(a, z)$ and $M := \max(a, z)$. Then $m \le a \le M$ and $m \le z \le M$. (By cases: if $a \le z$, then $m = a$ and $M = z$; otherwise $z < a$, $m = z$, and $M = a$.)
 
     Rearranging, $u = (1 - \alpha)\,a + \alpha\, z$. Both weights are non-negative: $1 - \alpha \ge 0$ because $\alpha \le 1$, and $\alpha \ge 0$. Multiplying an inequality by a non-negative number preserves it, so $(1 - \alpha)\,a \ge (1 - \alpha)\,m$ and $\alpha z \ge \alpha m$. Adding these,
@@ -943,13 +954,13 @@ def _(mo):
 
     The proof never used what $a$ means, so it applies equally to the alpha filter of the Introduction, which uses the prediction $\hat x_k^-$ in place of $\hat x_{k-1}$.
 
-    /// important | 📐 **Corollary**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Estimates Lie Between Prediction and Measurement)**
+        attrs: {class: corollary, id: ch1-cor-estimates-lie-between-prediction-and-measurement}
     If $0 \le \alpha \le 1$, the alpha-filter estimate $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ lies between the prediction $\hat x_k^-$ and the measurement $z_k$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Apply the theorem with $a = \hat x_k^-$ and $z = z_k$. $\blacksquare$
     ///
     """)
@@ -961,13 +972,13 @@ def _(mo):
     mo.md(r"""
     The theorem says $0 \le \alpha \le 1$ is *sufficient* for the update to stay between its inputs. It is also *necessary*:
 
-    /// important | 📐 **Theorem (The Condition Is Necessary)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Condition Is Necessary)**
+        attrs: {class: theorem, id: ch1-thm-the-condition-is-necessary}
     Let $\alpha$ be a real number. If $a + \alpha(z - a)$ lies between $a$ and $z$ for all real numbers $a$ and $z$, then $0 \le \alpha \le 1$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     We prove the contrapositive. Assume $\lnot(0 \le \alpha \le 1)$, which by De Morgan's law means $\alpha < 0$ or $\alpha > 1$. We exhibit a counterexample to the universal statement: take $a = 0$ and $z = 1$, so that $a + \alpha(z - a) = \alpha$, $\min(a, z) = 0$, and $\max(a, z) = 1$.
 
     - *Case $\alpha < 0$:* the update $\alpha$ is less than $0$, so it is not between $0$ and $1$.
@@ -979,7 +990,6 @@ def _(mo):
     Together the two theorems say: the update lies between its inputs for all inputs **iff** $0 \le \alpha \le 1$. The proofs used direct proof, cases, the contrapositive, and a counterexample.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **$0 \le \alpha \le 1$.** This is necessary, not just convenient. With $\alpha > 1$ the estimate overshoots past the measurement; with $\alpha < 0$ it moves away from the measurement.
     - **"Between" is not "accurate".** The theorems say nothing about the true value $x_k$. If $z_k$ is an outlier, $\hat x_k$ is pulled a fraction $\alpha$ of the way toward it. How close estimates are to the truth is a question about noise, answered with probability in [Chapter 6](ch6_expectation_and_variance.md) and [Chapter 7](ch7_optimal_alpha.md).
     ///
@@ -990,6 +1000,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch1-sec-summary -->
     ## Summary
 
     - A {term}`statement` is either true or false. The connectives $\lnot, \land, \lor, \rightarrow, \leftrightarrow$ build compound statements whose truth values are given by {term}`truth tables <truth table>`. A conditional with a false hypothesis is vacuously true.
@@ -1000,6 +1011,7 @@ def _(mo):
     - A {term}`proof` derives a {term}`theorem` from {term}`axioms <axiom>` by valid rules of inference. The techniques are direct proof, contrapositive, contradiction, cases, existence by example, disproof by {term}`counterexample`, and proving both directions of a biconditional.
     - The update $\hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ lies between $\hat x_{k-1}$ and $z_k$ for all inputs iff $0 \le \alpha \le 1$.
 
+    <!-- label: ch1-sec-whats-next -->
     ## What's Next
 
     We can now read and write precise statements, but we have nothing to make statements *about*. [Chapter 2](ch2_axioms_of_set_theory.md) supplies the objects: it states the axioms of ZFC set theory, uses unique existence to define the basic set operations, and builds the natural numbers, where proof by induction and definition by recursion (the logic behind every recursive filter) live.

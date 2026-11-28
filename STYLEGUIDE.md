@@ -2,7 +2,7 @@
 
 This guide is the single reference for writing and revising the book's pages. It is written for the author and for any agent asked to improve a chapter.
 
-Conventions marked **(needs tooling)** depend on a `scripts/sync_notebooks.py` change listed in [§12.1](#121-tooling-changes-this-guide-assumes). Until that change exists, follow the interim rule given in the text, and do not convert existing notebooks to the new form. If a question comes up that this guide does not settle, ask the author rather than inventing a convention.
+If a question comes up that this guide does not settle, ask the author rather than inventing a convention.
 
 ## Contents
 
@@ -17,7 +17,7 @@ Conventions marked **(needs tooling)** depend on a `scripts/sync_notebooks.py` c
 9. [Notation](#9-notation)
 10. [Book Reference](#10-book-reference)
 11. [Checking a Notebook](#11-checking-a-notebook)
-12. [Pending Tooling and Decisions](#12-pending-tooling-and-decisions)
+12. [Decisions](#12-decisions)
 
 ---
 
@@ -46,13 +46,13 @@ graph LR
 
 | Target | What it does |
 |:---|:---|
-| `make sync-notebooks` | Export every notebook to `content/nb/` (add `NO_EVAL=1` to skip cell evaluation) |
+| `make sync-notebooks` | Export every notebook to `content/nb/` (add `NO_EVAL=1` to skip cell evaluation). Notebooks are exported in parallel, and one whose cached raw export in `.marimo-export/` is newer than the notebook skips the slow `marimo export` step; `uv run python scripts/sync_notebooks.py --force` (or `make clean`) re-exports everything |
 | `make book-build` | Link the plugin, export, and run a strict HTML build into `content/_build/html/` |
 | `make book-write` | Export, watch the notebooks, and serve with live reload |
 | `make preview` | Serve the last static build at `http://localhost:8000` |
 | `make clean` | Delete build output |
 
-**Agent scope.** An agent assigned to a notebook may edit that `notebooks/*.py` file and its `notebooks/public/*.svg` outputs, and may add entries to `content/refs.bib`. Leave `content/myst.yml`, `scripts/`, other notebooks, and the rest of `content/` untouched unless asked.
+**Agent scope.** An agent assigned to a notebook may edit that `notebooks/*.py` file (its `notebooks/public/*.svg` figures are regenerated whenever it runs, and are git-ignored), and may add entries to `content/refs.bib`. Leave `content/myst.yml`, `scripts/`, other notebooks, and the rest of `content/` untouched unless asked.
 
 ---
 
@@ -266,25 +266,24 @@ Every page after the Introduction has, in order:
 
 Admonitions are written in marimo's `///` syntax so they render in the editor, and the sync script converts them to MyST. Each role below has exactly one form; do not use other admonition kinds without the author's approval.
 
-| Role | marimo source | MyST output | Status |
-|:---|:---|:---|:---:|
-| Definition | `/// note \| 📖 **Definition**` | `admonition` + `glossary` ([§6.2](#62-definitions)) | in place |
-| Key Idea | `/// attention \| 🗝️ **Key Idea**` | `attention` | in place |
-| Assumptions and Failure Modes | `/// caution \| ⚠️ **Assumptions and Failure Modes**` | `caution` | in place |
-| Tip (a skippable aside) | `/// tip \| **Title**` | `tip` | in place |
-| Prerequisites | `/// important \| 🔗 **Prerequisites**` | `important` | in place |
-| Theorem, Lemma, Corollary | `/// admonition \| 📐 **Theorem (Name)**` with class `theorem`, `lemma`, or `corollary` | `prf:theorem`, `prf:lemma`, `prf:corollary` | **needs tooling** |
-| Proof | `/// admonition \| ✍️ **Proof**` with class `proof` | `prf:proof` | **needs tooling** |
+| Role | marimo source | MyST output |
+|:---|:---|:---|
+| Definition | `/// note \| 📖 **Definition**` | `admonition` + `glossary` ([§6.2](#62-definitions)) |
+| Key Idea | `/// attention \| 🗝️ **Key Idea**` | `attention` |
+| Assumptions and Failure Modes | `/// caution \| ⚠️ **Assumptions and Failure Modes**` | `caution` |
+| Tip (a skippable aside) | `/// tip \| **Title**` | `tip` |
+| Prerequisites | `/// important \| 🔗 **Prerequisites**` | `important` |
+| Theorem, Lemma, Corollary | `/// admonition \| 📐 **Theorem (Name)**` with class `theorem`, `lemma`, or `corollary` | `prf:theorem`, `prf:lemma`, `prf:corollary` |
+| Proof | `/// admonition \| ✍️ **Proof**` with class `proof` | `prf:proof` |
 
 The kinds are reserved for these roles: for example, use `caution` only for Assumptions and Failure Modes, and `important` only for Prerequisites.
 
-**The `attrs` line** **(needs tooling)** is optional and sits on the line after the title, indented 4 spaces: `    attrs: {class: <classes>, id: <label>}`. Either key may be left out.
+**The `attrs` line** is optional and sits on the line after the title, indented 4 spaces: `    attrs: {class: <classes>, id: <label>}`. Either key may be left out.
 
 - `class` is a space-separated list. A *role class* (`theorem`, `lemma`, `corollary`, `proof`) turns a `/// admonition` block into the matching `prf:` directive, and is required on every result and proof. Every other class is passed to MyST's `:class:` option. The only one in use is `dropdown`, which shows the box collapsed until the reader opens it. It is allowed on Proof and Tip boxes; ask before using it elsewhere.
 - `id` is the block's label ([§7.1](#71-labels)), exported as `:label:`. It is used on results.
 - MyST icons are always off: the sync script adds `icon=false` to every admonition, so no class is needed for that.
-
-Interim rules until the tooling exists: every admonition's second line is exactly `    attrs: {class: no-icon}` (the current regexes match only this line and treat `no-icon` as "hide the icon"), and results stay in their current `/// important | 📐` form. Until the migration in [§12.1](#121-tooling-changes-this-guide-assumes), results and Prerequisites boxes therefore look alike on the site.
+- The script prints a warning for an unknown `attrs` key, a label not in the [§7.1](#71-labels) format, a result title without a name or whose word does not match its role class, and a kind MyST does not support (such as `/// info`, which it leaves unconverted). Fix every warning.
 
 Every block ends with `///` alone on a line.
 
@@ -295,7 +294,6 @@ Every block ends with `///` alone on a line.
 
   ```
   /// important | 🔗 **Prerequisites**
-      attrs: {class: no-icon}
   - [Chapter 6: Variance of a Linear Combination](#ch6-thm-variance-of-a-linear-combination): the variance of a weighted sum.
   - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation).
   ///
@@ -307,11 +305,10 @@ Do not wrap a heading in an invisible `:::{div}` (with classes such as `h-0 opac
 
 ### 6.2 Definitions
 
-A definition is a glossary entry, so `{term}` references work across the book. The `<u>**Term**</u>` line comes immediately after the `attrs` line (or after the title line, once the `attrs` line is optional), followed by a blank line and the definition:
+A definition is a glossary entry, so `{term}` references work across the book. The `<u>**Term**</u>` line is the first line of the body (right after the title line, or after the `attrs` line if there is one), followed by a blank line and the definition:
 
 ```
 /// note | 📖 **Definition**
-    attrs: {class: no-icon}
 <u>**Covariance**</u>
 
 The covariance of random variables $X$ and $Y$ with finite variances is
@@ -333,8 +330,6 @@ Labels:
 - Never use "Proposition": the logic chapter's word is "statement", and "proposition" would be ambiguous.
 
 Every result has a name, in title case and in parentheses, so that it can be referred to by name ([§8.2](#82-precise-language)). The proof follows its result immediately. When a proof is not given, the proof box says so and cites or links to one: "Not proved here; see [@rudin1976, Thm. 7.16]."
-
-**Target form (needs tooling):**
 
 ```
 /// admonition | 📐 **Theorem (Optimal Gain)**
@@ -359,28 +354,14 @@ Statement...
 
 :::{prf:proof}
 :class: dropdown
+:enumerated: false
 Proof text... $\blacksquare$
 :::
 ```
 
-Every proof ends with $\blacksquare$ in the source, so the end of the proof is marked in the marimo editor too. (If MyST draws its own end mark, the sync script strips the duplicate; see [§12.1](#121-tooling-changes-this-guide-assumes).)
+Every proof ends with $\blacksquare$. MyST draws no end-of-proof mark of its own, so this is the only one, both on the site and in the marimo editor.
 
-Results are not numbered (`:enumerated: false`). Results are always referred to by name ([§7.2](#72-cross-references)), and a second, numeric way of referring to them would compete with that. MyST also restarts numbering on every page, so "Theorem 3" alone would not identify a result, and the marimo editor would not show the numbers anyway.
-
-**Interim form** (until the tooling exists):
-
-```
-/// important | 📐 **Theorem (Optimal Gain)**
-    attrs: {class: no-icon}
-Statement...
-///
-
-/// admonition | ✍️ **Proof**
-    attrs: {class: no-icon}
-Proof text... $\blacksquare$
-///
-```
-
+Results and proofs are not numbered (`:enumerated: false`; without it, MyST labels every proof "Proof 1", "Proof 2", ...). Results are always referred to by name ([§7.2](#72-cross-references)), and a second, numeric way of referring to them would compete with that. MyST also restarts numbering on every page, so "Theorem 3" alone would not identify a result, and the marimo editor would not show the numbers anyway.
 ### 6.4 Tables
 
 - Every table's separator row has explicit alignment colons. Left-align columns of text (`:---`); center columns of short entries such as symbols, numbers, or yes/no (`:---:`).
@@ -391,7 +372,7 @@ Proof text... $\blacksquare$
 
 - Inline math `$...$`; display math `$$...$$`. A display equation is part of the sentence around it and carries its punctuation.
 - Never use Unicode math characters (α, σ, Δ, ≤, ∈, ±, ×, μ, ...) anywhere in a notebook or in `content/myst.yml`. Write every mathematical symbol in LaTeX: in prose, headings, admonition titles, table cells, figure labels (matplotlib mathtext, `r"$\alpha$"`), and widget labels.
-- Where LaTeX cannot render, spell the symbol's name in words. That covers `app_title` (also shown in the browser tab), `content/myst.yml`, `{term}` link text, code ([§3](#3-code-the-reader-sees)), and image `alt` text. For example: "The Optimal Alpha", `{term}`sigma-algebra``, `alpha`.
+- Where LaTeX cannot render, spell the symbol's name in words. That covers `app_title` (also shown in the browser tab), `content/myst.yml`, `{term}` link text, code ([§3](#3-code-the-reader-sees)), and image `alt` text. For example: "The Optimal Alpha", `{term}`sigma-algebra``, `alpha`. Options of `mo.ui.dropdown` and `mo.ui.radio` are also plain text; write them in words or in ASCII notation, e.g. `"x^2 on [0, 1]"` or `"EMA, alpha_k = 0.2"`.
 - Never put math inside `{term}` link text, because MyST renders it as raw source. Write the term's name in words: "a {term}`sigma-algebra` $\mathcal F$ on $\Omega$". Outside links, the symbol form ($\sigma$-algebra) is fine.
 - Follow the notation in [§9](#9-notation). A page that needs a symbol not listed there defines it in the text before using it.
 
@@ -412,16 +393,17 @@ A label is a name for a heading or a result that links can point to. Labels are 
   - `<page>`: `index`, `intro`, `ch1` … `ch21`, `appa` … `appd`.
   - `<kind>`: `sec` (heading), `thm`, `lem`, `cor` (results), `fig`, `tbl`.
   - `<slug>`: the heading or result name, e.g. `ch4-sec-kolmogorovs-axioms`, `ch4-thm-discrete-probability-measures`, `appc-sec-series`.
-- **Headings, tables, and figures** **(needs tooling):** put an HTML comment on its own line immediately before the block, in the same `mo.md` cell:
+- **Headings, tables, and figures:** put an HTML comment on its own line immediately before the block, in the same `mo.md` cell:
 
   ```
   <!-- label: ch4-sec-kolmogorovs-axioms -->
   ## Kolmogorov's Axioms
   ```
 
-  marimo hides the comment, and the sync script converts it to MyST's `(ch4-sec-kolmogorovs-axioms)=`. The first time you label a new kind of block (for example an `<img>` figure), confirm that the strict build resolves a link to it. Interim rule: do not add heading labels yet; link to the page and name the section ([§7.2](#72-cross-references)).
-- **Results** **(needs tooling):** the `id` in the `attrs` line ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)).
-- Label every `##` and `###` heading and every named result that another page links to, or is likely to. Before renaming or removing a label, grep `notebooks/*.py` for links to it.
+  marimo hides the comment, and the sync script converts it to MyST's `(ch4-sec-kolmogorovs-axioms)=`. The first time you label a new kind of block (for example an `<img>` figure), confirm that the strict build resolves a link to it. (Headings and results are confirmed to resolve across pages.)
+- **Results:** the `id` in the `attrs` line ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)).
+- Every `##` and `###` heading in a prose cell has a label, and every result has an `id`. Labels work only in static prose cells (`def _(mo):` with a single `mo.md(r"""...""")`), not in computed markdown ([§2.4](#24-marimo-rules)).
+- A label is derived once from the heading or result name and then never changes, even if the name is later edited, because other pages may link to it. Before removing a label, grep `notebooks/*.py` for links to it.
 
 ### 7.2 Cross-References
 
@@ -505,7 +487,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
 8. **Use logical connectives only in their logical sense.** "Conversely" introduces the converse of the statement just made, and the sentence says which statement that is. "So", "hence", and "therefore" introduce a consequence of what precedes them. "Similarly" means the same argument works with named changes.
    - Unclear: "Conversely, every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\Omega$ countable arises this way."
    - Clear: "The converse of the Discrete Probability Measures theorem also holds: every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\Omega$ countable arises this way."
-9. **Do not claim that something is obvious.** Do not write "clearly", "obviously", "trivially", or "it is easy to see". Give the one-line reason instead.
+9. **Do not claim that a step is obvious.** Do not use "clearly", "obviously", "trivially", or "it is easy to see" in place of a justification; give the one-line reason instead. (Describing the size of an observed effect, as in "the error is clearly larger", is fine.)
    - Unclear: "Axioms 1 and 2 clearly hold."
    - Clear: "Axiom 1 holds because each assigned value ($0$, $p$, $1 - p$, $1$) is nonnegative, and axiom 2 holds because $\mathbb P(\Omega) = 1$ was assigned directly."
 10. **Explain unexpected generality on the spot.** When a statement is more general or weaker than the reader expects at that point, say why in the same place. For example, if a sum of probabilities is said to lie in $[0, \infty]$, say why the range is not yet known to be $[0, 1]$, and which fact narrows it.
@@ -596,7 +578,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
 | `ch4_probability_spaces.py` | 4. Probability Spaces | Measuring Uncertainty |
 | `ch5_random_variables.py` | 5. Random Variables | From Outcomes to Numbers |
 | `ch6_expectation_and_variance.py` | 6. Expectation and Variance | Why Averaging Works |
-| `ch7_optimal_alpha.py` | 7. The Optimal Alpha (currently "7. The Optimal α"; rename per [§6.5](#65-math)) | Combining Two Noisy Estimates |
+| `ch7_optimal_alpha.py` | 7. The Optimal Alpha | Combining Two Noisy Estimates |
 | `ch8_bayesian_view.py` | 8. The Bayesian View | Priors, Likelihoods, and Posteriors |
 | **Part II: The Scalar Kalman Filter** | | |
 | `ch9_noise_levels.py` | 9. Noise Levels | The Scalar Kalman Filter |
@@ -708,30 +690,7 @@ Then read the rendered page (`make preview`) and check, by eye:
 
 ---
 
-## 12. Pending Tooling and Decisions
-
-### 12.1 Tooling Changes This Guide Assumes
-
-These are changes to `scripts/sync_notebooks.py`, plus one migration of the notebooks. Items 1–3 and 5 go in together: until the migration, results and Prerequisites boxes both export as `important`.
-
-1. **Parse the `attrs` line** ([§6.1](#61-admonitions)). Make the line optional in both admonition regexes (glossary and general) and parse it as a mapping with optional `class` and `id` keys. Split `class` on spaces:
-   - ignore `no-icon` (legacy)
-   - treat a role class as in items 2 and 3
-   - pass every other class to `:class:`
-
-   Add `icon=false` to every non-`prf` admonition unconditionally. The current regexes match only `attrs: {class: no-icon}` exactly, so until this is done, any other `attrs` line silently disables the conversion.
-2. **Results** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)). A `/// admonition` block with role class `theorem`, `lemma`, or `corollary` becomes `:::{prf:<class>} <Name>`. Take `<Name>` from the parentheses in the title, `:label:` from `id`, and `:class:` from the remaining classes, and always add `:enumerated: false`. Print a warning when the title has no name, or when its first word does not match the role class.
-3. **Proofs** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)). A `/// admonition` block with role class `proof` becomes `:::{prf:proof}`, with `:class:` from the remaining classes. Check whether MyST draws its own end-of-proof mark; if it does, strip the trailing `$\blacksquare$` during export.
-4. **Block labels** ([§7.1](#71-labels)). Convert a line `<!-- label: <label> -->` to `(<label>)=`, keeping it immediately before the block that follows. This is the same approach the script already uses for `jb-frontmatter` comments.
-5. **Migration (one-time script).** In every notebook:
-   - change `/// important | 📐 **Theorem|Lemma|Corollary ...**` blocks to `/// admonition | 📐 ...` with the matching role class
-   - add the class `proof` to `/// admonition | ✍️ **Proof**` blocks
-   - drop `no-icon` from every `attrs` line (and drop lines that become empty)
-   - give the unnamed results a name ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)); the migration script should list them
-
-   Then confirm that `make book-build` passes and that a sample of pages looks right.
-
-### 12.2 Decisions
+## 12. Decisions
 
 A record of settled questions, so they are not reopened by accident.
 

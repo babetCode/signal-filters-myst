@@ -57,7 +57,6 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): connectives, truth tables, quantifiers, and informal proofs.
     - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): the ZFC axioms used as examples here.
     ///
@@ -71,7 +70,6 @@ def _(mo):
     [Chapter 1](ch1_language_of_logic.md) treated logic as a working tool: statements, their meanings, and rules for proving them, all described in English. This appendix makes each of those notions exact, for the language of set theory used in [Chapter 2](ch2_axioms_of_set_theory.md). It is optional: nothing on the main path depends on it. It answers two questions the main path takes on trust: what exactly counts as a statement of set theory, and why the informal proofs of the book establish what they claim.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     A formal language has three layers. **Syntax** says which strings of symbols are formulas and which sequences of formulas are proofs, without reference to meaning. **Semantics** says what a formula means in a given structure. The **Soundness and Completeness Theorem** says the two agree: a sentence is provable from a theory iff it is true in every structure in which the theory's axioms are true.
     ///
 
@@ -83,10 +81,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-formal-syntax -->
     ## Formal Syntax
 
     In this section the symbols are only marks on paper. We say what they mean in Formal Semantics below.
 
+    <!-- label: appa-sec-symbols -->
     ### Symbols
 
     The symbols of the language of set theory are:
@@ -104,12 +104,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-formulas -->
     ### Formulas
 
     In the rules below, $\varphi$ and $\psi$ stand for arbitrary formulas and $u$, $v$, $x$ for arbitrary variables. These letters belong to the metalanguage.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Formula**</u>
 
     A finite string of symbols obtained by finitely many applications of these rules:
@@ -124,14 +124,14 @@ def _(mo):
 
     The parentheses in rule 3 make the construction of each formula unambiguous, which is what lets later definitions proceed "by cases on the last rule used".
 
-    /// important | 📐 **Lemma (Unique Readability)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Unique Readability)**
+        attrs: {class: lemma, id: appa-lem-unique-readability}
     1. No formula is a proper initial segment of another formula.
     2. Every formula is either atomic, or equal to exactly one of $\lnot\varphi$, $(\varphi \land \psi)$, $\exists x\,\varphi$, and in that case $\varphi$, $\psi$, $x$ are uniquely determined.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Suppose $\chi'$ is a formula that is a proper initial segment of a formula $\chi$; we derive a contradiction by induction on the length of $\chi$. The two share their first symbol. If it is a variable, both are atomic, hence both have exactly three symbols, so they are equal. If it is $\lnot$, then $\chi = \lnot\alpha$ and $\chi' = \lnot\alpha'$ with $\alpha'$ a proper initial segment of $\alpha$, contradicting the induction hypothesis. The case $\exists$ is the same, since the variable after $\exists$ is also shared. If it is $($, then $\chi = (\alpha \land \beta)$ and $\chi' = (\alpha' \land \beta')$. One of $\alpha$, $\alpha'$ is an initial segment of the other, so by the induction hypothesis $\alpha = \alpha'$. Then one of $\beta$, $\beta'$ is an initial segment of the other, so $\beta = \beta'$, and $\chi' = \chi$, contradicting properness.
     2. The first symbol determines the form: a variable (atomic), $\lnot$, $($, or $\exists$. For $\lnot\varphi$ and $\exists x\,\varphi$, the parts are what follows the first one or two symbols. For $(\varphi \land \psi)$, if also $(\varphi \land \psi) = (\varphi' \land \psi')$, then one of $\varphi$, $\varphi'$ is an initial segment of the other, so $\varphi = \varphi'$ by part 1, and then $\psi = \psi'$. $\blacksquare$
     ///
@@ -144,6 +144,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-free-and-bound-variables -->
     ### Free and Bound Variables
 
     Each occurrence of a variable in a formula is *free* or *bound*, according to these rules:
@@ -156,14 +157,12 @@ def _(mo):
     An occurrence that is not free is bound. A bound occurrence is a placeholder for "some object", not a slot for a particular value.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Free variable**</u>
 
     A variable $x$ is a free variable of a formula $\varphi$ iff at least one occurrence of $x$ in $\varphi$ is free.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Bound variable**</u>
 
     A variable $x$ is a bound variable of a formula $\varphi$ iff at least one occurrence of $x$ in $\varphi$ is bound.
@@ -183,10 +182,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-sentences -->
     ### Sentences
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sentence**</u>
 
     A {term}`formula` with no {term}`free variables <free variable>`.
@@ -194,6 +193,7 @@ def _(mo):
 
     For example, $\exists x\,\lnot\exists y\,(y \in x)$ is a sentence, while $\exists y\,(y \in x)$ is not, because $x$ is free in it. A formula with free variables makes a claim only once its free variables are given values; a sentence makes a claim outright. Formal Semantics below makes this precise, and the axioms of a theory are always sentences.
 
+    <!-- label: appa-sec-substitution -->
     ### Substitution
 
     For a formula $\varphi$ and variables $x$, $y$, let $\varphi[x/y]$ be the result of replacing every *free* occurrence of $x$ in $\varphi$ by $y$. We say $y$ is *substitutable for* $x$ in $\varphi$ iff no free occurrence of $x$ in $\varphi$ lies inside a part of $\varphi$ of the form $\exists y\,\psi$. Then each new occurrence of $y$ is free, and $\varphi[x/y]$ says about $y$ exactly what $\varphi$ says about $x$. Otherwise the new $y$ would be *captured*: if $\varphi$ is $\exists y\,(y \in x)$ ("$x$ has an element"), then $\varphi[x/y]$ is $\exists y\,(y \in y)$ ("something is an element of itself"), a different claim. A variable that does not occur in $\varphi$ at all is always substitutable. When $\varphi$ is written $\varphi(x)$, we write $\varphi(y)$ for $\varphi[x/y]$, and only when $y$ is substitutable for $x$.
@@ -204,12 +204,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-abbreviations -->
     ### Abbreviations
 
     The notation $\text{new} := \text{old}$ says that the left side is shorthand for the right side. Like $\varphi$, the symbol $:=$ belongs to the metalanguage. Anything written with these abbreviations can be rewritten without them by unpacking, so they add no expressive power.
 
     | Notation $:=$ Definition | Read as |
-    | :--- | :--- |
+    |:---|:---|
     | $(\varphi \lor \psi) := \lnot(\lnot\varphi \land \lnot\psi)$ | "$\varphi$ **or** $\psi$" (disjunction) |
     | $(\varphi \rightarrow \psi) := (\lnot\varphi \lor \psi)$ | "**if** $\varphi$ **then** $\psi$" (conditional) |
     | $(\varphi \leftrightarrow \psi) := ((\varphi \rightarrow \psi) \land (\psi \rightarrow \varphi))$ | "$\varphi$ **if and only if** $\psi$" (biconditional) |
@@ -231,16 +232,17 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-formal-semantics -->
     ## Formal Semantics
 
     So far we have only manipulated strings. Now we say what they mean.
 
+    <!-- label: appa-sec-structures -->
     ### Structures
 
     To give a formula a meaning, we must say which objects the variables stand for and which of those objects count as "members" of which.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Structure**</u>
 
     A pair $\mathfrak A = (A, E)$ consisting of a nonempty collection $A$ of objects, called the *domain of discourse*, and a specification $E$ that says, for each ordered choice of objects $a, b \in A$, whether $a$ counts as a member of $b$ (written $a \mathrel{E} b$) or not.
@@ -256,6 +258,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-satisfaction -->
     ### Satisfaction
 
     Fix a structure $\mathfrak A = (A, E)$. An *assignment* is a rule $s$ that gives each variable $x$ a value $s(x) \in A$. For an assignment $s$, a variable $x$, and $a \in A$, let $s(x \mid a)$ be the assignment that gives $x$ the value $a$ and agrees with $s$ on every other variable.
@@ -270,13 +273,13 @@ def _(mo):
 
     By Unique Readability, exactly one clause applies to each formula, so this defines satisfaction for every formula. We also say $\varphi$ is *true* in $\mathfrak A$ under $s$.
 
-    /// important | 📐 **Lemma (Coincidence)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Coincidence)**
+        attrs: {class: lemma, id: appa-lem-coincidence}
     If assignments $s$ and $s'$ agree on every free variable of $\varphi$, then $\mathfrak A \models \varphi[s]$ iff $\mathfrak A \models \varphi[s']$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction on formulas. For atomic $\varphi$, every variable in $\varphi$ is free, so $s$ and $s'$ give them the same values and clauses 1–2 agree. For $\lnot\varphi$ and $\varphi \land \psi$, the free variables of the parts are free in the whole, so the induction hypothesis applies to the parts and clauses 3–4 agree. For $\exists x\,\varphi$: its free variables are those of $\varphi$ other than $x$. For each $a \in A$, the assignments $s(x \mid a)$ and $s'(x \mid a)$ agree on $x$ (both give $a$) and on every other free variable of $\varphi$, so by the induction hypothesis $\mathfrak A \models \varphi[s(x \mid a)]$ iff $\mathfrak A \models \varphi[s'(x \mid a)]$. Hence the two sides of clause 5 agree. $\blacksquare$
     ///
 
@@ -288,6 +291,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-derived-symbols -->
     ### Derived Symbols
 
     Unpacking the abbreviations and applying clauses 3–5 recovers exactly the truth tables and quantifier meanings of [Chapter 1](ch1_language_of_logic.md). Fix $\mathfrak A$ and $s$, and say "$\varphi$ is true" for $\mathfrak A \models \varphi[s]$.
@@ -305,10 +309,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-models -->
     ### Models
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Model**</u>
 
     A structure $\mathfrak A$ is a model of a collection $\Gamma$ of sentences, written $\mathfrak A \models \Gamma$, iff every sentence in $\Gamma$ is true in $\mathfrak A$.
@@ -322,10 +326,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-theories-and-logical-consequence -->
     ## Theories and Logical Consequence
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Theory**</u>
 
     A collection of {term}`sentences <sentence>`, called the axioms of the theory.
@@ -336,7 +340,6 @@ def _(mo):
     Being an {term}`axiom` and being true are different kinds of property. A sentence is an axiom *of a theory*: a matter of which sentences were chosen. A sentence is true or false *in a structure*: a matter of what the symbols are interpreted to mean. The two meet in the notion of {term}`model`: $\mathfrak A$ is a model of a theory $T$ iff every axiom of $T$ is true in $\mathfrak A$. The axioms of ZFC are intended to be true in the intended structure of all sets, but nothing in the definitions forces that: $(\mathbb N, <)$ is a perfectly good structure in which some ZFC axioms are true and others false.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Logical consequence**</u>
 
     A formula $\varphi$ is a logical consequence of a collection $\Gamma$ of formulas, written $\Gamma \models \varphi$, iff for every structure $\mathfrak A$ and every assignment $s$ such that $\mathfrak A$ satisfies every member of $\Gamma$ with $s$, also $\mathfrak A \models \varphi[s]$.
@@ -352,23 +355,23 @@ def _(mo):
     mo.md(r"""
     To show $\Gamma \models \varphi$, reason about an arbitrary model. To show $\Gamma \not\models \varphi$, exhibit one *counter-model*: a model of $\Gamma$ in which $\varphi$ is false. This is the semantic version of a {term}`counterexample`.
 
-    /// important | 📐 **Theorem (Asymmetry Implies Irreflexivity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Asymmetry Implies Irreflexivity)**
+        attrs: {class: theorem, id: appa-thm-asymmetry-implies-irreflexivity}
     $\{\forall x\,\forall y\,(x \in y \rightarrow y \notin x)\} \models \forall z\,(z \notin z)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathfrak A = (A, E)$ be a model of the hypothesis and let $c \in A$ be arbitrary. Taking $x$ and $y$ both to be $c$, the hypothesis gives: if $c \mathrel{E} c$ then not $c \mathrel{E} c$. If $c \mathrel{E} c$ held, we would get both $c \mathrel{E} c$ and not $c \mathrel{E} c$; so not $c \mathrel{E} c$. Since $c$ was arbitrary, $\forall z\,(z \notin z)$ is true in $\mathfrak A$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Extensionality Does Not Imply Empty Set)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Extensionality Does Not Imply Empty Set)**
+        attrs: {class: theorem, id: appa-thm-extensionality-does-not-imply-empty-set}
     Let $\text{Ext}$ be $\forall x\,\forall y\,(\forall z\,(z \in x \leftrightarrow z \in y) \rightarrow x = y)$ and $\text{Emp}$ be $\exists x\,\forall y\,(y \notin x)$. Then $\{\text{Ext}\} \not\models \text{Emp}$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathfrak A$ have a single object $a$, with $a \mathrel{E} a$. $\text{Ext}$ is true in $\mathfrak A$: any two choices of $x$ and $y$ are both $a$, so the conclusion $x = y$ is true. $\text{Emp}$ is false in $\mathfrak A$: the only candidate for $x$ is $a$, and $y = a$ satisfies $y \mathrel{E} x$. So $\mathfrak A$ is a counter-model. $\blacksquare$
     ///
 
@@ -380,6 +383,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-try-it-a-structure-checker -->
     ### Try It: A Structure Checker
 
     Build a structure with up to four objects $a, b, c, d$ by choosing which objects are "members" of which (a check at "$a$ E $b$" means $a \mathrel{E} b$). The checker evaluates each sentence below with the satisfaction clauses, by brute force over all assignments, and reports whether the structure is a model of it. For a false sentence that begins with $\forall$, it shows a counterexample for the leading universal variables; for a true sentence that begins with $\exists$, it shows a witness. Start from a preset, then edit the checkboxes. The preset "One self-member" with 1 object is the counter-model from the theorem above. Can you find a counter-model with more objects? You will not find a structure satisfying both Pairing and Regularity: no finite one exists[^finite-pairing], a first hint that models of set theory must be infinite.
@@ -539,10 +543,12 @@ def _(ck_preset, ck_relation, ck_report, ck_size, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-formal-proofs -->
     ## Formal Proofs
 
     Logical consequence quantifies over *all* structures, of every size, so it cannot be checked directly. A deductive system replaces it with a finite, mechanical check: a list of logical axioms and rules of inference, with a proof being a sequence of formulas each of which is an axiom or follows from earlier ones by a rule. We use the system of @enderton2001 [§2.4], adapted to our primitive symbols.
 
+    <!-- label: appa-sec-logical-axioms-and-modus-ponens -->
     ### Logical Axioms and Modus Ponens
 
     Call a formula *prime* if it is atomic or begins with $\exists$. Every formula is built from prime formulas by $\lnot$ and $\land$. A formula is a *tautology instance* if it is true under every assignment of truth values to its prime parts, computing $\lnot$ and $\land$ by their truth tables. For example, $(x \in y \land \exists z\,(z \in x)) \rightarrow x \in y$ is a tautology instance, because $(P \land Q) \rightarrow P$ is a {term}`tautology`.
@@ -559,7 +565,6 @@ def _(mo):
     The only **rule of inference** is *modus ponens*: from $\varphi$ and $\varphi \rightarrow \psi$, infer $\psi$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Formal proof**</u>
 
     A formal proof (or *deduction*) of a formula $\varphi$ from a collection $\Gamma$ of formulas is a finite sequence of formulas $\varphi_1, \ldots, \varphi_n$ with $\varphi_n = \varphi$, in which each $\varphi_i$ is a logical axiom, a member of $\Gamma$, or follows by modus ponens from earlier formulas $\varphi_j$ and $\varphi_k = (\varphi_j \rightarrow \varphi_i)$, with $j, k < i$.
@@ -573,12 +578,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-two-worked-derivations -->
     ### Two Worked Derivations
 
     **A three-line proof.** $\vdash \forall x\,(x \in y \land x \neq y) \rightarrow \forall x\,(x \in y)$:
 
     | # | Formula | Justification |
-    | :-: | :--- | :--- |
+    |:-:|:---|:---|
     | 1 | $\forall x\,\big((x \in y \land x \neq y) \rightarrow x \in y\big)$ | axiom group 1, generalized: $(P \land Q) \rightarrow P$ is a tautology |
     | 2 | $\forall x\,\big((x \in y \land x \neq y) \rightarrow x \in y\big) \rightarrow \big(\forall x\,(x \in y \land x \neq y) \rightarrow \forall x\,(x \in y)\big)$ | axiom group 3 |
     | 3 | $\forall x\,(x \in y \land x \neq y) \rightarrow \forall x\,(x \in y)$ | modus ponens, 1 and 2 |
@@ -586,7 +592,7 @@ def _(mo):
     **The formal version of Asymmetry Implies Irreflexivity.** Let $\Gamma = \{\forall x\,\forall y\,(x \in y \rightarrow y \notin x)\}$. Then $\Gamma \vdash z \notin z$:
 
     | # | Formula | Justification |
-    | :-: | :--- | :--- |
+    |:-:|:---|:---|
     | 1 | $\forall x\,\forall y\,(x \in y \rightarrow y \notin x)$ | member of $\Gamma$ |
     | 2 | $\forall x\,\forall y\,(x \in y \rightarrow y \notin x) \rightarrow \forall y\,(z \in y \rightarrow y \notin z)$ | axiom group 2 ($z$ is substitutable for $x$, since no quantifier on $z$ occurs) |
     | 3 | $\forall y\,(z \in y \rightarrow y \notin z)$ | modus ponens, 1 and 2 |
@@ -603,17 +609,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-derived-rules -->
     ### Derived Rules
 
     The informal rules of inference in [Chapter 1](ch1_language_of_logic.md) are shortcuts for patterns of formal steps. The two most important are proved here.
 
-    /// important | 📐 **Lemma (Deduction)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Deduction)**
+        attrs: {class: lemma, id: appa-lem-deduction}
     $\Gamma \cup \{\gamma\} \vdash \varphi$ iff $\Gamma \vdash \gamma \rightarrow \varphi$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $(\Leftarrow)$ Append $\gamma$ and $\varphi$ to a deduction of $\gamma \rightarrow \varphi$ from $\Gamma$; the last step is modus ponens.
 
     $(\Rightarrow)$ Let $\varphi_1, \ldots, \varphi_n$ be a deduction from $\Gamma \cup \{\gamma\}$. We show $\Gamma \vdash \gamma \rightarrow \varphi_i$ for each $i$, by induction on $i$.
@@ -623,13 +630,13 @@ def _(mo):
     - If $\varphi_i$ follows by modus ponens from $\varphi_j$ and $\varphi_j \rightarrow \varphi_i$ with $j < i$, the induction hypothesis gives $\Gamma \vdash \gamma \rightarrow \varphi_j$ and $\Gamma \vdash \gamma \rightarrow (\varphi_j \rightarrow \varphi_i)$. The formula $(\gamma \rightarrow \varphi_j) \rightarrow \big((\gamma \rightarrow (\varphi_j \rightarrow \varphi_i)) \rightarrow (\gamma \rightarrow \varphi_i)\big)$ is a tautology instance, so two applications of modus ponens give $\Gamma \vdash \gamma \rightarrow \varphi_i$. $\blacksquare$
     ///
 
-    /// important | 📐 **Lemma (Generalization)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Generalization)**
+        attrs: {class: lemma, id: appa-lem-generalization}
     If $\Gamma \vdash \varphi$ and $x$ is not a free variable of any formula in $\Gamma$, then $\Gamma \vdash \forall x\,\varphi$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\varphi_1, \ldots, \varphi_n$ be a deduction of $\varphi$ from $\Gamma$. We show $\Gamma \vdash \forall x\,\varphi_i$ for each $i$, by induction on $i$.
 
     - If $\varphi_i$ is a logical axiom, so is its generalization $\forall x\,\varphi_i$.
@@ -645,10 +652,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-soundness-and-completeness -->
     ### Soundness and Completeness
 
-    /// important | 📐 **Theorem (Soundness and Completeness)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Soundness and Completeness)**
+        attrs: {class: theorem, id: appa-thm-soundness-and-completeness}
     For every collection $\Gamma$ of formulas and every formula $\varphi$:
 
     $$\Gamma \vdash \varphi \quad\text{iff}\quad \Gamma \models \varphi.$$
@@ -657,26 +665,25 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not given here. Soundness is proved by induction along a deduction: every logical axiom is logically valid, and modus ponens preserves satisfaction. Completeness is proved by Henkin's method, which builds a model out of the formulas themselves for any collection from which no contradiction is provable. Both proofs are in @enderton2001 [§2.5]; see also [Gödel's completeness theorem (Wikipedia)](https://en.wikipedia.org/wiki/G%C3%B6del%27s_completeness_theorem). $\blacksquare$
     ///
 
     So the mechanical notion $\vdash$ and the semantic notion $\models$ coincide. A collection $\Gamma$ of formulas is *consistent* if there is no formula $\varphi$ with both $\Gamma \vdash \varphi$ and $\Gamma \vdash \lnot\varphi$.
 
-    /// important | 📐 **Corollary**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Consistency and Models)**
+        attrs: {class: corollary, id: appa-cor-consistency-and-models}
     A theory is consistent iff it has a model.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $(\Leftarrow)$ If $\mathfrak A$ is a model of $T$ and $T \vdash \varphi$ and $T \vdash \lnot\varphi$ for some formula $\varphi$, then by soundness $\mathfrak A \models \varphi[s]$ and $\mathfrak A \models \lnot\varphi[s]$ for any assignment $s$, which clause 3 of satisfaction forbids. $(\Rightarrow)$ If $T$ has no model, then no structure and assignment satisfy every member of $T$, so $T \models \varphi$ and $T \models \lnot\varphi$ hold vacuously for any $\varphi$; by completeness both are provable, so $T$ is inconsistent. $\blacksquare$
     ///
 
     This is what justifies the main path's informal proofs. Each of them could be expanded into a formal deduction from the ZFC axioms, and by soundness, whatever is formally provable from ZFC is true in every model of ZFC.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **First-order logic only.** Quantifiers here range over objects of the domain. In *second-order* logic, which also quantifies over all subsets of the domain, no deductive system is both sound and complete for the standard semantics; see [Second-order logic (Wikipedia)](https://en.wikipedia.org/wiki/Second-order_logic).
     - **Checking is not finding.** A formal proof can be checked mechanically, but there is no algorithm that decides, for every formula, whether it is logically valid (Church and Turing, 1936; see [Entscheidungsproblem (Wikipedia)](https://en.wikipedia.org/wiki/Entscheidungsproblem)).
     - **All models, not one.** Completeness concerns truth in *every* model of $\Gamma$. A sentence that is true in the intended structure but false in some other model of $\Gamma$ is not provable from $\Gamma$. The Metatheory below returns to this.
@@ -688,20 +695,22 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-extension-by-definitions -->
     ## Extension by Definitions
 
     The only symbols of the language of set theory are $\in$ and $=$, yet [Chapter 2](ch2_axioms_of_set_theory.md) writes $\emptyset \in I$, $\{a, b\}$, and $A \subseteq B$. This section shows that such notation is legitimate shorthand: every statement using it can be rewritten in the original language, and it makes no new statements of the original language provable. Throughout, $T$ is a theory, such as ZFC.
 
+    <!-- label: appa-sec-defined-relations -->
     ### Defined Relations
 
     A definition $P(x_1, \ldots, x_n) :\Longleftrightarrow \varphi(x_1, \ldots, x_n)$, where $\varphi$ is a formula, introduces a new relation symbol $P$. Each occurrence of $P(y_1, \ldots, y_n)$ abbreviates the formula obtained from $\varphi$ by substituting $y_i$ for $x_i$, after renaming the bound variables of $\varphi$ if necessary so that each $y_i$ is substitutable. The abbreviations $\subseteq$ and $\notin$ in Formal Syntax are of this kind. Defined relations need no proof before use.
 
+    <!-- label: appa-sec-operations -->
     ### Operations
 
     Names for objects do need a proof first: a name must name exactly one object.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Operation**</u>
 
     An operation of a theory $T$ is a new symbol $F$ together with a formula $\delta(x_1, \ldots, x_n, y)$, its *defining formula*, such that $T \vdash \forall x_1 \cdots \forall x_n\, \exists! y\, \delta(x_1, \ldots, x_n, y)$. The expression $F(x_1, \ldots, x_n)$ stands for "the unique $y$ such that $\delta(x_1, \ldots, x_n, y)$". An operation with $n = 0$ is a *constant*: a name for one particular object.
@@ -710,7 +719,7 @@ def _(mo):
     In ZFC, each axiom that asserts the existence of a set with prescribed elements yields an operation, with Extensionality supplying uniqueness (Chapter 2's Uniqueness Lemma):
 
     | Axiom | Operation | Defining formula |
-    | :--- | :--- | :--- |
+    |:---|:---|:---|
     | Empty Set | $\emptyset$ (a constant) | $\forall w\,(w \notin y)$ |
     | Pairing | $\{x_1, x_2\}$ | $\forall w\,(w \in y \leftrightarrow w = x_1 \lor w = x_2)$ |
     | Union | $\bigcup x_1$ | $\forall w\,(w \in y \leftrightarrow \exists z\,(z \in x_1 \land w \in z))$ |
@@ -719,10 +728,10 @@ def _(mo):
 
     Replacement also yields an operation, but one with a proviso (below). Infinity and Choice assert that a set exists without determining it uniquely, so they yield no operation directly. Operations may also be defined from earlier ones, such as $A \cup B := \bigcup\{A, B\}$.
 
+    <!-- label: appa-sec-terms -->
     ### Terms
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Term**</u>
 
     An expression obtained by finitely many applications of these rules: every variable is a term; and if $F$ is an {term}`operation` with $n$ arguments and $t_1, \ldots, t_n$ are terms, then $F(t_1, \ldots, t_n)$ is a term (for $n = 0$, the constant $F$ itself is a term).
@@ -736,6 +745,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-unpacking -->
     ### Unpacking
 
     In the extended language, the atomic formulas are $t_1 \in t_2$ and $t_1 = t_2$ for terms $t_1, t_2$. Such a formula is shorthand for a formula of the original language, obtained by *unpacking*. If an atomic formula $\alpha$ contains an occurrence of $F(v_1, \ldots, v_n)$ whose arguments $v_1, \ldots, v_n$ are variables, then $\alpha$ abbreviates
@@ -744,18 +754,19 @@ def _(mo):
 
     where $\delta_F$ is the defining formula of $F$ (with its bound variables renamed if necessary to avoid clashes), $z$ is a variable not occurring in $\alpha$, and $\alpha'$ is $\alpha$ with that occurrence of $F(v_1, \ldots, v_n)$ replaced by $z$. Each step removes one operation symbol, so repeating it, innermost operations first, removes them all. For example, $\emptyset \in I$ unpacks to $\exists z\,\big(\forall w\,(w \notin z) \land z \in I\big)$. When $\alpha$ is $y = F(v_1, \ldots, v_n)$ for a variable $y$, the result is equivalent to the simpler $\delta_F(v_1, \ldots, v_n, y)$, which we use instead.
 
-    /// important | 📐 **Lemma (The Two Unpackings Agree)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (The Two Unpackings Agree)**
+        attrs: {class: lemma, id: appa-lem-the-two-unpackings-agree}
     If $T \vdash \forall v_1 \cdots \forall v_n\, \exists! z\, \delta(v_1, \ldots, v_n, z)$, then $T \vdash \exists z\,(\delta \land \alpha') \leftrightarrow \forall z\,(\delta \rightarrow \alpha')$ for every formula $\alpha'$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathfrak A$ be a model of $T$ and $s$ an assignment. By hypothesis exactly one object $b$ satisfies $\delta$ when $z$ is assigned $b$ (and the other variables as in $s$). The left side is true iff $\alpha'$ is true when $z$ is assigned $b$, since $b$ is the only candidate. The right side is true iff $\alpha'$ is true whenever $z$ is assigned an object satisfying $\delta$, that is, iff $\alpha'$ is true when $z$ is assigned $b$. So the biconditional is true in every model of $T$ under every assignment, and by the Completeness Theorem $T$ proves it. $\blacksquare$
     ///
 
     So it makes no difference whether "the $F$ of $v$ has property $\alpha'$" is unpacked as "some object satisfying $\delta$ has property $\alpha'$" or "every object satisfying $\delta$ has property $\alpha'$".
 
+    <!-- label: appa-sec-provisos -->
     ### Provisos
 
     Some notation names an object only under a condition. The main example is function application: in [Chapter 2](ch2_axioms_of_set_theory.md), $f(a)$ names a set only when $f$ is a function and $a$ is in its domain. Another is Replacement notation $\{y : \existsin{x}{A}\, \varphi\}$, which names a set only when $\forallin{x}{A}\, \exists! y\, \varphi$. For such notation we are given a *proviso* $D(x_1, \ldots, x_n)$ and a proof of only
@@ -774,10 +785,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-conservative-extensions -->
     ### Conservative Extensions
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Conservative extension**</u>
 
     Let $T$ be a theory, and let $T'$ be a theory whose language contains every symbol of $T$'s language (and possibly more). $T'$ is a conservative extension of $T$ iff for every formula $\varphi$ of $T$'s language, $T' \vdash \varphi$ iff $T \vdash \varphi$.
@@ -785,14 +796,14 @@ def _(mo):
 
     Let $T'$ be $T$ together with a *defining axiom* for each new symbol: $\forall x_1 \cdots \forall x_n\,\big(P(x_1, \ldots, x_n) \leftrightarrow \varphi\big)$ for each defined relation $P$, and $\forall x_1 \cdots \forall x_n\, \forall y\,\big(y = F(x_1, \ldots, x_n) \leftrightarrow \delta\big)$ for each operation $F$. A structure for the extended language also interprets each new relation symbol by a relation on the domain and each operation symbol $F$ by a rule $F^{\mathfrak A}$ assigning an object to each $n$-tuple of objects. Terms are then evaluated recursively, and the satisfaction clauses are otherwise unchanged.
 
-    /// important | 📐 **Theorem (Extension by Definitions)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Extension by Definitions)**
+        attrs: {class: theorem, id: appa-thm-extension-by-definitions}
     1. $T'$ is a conservative extension of $T$.
     2. For every formula $\varphi'$ of the extended language, its unpacking $\varphi$ is a formula of $T$'s language with $T' \vdash \varphi' \leftrightarrow \varphi$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. If $T \vdash \varphi$, then $T' \vdash \varphi$, because every axiom of $T$ is an axiom of $T'$. Conversely, suppose $T' \vdash \varphi$, with $\varphi$ in $T$'s language. Let $\mathfrak A$ be any model of $T$. Expand it to a structure $\mathfrak A'$ for the extended language, interpreting the new symbols in the order they were defined: each $P$ by the tuples satisfying its defining formula, and each $F$ by $F^{\mathfrak A}(a_1, \ldots, a_n) :=$ the unique $b$ such that $\delta$ is satisfied when $x_1, \ldots, x_n, y$ are assigned $a_1, \ldots, a_n, b$. That $b$ exists and is unique because $\forall x_1 \cdots \forall x_n\, \exists! y\, \delta$ is provable in $T$, hence (by soundness) true in $\mathfrak A$. Then $\mathfrak A'$ is a model of $T'$, so by soundness $\varphi$ is true in $\mathfrak A'$ under every assignment. Since $\varphi$ mentions no new symbol, the satisfaction clauses evaluate it in $\mathfrak A'$ exactly as in $\mathfrak A$, so $\varphi$ is true in $\mathfrak A$ under every assignment. As $\mathfrak A$ was an arbitrary model of $T$, $T \models \varphi$, and by completeness $T \vdash \varphi$.
     2. In any model of $T'$, a defined relation $P(y_1, \ldots, y_n)$ is true exactly when its defining formula is (by its defining axiom). An atomic formula $\alpha$ containing $F(v_1, \ldots, v_n)$ is true exactly when $\alpha'$ is true with $z$ assigned the value of $F(v_1, \ldots, v_n)$, which, by the defining axiom of $F$, is exactly when $\exists z\,(\delta_F \land \alpha')$ is true. So each unpacking step replaces an atomic formula by one with the same truth value in every model of $T'$ under every assignment. Replacing a part of a formula by such an equivalent part preserves truth values (by induction on formulas, using the satisfaction clauses). Hence $\varphi'$ and $\varphi$ have the same truth value in every model of $T'$ under every assignment, and by completeness $T' \vdash \varphi' \leftrightarrow \varphi$. $\blacksquare$
     ///
@@ -805,28 +816,32 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-the-metatheory -->
     ## The Metatheory
 
     Every lemma and theorem in this appendix (Unique Readability, Coincidence, Deduction, Soundness and Completeness) is a statement *about* formulas, structures, and deductions, proved in the metalanguage. The informal mathematics we reason in there is the *metatheory*. This section says what it assumes, and what the formal system cannot do.
 
+    <!-- label: appa-sec-the-metatheory-is-informal -->
     ### The Metatheory Is Informal
 
     The metatheory is ordinary informal mathematics: naive reasoning about collections, together with induction on the length of finite strings and finite sequences. Syntax needs very little of it: formulas and deductions are finite strings of symbols, and facts about them need only finite combinatorics. Semantics needs more, because structures may have infinite domains.
 
     This can look circular: set theory is used to explain the language of set theory. The circle is not vicious. Nothing here claims to found the metatheory; it is the background mathematics that author and reader already share, and the formal system is a precise *model* of how that mathematics reasons. Alternatively, the metatheory can itself be carried out inside ZFC, with formulas coded as sets; the theorems of this appendix then become theorems of ZFC about those codes.
 
+    <!-- label: appa-sec-the-intended-structure-is-not-a-set -->
     ### The Intended Structure Is Not a Set
 
     [Chapter 2](ch2_axioms_of_set_theory.md) proves, from Separation, that there is no set of all sets (the theorem No Set of All Sets, which is Russell's paradox). So the domain of the intended structure, the collection of all sets, is not a set. Collections like it, defined by a formula (here $x = x$) but too large to be sets, are called *proper classes*. Our definition of {term}`structure` says "collection" precisely so that it covers the intended structure informally.
 
     The cost is that "true in the intended structure" cannot be defined inside ZFC: no single formula $\text{True}(x)$ of the language of set theory satisfies $\text{True}(\ulcorner\sigma\urcorner) \leftrightarrow \sigma$ for the code $\ulcorner\sigma\urcorner$ of every sentence $\sigma$ (Tarski's undefinability theorem; see [Tarski's undefinability theorem (Wikipedia)](https://en.wikipedia.org/wiki/Tarski%27s_undefinability_theorem)). For this reason the main path never claims a result is "true" in an absolute sense: it claims that the result is *provable from ZFC*, and hence, by soundness, true in every model of ZFC.
 
+    <!-- label: appa-sec-consistency-is-assumed -->
     ### Consistency Is Assumed
 
     If ZFC were inconsistent, it would prove every sentence: from $\varphi$ and $\lnot\varphi$, the tautology instance $\varphi \rightarrow (\lnot\varphi \rightarrow \psi)$ and modus ponens give any $\psi$. Its theorems would then be worthless. Can we prove that ZFC is consistent? Not in ZFC itself:
 
-    /// important | 📐 **Theorem (Gödel's Incompleteness Theorems, 1931)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Gödel's Incompleteness Theorems, 1931)**
+        attrs: {class: theorem, id: appa-thm-godels-incompleteness-theorems-1931}
     Let $T$ be a consistent theory whose axioms can be listed by an algorithm and which proves the basic facts of arithmetic (as ZFC does). Then:
 
     1. There is a sentence $\sigma$ of $T$'s language such that neither $T \vdash \sigma$ nor $T \vdash \lnot\sigma$. (Gödel assumed slightly more than consistency; Rosser (1936) showed consistency suffices.)
@@ -834,18 +849,18 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not given here; see [Gödel's incompleteness theorems (Wikipedia)](https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems) and the references there. $\blacksquare$
     ///
 
     So this book, like nearly all of mathematics, **assumes that ZFC is consistent**. By the Corollary to Soundness and Completeness, this is the same as assuming that ZFC has a model. The evidence is practical: a century of intensive use has produced no contradiction, and the consistency of ZFC can be proved in stronger theories (which merely shifts the assumption to them). The first incompleteness theorem has a concrete instance in set theory: the Continuum Hypothesis (that every infinite subset of $\mathbb R$ is {term}`equinumerous` with $\mathbb N$ or with $\mathbb R$) can be neither proved nor refuted from ZFC, if ZFC is consistent [@godel1940; @cohen1963]; see [Continuum hypothesis (Wikipedia)](https://en.wikipedia.org/wiki/Continuum_hypothesis). Nothing in this book depends on it.
 
+    <!-- label: appa-sec-countable-models -->
     ### Countable Models
 
     By the Löwenheim–Skolem theorem, if ZFC has a model, it has one whose domain is {term}`countable` from the metatheory's point of view, even though ZFC proves that $\mathbb R$ is {term}`uncountable` ([Chapter 3](ch3_sets_for_probability.md)). There is no contradiction: inside such a model, "uncountable" means that no bijection with $\mathbb N$ exists *among the objects of the model*, and the bijections the metatheory can see are not in the model. This is *Skolem's paradox*; see [Skolem's paradox (Wikipedia)](https://en.wikipedia.org/wiki/Skolem%27s_paradox). It is one more reason to read the main path's theorems as "provable from ZFC" rather than as facts about one fixed collection of sets.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The book assumes ZFC is consistent.** This cannot be proved in ZFC (second incompleteness theorem). If it failed, every statement would be provable, including every theorem of this book and its negation.
     - **"Proved" means "provable from ZFC".** A sentence true in the intended structure but independent of ZFC (like the Continuum Hypothesis, if it is true there) is not a theorem.
     - **The metatheory is informal.** The theorems of this appendix are proved in ordinary mathematics; formalizing that mathematics leads back to a theory like ZFC, whose consistency is again assumed.
@@ -857,6 +872,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: appa-sec-summary -->
     ## Summary
 
     - **Syntax.** {term}`Formulas <formula>` are strings built from atomic formulas $u \in v$, $u = v$ by $\lnot$, $\land$, $\exists$; every formula is built in exactly one way. Occurrences of variables are {term}`free <free variable>` or {term}`bound <bound variable>`, and a {term}`sentence` has no free variables. Other connectives and quantifiers are abbreviations.
@@ -866,6 +882,7 @@ def _(mo):
     - **Definitions.** Defined relations and {term}`operations <operation>` (built into {term}`terms <term>`) unpack into the original language, and adding them gives a {term}`conservative extension`.
     - **Metatheory.** The metatheory is informal; the collection of all sets is a proper class; ZFC's consistency is assumed, because ZFC cannot prove it.
 
+    <!-- label: appa-sec-whats-next -->
     ## What's Next
 
     Return to the main path at [Chapter 2](ch2_axioms_of_set_theory.md), where the axioms of ZFC are stated in the language of this appendix and the defined notation it justifies is put to work.

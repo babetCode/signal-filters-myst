@@ -101,7 +101,6 @@ def _(mo):
     Every time we want to know a real-world value, we must measure it. Since our measurements always have limited precision, we can often combine multiple measurements to get a better estimate of the real-world value. This chapter turns that idea into a sequence of simple filters, each a small improvement on the last. By the end, we will have the basic structure of the Kalman filter, which the rest of the book builds on.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     More measurements can allow for better estimates, even if *none* of the measurements are 100% precise.
     ///
     """)
@@ -122,6 +121,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-measurements-and-definitions -->
     ## Measurements and Definitions
 
     When you step on a bathroom scale, a sensor called a strain gauge load cell[^loadcell] underneath the platform measures your downward force. The load cell outputs an analog voltage that is then converted to a sequence of digital measurements by an ADC. A typical ADC for scales, the HX711, converts the voltage to a 24-bit number either 10 or 80 times per second (10 or 80 SPS), selected by one of its pins [@avia_hx711_datasheet]. Since the output from the load cell and the output from the ADC can both be represented as functions[^informal-function] of time, we call both of them **signals**.
@@ -137,7 +137,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Signal**</u>
 
     A {term}`function` whose domain is a set of times (or positions) and whose value at each time (or position) is the value of some quantity, such as a voltage, a force, or a weight, at that time (or position).
@@ -165,7 +164,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Noise**</u>
 
     The difference between a measured {term}`signal` and the true signal it represents. For measurements $z_k$ of true values $x_k$, the noise at step $k$ is $z_k - x_k$.
@@ -188,7 +186,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Estimate**</u>
 
     A value that is computed from measurements (and from assumptions fixed in advance, such as "the weight does not change") and is used in place of an unknown true value. We write $\hat x_k$ ("x hat") for the estimate of $x_k$ computed after the measurement $z_k$ has been incorporated.
@@ -211,7 +208,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Filter**</u>
 
     An algorithm that maps a sequence of measurements $z_1, z_2, z_3, \ldots$ to a sequence of {term}`estimates <estimate>` $\hat x_1, \hat x_2, \hat x_3, \ldots$ in such a way that each estimate $\hat x_k$ is computed from $z_1, \ldots, z_k$ only (together with choices fixed in advance, such as a starting value).
@@ -312,6 +308,7 @@ def make_scale_diagram(IMAGES_DIR, flow, schemdraw):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-averaging-measurements -->
     ## Averaging Measurements
 
     We have yet to explain *how* a filter could remove noise, but we're getting there. Imagine you step on the scale and the first 10 measurements look like this:
@@ -383,12 +380,10 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     If the noise has mean zero and the noise in different measurements is unrelated, then the error of the average of $k$ measurements also has mean zero, and its variance is $1/k$ times the variance of a single measurement's noise.
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     Averaging relies on three assumptions, and each one can fail:
 
     - **The true value is constant.** If it changes while we average (you are still stepping onto the platform, or you pick up a cat), the average mixes old and new values and lags behind the truth. Most of the rest of this chapter deals with this failure.
@@ -446,6 +441,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-a-recursive-average -->
     ### A Recursive Average
 
     Let our measurements be denoted $z_1, z_2, z_3, \ldots$, so that after $k$ measurements, we have $z_1, z_2, \ldots, z_k$. After $k-1$ measurements, our average is
@@ -479,7 +475,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Prediction**</u>
 
     An {term}`estimate` of $x_k$ that is formed before the measurement $z_k$ is incorporated, that is, computed from $z_1, \ldots, z_{k-1}$ only (together with choices fixed in advance). We write it $\hat x_k^-$, where the minus sign means "before $z_k$".
@@ -500,7 +495,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Innovation**</u>
 
     The difference $\tilde y_k = z_k - \hat x_k^-$ between the measurement $z_k$ and the {term}`prediction` $\hat x_k^-$ of $x_k$.
@@ -520,7 +514,7 @@ def _(mo):
 
     1. **Bounded magnitude.** Rearranged, $\bar x_k = \left(1 - \frac1k\right)\bar x_{k-1} + \frac1k z_k$. This is a weighted combination of $\bar x_{k-1}$ and $z_k$ whose weights lie between 0 and 1 and add up to 1, so $\bar x_k$ lies between $\bar x_{k-1}$ and $z_k$. Starting from $\bar x_1 = z_1$ and repeating this argument one step at a time (a proof by induction, [Chapter 2](ch2_axioms_of_set_theory.md)) shows that every $\bar x_k$ lies between the smallest and the largest measurement so far. The stored estimate therefore fits in any number format that can hold one measurement, and the innovation $z_k - \bar x_{k-1}$, a difference of two such numbers, needs just one extra bit[^fixed-point].
     2. **An estimate at every step.** The stored number *is* the current estimate, ready to display after every measurement with no extra work.
-    3. **A structure that generalizes.** *Prediction + weight × innovation* is the shape of every filter we build in this book, up to and including the Kalman filter. Only the prediction and the weight will change.
+    3. **A structure that generalizes.** *Prediction + weight $\times$ innovation* is the shape of every filter we build in this book, up to and including the Kalman filter. Only the prediction and the weight will change.
 
     [^fixed-point]: In integer arithmetic, dividing by $k$ rounds the result. Storing the estimate with a few extra fractional bits (fixed-point arithmetic) keeps this rounding error small.
     """)
@@ -531,7 +525,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     We avoid storing every measurement, and keep every stored number bounded, by writing each estimate in terms of the previous one: the new estimate is the prediction plus a weight times the innovation.
     ///
     """)
@@ -548,14 +541,14 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def cumulative_average(measurements):
-        """Return the recursive averages x̂_1, ..., x̂_k of the measurements z_1, ..., z_k."""
-        x_hat = 0.0  # x̂_0: any value works, because the first step gives x̂_1 = z_1
+        """Return the estimates x_hat[1], ..., x_hat[k] (recursive averages) of the measurements z[1], ..., z[k]."""
+        x_hat = 0.0  # x_hat[0]: any value works, because the first step gives x_hat[1] = z[1]
         estimates = []
         for k, z in enumerate(measurements, start=1):
             x_pred = x_hat  # prediction: the weight is assumed constant
-            x_hat = x_pred + (1 / k) * (z - x_pred)  # prediction + weight × innovation
+            x_hat = x_pred + (1 / k) * (z - x_pred)  # prediction + weight * innovation
             estimates.append(x_hat)
         return np.array(estimates)
 
@@ -627,6 +620,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-exponential-moving-average -->
     ## Exponential Moving Average
 
     Currently, our formula is
@@ -648,7 +642,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Exponential moving average**</u>
 
     A {term}`filter` that, for a constant $\alpha$ with $0 < \alpha < 1$ (the *smoothing factor*), starts from an initial value $\hat x_0$ and computes each estimate as $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ for $k = 1, 2, 3, \ldots$
@@ -660,7 +653,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The prediction is still $\hat x_k^- = \hat x_{k-1}$, because we still assume the true value does not change, so the EMA again has the form *prediction + weight × innovation*, with the constant weight $\alpha$ in place of $\frac1k$. Rearranged into its more common form, it reads
+    The prediction is still $\hat x_k^- = \hat x_{k-1}$, because we still assume the true value does not change, so the EMA again has the form *prediction + weight $\times$ innovation*, with the constant weight $\alpha$ in place of $\frac1k$. Rearranged into its more common form, it reads
 
     $$\hat{x}_k = \alpha z_k + (1-\alpha) \hat x_{k-1},$$
 
@@ -675,7 +668,7 @@ def _(mo):
 
     [^ema]: The exponential moving average gets its name from the weights it gives to past measurements. Substituting $\hat x_{k-1} = \alpha z_{k-1} + (1-\alpha)\hat x_{k-2}$ into $\hat x_k = \alpha z_k + (1-\alpha)\hat x_{k-1}$, then substituting for $\hat x_{k-2}$ in the same way, and so on down to $\hat x_0$ (formally, a proof by induction) gives
         $$\hat x_k = \sum_{n=0}^{k-1} \alpha(1-\alpha)^n z_{k-n} + (1-\alpha)^k\,\hat x_0.$$
-        Each measurement is multiplied by $\alpha$ when it arrives and by $(1-\alpha)$ at every step afterward, so the measurement from $n$ steps ago, $z_{k-n}$ with $0 \le n \le k-1$, has weight $\alpha(1-\alpha)^n$: the weights decay exponentially with age. By the formula for a geometric sum ([Appendix C: Series](appendix_c_calculus.md)), these weights add up to $1 - (1-\alpha)^k$, and the initial value $\hat x_0$ gets the remaining $(1-\alpha)^k$. With first-measurement initialization ($\hat x_0 = z_1$, described below), $z_1$ appears twice, and its total weight is $\alpha(1-\alpha)^{k-1} + (1-\alpha)^k = (1-\alpha)^{k-1}$.
+        Each measurement is multiplied by $\alpha$ when it arrives and by $(1-\alpha)$ at every step afterward, so the measurement from $n$ steps ago, $z_{k-n}$ with $0 \le n \le k-1$, has weight $\alpha(1-\alpha)^n$: the weights decay exponentially with age. By the formula for a geometric sum ([Appendix C: Series](#appc-sec-series)), these weights add up to $1 - (1-\alpha)^k$, and the initial value $\hat x_0$ gets the remaining $(1-\alpha)^k$. With first-measurement initialization ($\hat x_0 = z_1$, described below), $z_1$ appears twice, and its total weight is $\alpha(1-\alpha)^{k-1} + (1-\alpha)^k = (1-\alpha)^{k-1}$.
     """)
     return
 
@@ -684,7 +677,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Each estimate is chosen to be some value between the previous estimate $\hat{x}_{k-1}$ and the new measurement $z_k$. With a smaller $\alpha$ (closer to $0$), we choose closer to $\hat x_{k-1}$, which averages away more noise but responds more slowly to real changes. With a larger $\alpha$ (closer to $1$), we choose closer to $z_k$, which responds faster but lets more noise through.
     ///
     """)
@@ -694,6 +686,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-initialization -->
     ### Initialization
 
     One additional consideration with EMA filters is initialization. The cumulative average returns the first measurement as its first estimate no matter what $\bar x_0$ is, because its first weight is $\frac11 = 1$. The EMA's weight is $\alpha < 1$, so we must give it a starting value $\hat x_0$ to combine with the first measurement. There are three common approaches:
@@ -708,6 +701,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-implementation -->
     ### Implementation
 
     Our EMA with first-measurement initialization can be implemented in Python as:
@@ -717,14 +711,14 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def ema(measurements, alpha):
-        """Return the EMA estimates x̂_1, ..., x̂_k, with first-measurement initialization."""
-        x_hat = measurements[0]  # x̂_0 = z_1, so that x̂_1 = z_1
+        """Return the EMA estimates x_hat[1], ..., x_hat[k], with first-measurement initialization."""
+        x_hat = measurements[0]  # x_hat[0] = z[1], so that x_hat[1] = z[1]
         estimates = []
         for z in measurements:
             x_pred = x_hat  # prediction: the weight is assumed constant
-            x_hat = x_pred + alpha * (z - x_pred)  # prediction + α × innovation
+            x_hat = x_pred + alpha * (z - x_pred)  # prediction + alpha * innovation
             estimates.append(x_hat)
         return np.array(estimates)
 
@@ -828,7 +822,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     We can use the EMA equation
 
     $$\hat{x}_k = \hat{x}_{k-1} + \alpha (z_k - \hat{x}_{k-1})$$
@@ -850,8 +843,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-alpha-beta-filter -->
     ## Alpha-Beta Filter
 
+    <!-- label: intro-sec-predicting-the-change -->
     ### Predicting the Change
 
     Our EMA relied on the assumption that your true weight does not change between measurements, which is what made the previous estimate $\hat x_{k-1}$ a sensible prediction of $x_k$. If we *do* expect the true value to change, then even a perfect previous estimate, $\hat x_{k-1} = x_{k-1}$, would miss $x_k$ by the change $x_k - x_{k-1}$.
@@ -868,7 +863,7 @@ def _(mo):
 
     $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-) = \hat x_k^- + \alpha\,\tilde y_k.$$
 
-    We will call this the *alpha filter*. It has exactly the form of the EMA, *prediction + weight × innovation*, but with a better prediction. (With $\Delta x_k = 0$, it *is* the EMA.)
+    We will call this the *alpha filter*. It has exactly the form of the EMA, *prediction + weight $\times$ innovation*, but with a better prediction. (With $\Delta x_k = 0$, it *is* the EMA.)
 
     Notice the difference between the *expected* change $\Delta x_k$, which we choose before seeing $z_k$, and the *actual* change $x_k - x_{k-1}$, which we never observe. In reality the two differ: your weight changes from day to day in ways no diet plan predicts. The gap $(x_k - x_{k-1}) - \Delta x_k$ between the actual and the expected change is called *process noise*[^informal-process-noise], because it is noise in the process we are measuring rather than in the measurement. It makes the prediction $\hat x_k^-$ noisy even when $\hat x_{k-1}$ is perfect, which is one more reason to combine the prediction with the measurement instead of trusting either one alone.
 
@@ -881,7 +876,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     If we can predict $x_k$ from $\hat x_{k-1}$ with a prediction that would be exactly right without noise, then we can combine the prediction with the measurement, using some weight $\alpha$, so that part of the noise in each averages out.
     ///
     """)
@@ -891,6 +885,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-step-by-step-example -->
     ### Step-by-Step Example
 
     As an example, imagine that after weighing yourself on your bathroom scale, you decide to start eating more in order to bulk up. You start weighing yourself every morning for four weeks to track your weight gain. For our EMA, we had 10 measurements per second. Here, we are only taking one measurement per day, and each daily reading is off by about 1 lb in either direction because of the water and food in your body[^daily-noise]:
@@ -1028,6 +1023,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-the-alpha-filter-in-code -->
     ### The Alpha Filter in Code
 
     In code, this could look like:
@@ -1037,14 +1033,14 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def alpha_filter(measurements, alpha, delta_x):
         """Alpha filter with first-measurement initialization and a constant expected change.
 
-        Returns arrays of the predictions x̂_k^- and the estimates x̂_k, one entry per
+        Returns arrays of the predictions x_pred[k] and the estimates x_hat[k], one entry per
         measurement (there is no prediction for k = 1, so that entry is NaN).
         """
-        x_hat = measurements[0]  # x̂_1 = z_1
+        x_hat = measurements[0]  # x_hat[1] = z[1]
         predictions, estimates = [np.nan], [x_hat]
         for z in measurements[1:]:
             # Prediction step
@@ -1156,6 +1152,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-beta-weighting-term -->
     ### Beta Weighting Term
 
     To fix this, we want some way to correct $\Delta x$ in addition to correcting our estimate. The innovations tell us how. If $\Delta x$ is too small, the measurements keep coming in above our predictions, so the innovations $\tilde y_k = z_k - \hat x_k^-$ are positive more often than not; if $\Delta x$ is too large, they are mostly negative. So, just as we correct the prediction of $x_k$ by $\alpha$ times the innovation, we can correct the expected change by a second weight $\beta$ times the innovation. Since the expected change is now estimated from the data, we give it a hat, $\widehat{\Delta x}_k$, and each step becomes:
@@ -1169,7 +1166,7 @@ def _(mo):
 
     [^beta-conventions]: Other texts write the update of the change differently. Some track a rate per unit time, $\hat v_k = \widehat{\Delta x}_k/\Delta t$, and so scale $\beta$ by $1/\Delta t$: $\hat v_{k+1} = \hat v_k + \frac{\beta}{\Delta t}\,\tilde y_k$. Others update from the change in the estimate, $\widehat{\Delta x}_{k+1} = \widehat{\Delta x}_k + \beta'\big[(\hat x_k - \hat x_{k-1}) - \widehat{\Delta x}_k\big]$. Since $\hat x_k - \hat x_{k-1} = \widehat{\Delta x}_k + \alpha\tilde y_k$, the bracket equals $\alpha\tilde y_k$, so this is our form with $\beta = \alpha\beta'$.
 
-    [^informal-alpha-beta]: [Chapter 13](ch13_kalman_filter.md) defines the {term}`alpha-beta filter` formally and shows how to choose its weights α and β as those of a steady-state Kalman filter.
+    [^informal-alpha-beta]: [Chapter 13](ch13_kalman_filter.md) defines the {term}`alpha-beta filter` formally and shows how to choose its weights $\alpha$ and $\beta$ as those of a steady-state Kalman filter.
     """)
     return
 
@@ -1183,7 +1180,7 @@ def _(mo):
 
     If the errors settle at constant values $e$ and $d$, the second equation gives $\beta(e + d) = 0$. So, if $\beta > 0$, then $e + d = 0$, and the first equation gives $e = (1-\alpha) \cdot 0 = 0$, and hence $d = 0$. Unlike the alpha filter, the only place the alpha-beta filter can settle is at *zero* error, whatever the initial guess $\widehat{\Delta x}_2$. Whether the errors actually get there depends on the weights: if they are too large, each correction overshoots by more than the last, and the errors grow without bound. For all weights with $0 < \alpha \le 1$ and $0 < \beta < 2$, which includes every setting of the sliders below except $\beta = 0$, the errors do shrink to zero[^ab-stability].
 
-    [^ab-stability]: Together, the two error equations say that each step multiplies the pair $(e_{k-1}, d_{k-1})$ by a fixed matrix ([Appendix D: Matrices and Linear Maps](appendix_d_linear_algebra.md)), and the errors shrink to zero from every starting point exactly when both roots of $\lambda^2 - (2 - \alpha - \beta)\lambda + (1 - \alpha) = 0$, the eigenvalues of that matrix ([Appendix D: Eigenvalues and Eigenvectors](appendix_d_linear_algebra.md)), have magnitude less than 1. The [Jury stability criterion](https://en.wikipedia.org/wiki/Jury_stability_criterion) shows that this happens exactly when $0 < \alpha < 2$ and $0 < \beta < 4 - 2\alpha$. See also [Wikipedia: Alpha beta filter](https://en.wikipedia.org/wiki/Alpha_beta_filter).
+    [^ab-stability]: Together, the two error equations say that each step multiplies the pair $(e_{k-1}, d_{k-1})$ by a fixed matrix ([Appendix D: Matrices and Linear Maps](#appd-sec-matrices-and-linear-maps)), and the errors shrink to zero from every starting point exactly when both roots of $\lambda^2 - (2 - \alpha - \beta)\lambda + (1 - \alpha) = 0$, the eigenvalues of that matrix ([Appendix D: Eigenvalues and Eigenvectors](#appd-sec-eigenvalues-and-eigenvectors)), have magnitude less than 1. The [Jury stability criterion](https://en.wikipedia.org/wiki/Jury_stability_criterion) shows that this happens exactly when $0 < \alpha < 2$ and $0 < \beta < 4 - 2\alpha$. See also [Wikipedia: Alpha beta filter](https://en.wikipedia.org/wiki/Alpha_beta_filter).
     """)
     return
 
@@ -1191,6 +1188,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-the-alpha-beta-filter-in-code -->
     ### The Alpha-Beta Filter in Code
 
     In code, the alpha-beta filter needs only a few more lines than the alpha filter:
@@ -1200,16 +1198,16 @@ def _(mo):
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def alpha_beta_filter(measurements, alpha, beta, delta_x_initial):
         """Alpha-beta filter with first-measurement initialization.
 
-        Returns arrays of the predictions x̂_k^-, the estimates x̂_k, and the expected
-        changes Δx̂_(k+1), one entry per measurement (there is no prediction for k = 1,
+        Returns arrays of the predictions x_pred[k], the estimates x_hat[k], and the expected
+        changes delta_x_hat[k+1], one entry per measurement (there is no prediction for k = 1,
         so that entry is NaN).
         """
-        x_hat = measurements[0]  # x̂_1 = z_1
-        delta_x_hat = delta_x_initial  # Δx̂_2: initial guess for the change from step 1 to 2
+        x_hat = measurements[0]  # x_hat[1] = z[1]
+        delta_x_hat = delta_x_initial  # delta_x_hat[2]: initial guess for the change from step 1 to 2
         predictions, estimates, changes = [np.nan], [x_hat], [delta_x_hat]
         for z in measurements[1:]:
             # Prediction step
@@ -1323,7 +1321,6 @@ def _(ab_changes, ab_estimates, bulk_rate, bulk_x, mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Alpha filter: the expected change is right.** If $\Delta x$ is wrong by $d$ at every step, the estimates settle at an offset of $\frac{1-\alpha}{\alpha}\,d$, as computed above.
     - **Alpha-beta filter: the change per step is (nearly) constant.** The filter learns a single rate. If the rate itself changes, say because you switch diets halfway through, the estimates lag behind until $\widehat{\Delta x}$ catches up, and the smaller $\beta$ is, the longer that takes.
     - **Weights in the stable range.** If $\alpha$ or $\beta$ is too large, each correction overshoots, and the errors grow instead of shrinking.
@@ -1336,6 +1333,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-summary -->
     ## Summary
 
     Our goal when designing a signal filter is to estimate the true values $x_k$ from noisy measurements $z_k$. If the noise has mean zero and is unrelated from one measurement to the next, then combining measurements reduces the variance of the noise in our estimate. Every filter in this chapter does this recursively: it forms a {term}`prediction` $\hat x_k^-$ of $x_k$, compares it with the measurement to get the {term}`innovation` $\tilde y_k = z_k - \hat x_k^-$, and adds a weighted share of the innovation to the prediction:
@@ -1343,7 +1341,7 @@ def _(mo):
     $$\hat{x}_k = \hat x_k^- + \alpha (z_k - \hat x_k^-).$$
 
     | Filter | Prediction $\hat x_k^-$ | Weights |
-    |---|---|---|
+    |:---|:---:|:---|
     | Cumulative average | $\hat x_{k-1}$ | $\frac1k$ |
     | Exponential moving average | $\hat x_{k-1}$ | $\alpha$ |
     | Alpha filter | $\hat x_{k-1} + \Delta x_k$ | $\alpha$ |
@@ -1357,13 +1355,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: intro-sec-whats-next -->
     ## What's Next
 
     So far we have chosen $\alpha$ (and $\beta$) by feel. Because both the prediction $\hat x_k^-$ and the measurement $z_k$ are noisy values, a natural question becomes:
 
     > Given some amounts of noise in our prediction ($\hat x_k^-$) and measurement ($z_k$), what value of $\alpha$ should we pick?
 
-    **Part I: Choosing α** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](ch1_language_of_logic.md), sets in [Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md), and probability in [Chapters 4](ch4_probability_spaces.md) through [6](ch6_expectation_and_variance.md). [Chapter 7](ch7_optimal_alpha.md) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](ch8_bayesian_view.md) reinterprets the answer using Bayes' theorem.
+    **Part I: Choosing Alpha** is dedicated to answering this question. Since modeling noise relies on probability, probability is built on set theory, and set theory is built on logic, we introduce these topics along the way: logic in [Chapter 1](ch1_language_of_logic.md), sets in [Chapters 2](ch2_axioms_of_set_theory.md) and [3](ch3_sets_for_probability.md), and probability in [Chapters 4](ch4_probability_spaces.md) through [6](ch6_expectation_and_variance.md). [Chapter 7](ch7_optimal_alpha.md) then answers the question, and proves along the way that the cumulative average's $\frac1k$ was optimal all along. [Chapter 8](ch8_bayesian_view.md) reinterprets the answer using Bayes' theorem.
 
     Once we know the optimal $\alpha$ for given levels of noise in $\hat x_k^-$ and $z_k$, the remaining parts answer the following questions.
 

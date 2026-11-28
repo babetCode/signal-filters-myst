@@ -60,11 +60,10 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): power sets, the intersection $\bigcap F$ of a nonempty set of sets, sets of functions $Y^X$, and the Axiom of Choice (used once, for the Vitali set).
     - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and De Morgan's laws, {term}`indexed families <indexed family>` and the Disjointification lemma, {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including the Listing theorem and the countability of $\mathbb Q$), the Archimedean property, {term}`intervals <interval>`, and the {term}`extended real numbers`.
-    - [Appendix C: Sequences and Limits](appendix_c_calculus.md): limits, the limit laws, and Monotone Convergence (for the continuity of probability).
-    - [Appendix C: Series](appendix_c_calculus.md): series of nonnegative terms, their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped (Nonnegative Sums in Any Order).
+    - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits): limits, the limit laws, and Monotone Convergence (for the continuity of probability).
+    - [Appendix C: Series](#appc-sec-series): series of nonnegative terms, their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped (Nonnegative Sums in Any Order).
     ///
     """)
     return
@@ -78,7 +77,6 @@ def _(mo):
     We write $\mathbb P$ (blackboard-bold P) for probabilities because $P_k$ will denote the Kalman filter's error variance.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Probabilities are assigned to *sets* of outcomes, called events, not to individual outcomes. For a continuous quantity such as scale noise, every single outcome has probability $0$, and only sets such as intervals carry probability.
     ///
     """)
@@ -88,6 +86,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-motivation-a-scale-reading-to-0-1-lb -->
     ## Motivation: A Scale Reading to 0.1 lb
 
     Our scale computes its weight estimate as a real number but displays it rounded to $0.1$ lb. Suppose the true weight is $155$ lb, and write a single reading as $155 + \omega$, where $\omega$ is the noise in pounds.[^noise-informal] Questions about the display are questions about $\omega$:
@@ -107,19 +106,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-sample-spaces-outcomes-and-events -->
     ## Sample Spaces, Outcomes, and Events
 
     We model an experiment whose result is uncertain, such as tossing a coin, rolling a die, or taking a scale reading, by first fixing the set of everything that could happen.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sample space**</u>
 
     A nonempty set, usually written $\Omega$, whose elements represent the possible results of an experiment, chosen so that each run of the experiment produces exactly one element of $\Omega$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Outcome**</u>
 
     An element $\omega$ of a {term}`sample space` $\Omega$.
@@ -138,7 +136,7 @@ def _(mo):
     A statement about the result of the experiment corresponds to the set of outcomes for which it is true. "The die shows an even number" corresponds to $\{2, 4, 6\}$. Logical operations on statements become operations on sets, with complements taken relative to $\Omega$:
 
     | Statement | Set of outcomes |
-    |---|---|
+    |:---|:---|
     | $A$ happens | the outcome $\omega$ lies in $A$ |
     | $A$ does not happen | $A^c = \Omega \setminus A$ |
     | $A$ or $B$ happens | $A \cup B$ |
@@ -157,10 +155,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-sigma-algebras -->
     ## Sigma-Algebras
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Sigma-algebra**</u>
 
     A $\sigma$-algebra on a set $\Omega$ is a set $\mathcal F \subseteq \mathcal P(\Omega)$ such that:
@@ -173,16 +171,15 @@ def _(mo):
     The $\sigma$ ("sigma", for *sum*) refers to the countable unions in condition 3. The pair $(\Omega, \mathcal F)$ is called a *measurable space*.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Event**</u>
 
-    Given a {term}`sample space` $\Omega$ and a {term}`$\sigma$-algebra <sigma-algebra>` $\mathcal F$ on $\Omega$, an event is an element of $\mathcal F$.
+    Given a {term}`sample space` $\Omega$ and a {term}`sigma-algebra` $\mathcal F$ on $\Omega$, an event is an element of $\mathcal F$.
     ///
 
     So every event is a set of outcomes, but a set of outcomes is an event only if it belongs to the chosen $\mathcal F$. The definition asks only for $\Omega$, complements, and countable unions; everything else in the table above follows.
 
-    /// important | 📐 **Lemma (Closure Properties)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Closure Properties)**
+        attrs: {class: lemma, id: ch4-lem-closure-properties}
     Let $\mathcal F$ be a $\sigma$-algebra on $\Omega$. Then:
 
     1. $\emptyset \in \mathcal F$;
@@ -192,11 +189,11 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $\emptyset = \Omega^c$.
     3. By De Morgan's laws for families ([Chapter 3](ch3_sets_for_probability.md)), $\bigcap_n A_n = \big(\bigcup_n A_n^c\big)^c$. Each $A_n^c \in \mathcal F$, so the union is in $\mathcal F$, and so is its complement.
     2. Extend $A_1, \ldots, A_n$ to a sequence by $A_k := \emptyset$ for $k > n$; its union is $\bigcup_{k=1}^n A_k$, which is therefore in $\mathcal F$. Extending by $A_k := \Omega$ instead, the intersection of the sequence is $\bigcap_{k=1}^n A_k$, which is in $\mathcal F$ by part 3.
-    4. $A \setminus B = A \cap B^c$ ([Chapter 3](ch3_sets_for_probability.md), Rules for Complements), which is in $\mathcal F$ by part 2. $\blacksquare$
+    4. $A \setminus B = A \cap B^c$ ([Chapter 3: Rules for Complements](#ch3-lem-rules-for-complements)), which is in $\mathcal F$ by part 2. $\blacksquare$
     ///
 
     **Examples.**
@@ -213,37 +210,37 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-generated-sigma-algebras -->
     ### Generated Sigma-Algebras
 
     We rarely list a $\sigma$-algebra member by member. Instead we name a few sets that must be events and take the smallest $\sigma$-algebra containing them. That this exists rests on the following lemma.
 
-    /// important | 📐 **Lemma (Intersections of $\sigma$-Algebras)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Intersections of $\sigma$-Algebras)**
+        attrs: {class: lemma, id: ch4-lem-intersections-of-sigma-algebras}
     If $\mathfrak S$ is a nonempty set of $\sigma$-algebras on $\Omega$, then $\bigcap \mathfrak S$ is a $\sigma$-algebra on $\Omega$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Every member of $\bigcap \mathfrak S$ belongs to some $\mathcal F \in \mathfrak S$ and is therefore a subset of $\Omega$, so $\bigcap \mathfrak S \subseteq \mathcal P(\Omega)$. Each condition holds in every $\mathcal F \in \mathfrak S$, hence in the intersection: $\Omega \in \mathcal F$ for every $\mathcal F$; if $A$ lies in every $\mathcal F$, so does $A^c$; and if every $A_n$ lies in every $\mathcal F$, so does $\bigcup_n A_n$. $\blacksquare$
     ///
 
     Unions do not work: on $\Omega = \{1, 2, 3\}$, both $\{\emptyset, \{1\}, \{2, 3\}, \Omega\}$ and $\{\emptyset, \{2\}, \{1, 3\}, \Omega\}$ are $\sigma$-algebras, but their union contains $\{1\}$ and $\{2\}$ and not $\{1, 2\}$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Generated sigma-algebra**</u>
 
     For a set $\Omega$ and a set $\mathcal G \subseteq \mathcal P(\Omega)$, the $\sigma$-algebra generated by $\mathcal G$ is
     $$\sigma(\mathcal G) := \bigcap \{\mathcal F \in \mathcal P(\mathcal P(\Omega)) : \mathcal F \text{ is a }\sigma\text{-algebra on } \Omega \text{ and } \mathcal G \subseteq \mathcal F\}.$$
     ///
 
-    /// important | 📐 **Theorem (The Generated $\sigma$-Algebra Is the Smallest)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Generated $\sigma$-Algebra Is the Smallest)**
+        attrs: {class: theorem, id: ch4-thm-the-generated-sigma-algebra-is-the-smallest}
     $\sigma(\mathcal G)$ is a $\sigma$-algebra on $\Omega$, it contains $\mathcal G$, and $\sigma(\mathcal G) \subseteq \mathcal F$ for every $\sigma$-algebra $\mathcal F$ on $\Omega$ with $\mathcal G \subseteq \mathcal F$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathfrak S$ be the set of $\sigma$-algebras on $\Omega$ that contain $\mathcal G$; it is a set by Separation. It is nonempty because $\mathcal P(\Omega) \in \mathfrak S$, so $\sigma(\mathcal G) = \bigcap \mathfrak S$ is defined (this is Chapter 2's proviso for $\bigcap$) and is a $\sigma$-algebra by the lemma. Each $G \in \mathcal G$ lies in every member of $\mathfrak S$, hence in $\bigcap \mathfrak S$. If $\mathcal F$ is a $\sigma$-algebra containing $\mathcal G$, then $\mathcal F \in \mathfrak S$, so $\bigcap \mathfrak S \subseteq \mathcal F$. $\blacksquare$
     ///
 
@@ -253,13 +250,13 @@ def _(mo):
 
     When $\Omega$ is countable and only finitely many generators are given, the generated $\sigma$-algebra can be described completely. Call two outcomes *indistinguishable by* $G_1, \ldots, G_m$ if each $G_i$ contains both or neither of them, and call the set of outcomes indistinguishable from $\omega$ the *atom* of $\omega$.
 
-    /// important | 📐 **Theorem (Atoms)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Atoms)**
+        attrs: {class: theorem, id: ch4-thm-atoms}
     Let $\Omega$ be countable and $G_1, \ldots, G_m \subseteq \Omega$. The atoms form a {term}`partition` $\mathcal A$ of $\Omega$, and $\sigma(\{G_1, \ldots, G_m\})$ consists exactly of the unions $\bigcup \mathcal S$ of sets of atoms $\mathcal S \subseteq \mathcal A$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Write $\mathcal G := \{G_1, \ldots, G_m\}$ and let $a(\omega)$ be the atom of $\omega$.
 
     *The atoms partition $\Omega$.* Indistinguishability is reflexive, symmetric, and transitive, because it says that $\omega$ and $\omega'$ have the same membership in every $G_i$. So $\omega \in a(\omega)$, and if $\omega'' \in a(\omega) \cap a(\omega')$, then $\omega$ and $\omega'$ are indistinguishable and $a(\omega) = a(\omega')$. Hence atoms are nonempty, cover $\Omega$, and distinct atoms are disjoint.
@@ -340,28 +337,28 @@ def _(graphic, mo, plt, sigma_generators, sigma_select):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-the-borel-sigma-algebra -->
     ### The Borel Sigma-Algebra
 
     For the scale noise, $\Omega = \mathbb R$, and the events we certainly want are the intervals, such as "the noise lies in $[-0.05, 0.05)$".
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Borel sigma-algebra**</u>
 
-    The Borel $\sigma$-algebra on $\mathbb R$ is $\mathcal B(\mathbb R) := \sigma(\mathcal I)$, the {term}`$\sigma$-algebra generated by <generated sigma-algebra>` the set $\mathcal I$ of all {term}`intervals <interval>`. Its elements are called *Borel sets*. For a Borel set $\Omega_0 \subseteq \mathbb R$, the Borel $\sigma$-algebra on $\Omega_0$ is $\mathcal B(\Omega_0) := \{B \in \mathcal B(\mathbb R) : B \subseteq \Omega_0\}$.
+    The Borel $\sigma$-algebra on $\mathbb R$ is $\mathcal B(\mathbb R) := \sigma(\mathcal I)$, the {term}`sigma-algebra generated by <generated sigma-algebra>` the set $\mathcal I$ of all {term}`intervals <interval>`. Its elements are called *Borel sets*. For a Borel set $\Omega_0 \subseteq \mathbb R$, the Borel $\sigma$-algebra on $\Omega_0$ is $\mathcal B(\Omega_0) := \{B \in \mathcal B(\mathbb R) : B \subseteq \Omega_0\}$.
     ///
 
     The same $\sigma$-algebra is generated by the open subsets of $\mathbb R$, which is how many books define it ([Borel set](https://en.wikipedia.org/wiki/Borel_set)), and [Chapter 5](ch5_random_variables.md) shows that the rays $(-\infty, b]$ alone already generate it.
 
-    /// important | 📐 **Lemma (Borel Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Borel Sets)**
+        attrs: {class: lemma, id: ch4-lem-borel-sets}
     1. Every interval, every singleton $\{x\}$, and every countable subset of $\mathbb R$ is a Borel set. In particular $\mathbb N$, $\mathbb Z$, $\mathbb Q$, and $\mathbb R \setminus \mathbb Q$ are Borel sets.
     2. If $\Omega_0$ is a Borel set, then $\mathcal B(\Omega_0)$ is a $\sigma$-algebra on $\Omega_0$ containing every interval $I \subseteq \Omega_0$.
     3. If $B$ is a Borel set and $t \in \mathbb R$, then $B + t := \{b + t : b \in B\}$ is a Borel set.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Intervals lie in $\mathcal I \subseteq \mathcal B(\mathbb R)$, and $\{x\} = [x, x]$. A nonempty countable set $C$ is $\{c_n : n \in \mathbb N^+\}$ for some sequence (Listing theorem, [Chapter 3](ch3_sets_for_probability.md)), so $C = \bigcup_{n=1}^\infty \{c_n\}$ is a countable union of Borel sets; and $\emptyset$ is in every $\sigma$-algebra. $\mathbb N$, $\mathbb Z$, and $\mathbb Q$ are countable, and $\mathbb R \setminus \mathbb Q$ is a complement.
     2. $\Omega_0 \in \mathcal B(\Omega_0)$. If $B \in \mathcal B(\Omega_0)$, then $\Omega_0 \setminus B = \Omega_0 \cap (\mathbb R \setminus B)$ is a Borel set by the Closure Properties lemma, and it is a subset of $\Omega_0$. A countable union of members of $\mathcal B(\Omega_0)$ is a Borel subset of $\Omega_0$. Intervals contained in $\Omega_0$ are Borel sets by part 1.
     3. We use the good-sets principle. Let $\mathcal A := \{B \subseteq \mathbb R : B + t \in \mathcal B(\mathbb R)\}$. Because $x \mapsto x + t$ is a bijection of $\mathbb R$ with inverse $x \mapsto x - t$, we have $\mathbb R + t = \mathbb R$, $(\mathbb R \setminus B) + t = \mathbb R \setminus (B + t)$, and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. So $\mathcal A$ is a $\sigma$-algebra. Translating an interval gives an interval of the same form, for example $[a, b] + t = [a + t, b + t]$, so $\mathcal I \subseteq \mathcal A$. Hence $\mathcal B(\mathbb R) = \sigma(\mathcal I) \subseteq \mathcal A$. $\blacksquare$
@@ -375,15 +372,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-kolmogorovs-axioms -->
     ## Kolmogorov's Axioms
 
     Kolmogorov proposed the following axioms in 1933, and they are the foundation of modern probability theory ([Probability axioms](https://en.wikipedia.org/wiki/Probability_axioms)).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Probability measure**</u>
 
-    Let $\mathcal F$ be a {term}`$\sigma$-algebra <sigma-algebra>` on a set $\Omega$. A probability measure on $(\Omega, \mathcal F)$ is a function $\mathbb P : \mathcal F \to \mathbb R$ satisfying *Kolmogorov's axioms*:
+    Let $\mathcal F$ be a {term}`sigma-algebra` on a set $\Omega$. A probability measure on $(\Omega, \mathcal F)$ is a function $\mathbb P : \mathcal F \to \mathbb R$ satisfying *Kolmogorov's axioms*:
 
     1. *(nonnegativity)* $\mathbb P(A) \ge 0$ for every $A \in \mathcal F$;
     2. *(normalization)* $\mathbb P(\Omega) = 1$;
@@ -391,13 +388,12 @@ def _(mo):
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Probability space**</u>
 
-    A triple $(\Omega, \mathcal F, \mathbb P)$ in which $\Omega$ is a {term}`sample space`, $\mathcal F$ is a {term}`$\sigma$-algebra <sigma-algebra>` on $\Omega$, and $\mathbb P$ is a {term}`probability measure` on $(\Omega, \mathcal F)$. We read $\mathbb P(A)$ as "the probability of $A$".
+    A triple $(\Omega, \mathcal F, \mathbb P)$ in which $\Omega$ is a {term}`sample space`, $\mathcal F$ is a {term}`sigma-algebra` on $\Omega$, and $\mathbb P$ is a {term}`probability measure` on $(\Omega, \mathcal F)$. We read $\mathbb P(A)$ as "the probability of $A$".
     ///
 
-    Axiom 3 needs $\bigcup_n A_n$ to be an event, which is why events must be closed under countable unions. Its right side is the value in $[0, \infty]$ of a series of nonnegative terms ([Chapter 3](ch3_sets_for_probability.md) and [Appendix C: Series](appendix_c_calculus.md)); the axiom says in particular that this value is the real number $\mathbb P(\bigcup_n A_n)$.
+    Axiom 3 needs $\bigcup_n A_n$ to be an event, which is why events must be closed under countable unions. Its right side is the value in $[0, \infty]$ of a series of nonnegative terms ([Chapter 3](ch3_sets_for_probability.md) and [Appendix C: Series](#appc-sec-series)); the axiom says in particular that this value is the real number $\mathbb P(\bigcup_n A_n)$.
 
     The axioms say how probabilities combine, not what they mean. Whether $\mathbb P(A)$ is read as a long-run frequency or as a degree of belief, the same rules apply. The experiment at the end of this chapter compares probabilities with frequencies, and [Chapter 6](ch6_expectation_and_variance.md) proves the connection.
     """)
@@ -407,24 +403,25 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-discrete-probability-spaces -->
     ## Discrete Probability Spaces
 
     **Coin toss.** Let $\Omega = \{H, T\}$ and $\mathcal F = \mathcal P(\Omega) = \{\emptyset, \{H\}, \{T\}, \Omega\}$. Choose a number $p \in [0, 1]$, the probability of heads, and set
     $$\mathbb P(\emptyset) = 0, \qquad \mathbb P(\{H\}) = p, \qquad \mathbb P(\{T\}) = 1 - p, \qquad \mathbb P(\Omega) = 1.$$
-    A fair coin has $p = \tfrac12$, but the axioms allow any $p$. Axioms 1 and 2 clearly hold. Checking axiom 3 by hand means considering every sequence of pairwise disjoint subsets of $\{H, T\}$; the next theorem does this once for all models of this kind. It uses the *indicator* of a set $A \subseteq \Omega$, the function $\mathbf 1_A : \Omega \to \{0, 1\}$ with $\mathbf 1_A(\omega) := 1$ if $\omega \in A$ and $\mathbf 1_A(\omega) := 0$ otherwise.
+    A fair coin has $p = \tfrac12$, but the axioms allow any $p$. Axiom 1 holds because each assigned value ($0$, $p$, $1 - p$, $1$) is nonnegative, and axiom 2 holds because $\mathbb P(\Omega) = 1$ was assigned directly. Checking axiom 3 by hand means considering every sequence of pairwise disjoint subsets of $\{H, T\}$; the Discrete Probability Measures theorem below does this once for all models of this kind. It uses the *indicator* of a set $A \subseteq \Omega$, the function $\mathbf 1_A : \Omega \to \{0, 1\}$ with $\mathbf 1_A(\omega) := 1$ if $\omega \in A$ and $\mathbf 1_A(\omega) := 0$ otherwise.
 
-    /// important | 📐 **Theorem (Discrete Probability Measures)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Discrete Probability Measures)**
+        attrs: {class: theorem, id: ch4-thm-discrete-probability-measures}
     Let $\Omega$ be a nonempty set, $(\omega_n)_{n=1}^\infty$ a sequence in $\Omega$, and $(p_n)_{n=1}^\infty$ a sequence of nonnegative real numbers with $\sum_{n=1}^\infty p_n = 1$. Then
     $$\mathbb P(A) := \sum_{n=1}^\infty p_n \mathbf 1_A(\omega_n) \qquad (A \subseteq \Omega)$$
     defines a probability measure on $(\Omega, \mathcal P(\Omega))$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $0 \le p_n \mathbf 1_A(\omega_n) \le p_n$, comparison of nonnegative series gives $0 \le \mathbb P(A) \le \sum_n p_n = 1$, so $\mathbb P(A)$ is a real number, and $\mathbb P(\Omega) = \sum_n p_n = 1$. For countable additivity, let $(A_k)_{k=1}^\infty$ be pairwise disjoint with union $A$, and fix $n$. If $\omega_n \notin A$, every term of $\sum_k p_n \mathbf 1_{A_k}(\omega_n)$ is $0$. If $\omega_n \in A$, then $\omega_n$ lies in exactly one $A_k$, so exactly one term equals $p_n$ and the others are $0$. Either way $\sum_{k=1}^\infty p_n \mathbf 1_{A_k}(\omega_n) = p_n \mathbf 1_A(\omega_n)$. Therefore
     $$\mathbb P(A) = \sum_{n=1}^\infty \sum_{k=1}^\infty p_n \mathbf 1_{A_k}(\omega_n) = \sum_{k=1}^\infty \sum_{n=1}^\infty p_n \mathbf 1_{A_k}(\omega_n) = \sum_{k=1}^\infty \mathbb P(A_k).$$
-    The order of summation may be exchanged because the terms are nonnegative: by Nonnegative Sums in Any Order ([Appendix C: Series](appendix_c_calculus.md)), both iterated sums equal the sum of the family $\big(p_n \mathbf 1_{A_k}(\omega_n)\big)_{(n, k) \in \mathbb N^+ \times \mathbb N^+}$, grouped by $n$ in one case and by $k$ in the other. $\blacksquare$
+    The order of summation may be exchanged because the terms are nonnegative: by Nonnegative Sums in Any Order ([Appendix C: Series](#appc-sec-series)), both iterated sums equal the sum of the family $\big(p_n \mathbf 1_{A_k}(\omega_n)\big)_{(n, k) \in \mathbb N^+ \times \mathbb N^+}$, grouped by $n$ in one case and by $k$ in the other. $\blacksquare$
     ///
 
     Think of $p_n$ as a mass placed at the outcome $\omega_n$; then $\mathbb P(A)$ is the total mass inside $A$. Repetitions in the sequence $(\omega_n)$ are allowed, and their masses add up.
@@ -440,27 +437,28 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-a-random-rational-number -->
     ### A Random Rational Number
 
     Now let $\Omega := \mathbb Q \cap [0, 1]$. It is countable, as a subset of $\mathbb Q$, and infinite, since it contains the distinct numbers $1, \tfrac12, \tfrac13, \ldots$; so it is countably infinite ([Chapter 3](ch3_sets_for_probability.md)). Can we choose a rational number in $[0, 1]$ with every rational equally likely?
 
-    /// important | 📐 **Theorem (No Uniform Probability on a Countably Infinite Set)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (No Uniform Probability on a Countably Infinite Set)**
+        attrs: {class: theorem, id: ch4-thm-no-uniform-probability-on-a-countably-infinite-set}
     Let $\Omega$ be countably infinite and $\mathcal F$ a $\sigma$-algebra on $\Omega$ that contains every singleton. No probability measure on $(\Omega, \mathcal F)$ gives all singletons the same probability.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose $\mathbb P(\{\omega\}) = c$ for every $\omega \in \Omega$. Let $e : \mathbb N^+ \to \Omega$ be a bijection. The singletons $\{e(n)\}$ are pairwise disjoint because $e$ is injective, and their union is $\Omega$ because $e$ is surjective. By countable additivity,
     $$1 = \mathbb P(\Omega) = \sum_{n=1}^\infty c.$$
-    If $c = 0$ the sum is $0$, and if $c > 0$ it is $\infty$ ([Chapter 3](ch3_sets_for_probability.md), Extended Real Numbers). Neither equals $1$. $\blacksquare$
+    If $c = 0$ the sum is $0$, and if $c > 0$ it is $\infty$ ([Chapter 3: Extended Real Numbers](#ch3-sec-extended-real-numbers)). Neither equals $1$. $\blacksquare$
     ///
 
     In particular, there is no "uniformly random natural number". Countable additivity forbids spreading probability evenly over countably many points, and the same two-case argument will defeat the Vitali set below.
 
     We can still choose a rational number at random if we give up "equally likely". List $\Omega$ by increasing denominator, in lowest terms:
     $$q_1 = 0,\ q_2 = 1,\ q_3 = \tfrac12,\ q_4 = \tfrac13,\ q_5 = \tfrac23,\ q_6 = \tfrac14,\ q_7 = \tfrac34,\ \ldots$$
-    This lists every element of $\Omega$ exactly once. With $p_n := 2^{-n}$ and $\sum_{n=1}^\infty 2^{-n} = 1$ (geometric series, [Appendix C: Series](appendix_c_calculus.md)), the Discrete Probability Measures theorem gives a probability measure with $\mathbb P(\{0\}) = \tfrac12$, $\mathbb P(\{1\}) = \tfrac14$, $\mathbb P(\{\tfrac12\}) = \tfrac18$, and so on. The model depends entirely on the chosen listing, so there is no canonical "random rational".
+    This lists every element of $\Omega$ exactly once. With $p_n := 2^{-n}$ and $\sum_{n=1}^\infty 2^{-n} = 1$ (geometric series, [Appendix C: Series](#appc-sec-series)), the Discrete Probability Measures theorem gives a probability measure with $\mathbb P(\{0\}) = \tfrac12$, $\mathbb P(\{1\}) = \tfrac14$, $\mathbb P(\{\tfrac12\}) = \tfrac18$, and so on. The model depends entirely on the chosen listing, so there is no canonical "random rational".
     """)
     return
 
@@ -468,57 +466,58 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-consequences-of-the-axioms -->
     ## Consequences of the Axioms
 
     Everything below follows from Kolmogorov's three axioms. Throughout, $(\Omega, \mathcal F, \mathbb P)$ is a probability space and all sets are events.
 
-    /// important | 📐 **Lemma (Probability of the Empty Set)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Probability of the Empty Set)**
+        attrs: {class: lemma, id: ch4-lem-probability-of-the-empty-set}
     $\mathbb P(\emptyset) = 0$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $c := \mathbb P(\emptyset)$, a real number $\ge 0$. The constant sequence $A_n := \emptyset$ is pairwise disjoint (as $\emptyset \cap \emptyset = \emptyset$) with union $\emptyset$, so countable additivity gives $c = \sum_{n=1}^\infty c$. If $c > 0$, the right side is $\infty$, which is not a real number. So $c = 0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Finite Additivity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Finite Additivity)**
+        attrs: {class: theorem, id: ch4-thm-finite-additivity}
     If $A_1, \ldots, A_n$ are pairwise disjoint events, then $\mathbb P\big(\bigcup_{k=1}^n A_k\big) = \sum_{k=1}^n \mathbb P(A_k)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Extend the list by $A_k := \emptyset$ for $k > n$. The sequence is still pairwise disjoint and has the same union, so $\mathbb P\big(\bigcup_{k=1}^n A_k\big) = \sum_{k=1}^\infty \mathbb P(A_k)$. The terms with $k > n$ are $0$, so the partial sums are constant from the $n$-th on, and the series equals $\sum_{k=1}^n \mathbb P(A_k)$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (Complement Rule)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Complement Rule)**
+        attrs: {class: corollary, id: ch4-cor-complement-rule}
     $\mathbb P(A^c) = 1 - \mathbb P(A)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $A$ and $A^c$ are disjoint with union $\Omega$, so $\mathbb P(A) + \mathbb P(A^c) = \mathbb P(\Omega) = 1$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Monotonicity)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Monotonicity)**
+        attrs: {class: theorem, id: ch4-thm-monotonicity}
     If $A \subseteq B$, then $\mathbb P(B \setminus A) = \mathbb P(B) - \mathbb P(A)$ and $\mathbb P(A) \le \mathbb P(B)$. In particular, $0 \le \mathbb P(A) \le 1$ for every event $A$, and $\mathbb P(A \setminus B) = \mathbb P(A) - \mathbb P(A \cap B)$ for all events $A, B$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     If $A \subseteq B$, then $B$ is the disjoint union of $A$ and $B \setminus A$, so $\mathbb P(B) = \mathbb P(A) + \mathbb P(B \setminus A)$. Subtracting the real number $\mathbb P(A)$ gives the first formula, and $\mathbb P(B \setminus A) \ge 0$ gives $\mathbb P(A) \le \mathbb P(B)$. Taking $B = \Omega$ gives $\mathbb P(A) \le 1$. Finally, $A \setminus B = A \setminus (A \cap B)$ and $A \cap B \subseteq A$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Inclusion–Exclusion for Two Events)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Inclusion–Exclusion for Two Events)**
+        attrs: {class: theorem, id: ch4-thm-inclusionexclusion-for-two-events}
     $\mathbb P(A \cup B) = \mathbb P(A) + \mathbb P(B) - \mathbb P(A \cap B)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $A \cup B$ is the disjoint union of $A$ and $B \setminus A$, and $B \setminus A = B \setminus (A \cap B)$. So $\mathbb P(A \cup B) = \mathbb P(A) + \mathbb P(B \setminus A) = \mathbb P(A) + \mathbb P(B) - \mathbb P(A \cap B)$ by Monotonicity. $\blacksquare$
     ///
 
@@ -530,13 +529,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Union Bound)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Union Bound)**
+        attrs: {class: theorem, id: ch4-thm-union-bound}
     For every sequence $(A_n)_{n=1}^\infty$ of events, $\mathbb P\big(\bigcup_{n=1}^\infty A_n\big) \le \sum_{n=1}^\infty \mathbb P(A_n)$. For finitely many events, $\mathbb P\big(\bigcup_{k=1}^n A_k\big) \le \sum_{k=1}^n \mathbb P(A_k)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $D_n := A_n \setminus \bigcup_{k=1}^{n-1} A_k$. These are events (Closure Properties), and by the Disjointification lemma ([Chapter 3](ch3_sets_for_probability.md)) they are pairwise disjoint, with $D_n \subseteq A_n$ and $\bigcup_n D_n = \bigcup_n A_n$. By countable additivity and Monotonicity,
     $$\mathbb P\Big(\bigcup_{n=1}^\infty A_n\Big) = \sum_{n=1}^\infty \mathbb P(D_n) \le \sum_{n=1}^\infty \mathbb P(A_n),$$
     where the inequality compares two series of nonnegative terms term by term. For finitely many events, extend the list by $\emptyset$. $\blacksquare$
@@ -544,27 +543,27 @@ def _(mo):
 
     The union bound needs no assumptions about how the events are related. For example, if each of $30$ scale readings has probability $0.01$ of being an outlier, then the probability that at least one of them is an outlier is at most $0.3$, however the outliers depend on each other.
 
-    The next two theorems are where countable additivity earns its place. They connect probabilities with limits ([Appendix C: Sequences and Limits](appendix_c_calculus.md)).
+    The next two theorems are where countable additivity earns its place. They connect probabilities with limits ([Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits)).
 
-    /// important | 📐 **Theorem (Continuity from Below)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Continuity from Below)**
+        attrs: {class: theorem, id: ch4-thm-continuity-from-below}
     If $A_1 \subseteq A_2 \subseteq \cdots$ are events, then $\mathbb P\big(\bigcup_{n=1}^\infty A_n\big) = \lim_{n \to \infty} \mathbb P(A_n)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $A := \bigcup_n A_n$. By the Disjointification lemma, $D_1 := A_1$ and $D_n := A_n \setminus A_{n-1}$ for $n \ge 2$ are pairwise disjoint events with $\bigcup_{k=1}^N D_k = A_N$ and $\bigcup_n D_n = A$. By countable and finite additivity,
     $$\mathbb P(A) = \sum_{k=1}^\infty \mathbb P(D_k), \qquad \sum_{k=1}^N \mathbb P(D_k) = \mathbb P(A_N).$$
     So the numbers $\mathbb P(A_N)$ are the partial sums of a series of nonnegative terms whose value is $\mathbb P(A) \le 1$. They are nondecreasing and bounded, so by Monotone Convergence they converge to their supremum, which is the value of the series, $\mathbb P(A)$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Continuity from Above)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Continuity from Above)**
+        attrs: {class: theorem, id: ch4-thm-continuity-from-above}
     If $A_1 \supseteq A_2 \supseteq \cdots$ are events, then $\mathbb P\big(\bigcap_{n=1}^\infty A_n\big) = \lim_{n \to \infty} \mathbb P(A_n)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The complements increase, $A_1^c \subseteq A_2^c \subseteq \cdots$ (Rules for Complements), and $\bigcap_n A_n = \big(\bigcup_n A_n^c\big)^c$ (De Morgan's laws). By the Complement Rule, Continuity from Below, and the limit laws,
     $$\mathbb P\Big(\bigcap_{n=1}^\infty A_n\Big) = 1 - \mathbb P\Big(\bigcup_{n=1}^\infty A_n^c\Big) = 1 - \lim_{n \to \infty} \big(1 - \mathbb P(A_n)\big) = \lim_{n \to \infty} \mathbb P(A_n). \qquad \blacksquare$$
     ///
@@ -572,12 +571,10 @@ def _(mo):
     Conversely, a function on $\mathcal F$ that is finitely additive and continuous from below is countably additive: for pairwise disjoint $A_n$, the events $B_N := \bigcup_{n=1}^N A_n$ increase to $\bigcup_n A_n$, so $\mathbb P\big(\bigcup_n A_n\big) = \lim_N \mathbb P(B_N) = \lim_N \sum_{n=1}^N \mathbb P(A_n) = \sum_{n=1}^\infty \mathbb P(A_n)$.
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     Countable additivity is exactly what makes probability compatible with limits: given finite additivity, it is equivalent to continuity from below. The limit arguments about probabilities in later chapters, starting with the properties of distribution functions in [Chapter 5](ch5_random_variables.md), rest on it.
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Finite values.** Monotonicity, inclusion–exclusion, and continuity from above subtract probabilities, which works because $\mathbb P$ takes real values. For the *length* of subsets of $\mathbb R$ (below), which can be $\infty$, continuity from above fails: the intervals $[n, \infty)$ decrease to $\emptyset$, yet each has infinite length.
     - **Finite additivity is not enough.** The *natural density* of $A \subseteq \mathbb N^+$, $d(A) := \lim_{n \to \infty} |A \cap \{1, \ldots, n\}| / n$ when the limit exists ([Natural density](https://en.wikipedia.org/wiki/Natural_density)), treats all natural numbers alike: $d(\mathbb N^+) = 1$, the even numbers have density $\tfrac12$, and every finite set has density $0$. It is additive for two disjoint sets whose densities exist. But the finite sets $\{1, \ldots, n\}$ increase to $\mathbb N^+$ while their densities stay $0$, so it is not continuous from below and is not a probability measure. This is the closest one can get to a "uniformly random natural number".
     ///
@@ -588,6 +585,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-why-not-every-subset-can-be-an-event -->
     ## Why Not Every Subset Can Be an Event
 
     For a die, every subset of $\Omega$ is an event. For a number chosen "uniformly at random" from $[0, 1)$ we would like the same, together with two further wishes: an interval $[a, b)$ should have probability $b - a$, and moving a set around without changing its shape should not change its probability. This section shows that the first wish contradicts the last one, even without the second. The culprit is a set whose existence the Axiom of Choice guarantees.
@@ -598,25 +596,25 @@ def _(mo):
 
     **Vitali sets.** For $x \in [0, 1)$ let $E_x := \{y \in [0, 1) : y - x \in \mathbb Q\}$, the numbers in $[0, 1)$ that differ from $x$ by a rational number.
 
-    /// important | 📐 **Lemma (Rational Classes)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Rational Classes)**
+        attrs: {class: lemma, id: ch4-lem-rational-classes}
     $\{E_x : x \in [0, 1)\}$ is a {term}`partition` of $[0, 1)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The set exists by Replacement. Since $x - x = 0 \in \mathbb Q$, we have $x \in E_x$, so the sets $E_x$ are nonempty and cover $[0, 1)$. Suppose $z \in E_x \cap E_y$. Then $z - x$ and $z - y$ are rational, hence so is $y - x = (z - x) - (z - y)$. For any $w \in E_y$, $w - x = (w - y) + (y - x)$ is rational, so $E_y \subseteq E_x$; by symmetry $E_x = E_y$. So two of the sets are either equal or disjoint. $\blacksquare$
     ///
 
     The sets $E_x$ are nonempty and pairwise disjoint, so the Axiom of Choice ([Chapter 2](ch2_axioms_of_set_theory.md)) gives a set $C$ containing exactly one element of each $E_x$. Then $V := C \cap [0, 1)$ contains exactly one element of each $E_x$ and nothing else. Any such set is called a *Vitali set*, after Giuseppe Vitali, who introduced it in 1905 ([Vitali set](https://en.wikipedia.org/wiki/Vitali_set)). Choice asserts that $V$ exists but gives no rule for which element of each $E_x$ to take.
 
-    /// important | 📐 **Theorem (Vitali)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Vitali)**
+        attrs: {class: theorem, id: ch4-thm-vitali}
     Let $\mathcal F$ be a $\sigma$-algebra on $[0, 1)$ and $\mu$ a rotation-invariant probability measure on $([0, 1), \mathcal F)$. Then no Vitali set belongs to $\mathcal F$. In particular, there is no rotation-invariant probability measure on $([0, 1), \mathcal P([0, 1)))$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Suppose a Vitali set $V$ belongs to $\mathcal F$. Let $R := \mathbb Q \cap [0, 1)$ and, for $r \in R$, let $V_r := V \oplus r$. By rotation invariance, $V_r \in \mathcal F$ and $\mu(V_r) = \mu(V) =: c$.
 
     *Step 1: the sets $V_r$ ($r \in R$) are pairwise disjoint.* Let $z \in V_r \cap V_s$, so $z = v \oplus r = w \oplus s$ with $v, w \in V$. By the definition of $\oplus$, $z = v + r - i = w + s - j$ with $i, j \in \{0, 1\}$. Then $v - w = (s - r) + (i - j)$ is rational, so $v$ and $w$ lie in the same set $E_w$. Since $V$ contains only one element of $E_w$, $v = w$. Then $r - s = i - j$ is an integer, and $-1 < r - s < 1$ because $r, s \in [0, 1)$, so $r = s$.
@@ -631,7 +629,6 @@ def _(mo):
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     Each hypothesis is needed; dropping any one removes the contradiction.
 
     - **The Axiom of Choice** is used only to produce $V$. Without it the theorem cannot be proven: Solovay showed in 1970 that, if the existence of an inaccessible cardinal (a large-cardinal axiom) is consistent with the axioms of set theory, then so is the following: the other axioms, plus a weak form of Choice, plus "every subset of $\mathbb R$ is Lebesgue measurable", so that length extends to all subsets ([Solovay model](https://en.wikipedia.org/wiki/Solovay_model)). This book keeps Choice, as nearly all of mathematics does, and accepts the consequence.
@@ -641,7 +638,6 @@ def _(mo):
     ///
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     We cannot have all three of: every subset of $[0, 1)$ is an event, countable additivity, and rotation invariance. Probability theory keeps countable additivity and rotation invariance and gives up the first: the events form a $\sigma$-algebra smaller than $\mathcal P(\Omega)$.
     ///
     """)
@@ -651,17 +647,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-lebesgue-measure -->
     ## Lebesgue Measure
 
     Giving up the non-Borel sets is enough: on the Borel sets, length works. To state this for all of $\mathbb R$, which has infinite length, we need a slightly more general notion than a probability measure. A *measure* on a measurable space $(\Omega, \mathcal F)$ is a function $\mu : \mathcal F \to [0, \infty]$ with $\mu(\emptyset) = 0$ that is countably additive, $\mu\big(\bigcup_n A_n\big) = \sum_n \mu(A_n)$ for pairwise disjoint $A_n \in \mathcal F$. A probability measure is exactly a measure with $\mu(\Omega) = 1$: such a $\mu$ takes real values, because $\mu(A) + \mu(A^c) = 1$, and conversely a probability measure has $\mathbb P(\emptyset) = 0$. The proofs of Finite Additivity, of the inequality $\mathbb P(A) \le \mathbb P(B)$ for $A \subseteq B$ (from $\mathbb P(B) = \mathbb P(A) + \mathbb P(B \setminus A)$), and of the Union Bound never subtract, so they hold for every measure.
 
-    /// important | 📐 **Theorem (Lebesgue Measure)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Lebesgue Measure)**
+        attrs: {class: theorem, id: ch4-thm-lebesgue-measure}
     There is exactly one measure $\lambda$ on $(\mathbb R, \mathcal B(\mathbb R))$ with $\lambda([a, b]) = b - a$ for all real $a \le b$, called *Lebesgue measure*. It is translation invariant: $\lambda(B + t) = \lambda(B)$ for every Borel set $B$ and every $t \in \mathbb R$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Existence and uniqueness are not proven here. Carathéodory's extension theorem extends the length of intervals to a measure on a $\sigma$-algebra that contains $\mathcal B(\mathbb R)$. Its uniqueness statement, which applies because $\mathbb R$ is a countable union of intervals $[-n, n]$ of finite length, shows that no other measure on $\mathcal B(\mathbb R)$ gives every interval $[a, b]$ the length $b - a$ ([Lebesgue measure](https://en.wikipedia.org/wiki/Lebesgue_measure); [Carathéodory's extension theorem](https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_extension_theorem)).
 
     Translation invariance follows from uniqueness. Fix $t$ and let $\mu(B) := \lambda(B + t)$ for $B \in \mathcal B(\mathbb R)$, which is defined by the Borel Sets lemma. Then $\mu(\emptyset) = 0$, and $\mu$ is countably additive because translating pairwise disjoint sets gives pairwise disjoint sets and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. Also $\mu([a, b]) = \lambda([a + t, b + t]) = b - a$. By uniqueness, $\mu = \lambda$. $\blacksquare$
@@ -669,8 +666,8 @@ def _(mo):
 
     Restricting $\lambda$ to the Borel subsets of $[0, 1]$ gives a probability measure on $([0, 1], \mathcal B([0, 1]))$: it is countably additive because $\lambda$ is, and $\lambda([0, 1]) = 1$. It is also called **Lebesgue measure on $[0, 1]$** and also written $\lambda$. The probability space $([0, 1], \mathcal B([0, 1]), \lambda)$ models a number chosen uniformly at random from $[0, 1]$: probabilities of intervals are their lengths. This is the uniform distribution of [Chapter 5](ch5_random_variables.md).
 
-    /// important | 📐 **Theorem (A Uniformly Random Number)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (A Uniformly Random Number)**
+        attrs: {class: theorem, id: ch4-thm-a-uniformly-random-number}
     In the probability space $([0, 1], \mathcal B([0, 1]), \lambda)$:
 
     1. $\lambda(\{x\}) = 0$ for every $x \in [0, 1]$;
@@ -679,7 +676,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. $\lambda(\{x\}) = \lambda([x, x]) = x - x = 0$.
     2. For example $[a, b) = [a, b] \setminus \{b\}$, so by Monotonicity $\lambda([a, b)) = (b - a) - 0$. The other cases are the same.
     3. If $C \neq \emptyset$, write $C = \{c_n : n \in \mathbb N^+\}$ (Listing theorem). By the Union Bound, $\lambda(C) \le \sum_n \lambda(\{c_n\}) = 0$. The last statement follows from the Complement Rule. $\blacksquare$
@@ -689,13 +686,13 @@ def _(mo):
 
     Compare with the random rational. There, countable additivity forced unequal weights on the points. Here every point has probability $0$, yet $\lambda([0, 1]) = 1$. There is no contradiction, because $[0, 1]$ is uncountable ([Chapter 3](ch3_sets_for_probability.md)): it is not the set of terms of any sequence, so countable additivity never adds up the zeros.
 
-    /// important | 📐 **Corollary (Vitali Sets Are Not Borel Sets)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Vitali Sets Are Not Borel Sets)**
+        attrs: {class: corollary, id: ch4-cor-vitali-sets-are-not-borel-sets}
     No Vitali set is a Borel set. Consequently, Lebesgue measure on $[0, 1)$ cannot be extended to a rotation-invariant probability measure on all subsets of $[0, 1)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $\mathcal F := \mathcal B([0, 1))$ and let $\mu$ be the restriction of $\lambda$ to $\mathcal F$, a probability measure because $\lambda([0, 1)) = \lambda([0, 1]) - \lambda(\{1\}) = 1$. We show that $\mu$ is rotation invariant. Let $A \in \mathcal F$ and $r \in [0, 1)$, and split $A$ into $A_1 := A \cap [0, 1 - r)$ and $A_2 := A \cap [1 - r, 1)$. Elements of $A_1$ satisfy $x \oplus r = x + r$, and elements of $A_2$ satisfy $x \oplus r = x + r - 1$, so
     $$A \oplus r = (A_1 + r) \cup (A_2 + r - 1).$$
     Both pieces are Borel sets (Borel Sets lemma), and they lie in $[r, 1)$ and $[0, r)$ respectively, so they are disjoint subsets of $[0, 1)$. Hence $A \oplus r \in \mathcal F$ and, by Finite Additivity and translation invariance,
@@ -713,12 +710,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-almost-surely -->
     ## Almost Surely
 
     A uniformly random number in $[0, 1]$ is irrational with probability $1$. Yet the rational outcomes are in $\Omega$, and nothing in the model prevents them. Probability $1$ is not the same as certainty, and probability $0$ is not the same as impossibility.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Almost surely**</u>
 
     A statement about the outcomes of a {term}`probability space` $(\Omega, \mathcal F, \mathbb P)$ holds almost surely (abbreviated *a.s.*) if there is an {term}`event` $A$ with $\mathbb P(A) = 1$ such that the statement holds for every outcome $\omega \in A$.
@@ -728,13 +725,13 @@ def _(mo):
 
     **Examples.** For a uniformly random number $\omega \in [0, 1]$, "$\omega$ is irrational" and "$\omega \neq \tfrac12$" hold almost surely, although $\omega = \tfrac12$ is a possible outcome. For a coin with $p = \tfrac12$, "the coin shows heads" does not hold almost surely.
 
-    /// important | 📐 **Lemma (Countably Many Almost Sure Statements)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Countably Many Almost Sure Statements)**
+        attrs: {class: lemma, id: ch4-lem-countably-many-almost-sure-statements}
     If each statement in a sequence of statements holds almost surely, then almost surely all of them hold simultaneously.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Let $A_n$ be an event with $\mathbb P(A_n) = 1$ on which the $n$-th statement holds. All statements hold on $\bigcap_n A_n$, and by De Morgan's laws, the Complement Rule, and the Union Bound,
     $$\mathbb P\Big(\bigcap_{n=1}^\infty A_n\Big) = 1 - \mathbb P\Big(\bigcup_{n=1}^\infty A_n^c\Big) \ge 1 - \sum_{n=1}^\infty \mathbb P(A_n^c) = 1 - 0 = 1. \qquad \blacksquare$$
     ///
@@ -747,45 +744,45 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-conditional-probability -->
     ## Conditional Probability
 
     Suppose a fair die is rolled and we learn that the result is even. Outcomes outside $\{2, 4, 6\}$ are ruled out, and the remaining outcomes keep their relative weights, rescaled so that they add up to $1$: each of $2, 4, 6$ now has probability $\tfrac{1/6}{1/2} = \tfrac13$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Conditional probability**</u>
 
     Let $(\Omega, \mathcal F, \mathbb P)$ be a {term}`probability space` and $B$ an {term}`event` with $\mathbb P(B) > 0$. The conditional probability of an event $A$ given $B$ is
     $$\mathbb P(A \mid B) := \frac{\mathbb P(A \cap B)}{\mathbb P(B)}.$$
     ///
 
-    /// important | 📐 **Theorem (Conditioning Gives a Probability Measure)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Conditioning Gives a Probability Measure)**
+        attrs: {class: theorem, id: ch4-thm-conditioning-gives-a-probability-measure}
     If $\mathbb P(B) > 0$, then $A \mapsto \mathbb P(A \mid B)$ is a probability measure on $(\Omega, \mathcal F)$, and $\mathbb P(B \mid B) = 1$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Nonnegativity is clear, and $\mathbb P(\Omega \mid B) = \mathbb P(B)/\mathbb P(B) = 1 = \mathbb P(B \mid B)$. If $(A_n)$ are pairwise disjoint, so are the events $A_n \cap B$, and their union is $\big(\bigcup_n A_n\big) \cap B$ by the Distributive Laws ([Chapter 3](ch3_sets_for_probability.md)). By countable additivity, $\mathbb P\big(\big(\bigcup_n A_n\big) \cap B\big) = \sum_n \mathbb P(A_n \cap B)$. Dividing by $\mathbb P(B)$ is allowed termwise: the partial sums converge, and the limit laws let us divide each partial sum by $\mathbb P(B)$. $\blacksquare$
     ///
 
     So every rule proven above, such as the Complement Rule, also holds for conditional probabilities given a fixed $B$. Rearranging the definition gives the **multiplication rule**
     $$\mathbb P(A \cap B) = \mathbb P(A \mid B)\, \mathbb P(B).$$
 
-    /// important | 📐 **Theorem (Law of Total Probability)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Law of Total Probability)**
+        attrs: {class: theorem, id: ch4-thm-law-of-total-probability}
     Let $(A_n)_{n=1}^\infty$ be pairwise disjoint events with $\bigcup_n A_n = \Omega$. Then for every event $B$,
     $$\mathbb P(B) = \sum_{n=1}^\infty \mathbb P(B \cap A_n), \qquad\text{and if every } \mathbb P(A_n) > 0, \qquad \mathbb P(B) = \sum_{n=1}^\infty \mathbb P(B \mid A_n)\, \mathbb P(A_n).$$
     The same holds for finitely many events $A_1, \ldots, A_m$ with sums up to $m$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Distributive Laws, $B = B \cap \Omega = \bigcup_n (B \cap A_n)$, a union of pairwise disjoint events, so countable additivity gives the first formula. The second follows from the multiplication rule. For finitely many events, extend the list by $A_n := \emptyset$, whose terms are $0$. $\blacksquare$
     ///
 
-    /// important | 📐 **Theorem (Bayes' Theorem for Events)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Bayes' Theorem for Events)**
+        attrs: {class: theorem, id: ch4-thm-bayes-theorem-for-events}
     If $\mathbb P(A) > 0$ and $\mathbb P(B) > 0$, then
     $$\mathbb P(A \mid B) = \frac{\mathbb P(B \mid A)\, \mathbb P(A)}{\mathbb P(B)}.$$
     If moreover $(A_n)$ is a sequence, or a finite list, of pairwise disjoint events with union $\Omega$ and every $\mathbb P(A_n) > 0$, then
@@ -793,7 +790,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the multiplication rule, used twice, $\mathbb P(A \mid B)\,\mathbb P(B) = \mathbb P(A \cap B) = \mathbb P(B \mid A)\,\mathbb P(A)$; divide by $\mathbb P(B)$. For the second formula, the denominator is $\mathbb P(B)$ by the Law of Total Probability. $\blacksquare$
     ///
 
@@ -823,7 +820,6 @@ def _(mo):
     Even after a reading that a healthy cell rarely produces, the cell is most likely healthy, because faults are rare to begin with. Confusing $\mathbb P(O \mid W) = 0.9$ with $\mathbb P(W \mid O) \approx 0.15$ is a common mistake. Deciding whether to discard such a reading as an outlier involves exactly this trade-off ([Chapter 14](ch14_kalman_filters_in_practice.md)).
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **$\mathbb P(B) > 0$ is required.** Conditioning on a null event, such as "the noise is exactly $0.03$", is undefined by this formula. [Chapter 8](ch8_bayesian_view.md) conditions on exact values of continuous quantities using densities. Doing so naively leads to paradoxes ([Borel–Kolmogorov paradox](https://en.wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox)).
     - **$\mathbb P(A \mid B) \neq \mathbb P(B \mid A)$ in general**, as the load-cell example shows.
     - **The answer depends on the model of the observation**, not only on the fact observed, as the two card scenarios show.
@@ -835,12 +831,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-independence -->
     ## Independence
 
     Two events are independent when the probability that both happen factors into the product of their probabilities.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Independent events**</u>
 
     Events $A$ and $B$ of a {term}`probability space` are independent if $\mathbb P(A \cap B) = \mathbb P(A)\,\mathbb P(B)$. A family $(A_i)_{i \in I}$ of events is (*mutually*) independent if
@@ -852,13 +848,13 @@ def _(mo):
 
     **Example.** For a fair die, "even" $= \{2, 4, 6\}$ and "at most 2" $= \{1, 2\}$ are independent, since $\mathbb P(\{2\}) = \tfrac16 = \tfrac12 \cdot \tfrac13$. But "even" and "at most 3" $= \{1, 2, 3\}$ are not, since $\mathbb P(\{2\}) = \tfrac16 \neq \tfrac12 \cdot \tfrac12$.
 
-    /// important | 📐 **Lemma (Complements of Independent Events)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Complements of Independent Events)**
+        attrs: {class: lemma, id: ch4-lem-complements-of-independent-events}
     If $A$ and $B$ are independent, then so are $A$ and $B^c$, $A^c$ and $B$, and $A^c$ and $B^c$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     $A \cap B^c = A \setminus B$, so by Monotonicity $\mathbb P(A \cap B^c) = \mathbb P(A) - \mathbb P(A)\,\mathbb P(B) = \mathbb P(A)\,\mathbb P(B^c)$. The other two cases follow by applying this to the pair $(B, A)$ and then to $(A^c, B)$. $\blacksquare$
     ///
 
@@ -876,6 +872,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-experiment-relative-frequencies -->
     ## Experiment: Relative Frequencies
 
     Independent repetitions give a concrete way to look at $\mathbb P(A)$: in $n$ trials, count how often $A$ happens and divide by $n$. The plot below simulates five independent runs with a pseudo-random number generator and shows the *relative frequency* of $A$ after each trial.
@@ -947,6 +944,7 @@ def _(freq_event, freq_n, graphic, mo, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch4-sec-summary -->
     ## Summary
 
     - A **probability space** $(\Omega, \mathcal F, \mathbb P)$ consists of a **sample space** $\Omega$ of **outcomes**, a **$\sigma$-algebra** $\mathcal F$ of **events** (it contains $\Omega$ and is closed under complements and countable unions), and a **probability measure** $\mathbb P$ satisfying Kolmogorov's axioms: nonnegativity, $\mathbb P(\Omega) = 1$, and countable additivity.
@@ -958,6 +956,7 @@ def _(mo):
     - **Independent events** satisfy $\mathbb P(A \cap B) = \mathbb P(A)\,\mathbb P(B)$; pairwise independence does not imply mutual independence, and disjoint events with positive probability are never independent.
     - In simulations, relative frequencies settle near probabilities; Chapter 6 proves why.
 
+    <!-- label: ch4-sec-whats-next -->
     ## What's Next
 
     So far, events are sets of outcomes. Filters, however, work with *numbers*: readings, noise values, and estimates. [Chapter 5](ch5_random_variables.md) introduces **random variables**, functions from $\Omega$ to $\mathbb R$ whose preimages of Borel sets are events. Chapter 3's lemma that preimages preserve set operations makes every question about a random variable's value an event, and the probabilities of those events form its **distribution**. That is the language in which we finally write the measurement model $z_k = x_k + v_k$ precisely.

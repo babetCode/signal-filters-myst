@@ -9,7 +9,7 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="7. The Optimal α", css_file="notebook-styles.css")
+app = marimo.App(app_title="7. The Optimal Alpha", css_file="notebook-styles.css")
 
 
 @app.cell
@@ -114,12 +114,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Introduction](introduction.md): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, the cumulative average, and the {term}`exponential moving average` (EMA) with first-measurement initialization.
     - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.
     - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, the {term}`normal distribution`, and the measurement-noise model $z_k = x_k + v_k$.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, {term}`variance`, {term}`covariance` and its properties (including linearity in each argument and the Cauchy–Schwarz inequality), {term}`uncorrelated` random variables, the variance of a linear combination, in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, Bienaymé's corollary, {term}`unbiased` estimators, {term}`mean squared error` and the bias–variance decomposition, the variance $\sigma^2/k$ of the {term}`sample mean`, and the EMA's error variance, including the corollary that for a constant value averaging beats the EMA.
-    - [Appendix C: Derivatives](appendix_c_calculus.md) (optional; only for the alternative derivation in one tip).
+    - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation in one tip).
     ///
     """)
     return
@@ -129,7 +128,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     To combine two unbiased, uncorrelated sources of information about the same quantity, weight each source in proportion to the *other* source's variance. The optimal gain $\alpha^* = P^-/(P^- + R)$ does exactly this, and the combined error variance $P^-R/(P^- + R)$ is smaller than both $P^-$ and $R$.
     ///
     """)
@@ -139,6 +137,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-a-concrete-example -->
     ## A Concrete Example
 
     Return to the bathroom scale from the Introduction: the true weight is $x = 155$ lb, the scale delivers 10 readings per second, and each reading has measurement noise with standard deviation $1$ lb, so variance $R = 1\ \text{lb}^2$. The first five readings are
@@ -175,6 +174,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-random-quantities-in-lowercase -->
     ## Random Quantities in Lowercase
 
     In Chapters 4–6, random variables were written in uppercase ($X$, $Y$) and their values in lowercase ($x$, $y$). From here on we adopt the convention of the filtering literature instead:
@@ -189,6 +189,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-setting-up-the-problem -->
     ## Setting Up the Problem
 
     We have two sources of information about the same unknown quantity $x$ (a constant or a random variable): a prediction $\hat x^-$, such as the previous estimate, and a measurement $z$. Each is the truth plus an error. To talk about these errors we name them.
@@ -200,7 +201,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Estimation error**</u>
 
     The estimation error of an {term}`estimate` $\hat x$ of a quantity $x$ (both random variables on the same probability space) is the random variable
@@ -224,7 +224,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Error variance**</u>
 
     The error variance of an {term}`estimate` $\hat x$ of a quantity $x$ is the {term}`variance` of its {term}`estimation error`,
@@ -259,7 +258,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Gain**</u>
 
     The gain of an update of the form $\hat x = \hat x^- + \alpha\,(z - \hat x^-)$ is the number $\alpha$ by which it multiplies the {term}`innovation` $z - \hat x^-$.
@@ -273,13 +271,13 @@ def _(mo):
     mo.md(r"""
     Why restrict ourselves to this form? Any estimate built linearly from the two sources is $a\hat x^- + bz$ for some numbers $a, b$. The next lemma shows that requiring the estimate to be right on average, whatever the true weight is, forces $a + b = 1$, which is exactly the form above.
 
-    /// important | 📐 **Lemma (Unbiased Combinations)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Unbiased Combinations)**
+        attrs: {class: lemma, id: ch7-lem-unbiased-combinations}
     Assume (A1) and let $x$ be a constant. For numbers $a, b$, the estimate $a\hat x^- + bz$ satisfies $\mathbb E[a\hat x^- + bz] = x$ for every possible value $x \in \mathbb R$ if and only if $a + b = 1$. In that case $a\hat x^- + bz = \hat x^- + b\,(z - \hat x^-)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By linearity of expectation and (A1),
     $$\mathbb E[a\hat x^- + bz] = a\,(x + \mathbb E e^-) + b\,(x + \mathbb E v) = (a + b)\,x.$$
     If $a + b = 1$, this equals $x$ for every $x$. Conversely, if it equals $x$ for every $x$, then taking $x = 1$ gives $a + b = 1$. Finally, $a = 1 - b$ gives $a\hat x^- + bz = \hat x^- + b\,(z - \hat x^-)$. $\blacksquare$
@@ -291,14 +289,14 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Lemma (Error of the Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Error of the Update)**
+        attrs: {class: lemma, id: ch7-lem-error-of-the-update}
     For every number $\alpha$, the estimation error of $\hat x = \hat x^- + \alpha\,(z - \hat x^-)$ is
     $$e = (1 - \alpha)\,e^- + \alpha\, v.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Substitute $\hat x^- = x + e^-$ and $z = x + v$:
     $$\hat x - x = (1 - \alpha)(x + e^-) + \alpha\,(x + v) - x = (1 - \alpha)\,e^- + \alpha\, v,$$
     because $(1 - \alpha)x + \alpha x - x = 0$. $\blacksquare$
@@ -306,26 +304,26 @@ def _(mo):
 
     The true value $x$ cancels: the error of the combination depends only on the errors of the two sources.
 
-    /// important | 📐 **Theorem (Zero-Mean Error for Every Gain)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Zero-Mean Error for Every Gain)**
+        attrs: {class: theorem, id: ch7-thm-zero-mean-error-for-every-gain}
     Assume (A1). For every $\alpha \in \mathbb R$, the error of $\hat x = \hat x^- + \alpha\,(z - \hat x^-)$ has mean zero: $\mathbb E e = 0$. In particular, when $x$ is a constant, $\hat x$ is an {term}`unbiased` estimator of $x$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the previous lemma and linearity of expectation, $\mathbb E e = (1 - \alpha)\,\mathbb E e^- + \alpha\,\mathbb E v = 0$. If $x$ is constant, $\mathbb E\hat x = x + \mathbb E e = x$. $\blacksquare$
     ///
 
     So the mean cannot tell us which gain to choose: every gain is right on average. The variance can.
 
-    /// important | 📐 **Lemma (Error Variance of the Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Error Variance of the Update)**
+        attrs: {class: lemma, id: ch7-lem-error-variance-of-the-update}
     Assume (A1)–(A3). For every $\alpha \in \mathbb R$, the error variance of $\hat x = \hat x^- + \alpha\,(z - \hat x^-)$ is
     $$P(\alpha) := \operatorname{Var} e = (1 - \alpha)^2 P^- + \alpha^2 R.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Chapter 6's rule for the variance of a weighted sum,
     $$\operatorname{Var}\big((1 - \alpha)\,e^- + \alpha\, v\big) = (1 - \alpha)^2 P^- + \alpha^2 R + 2\alpha(1 - \alpha)\operatorname{Cov}(e^-, v),$$
     and the last term is zero by (A3). $\blacksquare$
@@ -339,19 +337,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-completing-the-square -->
     ## Completing the Square
 
     $P(\alpha)$ is a quadratic polynomial in $\alpha$ with a positive leading coefficient, so its graph is a parabola that opens upward. We find its lowest point with algebra alone, by completing the square. First, the property we are after:
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Optimal gain**</u>
 
     Given the variances of the prediction error and of the measurement noise and their covariance, an optimal gain is a {term}`gain` $\alpha^*$ whose resulting {term}`error variance` is no larger than that of any other gain: $P(\alpha^*) \le P(\alpha)$ for every $\alpha \in \mathbb R$.
     ///
 
-    /// important | 📐 **Theorem (Optimal Gain)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Optimal Gain)**
+        attrs: {class: theorem, id: ch7-thm-optimal-gain}
     Assume (A1)–(A3), and define
     $$\alpha^* := \frac{P^-}{P^- + R}, \qquad P^* := \frac{P^- R}{P^- + R}.$$
     Then:
@@ -363,7 +361,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     1. Expanding, $P(\alpha) = (P^- + R)\,\alpha^2 - 2P^-\alpha + P^-$. Since $P^- = (P^- + R)\,\alpha^*$, adding and subtracting $(P^- + R)\,\alpha^{*2}$ gives
        $$P(\alpha) = (P^- + R)\big(\alpha^2 - 2\alpha\alpha^* + \alpha^{*2}\big) + P^- - (P^- + R)\,\alpha^{*2} = (P^- + R)(\alpha - \alpha^*)^2 + P^- - \frac{(P^-)^2}{P^- + R}.$$
        The constant is $\dfrac{P^-(P^- + R) - (P^-)^2}{P^- + R} = \dfrac{P^- R}{P^- + R} = P^*$.
@@ -385,20 +383,20 @@ def _(mo):
     - **Precisions add.** The reciprocal of a variance is often called a *precision*. Item 4 says the precision of the combination is the sum of the precisions of its sources.
     - **Cost of any other gain.** Item 1 measures exactly how much worse a gain $\alpha \ne \alpha^*$ is: $(P^- + R)(\alpha - \alpha^*)^2$. We will use this to analyze wrong variances below.
 
-    /// important | 📐 **Corollary (Better Than Either Source)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (Better Than Either Source)**
+        attrs: {class: corollary, id: ch7-cor-better-than-either-source}
     Assume (A1)–(A3) with $P^- > 0$ and $R > 0$. Then $0 < \alpha^* < 1$ and $P^* < \min(P^-, R)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since $0 < P^- < P^- + R$, we have $0 < \alpha^* < 1$. Then $P^* = (1 - \alpha^*)P^- < P^-$ because $1 - \alpha^* < 1$ and $P^- > 0$, and $P^* = \alpha^* R < R$ because $\alpha^* < 1$ and $R > 0$. $\blacksquare$
     ///
 
     **Limiting cases.** The formulas behave as common sense demands:
 
     | Situation | Optimal gain | Error variance | Meaning |
-    |---|---|---|---|
+    |:---|:---:|:---:|:---|
     | $R = 0$ (perfect measurement) | $\alpha^* = 1$ | $P^* = 0$ | copy the measurement |
     | $P^- = 0$ (perfect prediction) | $\alpha^* = 0$ | $P^* = 0$ | ignore the measurement |
     | $P^- = R$ | $\alpha^* = \tfrac12$ | $P^* = \tfrac12 P^-$ | plain average; variance halves |
@@ -414,8 +412,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// tip | **The calculus route**
-        attrs: {class: no-icon}
-    If you know derivatives ([Appendix C: Derivatives](appendix_c_calculus.md)), you can also set $P'(\alpha) = -2(1 - \alpha)P^- + 2\alpha R$ to zero, which gives $\alpha = \alpha^*$, and note $P''(\alpha) = 2(P^- + R) > 0$. Completing the square gives more: item 1 is an exact formula for the penalty of every other gain, not just the location of the minimum.
+    If you know derivatives ([Appendix C: Derivatives](#appc-sec-derivatives)), you can also set $P'(\alpha) = -2(1 - \alpha)P^- + 2\alpha R$ to zero, which gives $\alpha = \alpha^*$, and note $P''(\alpha) = 2(P^- + R) > 0$. Completing the square gives more: item 1 is an exact formula for the penalty of every other gain, not just the location of the minimum.
     ///
     """)
     return
@@ -425,7 +422,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **(A1) Zero-mean errors.** If either source has a bias, the estimate inherits a weighted bias, and no gain removes it. See *Bias* below.
     - **(A2) Known variances.** If $P^-$ or $R$ is wrong, the estimate is still zero-mean, but the gain is not optimal and the reported $P^*$ is wrong. See *Mis-specified Variances* below. [Chapter 9](ch9_noise_levels.md) shows how to obtain $R$ and $P^-$.
     - **(A3) Uncorrelated errors.** If $\operatorname{Cov}(e^-, v) \ne 0$, the optimal gain changes, and $P^*$ may understate the true error variance. See *Correlated Errors* below.
@@ -439,6 +435,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-seeing-the-combination -->
     ## Seeing the Combination
 
     Use the sliders to set $P^-$ and $R$. The left panel shows the error variance $P(\alpha)$ and its two parts; its lowest point is at $\alpha^*$. The right panel shows, for a true weight of $155$ lb, the distributions of the prediction $\hat x^-$, the measurement $z$, and the optimal estimate $\hat x$, assuming normal errors[^normal-for-drawing]. The markers on the horizontal axis show one simulated draw of each: the estimate always lies between the prediction and the measurement, closer to the more reliable one, and its distribution is always the narrowest.
@@ -451,10 +448,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     pm_slider = mo.ui.slider(
-        0.1, 4.0, 0.1, value=2.0, label=r"Prediction error variance $P^-$ (lb²)", show_value=True
+        0.1, 4.0, 0.1, value=2.0, label=r"Prediction error variance $P^-$ (lb$^2$)", show_value=True
     )
     r_slider = mo.ui.slider(
-        0.1, 4.0, 0.1, value=1.0, label=r"Measurement noise variance $R$ (lb²)", show_value=True
+        0.1, 4.0, 0.1, value=1.0, label=r"Measurement noise variance $R$ (lb$^2$)", show_value=True
     )
     return pm_slider, r_slider
 
@@ -525,6 +522,7 @@ def _(combo_draw, graphic, mo, normal_pdf, np, plt, pm_slider, r_slider):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-checking-by-simulation -->
     ## Checking by Simulation
 
     A proof settles the question, but a simulation is a cheap guard against algebra slips and misread assumptions. The simulation below draws $N = 20{,}000$ independent pairs $(e^-, v)$ with the variances $P^-$ and $R$ chosen above, forms the error $e = (1-\alpha)e^- + \alpha v$ for gains $\alpha = 0, 0.05, \ldots, 1$, and compares the sample variance of $e$ with the formula $P(\alpha)$.
@@ -630,6 +628,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-the-cumulative-average-was-optimal -->
     ## The Cumulative Average Was Optimal
 
     Now apply the theorem step by step. Suppose the true weight $x$ is constant and the scale delivers measurements
@@ -650,15 +649,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Optimal Gains for a Constant)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Optimal Gains for a Constant)**
+        attrs: {class: theorem, id: ch7-thm-optimal-gains-for-a-constant}
     Under the assumptions above, if each gain $\alpha_k$ ($k \ge 2$) is chosen as the optimal gain for step $k$, then for every $k \ge 1$
     $$\alpha_k = \frac1k \ (k \ge 2), \qquad P_k = \frac Rk, \qquad e_k = \frac1k\sum_{i=1}^k v_i, \qquad \hat x_k = \frac1k\sum_{i=1}^k z_i.$$
     So the optimal filter is exactly the Introduction's cumulative average.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     For $k \ge 1$ let $S(k)$ be the statement "$P_k = R/k$ and $e_k = \frac1k\sum_{i=1}^k v_i$". We prove $S(k)$ for all $k \ge 1$ by induction (Chapter 2, applied to $k - 1 \in \mathbb N$).
 
     *Base case.* $\hat x_1 = z_1$, so $e_1 = z_1 - x = v_1$ and $P_1 = \operatorname{Var} v_1 = R$. This is $S(1)$.
@@ -690,15 +689,15 @@ def _(mo):
     mo.md(r"""
     The theorem chooses each gain greedily, one step at a time. Could a cleverer combination of all $k$ readings at once do better? No. Among all weighted sums of the readings that are unbiased whatever $x$ is, which by the argument of the Unbiased Combinations lemma are exactly those whose weights add up to $1$, the plain average has the smallest error variance.
 
-    /// important | 📐 **Theorem (The Average Is the Best Unbiased Linear Combination)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Average Is the Best Unbiased Linear Combination)**
+        attrs: {class: theorem, id: ch7-thm-the-average-is-the-best-unbiased-linear-combination}
     Under the assumptions above, let $w_1, \ldots, w_k$ be numbers with $\sum_{i=1}^k w_i = 1$, and let $\tilde x := \sum_{i=1}^k w_i z_i$. Then $\tilde x$ has error $\sum_i w_i v_i$ with mean zero and variance
     $$\operatorname{Var}(\tilde x - x) = R\sum_{i=1}^k w_i^2 \;\ge\; \frac Rk,$$
     with equality if and only if $w_i = 1/k$ for every $i$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Since the weights add up to $1$, $\tilde x - x = \sum_i w_i(x + v_i) - x = \sum_i w_i v_i$, which has mean zero by linearity. The $v_i$ are pairwise uncorrelated, so Bienaymé's corollary (Chapter 6) gives $\operatorname{Var}(\tilde x - x) = R\sum_i w_i^2$. The computation in the proof of Chapter 6's corollary *For a Constant Value, Averaging Beats the EMA* shows that weights adding up to $1$ satisfy $\sum_i w_i^2 = \sum_i (w_i - 1/k)^2 + 1/k \ge 1/k$, with equality if and only if every $w_i = 1/k$. $\blacksquare$
     ///
 
@@ -711,7 +710,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     The two theorems above rest on four assumptions:
 
     - **The true value is constant.** If $x$ drifts, the gain $1/k$ shrinks toward $0$ and the estimate stops following it. This is why the Introduction switched to the EMA. [Chapter 9](ch9_noise_levels.md) models the drift as process noise and shows that the optimal gain then levels off at a positive value, which turns the optimal filter into an EMA.
@@ -726,6 +724,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-cumulative-average-versus-ema -->
     ### Cumulative Average Versus EMA
 
     The figure runs both filters on the Introduction's 30 scale readings. The bands show $\pm 2$ standard deviations of each estimate's error, from $P_k = R/k$ for the cumulative average and from Chapter 6's exact formula for the EMA. The right panel compares the two error variances with a Monte Carlo estimate from 2,000 simulated runs. Whatever $\alpha$ you choose, the EMA's error variance eventually stops shrinking, while the cumulative average's keeps falling like $1/k$.
@@ -782,7 +781,7 @@ def _(
     _ax1.set_ylim(scale_x - 3.5, scale_x + 4.5)
     _ax1.set_xlabel("time (s)")
     _ax1.set_ylabel("weight (lb)")
-    _ax1.set_title("Estimates with ±2 standard deviation bands", style="italic")
+    _ax1.set_title(r"Estimates with $\pm 2$ standard deviation bands", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper center", ncol=2)
 
@@ -816,16 +815,18 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-when-the-assumptions-fail -->
     ## When the Assumptions Fail
 
     Each assumption of the Optimal Gain theorem can fail in practice. Completing the square, the same tool we used for the theorem, tells us exactly what happens in each case.
 
+    <!-- label: ch7-sec-correlated-errors -->
     ### Correlated Errors
 
     Keep (A1) and (A2), but let the errors be correlated: $\operatorname{Cov}(e^-, v) = c$. This happens when the prediction and the measurement share a source of error. For example, if you sway slowly, the reading $z_k$ and the earlier readings that built $\hat x_k^-$ err in the same direction ($c > 0$). Another classic cause is double counting: feeding a measurement into the filter that was already used to form the prediction.
 
-    /// important | 📐 **Theorem (Optimal Gain With Correlated Errors)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Optimal Gain With Correlated Errors)**
+        attrs: {class: theorem, id: ch7-thm-optimal-gain-with-correlated-errors}
     Assume (A1) and (A2), let $c := \operatorname{Cov}(e^-, v)$, and let $D := P^- + R - 2c$. Then $D = \operatorname{Var}(v - e^-) \ge 0$, and for every $\alpha$
     $$P(\alpha) = (1-\alpha)^2 P^- + \alpha^2 R + 2\alpha(1-\alpha)\,c.$$
 
@@ -836,7 +837,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By Chapter 6, $\operatorname{Var}(v - e^-) = R + P^- - 2c = D$, and variances are nonnegative. The formula for $P(\alpha)$ is the weighted-sum rule with the covariance term kept. Expanding it,
     $$P(\alpha) = (P^- + R - 2c)\,\alpha^2 - 2(P^- - c)\,\alpha + P^- = D\alpha^2 - 2(P^- - c)\,\alpha + P^-.$$
 
@@ -851,15 +852,15 @@ def _(mo):
     - **The optimal gain can leave $[0, 1]$.** If $c > R$, then $\alpha_c > 1$ (because $P^- - c > P^- + R - 2c$), and the best estimate lies *beyond* the measurement, on the far side from the prediction. If $c > P^-$, then $\alpha_c < 0$. Strongly shared errors make extrapolation, not interpolation, the right move.
     - **Ignoring the correlation makes the filter overconfident.**
 
-    /// important | 📐 **Theorem (Ignoring Correlation)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Ignoring Correlation)**
+        attrs: {class: theorem, id: ch7-thm-ignoring-correlation}
     Assume (A1) and (A2) with $\operatorname{Cov}(e^-, v) = c$. If a filter nevertheless uses the gain $\alpha^* = P^-/(P^- + R)$ and reports the error variance $P^* = P^-R/(P^- + R)$, the actual error variance of its estimate is
     $$P(\alpha^*) = P^* + 2\alpha^*(1 - \alpha^*)\,c.$$
     If $c > 0$ and $P^-, R > 0$, the reported variance is too small.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the formula above, $P(\alpha^*) = \big[(1-\alpha^*)^2 P^- + \alpha^{*2} R\big] + 2\alpha^*(1-\alpha^*)c$, and the bracket equals $P^*$ by item 1 of the Optimal Gain theorem with $\alpha = \alpha^*$. If $P^-, R > 0$, then $0 < \alpha^* < 1$, so the extra term is positive when $c > 0$. $\blacksquare$
     ///
 
@@ -871,6 +872,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-bias -->
     ### Bias
 
     Keep (A2) and (A3), but suppose $\mathbb E e^- = b^-$ and $\mathbb E v = b_v$. By linearity the error of the update has mean $(1-\alpha)\,b^- + \alpha\, b_v$, and since its variance is unchanged, its mean squared error is (Chapter 6: MSE equals variance plus squared bias)
@@ -883,19 +885,20 @@ def _(mo):
 
     A bias must be removed by calibration, or estimated as part of what the filter tracks ([Chapter 11](ch11_measurement_functions.md) treats sensor bias).
 
+    <!-- label: ch7-sec-mis-specified-variances -->
     ### Mis-specified Variances
 
     A filter computes its gain from the variances it *believes*. Suppose the true variances are $P^-$ and $R$, satisfying (A1)–(A3), but the filter uses assumed values $\tilde P^-$ and $\tilde R$ with $\tilde P^- + \tilde R > 0$.
 
-    /// important | 📐 **Theorem (Cost of a Wrong Gain)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Cost of a Wrong Gain)**
+        attrs: {class: theorem, id: ch7-thm-cost-of-a-wrong-gain}
     Let $\tilde\alpha := \tilde P^-/(\tilde P^- + \tilde R)$. The estimate $\hat x = \hat x^- + \tilde\alpha\,(z - \hat x^-)$ still has zero-mean error, and its actual error variance is
     $$P(\tilde\alpha) = P^* + (P^- + R)\,(\tilde\alpha - \alpha^*)^2 \;\ge\; P^*,$$
     while the filter reports $\tilde P := \tilde P^- \tilde R/(\tilde P^- + \tilde R)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The Zero-Mean Error theorem holds for every gain, including $\tilde\alpha$. The variance formula is item 1 of the Optimal Gain theorem evaluated at $\alpha = \tilde\alpha$. $\blacksquare$
     ///
 
@@ -905,6 +908,7 @@ def _(mo):
     - **Only the ratio sets the gain.** Multiplying both $\tilde P^-$ and $\tilde R$ by the same factor leaves $\tilde\alpha$ unchanged but multiplies $\tilde P$ by that factor. A filter can therefore estimate well while reporting a misleading error variance. In the sequential constant-weight problem, the gains $1/k$ do not depend on $R$ at all, so a wrong $\tilde R$ changes only the reported $P_k = \tilde R/k$.
     - **The reported variance can be badly wrong.** With $P^- = R = 1\ \text{lb}^2$ but $\tilde R = 0.25\ \text{lb}^2$ (an overly optimistic datasheet), the filter uses $\tilde\alpha = 0.8$, whose actual error variance is $0.2^2 + 0.8^2 = 0.68\ \text{lb}^2$, but it reports $\tilde P = 0.2\ \text{lb}^2$, claiming to be $3.4$ times more certain than it is. [Chapter 9](ch9_noise_levels.md) shows how to detect this from the measurements alone.
 
+    <!-- label: ch7-sec-linear-is-not-everything -->
     ### Linear Is Not Everything
 
     The Optimal Gain theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. It says nothing about nonlinear rules such as "if the reading is more than 5 lb from the prediction, ignore it." When the errors are normal, [Chapter 8](ch8_bayesian_view.md) proves that no rule of any kind beats the optimal gain. When the noise has occasional large outliers, Chapter 8 shows a nonlinear rule that does.
@@ -915,7 +919,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## From α to the Gain $K_k$
+    <!-- label: ch7-sec-from-alpha-to-the-gain-k-k -->
+    ## From $\alpha$ to the Gain $K_k$
 
     From now on we write $K_k$ for the gain used at step $k$; the letter honors Rudolf Kálmán [@kalman1960]. With the optimal gain, one step of the filter reads:
 
@@ -928,7 +933,6 @@ def _(mo):
     Notice that $K_k$ and $P_k$ depend only on variances, not on the measured values, so they could be computed before any data arrive. The Introduction's EMA is the special case $K_k = \alpha$ for every $k$, and for a constant weight we proved that the optimal choice is instead $K_k = 1/k$. What is still missing is how to obtain $P_k^-$ from $P_{k-1}$ when the true value *changes* between steps. That is the subject of [Chapter 9](ch9_noise_levels.md).
 
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The optimal gain is the fraction of the total variance that belongs to the prediction: $K_k = P_k^-/(P_k^- + R)$. It is close to $1$ when the prediction is much less certain than the measurement, close to $0$ when it is much more certain, and after the update the error variance shrinks by the factor $1 - K_k$.
     ///
     """)
@@ -938,6 +942,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch7-sec-summary -->
     ## Summary
 
     - From this chapter on, lowercase symbols such as $x_k$, $z_k$, $v_k$, $\hat x_k$, and $e_k$ denote random variables, and uppercase $P_k$, $P_k^-$, $R$ denote their (non-random) variances.
@@ -947,6 +952,7 @@ def _(mo):
     - Correlated errors change the optimal gain to $(P^- - c)/(P^- + R - 2c)$, and ignoring them makes the filter overconfident. Biases are not removed by any gain or by averaging. Wrong variances leave the estimate unbiased but cost $(P^- + R)(\tilde\alpha - \alpha^*)^2$ and corrupt the reported variance.
     - We renamed the gain $K_k$: $K_k = P_k^-/(P_k^- + R)$, $\hat x_k = \hat x_k^- + K_k(z_k - \hat x_k^-)$, $P_k = (1 - K_k)P_k^-$.
 
+    <!-- label: ch7-sec-whats-next -->
     ## What's Next
 
     This chapter described the prediction and the measurement only through means, variances, and a covariance, and it optimized only over gains. [Chapter 8](ch8_bayesian_view.md) takes a different view: it treats the unknown weight itself as a random variable, describes what we know about it by a probability density, and updates that density with Bayes' theorem. The same gain reappears, and we learn when it is the best of *all* possible estimators, not just the best gain.

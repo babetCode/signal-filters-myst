@@ -105,12 +105,11 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-        attrs: {class: no-icon}
     - [Chapter 4](ch4_probability_spaces.md): {term}`conditional probability`, the law of total probability, and Bayes' theorem for events.
     - [Chapter 5](ch5_random_variables.md): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and the integral $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, the density of $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and the factorization of their joint density, the continuous convolution formula, and sums of independent normal random variables.
     - [Chapter 6](ch6_expectation_and_variance.md): {term}`expected value` and the law of the unconscious statistician (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
     - [Chapter 7](ch7_optimal_alpha.md): the lowercase convention for random quantities, {term}`estimation error`, {term}`error variance`, and the Optimal Gain theorem.
-    - [Appendix C: The Riemann Integral](appendix_c_calculus.md), [Improper Integrals](appendix_c_calculus.md), and [Multiple Integrals](appendix_c_calculus.md) (Fubini's theorem and substitution).
+    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](appendix_c_calculus.md), and [Multiple Integrals](appendix_c_calculus.md) (Fubini's theorem and substitution).
     ///
     """)
     return
@@ -120,7 +119,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// attention | 🗝️ **Key Idea**
-        attrs: {class: no-icon}
     The posterior is proportional to the likelihood times the prior. With a normal prior and normal measurement noise, the posterior is normal, its mean is exactly Chapter 7's optimal update, and that mean is the best estimator of all in the mean-squared-error sense.
     ///
     """)
@@ -130,6 +128,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-from-events-to-densities -->
     ## From Events to Densities
 
     In [Chapter 4](ch4_probability_spaces.md), Bayes' theorem for events,
@@ -150,10 +149,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-conditional-densities -->
     ## Conditional Densities
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Conditional density**</u>
 
     Let $x$ and $z$ be random variables with a {term}`joint density` $f_{x,z}$, and let $f_z$ be the {term}`marginal density` of $z$. For each $\zeta$ with $f_z(\zeta) > 0$, the conditional density of $x$ given $z = \zeta$ is the function $f_{x \mid z}(\cdot \mid \zeta)$ defined by
@@ -167,14 +166,14 @@ def _(mo):
 
     Why is this the right definition? It describes $x$ when $z$ is known to lie in a tiny interval around $\zeta$. One can show that, under mild regularity conditions on $f_{x,z}$, the event-based conditional probability $\mathbb P(x \le a \mid \zeta \le z \le \zeta + h)$, whose denominator is positive for every $h > 0$, converges to $\int_{-\infty}^{a} f_{x\mid z}(\xi \mid \zeta)\,d\xi$ as $h \to 0$. We will not need this fact, only the definition.
 
-    /// important | 📐 **Theorem (Bayes' Theorem for Densities)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Bayes' Theorem for Densities)**
+        attrs: {class: theorem, id: ch8-thm-bayes-theorem-for-densities}
     Let $x$ and $z$ have a joint density, assume $f_x(\xi) > 0$ for every $\xi \in \mathbb R$, and let $f_z(\zeta) > 0$. Then for every $\xi$
     $$f_{x\mid z}(\xi \mid \zeta) = \frac{f_{z\mid x}(\zeta \mid \xi)\,f_x(\xi)}{f_z(\zeta)}, \qquad\text{where}\qquad f_z(\zeta) = \int_{-\infty}^{\infty} f_{z\mid x}(\zeta \mid \xi')\,f_x(\xi')\,d\xi'.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the two definitions of conditional density, both $f_{x\mid z}(\xi\mid\zeta)\,f_z(\zeta)$ and $f_{z\mid x}(\zeta\mid\xi)\,f_x(\xi)$ equal $f_{x,z}(\xi, \zeta)$. Dividing by $f_z(\zeta) > 0$ gives the first formula. The marginal density of $z$ is $f_z(\zeta) = \int f_{x,z}(\xi', \zeta)\,d\xi'$, and the integrand equals $f_{z\mid x}(\zeta \mid \xi')\,f_x(\xi')$ for every $\xi'$ because $f_x > 0$ everywhere. $\blacksquare$
     ///
 
@@ -188,16 +187,16 @@ def _(mo):
     mo.md(r"""
     In filtering we rarely write down a joint density directly. Instead we specify how the measurement is produced, $z = x + v$, and the next lemma turns that into the ingredients of Bayes' theorem.
 
-    /// important | 📐 **Lemma (Additive Noise)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Lemma (Additive Noise)**
+        attrs: {class: lemma, id: ch8-lem-additive-noise}
     Let $x$ and $v$ be independent random variables with densities $f_x$ and $f_v$, and let $z := x + v$. Then $(x, z)$ has the joint density
     $$f_{x,z}(\xi, \zeta) = f_x(\xi)\,f_v(\zeta - \xi),$$
     and wherever $f_x(\xi) > 0$ the conditional density of $z$ given $x = \xi$ is $f_{z\mid x}(\zeta \mid \xi) = f_v(\zeta - \xi)$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
-    By independence, $(x, v)$ has the joint density $f_x(\xi)\,f_v(\eta)$ (Chapter 5's factorization criteria). For numbers $a$ and $b$, the event $\{x \le a, z \le b\}$ is the event that $(x, v)$ lies in the region $B := \{(\xi, \eta) : \xi \le a,\ \eta \le b - \xi\}$. Its probability is the integral of the joint density over $B$ (Chapter 5 notes that this holds for every Borel set once the Lebesgue integral is available; $B$ is not a box), and by Fubini's theorem ([Appendix C: Multiple Integrals](appendix_c_calculus.md))
+        attrs: {class: proof}
+    By independence, $(x, v)$ has the joint density $f_x(\xi)\,f_v(\eta)$ (Chapter 5's factorization criteria). For numbers $a$ and $b$, the event $\{x \le a, z \le b\}$ is the event that $(x, v)$ lies in the region $B := \{(\xi, \eta) : \xi \le a,\ \eta \le b - \xi\}$. Its probability is the integral of the joint density over $B$ (Chapter 5 notes that this holds for every Borel set once the Lebesgue integral is available; $B$ is not a box), and by Fubini's theorem ([Appendix C: Multiple Integrals](#appc-sec-multiple-integrals))
     $$\mathbb P(x \le a,\ z \le b) = \int_{-\infty}^{a} f_x(\xi)\left(\int_{-\infty}^{b - \xi} f_v(\eta)\,d\eta\right) d\xi = \int_{-\infty}^{a} \int_{-\infty}^{b} f_x(\xi)\,f_v(\zeta - \xi)\,d\zeta\,d\xi,$$
     where the inner integral was rewritten with the shift $\eta = \zeta - \xi$. This expresses the joint CDF of $(x, z)$ as a double integral of $f_x(\xi)\,f_v(\zeta - \xi)$, so that function is a joint density of $(x, z)$ (Chapter 5). Dividing by $f_x(\xi)$ gives the conditional density. $\blacksquare$
     ///
@@ -208,33 +207,30 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-prior-likelihood-posterior-and-evidence -->
     ## Prior, Likelihood, Posterior, and Evidence
 
     Bayes' theorem for densities has four ingredients, and each has a name. In all four definitions, $x$ is an unknown and $z$ a measurement of it, with a joint density, and $\zeta$ is the observed value of $z$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Prior**</u>
 
     The prior of an unknown $x$ for a measurement $z$ is the probability density of $x$ used before $z$ is incorporated: the marginal density $f_x$, or, when earlier measurements $z_1, \ldots, z_{k-1}$ have already been incorporated, the {term}`conditional density` of $x$ given their observed values.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Likelihood**</u>
 
     For an observed value $\zeta$ of a measurement $z$ of an unknown $x$, the likelihood is the function $\xi \mapsto f_{z\mid x}(\zeta \mid \xi)$: the {term}`conditional density` of $z$ given $x = \xi$, evaluated at the observed $\zeta$ and regarded as a function of the possible values $\xi$ of $x$.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Posterior**</u>
 
     The posterior of an unknown $x$ given the observed value $\zeta$ of a measurement $z$ (and the observed values of any earlier measurements) is the {term}`conditional density` $\xi \mapsto f_{x\mid z}(\xi \mid \zeta)$ of $x$ given these observations.
     ///
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Evidence**</u>
 
     The evidence of an observed value $\zeta$ of a measurement $z$ is the number $f_z(\zeta) = \int_{-\infty}^{\infty} f_{z\mid x}(\zeta\mid\xi)\,f_x(\xi)\,d\xi$: the density of $z$ at $\zeta$ computed from the {term}`likelihood` and the {term}`prior` (conditional on earlier measurements, if any).
@@ -256,7 +252,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The model must be right.** Bayes' theorem is exact, but the posterior is only as good as the prior and the likelihood fed into it. A prior that is far too narrow, or a likelihood with the wrong noise level, produces a confidently wrong posterior.
     - **Densities are required.** The formulas need $x$ and $z$ to have a joint density. Discrete unknowns use Chapter 4's version with sums; mixtures of the two are handled by measure theory.
     - **Division by zero.** The posterior is defined only for observations with $f_z(\zeta) > 0$. An observation that the model considers impossible (for instance an outlier far beyond what normal noise can produce) yields an evidence of essentially zero and a posterior dominated by numerical round-off; this is a symptom of a wrong model.
@@ -268,6 +263,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-normal-prior-normal-likelihood -->
     ## Normal Prior, Normal Likelihood
 
     For the rest of the chapter we write
@@ -276,8 +272,8 @@ def _(mo):
 
     for the density of the {term}`normal distribution` $\mathcal N(\mu, \sigma^2)$ at $\xi$ (Chapter 5). When both the prior and the noise are normal, the posterior can be computed in closed form, by completing the square once more.
 
-    /// important | 📐 **Theorem (Normal Update)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Normal Update)**
+        attrs: {class: theorem, id: ch8-thm-normal-update}
     Let $x \sim \mathcal N(m, P^-)$ and $v \sim \mathcal N(0, R)$ be independent with $P^- > 0$ and $R > 0$, let $z := x + v$, and let $K := P^-/(P^- + R)$. Then for every $\zeta \in \mathbb R$:
 
     1. The evidence is $f_z(\zeta) = \mathcal N(\zeta;\, m, P^- + R)$; that is, $z \sim \mathcal N(m, P^- + R)$.
@@ -285,7 +281,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By the Additive Noise lemma, the joint density is
     $$f_x(\xi)\,f_v(\zeta - \xi) = \frac{1}{2\pi\sqrt{P^- R}}\exp\!\Big(-\tfrac12 q(\xi)\Big), \qquad q(\xi) := \frac{(\xi - m)^2}{P^-} + \frac{(\zeta - \xi)^2}{R}.$$
     Let $P := P^-R/(P^- + R)$, so that $1/P = 1/P^- + 1/R$, and let $\mu := P\,(m/P^- + \zeta/R)$. Expanding $q$ and completing the square in $\xi$,
@@ -308,7 +304,7 @@ def _(mo):
     Compare with [Chapter 7](ch7_optimal_alpha.md): $K$ is exactly the optimal gain $P^-/(P^- + R)$, the posterior mean $m + K(\zeta - m)$ is exactly the optimal update with prediction $m$ and measurement $\zeta$, and the posterior variance $(1 - K)P^-$ is exactly the optimal error variance. Two different questions get the same answer:
 
     | | Chapter 7 | Chapter 8 |
-    |---|---|---|
+    |:---|:---|:---|
     | The true value $x$ is | an unknown number | a random variable with a prior |
     | $P^-$ is the variance of | the prediction's error | our belief about $x$ |
     | The question | which gain minimizes the error variance? | what do we believe after seeing $z$? |
@@ -324,6 +320,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-where-am-i-on-x-axis-avenue -->
     ### Where Am I on x-Axis Avenue?
 
     Back to the road. The odometer gives the prior $x \sim \mathcal N(100, 20^2)$ (in meters), and the GPS reading has noise $v \sim \mathcal N(0, 10^2)$. With the reading $\zeta = 130$ m, the theorem gives $K = 400/(400 + 100) = 0.8$, posterior mean $100 + 0.8 \cdot 30 = 124$ m, and posterior standard deviation $\sqrt{0.2 \cdot 400} \approx 8.9$ m, tighter than either source. Use the sliders to change the three inputs. The likelihood, regarded as a function of $\xi$, is $f_v(\zeta - \xi) = \mathcal N(\xi;\, \zeta, R)$, a bell centered at the reading.
@@ -354,14 +351,14 @@ def _(gps_noise_sd, gps_prior_sd, gps_reading, graphic, mo, normal_pdf, np, plt)
     _fig, _ax = plt.subplots(figsize=(8, 3.6))
     _ax.plot(_grid, _prior, color="red", linestyle=":", linewidth=2, label="prior $f_x$")
     _ax.plot(_grid, _lik, color="C0", linestyle="--", label=r"likelihood $f_v(\zeta - \xi)$")
-    _ax.plot(_grid, _post, color="C1", linewidth=2, label="posterior (likelihood × prior, normalized)")
+    _ax.plot(_grid, _post, color="C1", linewidth=2, label=r"posterior (likelihood $\times$ prior, normalized)")
     _ax.plot(_grid, normal_pdf(_grid, _mu, _P), color="black", linestyle=(0, (1, 3)), linewidth=1,
              label=r"$\mathcal{N}(m + K(\zeta-m), (1-K)P^-)$")
     _ax.plot([_zeta], [0], "o", markerfacecolor="none", markeredgecolor="black", markeredgewidth=1.5, clip_on=False, zorder=5)
     _ax.set_xlabel(r"position $\xi$ (m)")
     _ax.set_ylabel("density (1/m)")
     _ax.set_ylim(bottom=0)
-    _ax.set_title("Prior × likelihood = posterior (up to normalization)", style="italic")
+    _ax.set_title(r"Prior $\times$ likelihood = posterior (up to normalization)", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(fontsize=8, loc="upper left")
     _fig.tight_layout()
@@ -384,7 +381,6 @@ def _(mo):
     The dotted black curve is the theorem's closed form; it lies exactly on the numerically normalized product. Notice that the posterior's width does not depend on the reading $\zeta$ at all, only on the two variances, just as $P_k$ did not depend on the measurements in Chapter 7.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Normality** of both the prior and the noise is what makes the posterior normal and its mean linear in $\zeta$. With non-normal noise the posterior has another shape, and its mean is a nonlinear function of $\zeta$ (see *When the Noise Is Not Normal* below).
     - **Independence** of $x$ and $v$ is what makes the joint density factor. If the noise depends on the true value, the likelihood must be modeled accordingly.
     - **Known variances.** As in Chapter 7, the formulas use $P^-$ and $R$; if they are wrong, the posterior mean is a non-optimal update and the posterior variance is wrong.
@@ -396,6 +392,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-the-best-estimator-of-all -->
     ## The Best Estimator of All
 
     Chapter 7 found the best *gain*: the best estimator of the form $\hat x^- + \alpha(z - \hat x^-)$. Could an estimator of some other form, perhaps a nonlinear function of $z$, do better? To answer this we compare against every function of $z$ at once, and the posterior provides the winner.
@@ -407,35 +404,34 @@ def _(mo):
     the mean of the posterior density (when the integral converges absolutely). It is also written $\mathbb E[x \mid z = \zeta]$, the *conditional expectation* of $x$ given $z = \zeta$, and $\mathbb E[x \mid z] := m(z)$ denotes the random variable obtained by plugging the measurement into $m$.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Minimum mean squared error estimator**</u>
 
     Let $x$ and $z$ be random variables with $\mathbb E[x^2] < \infty$. An estimator $g^*(z)$ of $x$, where $g^*$ is a function from $\mathbb R$ to $\mathbb R$, is a minimum mean squared error (MMSE) estimator if $\mathbb E\big[(x - g^*(z))^2\big] \le \mathbb E\big[(x - g(z))^2\big]$ for every function $g : \mathbb R \to \mathbb R$ for which $g(z)$ is a random variable with $\mathbb E[g(z)^2] < \infty$.
     ///
 
-    /// important | 📐 **Theorem (The Posterior Mean Is the MMSE Estimator)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (The Posterior Mean Is the MMSE Estimator)**
+        attrs: {class: theorem, id: ch8-thm-the-posterior-mean-is-the-mmse-estimator}
     Let $x$ and $z$ have a joint density with $\mathbb E[x^2] < \infty$, and let $g$ be any function for which $g(z)$ is a random variable with $\mathbb E[g(z)^2] < \infty$. Then
     $$\mathbb E\big[(x - g(z))^2\big] = \mathbb E\big[(x - m(z))^2\big] + \mathbb E\big[(m(z) - g(z))^2\big].$$
     Consequently, the posterior mean $m(z) = \mathbb E[x \mid z]$ is an MMSE estimator, and every $g$ with $\mathbb E[(m(z) - g(z))^2] > 0$ is strictly worse.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By LOTUS for joint densities (Chapter 6), and then by Fubini's theorem with $f_{x,z}(\xi,\zeta) = f_{x\mid z}(\xi\mid\zeta)\,f_z(\zeta)$ (values $\zeta$ with $f_z(\zeta) = 0$ contribute nothing),
     $$\mathbb E\big[(x - g(z))^2\big] = \iint (\xi - g(\zeta))^2 f_{x,z}(\xi,\zeta)\,d\xi\,d\zeta = \int f_z(\zeta)\left(\int (\xi - g(\zeta))^2 f_{x\mid z}(\xi\mid\zeta)\,d\xi\right)d\zeta.$$
     Fix $\zeta$ and write $c := g(\zeta)$ and $\mu := m(\zeta)$. Expanding $(\xi - c)^2 = (\xi - \mu)^2 + 2(\xi - \mu)(\mu - c) + (\mu - c)^2$ and using $\int f_{x\mid z}(\xi\mid\zeta)\,d\xi = 1$ and $\int (\xi - \mu)\,f_{x\mid z}(\xi\mid\zeta)\,d\xi = \mu - \mu = 0$,
     $$\int (\xi - c)^2 f_{x\mid z}(\xi\mid\zeta)\,d\xi = \int (\xi - \mu)^2 f_{x\mid z}(\xi\mid\zeta)\,d\xi + (\mu - c)^2.$$
-    This is Chapter 6's "MSE = variance + bias²" applied to the posterior. Integrating against $f_z(\zeta)$ gives the identity; the assumption $\mathbb E[x^2] < \infty$ (with $\mathbb E[g(z)^2] < \infty$) makes every integral finite, apart from values $\zeta$ of probability zero, which do not affect the integrals. Both terms on the right are nonnegative, and only the second depends on $g$, so the sum is smallest when $g = m$. $\blacksquare$
+    This is Chapter 6's "MSE = variance + bias$^2$" applied to the posterior. Integrating against $f_z(\zeta)$ gives the identity; the assumption $\mathbb E[x^2] < \infty$ (with $\mathbb E[g(z)^2] < \infty$) makes every integral finite, apart from values $\zeta$ of probability zero, which do not affect the integrals. Both terms on the right are nonnegative, and only the second depends on $g$, so the sum is smallest when $g = m$. $\blacksquare$
     ///
 
-    /// important | 📐 **Corollary (The Optimal Gain Is Optimal Among All Estimators)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (The Optimal Gain Is Optimal Among All Estimators)**
+        attrs: {class: corollary, id: ch8-cor-the-optimal-gain-is-optimal-among-all-estimators}
     In the setting of the Normal Update theorem, $\mathbb E[x \mid z] = m + K(z - m)$, and no function of $z$ has a smaller mean squared error. Its mean squared error is $(1 - K)P^-$.
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     The posterior is $\mathcal N(m + K(\zeta - m), (1-K)P^-)$, whose mean is $m + K(\zeta - m)$. By the theorem this is an MMSE estimator, and its mean squared error is $\int f_z(\zeta)\int (\xi - m(\zeta))^2 f_{x\mid z}(\xi\mid\zeta)\,d\xi\,d\zeta = \int f_z(\zeta)\,(1-K)P^-\,d\zeta = (1-K)P^-$, because the posterior variance is the same for every $\zeta$. $\blacksquare$
     ///
 
@@ -448,7 +444,6 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Mean squared error is a choice.** Other measures of "best" give other estimators: the posterior median minimizes the mean *absolute* error, and the MAP estimate below is the peak of the posterior. For a normal posterior they all coincide.
     - **Finite second moment.** The theorem needs $\mathbb E[x^2] < \infty$; without it the mean squared error of every estimator can be infinite.
     - **Linearity is special to the normal case.** In general $\mathbb E[x \mid z]$ is a nonlinear function of $z$ and may be hard to compute. The best *gain* from Chapter 7 is then only the best *linear* estimator, and it can be beaten, as the next section shows.
@@ -460,12 +455,12 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-the-peak-of-the-posterior -->
     ## The Peak of the Posterior
 
     The posterior mean is not the only natural single-number summary of a posterior. Another is its peak.
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Maximum a posteriori estimate**</u>
 
     Given an observed value $\zeta$ of a measurement $z$, a maximum a posteriori (MAP) estimate of the unknown $x$ is a value $\hat\xi$ at which the {term}`posterior` density is largest: $f_{x\mid z}(\hat\xi \mid \zeta) \ge f_{x\mid z}(\xi \mid \zeta)$ for every $\xi \in \mathbb R$.
@@ -481,6 +476,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-when-the-noise-is-not-normal -->
     ## When the Noise Is Not Normal
 
     Real scales occasionally produce a wild reading: you steady yourself on the counter, the dog bumps the platform. A simple model of this: usually the noise is $\mathcal N(0, \sigma_1^2)$ with $\sigma_1 = 1$ lb, but with a small probability $\varepsilon$ it is an *outlier* drawn from $\mathcal N(0, \sigma_2^2)$ with a much larger $\sigma_2$. Precisely, $v := (1 - b)\,\sigma_1 g_1 + b\,\sigma_2 g_2$, where $g_1, g_2 \sim \mathcal N(0, 1)$ and $b$ (with $\mathbb P(b = 1) = \varepsilon$, $\mathbb P(b = 0) = 1 - \varepsilon$) are independent of each other and of $x$. By the law of total probability (Chapter 4), $\mathbb P(v \le a) = (1-\varepsilon)\,\mathbb P(\sigma_1 g_1 \le a) + \varepsilon\,\mathbb P(\sigma_2 g_2 \le a)$, so $v$ has the *mixture* density
@@ -610,7 +606,6 @@ def _(mo):
     With the default settings, the posterior mean has a mean squared error of about $0.6\ \text{lb}^2$, against about $0.9\ \text{lb}^2$ for the best gain. For readings about $4$ lb from the prior mean (try $\zeta = 159.5$ lb) the posterior has two bumps, one for "good reading" and one for "outlier", and as $\zeta$ crosses this region the MAP estimate jumps from one bump to the other while the posterior mean moves smoothly.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **The nonlinear estimator needs the exact noise model.** It used $\varepsilon$ and $\sigma_2$. With a wrong outlier model it can do worse than the best gain, which only needs $R$.
     - **The best gain is still the best *linear* estimator**, and its mean squared error formula $P^-R/(P^-+R)$ still holds exactly, as the simulation confirms. Chapter 7's theorem never assumed normality.
     - **In practice**, outliers are often handled by *gating*, which rejects readings whose innovation is implausibly large ([Chapter 14](ch14_kalman_filters_in_practice.md)); it is a crude version of the posterior-mean curve above.
@@ -622,12 +617,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-why-normal-the-central-limit-theorem -->
     ## Why Normal? The Central Limit Theorem
 
     Everything is simple when the noise is normal, and the previous section showed that it can be costly when it is not. So why is normal noise such a common assumption? Because measurement noise is often the *sum* of many small, independent effects (thermal noise in the load cell, tiny body movements, electrical interference), and sums of many independent effects are approximately normal.
 
-    /// important | 📐 **Theorem (Central Limit Theorem)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Central Limit Theorem)**
+        attrs: {class: theorem, id: ch8-thm-central-limit-theorem}
     Let $y_1, y_2, y_3, \ldots$ be independent and identically distributed random variables with mean $\mu$ and variance $\sigma^2$, where $0 < \sigma^2 < \infty$, and let
     $$s_n := \frac{y_1 + \cdots + y_n - n\mu}{\sigma\sqrt n}.$$
     Then for every $a \in \mathbb R$,
@@ -635,7 +631,7 @@ def _(mo):
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     Not proven here; the standard proof uses characteristic functions, which this book does not develop. See [Wikipedia: Central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) and the references there. What is easy to check is the scaling: by linearity, $\mathbb E s_n = 0$, and since the $y_i$ are independent, hence uncorrelated, Chapter 6 gives $\operatorname{Var} s_n = n\sigma^2/(\sigma^2 n) = 1$. The theorem says that the *shape* of the distribution of $s_n$ also approaches the standard normal one.
     ///
 
@@ -647,7 +643,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     clt_dist = mo.ui.dropdown(
-        options=["uniform on [-1/2, 1/2]", "fair coin: -1 or +1", "outlier mixture (ε = 0.1, σ₂ = 10)"],
+        options=["uniform on [-1/2, 1/2]", "fair coin: -1 or +1", "outlier mixture (epsilon = 0.1, sigma_2 = 10)"],
         value="uniform on [-1/2, 1/2]",
         label="Distribution of each term",
     )
@@ -664,7 +660,7 @@ def _(np):
     clt_samples = {
         "uniform on [-1/2, 1/2]": (_rng.uniform(-0.5, 0.5, (_M, _N)), 0.0, 1 / 12),
         "fair coin: -1 or +1": (_rng.choice([-1.0, 1.0], size=(_M, _N)), 0.0, 1.0),
-        "outlier mixture (ε = 0.1, σ₂ = 10)": (_mix, 0.0, 0.9 + 0.1 * 100.0),
+        "outlier mixture (epsilon = 0.1, sigma_2 = 10)": (_mix, 0.0, 0.9 + 0.1 * 100.0),
     }
     return (clt_samples,)
 
@@ -706,7 +702,6 @@ def _(clt_dist, clt_n, clt_samples, graphic, math, mo, normal_pdf, np, plt):
 def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Finite variance.** Without it the theorem fails. The average of $n$ independent standard [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution) random variables has the same Cauchy distribution for every $n$, so averaging never helps.
     - **Many comparable effects.** If one effect dominates, such as an occasional outlier, a sum of a few terms is far from normal, and the tails converge last: rare large errors are underestimated by a normal model.
     - **Independence.** The basic theorem assumes independent terms. Versions for weakly dependent terms exist, but strongly correlated effects (a slow sway) need not average out.
@@ -719,6 +714,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-the-bayes-filter -->
     ## The Bayes Filter
 
     So far we have incorporated one measurement. A filter must handle a stream of them while the true value may change. The Bayesian answer is a two-step recursion. We state it for the scalar model used throughout Parts I and II:
@@ -740,15 +736,15 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 📐 **Theorem (Bayes Filter Recursion)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Theorem (Bayes Filter Recursion)**
+        attrs: {class: theorem, id: ch8-thm-bayes-filter-recursion}
     Assume (B1)–(B3), and let the observed values $\zeta_1, \zeta_2, \ldots$ have positive joint density. With $p_0$ the density of $x_0$, for every $k \ge 1$:
     $$\textbf{predict:}\quad p_k^-(\xi) = \int_{-\infty}^{\infty} f_w(\xi - \Delta x_k - \xi')\,p_{k-1}(\xi')\,d\xi',$$
     $$\textbf{update:}\quad p_k(\xi) = \frac{f_v(\zeta_k - \xi)\,p_k^-(\xi)}{\int_{-\infty}^{\infty} f_v(\zeta_k - \xi')\,p_k^-(\xi')\,d\xi'}.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     *Step 1: the joint density.* The function
     $$J_k(\xi_0, \ldots, \xi_k, \zeta_1, \ldots, \zeta_k) := p_0(\xi_0)\prod_{j=1}^{k} f_w(\xi_j - \xi_{j-1} - \Delta x_j)\,f_v(\zeta_j - \xi_j)$$
     is a joint density of $(x_0, \ldots, x_k, z_1, \ldots, z_k)$. Indeed, add the variables in the order $x_1, z_1, x_2, z_2, \ldots$. Each new variable is an earlier one plus a known number plus a fresh noise term ($w_j$ or $v_j$) that is independent of all variables added so far, because those are functions of $x_0$ and earlier noise terms (B3). The proof of the Additive Noise lemma (Fubini's theorem and a shift in the innermost integral) then shows that adding the variable multiplies the joint density by $f_w(\xi_j - \xi_{j-1} - \Delta x_j)$ or $f_v(\zeta_j - \xi_j)$.
@@ -765,7 +761,6 @@ def _(mo):
     For general models, where $x_k$ depends on $x_{k-1}$ through a *transition density*, the predict step is called the Chapman–Kolmogorov equation; see [Wikipedia: Recursive Bayesian estimation](https://en.wikipedia.org/wiki/Recursive_Bayesian_estimation).
 
     /// note | 📖 **Definition**
-        attrs: {class: no-icon}
     <u>**Bayes filter**</u>
 
     A {term}`filter` that, at each step $k$, computes the {term}`posterior` density of the current value $x_k$ given the measurements $z_1, \ldots, z_k$ from the posterior at step $k - 1$ by two steps: a predict step, which propagates the density through the model of how $x$ changes, and an update step, which multiplies the resulting {term}`prior` by the {term}`likelihood` of $z_k$ and normalizes. Its estimates are single-number summaries of the posteriors, such as their means.
@@ -779,21 +774,20 @@ def _(mo):
     mo.md(r"""
     When everything is normal, every density in the recursion is normal, and the filter only has to track two numbers per step.
 
-    /// important | 📐 **Corollary (The Normal Bayes Filter)**
-        attrs: {class: no-icon}
+    /// admonition | 📐 **Corollary (The Normal Bayes Filter)**
+        attrs: {class: corollary, id: ch8-cor-the-normal-bayes-filter}
     Assume (B1)–(B3) with $p_0 = \mathcal N(\hat x_0, P_0)$, $f_w = \mathcal N(0, Q)$, and $f_v = \mathcal N(0, R)$, where $P_0, Q, R > 0$ (or $w_k = 0$, in which case set $Q := 0$). Then for every $k \ge 1$, $p_k^- = \mathcal N(\hat x_k^-, P_k^-)$ and $p_k = \mathcal N(\hat x_k, P_k)$, where
     $$\hat x_k^- = \hat x_{k-1} + \Delta x_k, \quad P_k^- = P_{k-1} + Q, \quad K_k = \frac{P_k^-}{P_k^- + R}, \quad \hat x_k = \hat x_k^- + K_k(\zeta_k - \hat x_k^-), \quad P_k = (1 - K_k)P_k^-.$$
     ///
 
     /// admonition | ✍️ **Proof**
-        attrs: {class: no-icon}
+        attrs: {class: proof}
     By induction on $k$; suppose $p_{k-1} = \mathcal N(\hat x_{k-1}, P_{k-1})$ (true for $k = 1$ by assumption). *Predict:* since $\mathcal N(\xi - \Delta x_k - \xi';\, 0, Q) = \mathcal N(\xi - \Delta x_k;\, \xi', Q)$, the predict integral is exactly the evidence integral of the Normal Update theorem, with prior $\mathcal N(\hat x_{k-1}, P_{k-1})$ for $\xi'$, noise variance $Q$, and "observation" $\xi - \Delta x_k$. By item 1 it equals $\mathcal N(\xi - \Delta x_k;\, \hat x_{k-1}, P_{k-1} + Q) = \mathcal N(\xi;\, \hat x_k^-, P_k^-)$. If $w_k = 0$, the shift gives the same result with $Q = 0$. *Update:* the normalized product $\mathcal N(\xi;\, \hat x_k^-, P_k^-)\,\mathcal N(\zeta_k - \xi;\, 0, R)$ is, by the computation in the proof of the Normal Update theorem, $\mathcal N(\xi;\, \hat x_k^- + K_k(\zeta_k - \hat x_k^-),\, (1 - K_k)P_k^-)$. $\blacksquare$
     ///
 
     These are Chapter 7's update equations, plus one new equation: in the predict step, the variance grows by $Q$. [Chapter 9](ch9_noise_levels.md) derives the same recursion from means and variances alone, without assuming normality, and gives it its name: the Kalman filter.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-        attrs: {class: no-icon}
     - **Independence (B3)** is what lets the filter forget the past: all the information in $z_1, \ldots, z_{k-1}$ is carried by $p_{k-1}$. If noise terms are correlated over time, the recursion above is no longer exact.
     - **A correct model.** The filter is exact for the assumed $p_0$, $f_w$, $f_v$, and $\Delta x_k$. A wrong model gives a confidently wrong posterior; [Chapter 9](ch9_noise_levels.md) shows how to detect this.
     - **Computation.** Outside the normal case, the integrals rarely have a closed form. A grid works in one dimension (next section), but the number of grid points grows exponentially with the number of unknowns. This is why the normal case, the Kalman filter, matters so much, and why approximations such as particle filters ([Chapter 16](ch16_unscented_kalman_filter.md)) exist.
@@ -805,16 +799,17 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <!-- label: ch8-sec-a-grid-bayes-filter -->
     ## A Grid Bayes Filter
 
-    A computer cannot store a whole density, but it can store its values on a fine, evenly spaced grid $\xi_1 < \xi_2 < \cdots < \xi_N$ with spacing $h$. Integrals become Riemann sums ([Appendix C: The Riemann Integral](appendix_c_calculus.md)), $\int g(\xi)\,d\xi \approx h\sum_i g(\xi_i)$: the predict step becomes a discrete convolution, and the update a pointwise multiplication followed by normalization. This is a *grid* (or *histogram*) Bayes filter. It works for any noise densities, normal or not.
+    A computer cannot store a whole density, but it can store its values on a fine, evenly spaced grid $\xi_1 < \xi_2 < \cdots < \xi_N$ with spacing $h$. Integrals become Riemann sums ([Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral)), $\int g(\xi)\,d\xi \approx h\sum_i g(\xi_i)$: the predict step becomes a discrete convolution, and the update a pointwise multiplication followed by normalization. This is a *grid* (or *histogram*) Bayes filter. It works for any noise densities, normal or not.
     """)
     return
 
 
 @app.cell
 def _(np):
-    # jb: echo=true
+    # jb: editor=true
     def grid_bayes_filter(z, grid, prior, likelihood, Q=0.0, dx=0.0):
         """Grid (histogram) Bayes filter for x_k = x_{k-1} + dx + w_k, z_k = x_k + v_k.
 
@@ -864,8 +859,8 @@ def _(mo):
 def _(mo):
     grid_data = mo.ui.dropdown(options=["normal noise", "normal noise + 3 outliers"], value="normal noise", label="Data")
     grid_lik = mo.ui.dropdown(
-        options=["normal (σ = 1 lb)", "outlier mixture (ε = 0.1, σ₂ = 10 lb)"],
-        value="normal (σ = 1 lb)",
+        options=["normal (sigma = 1 lb)", "outlier mixture (epsilon = 0.1, sigma_2 = 10 lb)"],
+        value="normal (sigma = 1 lb)",
         label="Grid filter's likelihood",
     )
     grid_sw = mo.ui.slider(
@@ -943,7 +938,7 @@ def _(
     _ax2.set_ylim(150, 162) if grid_data.value == "normal noise" else _ax2.set_ylim(145, 170)
     _ax2.set_xlabel("time (s)")
     _ax2.set_ylabel("weight (lb)")
-    _ax2.set_title("Estimates with ±2 standard deviation band (grid)", style="italic")
+    _ax2.set_title(r"Estimates with $\pm 2$ standard deviation band (grid)", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(fontsize=7, loc="upper right", ncol=2)
     _fig.tight_layout()
@@ -967,15 +962,17 @@ def _(mo):
     mo.md(r"""
     With normal noise, the normal likelihood, and no random change, the two filters agree to about four decimal places, and after $30$ readings the posterior variance is $1/(1/100 + 30/1) \approx 0.0333\ \text{lb}^2$, essentially Chapter 7's $R/30$: a vague prior acts like no prior at all. The grid filter costs thousands of multiplications per step where the normal filter needs a handful, which is the practical reason for the Kalman filter's popularity; the grid filter's advantage is that it does not care what shape the densities have.
 
+    <!-- label: ch8-sec-summary -->
     ## Summary
 
-    - For continuous random variables, Bayes' theorem works with densities: the **conditional density** $f_{x\mid z}(\xi\mid\zeta) = f_{x,z}(\xi,\zeta)/f_z(\zeta)$, and **posterior** = **likelihood** × **prior** / **evidence**. For additive noise $z = x + v$, the likelihood is $\xi \mapsto f_v(\zeta - \xi)$.
+    - For continuous random variables, Bayes' theorem works with densities: the **conditional density** $f_{x\mid z}(\xi\mid\zeta) = f_{x,z}(\xi,\zeta)/f_z(\zeta)$, and **posterior** = **likelihood** $\times$ **prior** / **evidence**. For additive noise $z = x + v$, the likelihood is $\xi \mapsto f_v(\zeta - \xi)$.
     - With a normal prior $\mathcal N(m, P^-)$ and normal noise $\mathcal N(0, R)$, the posterior is $\mathcal N\big(m + K(\zeta - m), (1-K)P^-\big)$ with $K = P^-/(P^- + R)$: exactly Chapter 7's optimal update, and the evidence is $\mathcal N(m, P^- + R)$.
     - The posterior mean $\mathbb E[x\mid z]$ is the **minimum mean squared error estimator** among all functions of $z$. In the normal case it is linear, so Chapter 7's update is the best estimator of any form; the **MAP estimate** coincides with it.
     - With non-normal noise, such as occasional outliers, the MMSE estimator is nonlinear and can beat every gain.
     - The **central limit theorem** explains why normal noise is a common, but not universal, model.
     - The **Bayes filter** alternates predict (spread the density through the model) and update (Bayes' theorem). With normal densities it reduces to Chapter 7's update plus the variance growth $P_k^- = P_{k-1} + Q$; on a grid it handles any densities in one dimension.
 
+    <!-- label: ch8-sec-whats-next -->
     ## What's Next
 
     Part I answered the Introduction's question: given the noise levels $P_k^-$ and $R$, the best gain is $K_k = P_k^-/(P_k^- + R)$. But where do these numbers come from? [Chapter 9](ch9_noise_levels.md) opens Part II by estimating $R$ from data, deriving $P_k^-$ from a model of how the true value changes, and assembling the result into the scalar Kalman filter. It then answers the Introduction's original question about the EMA: in the long run the Kalman filter *becomes* an EMA, with a gain determined by the two noise levels.
