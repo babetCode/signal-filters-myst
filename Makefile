@@ -13,7 +13,7 @@ link-plugin:
 
 # Export marimo notebooks from notebooks/ to .md files in content/nb/
 sync-notebooks:
-	uv run python scripts/sync_notebooks.py $(EVAL_FLAG)
+	uv run python scripts/sync_notebooks.py $(EVAL_FLAG) && uv run python scripts/toc_generator.py
 
 # Build static HTML in content/_build/html/
 build-html:

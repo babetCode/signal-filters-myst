@@ -9,6 +9,7 @@ project:
       path: ../.venv/bin/jupyter-book-marimo # on Windows, see scripts/link_plugin.py
   toc:
     - file: nb/index.md
+    - file: nb/toc.md
     - file: nb/introduction.md
       title: Introduction
     - title: "Part I: Choosing Alpha"
@@ -50,7 +51,7 @@ project:
         - file: nb/appendix_b_number_systems.md
         - file: nb/appendix_c_calculus.md
         - file: nb/appendix_d_linear_algebra.md
-    - file: glossary-terms.md
+    - file: index-terms.md
 site:
   template: book-theme
   options:
