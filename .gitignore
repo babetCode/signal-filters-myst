@@ -29,3 +29,5 @@ notebooks/public/
 
 # processed notebooks
 content/nb/
+
+settings.local.json
