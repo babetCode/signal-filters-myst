@@ -807,9 +807,47 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def grid_bayes_filter(z, grid, prior, likelihood, Q=0.0, dx=0.0):
+        "\"\"Grid (histogram) Bayes filter for x_k = x_{k-1} + dx + w_k, z_k = x_k + v_k.
+
+        z          -- measurements z_1, ..., z_n
+        grid       -- evenly spaced possible values of x
+        prior      -- density of x_0 evaluated on the grid
+        likelihood -- function (z_k, grid) -> f_v(z_k - grid)
+        Q          -- variance of a normal change w_k (0 means w_k = 0)
+        dx         -- known expected change per step
+        Returns an array whose row k-1 is the posterior density p_k on the grid.
+        "\"\"
+        h = grid[1] - grid[0]
+        p = prior / (prior.sum() * h)
+        if Q > 0:
+            half = int(np.ceil(5 * np.sqrt(Q) / h))
+            u = np.arange(-half, half + 1) * h
+            kernel = np.exp(-(u**2) / (2 * Q))
+            kernel = kernel / kernel.sum()  # discrete density of w_k, sums to 1
+        posteriors = []
+        for zk in z:
+            # Predict: shift by dx, then convolve with the density of w_k
+            p = np.interp(grid - dx, grid, p, left=0.0, right=0.0)
+            if Q > 0:
+                p = np.convolve(p, kernel, mode="same")
+            # Update: multiply by the likelihood of z_k and normalize
+            p = p * likelihood(zk, grid)
+            p = p / (p.sum() * h)
+            posteriors.append(p)
+        return np.array(posteriors)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def grid_bayes_filter(z, grid, prior, likelihood, Q=0.0, dx=0.0):
         """Grid (histogram) Bayes filter for x_k = x_{k-1} + dx + w_k, z_k = x_k + v_k.
 

@@ -197,9 +197,37 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def merwe_sigma_points(mu, Sigma, alpha=1.0, beta=0.0, kappa=None):
+        "\"\"Scaled sigma points for mean mu and covariance Sigma.
+
+        Returns chi (shape (n, 2n+1), one point per column), the mean weights Wm,
+        and the covariance weights Wc. kappa defaults to 3 - n.
+        "\"\"
+        mu = np.atleast_1d(np.asarray(mu, dtype=float))
+        Sigma = np.atleast_2d(np.asarray(Sigma, dtype=float))
+        n = mu.size
+        kappa = 3.0 - n if kappa is None else kappa
+        lam = alpha**2 * (n + kappa) - n
+        L = np.linalg.cholesky(Sigma)                   # L @ L.T == Sigma
+        spread = np.sqrt(n + lam) * L
+        chi = np.column_stack([mu, mu[:, None] + spread, mu[:, None] - spread])
+        Wm = np.full(2 * n + 1, 1.0 / (2 * (n + lam)))
+        Wc = Wm.copy()
+        Wm[0] = lam / (n + lam)
+        Wc[0] = lam / (n + lam) + 1.0 - alpha**2 + beta
+        return chi, Wm, Wc
+    ```
+    """)
+    return
+
+
 @app.cell
 def sigma_points_impl(np):
-    # jb: editor=true
+    # jb: include=false
     def merwe_sigma_points(mu, Sigma, alpha=1.0, beta=0.0, kappa=None):
         """Scaled sigma points for mean mu and covariance Sigma.
 
@@ -242,9 +270,31 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def unscented_transform(chi, Wm, Wc, phi):
+        "\"\"Unscented transform of the sigma points chi (columns) through phi.
+
+        phi maps an (n, N) array of points to an (m, N) array.
+        Returns the mean y_bar, the covariance P_yy, and the cross-covariance P_xy.
+        "\"\"
+        Y = phi(chi)
+        y_bar = Y @ Wm
+        dY = Y - y_bar[:, None]
+        dX = chi - (chi @ Wm)[:, None]       # chi @ Wm is the mean mu
+        P_yy = (Wc * dY) @ dY.T
+        P_xy = (Wc * dX) @ dY.T
+        return y_bar, P_yy, P_xy
+    ```
+    """)
+    return
+
+
 @app.cell
 def unscented_transform_impl(np):
-    # jb: editor=true
+    # jb: include=false
     def unscented_transform(chi, Wm, Wc, phi):
         """Unscented transform of the sigma points chi (columns) through phi.
 
@@ -771,9 +821,47 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ukf_predict(x, P, f, Q, alpha=1.0, beta=0.0, kappa=None):
+        "\"\"Predict: unscented transform of f, plus Q."\"\"
+        chi, Wm, Wc = merwe_sigma_points(x, P, alpha, beta, kappa)
+        x_pred, P_pred, _ = unscented_transform(chi, Wm, Wc, f)
+        return x_pred, P_pred + Q
+
+
+    def ukf_update(x_pred, P_pred, z, h, R, alpha=1.0, beta=0.0, kappa=None):
+        "\"\"Update: Gaussian conditioning with moments from the unscented transform of h."\"\"
+        chi, Wm, Wc = merwe_sigma_points(x_pred, P_pred, alpha, beta, kappa)
+        z_pred, P_zz, P_xz = unscented_transform(chi, Wm, Wc, h)
+        S = P_zz + R                                # innovation covariance
+        K = np.linalg.solve(S, P_xz.T).T            # K = P_xz S^-1
+        x = x_pred + K @ (z - z_pred)
+        P = P_pred - K @ S @ K.T
+        return x, 0.5 * (P + P.T)
+
+
+    def run_ukf(zs, x0_hat, P0, Q, R, alpha=1.0, beta=0.0, kappa=None):
+        "\"\"Run the UKF on the pendulum. zs[k] is the measurement at step k, or NaN."\"\"
+        x, P = np.asarray(x0_hat, float), np.asarray(P0, float)
+        xs_hat, Ps = [x], [P]
+        for k in range(1, len(zs)):
+            x, P = ukf_predict(x, P, f_pendulum, Q, alpha, beta, kappa)
+            if not np.isnan(zs[k]):
+                x, P = ukf_update(x, P, np.array([zs[k]]), h_pendulum, R, alpha, beta, kappa)
+            xs_hat.append(x)
+            Ps.append(P)
+        return np.array(xs_hat), np.array(Ps)
+    ```
+    """)
+    return
+
+
 @app.cell
 def ukf_impl(f_pendulum, h_pendulum, merwe_sigma_points, np, unscented_transform):
-    # jb: editor=true
+    # jb: include=false
     def ukf_predict(x, P, f, Q, alpha=1.0, beta=0.0, kappa=None):
         """Predict: unscented transform of f, plus Q."""
         chi, Wm, Wc = merwe_sigma_points(x, P, alpha, beta, kappa)
@@ -1073,9 +1161,48 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def particle_filter(zs, x0_mean, P0, Q, R, n_particles, rng, keep_every=5):
+        "\"\"Bootstrap particle filter for the pendulum.
+
+        Returns the weighted-mean estimate at every step and a dict
+        {step: (particles, weights)} for every keep_every-th step.
+        "\"\"
+        chol_Q = np.linalg.cholesky(Q)
+        X = np.asarray(x0_mean, float)[:, None] + np.linalg.cholesky(P0) @ rng.standard_normal((2, n_particles))
+        log_W = np.full(n_particles, -np.log(n_particles))
+        means, clouds = [X.mean(axis=1)], {0: (X, np.exp(log_W))}
+        for k in range(1, len(zs)):
+            # Predict: each particle follows the process model with its own noise.
+            X = f_pendulum(X) + chol_Q @ rng.standard_normal((2, n_particles))
+            if not np.isnan(zs[k]):
+                # Update: multiply each weight by the likelihood p(z_k | particle).
+                innovation = zs[k] - h_pendulum(X)[0]
+                log_W = log_W - 0.5 * innovation**2 / R[0, 0]
+                m = log_W.max()
+                log_W -= m + np.log(np.sum(np.exp(log_W - m)))      # weights sum to 1
+                # Resample (systematic) when the effective sample size drops below N/2.
+                W = np.exp(log_W)
+                if 1.0 / np.sum(W**2) < n_particles / 2:
+                    positions = (rng.random() + np.arange(n_particles)) / n_particles
+                    idx = np.minimum(np.searchsorted(np.cumsum(W), positions), n_particles - 1)
+                    X, log_W = X[:, idx], np.full(n_particles, -np.log(n_particles))
+            W = np.exp(log_W)
+            means.append(X @ W)
+            if k % keep_every == 0:
+                clouds[k] = (X, W)
+        return np.array(means), clouds
+    ```
+    """)
+    return
+
+
 @app.cell
 def particle_filter_impl(f_pendulum, h_pendulum, np):
-    # jb: editor=true
+    # jb: include=false
     def particle_filter(zs, x0_mean, P0, Q, R, n_particles, rng, keep_every=5):
         """Bootstrap particle filter for the pendulum.
 

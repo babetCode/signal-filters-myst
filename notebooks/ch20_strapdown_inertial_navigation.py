@@ -187,9 +187,70 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    G = 9.81                          # gravity magnitude, m/s^2
+    G_N = np.array([0.0, 0.0, -G])    # gravity in ENU coordinates
+
+    def skew(a):
+        "\"\"[a]_x, so that skew(a) @ b == np.cross(a, b)."\"\"
+        return np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
+
+    def quat_mult(p, q):
+        "\"\"Hamilton product of scalar-first quaternions p and q."\"\"
+        pw, px, py, pz = p
+        qw, qx, qy, qz = q
+        return np.array([
+            pw * qw - px * qx - py * qy - pz * qz,
+            pw * qx + px * qw + py * qz - pz * qy,
+            pw * qy - px * qz + py * qw + pz * qx,
+            pw * qz + px * qy - py * qx + pz * qw,
+        ])
+
+    def quat_conj(q):
+        return np.array([q[0], -q[1], -q[2], -q[3]])
+
+    def quat_exp(phi):
+        "\"\"Unit quaternion of the rotation vector phi."\"\"
+        angle = np.linalg.norm(phi)
+        if angle < 1e-12:
+            q = np.array([1.0, 0.5 * phi[0], 0.5 * phi[1], 0.5 * phi[2]])
+            return q / np.linalg.norm(q)
+        return np.concatenate([[np.cos(angle / 2)], np.sin(angle / 2) * phi / angle])
+
+    def quat_log(q):
+        "\"\"Rotation vector of the unit quaternion q (angle in [0, pi])."\"\"
+        q = q if q[0] >= 0 else -q
+        s = np.linalg.norm(q[1:])
+        if s < 1e-12:
+            return 2.0 * q[1:]
+        return 2.0 * np.arctan2(s, q[0]) * q[1:] / s
+
+    def quat_to_rotmat(q):
+        "\"\"Rotation matrix R(q), body to navigation."\"\"
+        w, x, y, z = q
+        return np.array([
+            [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+            [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+        ])
+
+    def rotmat_to_euler(R):
+        "\"\"ZYX Euler angles (roll, pitch, yaw) of R = Rz(yaw) Ry(pitch) Rx(roll); R may be (..., 3, 3)."\"\"
+        roll = np.arctan2(R[..., 2, 1], R[..., 2, 2])
+        pitch = -np.arcsin(np.clip(R[..., 2, 0], -1.0, 1.0))
+        yaw = np.arctan2(R[..., 1, 0], R[..., 0, 0])
+        return roll, pitch, yaw
+    ```
+    """)
+    return
+
+
 @app.cell
 def helpers(np):
-    # jb: editor=true
+    # jb: include=false
     G = 9.81                          # gravity magnitude, m/s^2
     G_N = np.array([0.0, 0.0, -G])    # gravity in ENU coordinates
 
@@ -264,9 +325,38 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def strapdown(omega_m, f_m, dt, q0, v0, p0):
+        "\"\"Integrate N x 3 arrays of IMU samples from the initial state (q0, v0, p0)."\"\"
+        N = len(omega_m)
+        q, v, p = np.empty((N, 4)), np.empty((N, 3)), np.empty((N, 3))
+        q[0], v[0], p[0] = q0, v0, p0
+        a_prev = quat_to_rotmat(q0) @ f_m[0] + G_N
+        for k in range(1, N):
+            q_k = quat_mult(q[k - 1], quat_exp(0.5 * (omega_m[k - 1] + omega_m[k]) * dt))
+            q[k] = q_k / np.linalg.norm(q_k)
+            a_k = quat_to_rotmat(q[k]) @ f_m[k] + G_N      # navigation-frame acceleration
+            v[k] = v[k - 1] + 0.5 * (a_prev + a_k) * dt
+            p[k] = p[k - 1] + 0.5 * (v[k - 1] + v[k]) * dt
+            a_prev = a_k
+        return q, v, p
+
+    def align_level(f_m_still):
+        "\"\"Initial attitude from the mean specific force of a stationary IMU (yaw = 0)."\"\"
+        fx, fy, fz = f_m_still.mean(axis=0)
+        roll, pitch = np.arctan2(fy, fz), np.arctan2(-fx, np.hypot(fy, fz))
+        return quat_mult(quat_exp(np.array([0.0, pitch, 0.0])), quat_exp(np.array([roll, 0.0, 0.0])))
+    ```
+    """)
+    return
+
+
 @app.cell
 def strapdown_cell(G_N, np, quat_exp, quat_mult, quat_to_rotmat):
-    # jb: editor=true
+    # jb: include=false
     def strapdown(omega_m, f_m, dt, q0, v0, p0):
         """Integrate N x 3 arrays of IMU samples from the initial state (q0, v0, p0)."""
         N = len(omega_m)
@@ -633,9 +723,107 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def min_jerk(x):
+        "\"\"Minimum-jerk profile s(x) = 10x^3 - 15x^4 + 6x^5 and its first two derivatives."\"\"
+        return (10 * x**3 - 15 * x**4 + 6 * x**5, 30 * x**2 * (1 - x) ** 2,
+                60 * x * (1 - x) * (1 - 2 * x))
+
+    def simulate_gait(
+        n_strides=20, stride_time=1.1, stride_length=1.4, stance_frac=0.6, flat_frac=0.3,
+        clearance=0.12, pitch_toe_off=0.5, pitch_heel_strike=-0.35, turn_angles=0.0, rise=0.0,
+        still_start=2.0, still_end=1.0, fs=100.0, gyro_noise=0.01, gyro_bias=0.01,
+        accel_noise=0.05, accel_bias=0.05, seed=0,
+    ):
+        "\"\"Foot-mounted IMU during walking. Angles in rad, lengths in m, times in s.
+        turn_angles and rise are per stride (scalars are broadcast)."\"\"
+        dt = 1.0 / fs
+        # Event timing in whole samples; each moving window starts at heel off
+        nT = round(stride_time * fs)
+        n_move = round((1.0 - flat_frac) * stride_time * fs)
+        n_push = round(0.5 * (stance_frac - flat_frac) * stride_time * fs)   # heel off -> toe off
+        n_swing = round((1.0 - stance_frac) * stride_time * fs)              # toe off -> heel strike
+        n0 = round(still_start * fs)
+        N = n0 + (n_strides - 1) * nT + n_move + round(still_end * fs) + 1
+        turns = np.broadcast_to(np.asarray(turn_angles, float), (n_strides,))
+        rises = np.broadcast_to(np.asarray(rise, float), (n_strides,))
+
+        # Footprints (IMU position during foot flat) and stance headings
+        psi_fp = np.concatenate([[0.0], np.cumsum(turns)])
+        chi = psi_fp[:-1] + 0.5 * turns
+        d = np.stack([stride_length * np.cos(chi), stride_length * np.sin(chi), rises], axis=1)
+        P_fp = np.vstack([np.zeros(3), np.cumsum(d, axis=0)])
+
+        # Stride index i, sample within stride u, normalized time tau of the moving window
+        k = np.arange(N)
+        i = np.clip((k - n0) // nT, 0, n_strides - 1)
+        u = k - n0 - i * nT
+        moving = (u > 0) & (u < n_move)
+        m, after = moving.astype(float), (u >= n_move).astype(float)
+        tau = np.clip(u / n_move, 0.0, 1.0)
+        Tm = n_move * dt
+
+        # Position: minimum-jerk along the stride vector plus the clearance bump
+        s, s1, s2 = min_jerk(tau)
+        c = 256 * tau**4 * (1 - tau) ** 4
+        c1 = 1024 * tau**3 * (1 - tau) ** 3 * (1 - 2 * tau)
+        c2 = 1024 * tau**2 * (1 - tau) ** 2 * (3 - 14 * tau + 14 * tau**2)
+        p = P_fp[i] + (m * s + after)[:, None] * d[i]
+        p[:, 2] += m * clearance * c
+        v = (m * s1 / Tm)[:, None] * d[i]
+        v[:, 2] += m * clearance * c1 / Tm
+        a = (m * s2 / Tm**2)[:, None] * d[i]
+        a[:, 2] += m * clearance * c2 / Tm**2
+
+        # Heading: minimum-jerk turn. Pitch: A tau^3 (1-tau)^4 + B tau^4 (1-tau)^3 through the keyframes
+        psi = psi_fp[i] + (m * s + after) * turns[i]
+        psi_dot = m * s1 / Tm * turns[i]
+        tau_to, tau_hs = n_push / n_move, (n_push + n_swing) / n_move
+        basis = lambda x: np.array([x**3 * (1 - x) ** 4, x**4 * (1 - x) ** 3])
+        A, B = np.linalg.solve(np.stack([basis(tau_to), basis(tau_hs)]), [pitch_toe_off, pitch_heel_strike])
+        theta = m * (A * tau**3 * (1 - tau) ** 4 + B * tau**4 * (1 - tau) ** 3)
+        theta_dot = m * (A * tau**2 * (1 - tau) ** 3 * (3 - 7 * tau)
+                         + B * tau**3 * (1 - tau) ** 2 * (4 - 7 * tau)) / Tm
+
+        # Attitude R = Rz(psi) Ry(theta), quaternion, body rate (lemma), specific force
+        cps, sps, cth, sth = np.cos(psi), np.sin(psi), np.cos(theta), np.sin(theta)
+        R = np.zeros((N, 3, 3))
+        R[:, 0, 0], R[:, 0, 1], R[:, 0, 2] = cps * cth, -sps, cps * sth
+        R[:, 1, 0], R[:, 1, 1], R[:, 1, 2] = sps * cth, cps, sps * sth
+        R[:, 2, 0], R[:, 2, 2] = -sth, cth
+        q = np.stack([np.cos(psi / 2) * np.cos(theta / 2), -np.sin(psi / 2) * np.sin(theta / 2),
+                      np.cos(psi / 2) * np.sin(theta / 2), np.sin(psi / 2) * np.cos(theta / 2)], axis=1)
+        omega = np.stack([-psi_dot * sth, theta_dot, psi_dot * cth], axis=1)
+        f = np.einsum("nji,nj->ni", R, a - G_N)
+
+        # Sensor errors: constant biases with random signs, plus white noise
+        rng = np.random.default_rng(seed)
+        b_g = gyro_bias * rng.choice([-1.0, 1.0], 3)
+        b_a = accel_bias * rng.choice([-1.0, 1.0], 3)
+        omega_m = omega + b_g + gyro_noise * rng.standard_normal((N, 3))
+        f_m = f + b_a + accel_noise * rng.standard_normal((N, 3))
+
+        t_ho = (n0 + np.arange(n_strides) * nT) * dt
+        events = dict(heel_off=t_ho, toe_off=t_ho + n_push * dt,
+                      heel_strike=t_ho + (n_push + n_swing) * dt, foot_flat=t_ho + Tm)
+        return dict(
+            t=k * dt, dt=dt, p=p, v=v, a=a, q=q, R=R, roll=0 * psi, pitch=theta, yaw=psi,
+            omega=omega, f=f, omega_m=omega_m, f_m=f_m, b_g=b_g, b_a=b_a, still=~moving,
+            events=events, footprints=P_fp, headings=psi_fp,
+            stride_length=np.linalg.norm(d[:, :2], axis=1), stride_time=np.full(n_strides, nT * dt),
+            clearance=np.full(n_strides, clearance), turn=np.array(turns),
+        )
+    ```
+    """)
+    return
+
+
 @app.cell
 def simulator(G_N, np):
-    # jb: editor=true
+    # jb: include=false
     def min_jerk(x):
         """Minimum-jerk profile s(x) = 10x^3 - 15x^4 + 6x^5 and its first two derivatives."""
         return (10 * x**3 - 15 * x**4 + 6 * x**5, 30 * x**2 * (1 - x) ** 2,
@@ -737,9 +925,20 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
+    sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np, simulate_gait):
-    # jb: editor=true
+    # jb: include=false
     walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
     sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
     return sim, walk_turns
@@ -933,9 +1132,40 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def imu_windows(x, W):
+        "\"\"Windows of W samples centered on each sample (edges padded): shape (N, W, 3)."\"\"
+        h = W // 2
+        xp = np.concatenate([np.repeat(x[:1], h, axis=0), x, np.repeat(x[-1:], W - 1 - h, axis=0)])
+        return np.stack([xp[j:j + len(x)] for j in range(W)], axis=1)
+
+    def stat_mag(f_m, omega_m, W=5, sigma_a=0.05, sigma_g=0.01):
+        "\"\"Acceleration-magnitude statistic."\"\"
+        return ((np.linalg.norm(imu_windows(f_m, W), axis=2) - G) ** 2).mean(axis=1) / sigma_a**2
+
+    def stat_are(f_m, omega_m, W=5, sigma_a=0.05, sigma_g=0.01):
+        "\"\"Angular-rate-energy statistic."\"\"
+        return (imu_windows(omega_m, W) ** 2).sum(axis=2).mean(axis=1) / sigma_g**2
+
+    def stat_shoe(f_m, omega_m, W=5, sigma_a=0.05, sigma_g=0.01):
+        "\"\"SHOE (GLRT) statistic of Skog et al. (2010)."\"\"
+        fw, ww = imu_windows(f_m, W), imu_windows(omega_m, W)
+        u = fw.mean(axis=1)
+        u /= np.linalg.norm(u, axis=1, keepdims=True)
+        accel_term = ((fw - G * u[:, None, :]) ** 2).sum(axis=2) / sigma_a**2
+        gyro_term = (ww**2).sum(axis=2) / sigma_g**2
+        return (accel_term + gyro_term).mean(axis=1)
+    ```
+    """)
+    return
+
+
 @app.cell
 def detectors(G, np):
-    # jb: editor=true
+    # jb: include=false
     def imu_windows(x, W):
         """Windows of W samples centered on each sample (edges padded): shape (N, W, 3)."""
         h = W // 2
@@ -1112,9 +1342,34 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def strapdown_with_reset(omega_m, f_m, dt, q0, stationary):
+        "\"\"Strapdown mechanization that sets the velocity to zero at every stationary sample."\"\"
+        N = len(omega_m)
+        q, v, p = q0.copy(), np.zeros(3), np.zeros(3)
+        positions = np.zeros((N, 3))
+        a_prev = quat_to_rotmat(q) @ f_m[0] + G_N
+        for k in range(1, N):
+            q = quat_mult(q, quat_exp(0.5 * (omega_m[k - 1] + omega_m[k]) * dt))
+            q /= np.linalg.norm(q)
+            a_k = quat_to_rotmat(q) @ f_m[k] + G_N
+            v_new = v + 0.5 * (a_prev + a_k) * dt
+            p = p + 0.5 * (v + v_new) * dt
+            v = np.zeros(3) if stationary[k] else v_new
+            a_prev = a_k
+            positions[k] = p
+        return positions
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(G_N, np, quat_exp, quat_mult, quat_to_rotmat):
-    # jb: editor=true
+    # jb: include=false
     def strapdown_with_reset(omega_m, f_m, dt, q0, stationary):
         """Strapdown mechanization that sets the velocity to zero at every stationary sample."""
         N = len(omega_m)

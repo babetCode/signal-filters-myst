@@ -875,9 +875,32 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ema(z, alpha):
+        "\"\"EMA with first-measurement initialization along the last axis of z."\"\"
+        est = np.empty(np.shape(z), dtype=float)
+        est[..., 0] = z[..., 0]
+        for k in range(1, np.shape(z)[-1]):
+            est[..., k] = est[..., k - 1] + alpha * (z[..., k] - est[..., k - 1])
+        return est
+
+
+    def ema_ramp_theory(alpha, c, sigma, k):
+        "\"\"Exact bias, variance, and MSE of the k-th EMA estimate on a ramp of slope c."\"\"
+        bias = -c * (1 - alpha) / alpha * (1 - (1 - alpha) ** (k - 1))
+        var = sigma**2 * (alpha + 2 * (1 - alpha) ** (2 * k - 1)) / (2 - alpha)
+        return bias, var, bias**2 + var
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def ema(z, alpha):
         """EMA with first-measurement initialization along the last axis of z."""
         est = np.empty(np.shape(z), dtype=float)

@@ -243,9 +243,26 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    FS = 100.0                              # sample rate (Hz)
+    DT = 1.0 / FS                           # sample period (s)
+    GRAVITY = 9.81                          # m/s^2
+    G_N = np.array([0.0, 0.0, -GRAVITY])    # gravity in ENU
+    M_N = np.array([0.0, 22.0, -42.0])      # Earth's field in ENU (uT)
+    SIGMA_G, GYRO_BIAS = 0.01, 0.01         # rad/s
+    SIGMA_A, ACCEL_BIAS = 0.05, 0.05        # m/s^2
+    SIGMA_M = 0.5                           # uT
+    ```
+    """)
+    return
+
+
 @app.cell
 def imu_parameters(np):
-    # jb: editor=true
+    # jb: include=false
     FS = 100.0                              # sample rate (Hz)
     DT = 1.0 / FS                           # sample period (s)
     GRAVITY = 9.81                          # m/s^2
@@ -341,9 +358,28 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def tilt_from_accel(f):
+        "\"\"Roll and pitch (rad) from a specific-force sample, assuming no acceleration."\"\"
+        roll = np.arctan2(f[1], f[2])
+        pitch = np.arctan2(-f[0], np.hypot(f[1], f[2]))
+        return roll, pitch
+
+    def heading_from_mag(m, roll, pitch):
+        "\"\"Tilt-compensated yaw (rad, counterclockwise from East) from a magnetometer sample."\"\"
+        m_h = rot_y(pitch) @ rot_x(roll) @ m
+        return np.arctan2(m_h[0], m_h[1])
+    ```
+    """)
+    return
+
+
 @app.cell
 def snapshot_functions(np, rot_x, rot_y):
-    # jb: editor=true
+    # jb: include=false
     def tilt_from_accel(f):
         """Roll and pitch (rad) from a specific-force sample, assuming no acceleration."""
         roll = np.arctan2(f[1], f[2])
@@ -460,9 +496,27 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def complementary_filter(omega_m, z, alpha, dt):
+        "\"\"Scalar complementary filter = the Introduction's alpha filter with dx_k = omega_k * dt.
+        Index i holds time step k = i + 1; omega_m[i] covers the interval from k - 1 to k."\"\"
+        est = np.zeros(len(z))
+        est[0] = z[0]                                   # first-measurement initialization
+        for i in range(1, len(z)):
+            prediction = est[i - 1] + omega_m[i] * dt   # x_k^- = x_{k-1} + dx_k
+            est[i] = prediction + alpha * (z[i] - prediction)
+        return est
+    ```
+    """)
+    return
+
+
 @app.cell
 def complementary_code(np):
-    # jb: editor=true
+    # jb: include=false
     def complementary_filter(omega_m, z, alpha, dt):
         """Scalar complementary filter = the Introduction's alpha filter with dx_k = omega_k * dt.
         Index i holds time step k = i + 1; omega_m[i] covers the interval from k - 1 to k."""
@@ -822,9 +876,60 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ahrs_eskf(w_m, f_m, m_m, dt, q0, P0, sigma_g=0.01, sigma_bg=1e-5,
+                  sigma_acc=1.0, sigma_mag=0.5, use_mag=True, gate=True):
+        "\"\"Error-state Kalman filter for attitude and gyroscope bias.
+        Row i of w_m covers the interval ending at sample i of f_m and m_m.
+        Returns quaternions q^n_b, bias estimates, and 6x6 error covariances."\"\"
+        n = len(w_m)
+        q, b, P = q0.copy(), np.zeros(3), P0.copy()
+        Q = np.diag([(sigma_g * dt) ** 2] * 3 + [sigma_bg ** 2 * dt] * 3)
+        R_acc, R_mag = sigma_acc ** 2 * np.eye(3), sigma_mag ** 2 * np.eye(3)
+        Phi = np.eye(6)
+        Phi[0:3, 3:6] = -dt * np.eye(3)
+        q_hist, b_hist, P_hist = np.zeros((n, 4)), np.zeros((n, 3)), np.zeros((n, 6, 6))
+
+        def update(q, b, P, z, h, R_meas):
+            H = np.zeros((3, 6))
+            H[:, 0:3] = skew(h)                        # d h / d(dtheta) = [h]x
+            S = H @ P @ H.T + R_meas
+            K = P @ H.T @ np.linalg.inv(S)
+            dx = K @ (z - h)
+            IKH = np.eye(6) - K @ H
+            P = IKH @ P @ IKH.T + K @ R_meas @ K.T     # Joseph form
+            q = qmul(q, q_exp(dx[0:3]))                # inject attitude
+            q = q / np.linalg.norm(q)
+            b = b + dx[3:6]                            # inject bias
+            G_r = np.eye(6)
+            G_r[0:3, 0:3] -= 0.5 * skew(dx[0:3])       # reset
+            return q, b, G_r @ P @ G_r.T
+
+        for k in range(n):
+            # predict: nominal state with the exact quaternion update, covariance with Phi
+            w_hat = w_m[k] - b
+            q = qmul(q, q_exp(w_hat * dt))
+            Phi[0:3, 0:3] = Exp(w_hat * dt).T
+            P = Phi @ P @ Phi.T + Q
+            # accelerometer (gravity) update
+            if not gate or abs(np.linalg.norm(f_m[k]) - GRAVITY) < 0.5:
+                q, b, P = update(q, b, P, f_m[k], q_to_R(q).T @ (-G_N), R_acc)
+            # magnetometer update
+            if use_mag and (not gate or abs(np.linalg.norm(m_m[k]) - np.linalg.norm(M_N)) < 2.0):
+                q, b, P = update(q, b, P, m_m[k], q_to_R(q).T @ M_N, R_mag)
+            q_hist[k], b_hist[k], P_hist[k] = q, b, P
+        return q_hist, b_hist, P_hist
+    ```
+    """)
+    return
+
+
 @app.cell
 def eskf_code(Exp, GRAVITY, G_N, M_N, np, q_exp, q_to_R, qmul, skew):
-    # jb: editor=true
+    # jb: include=false
     def ahrs_eskf(w_m, f_m, m_m, dt, q0, P0, sigma_g=0.01, sigma_bg=1e-5,
                   sigma_acc=1.0, sigma_mag=0.5, use_mag=True, gate=True):
         """Error-state Kalman filter for attitude and gyroscope bias.

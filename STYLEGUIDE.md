@@ -158,9 +158,9 @@ The sync script turns cells into `{marimo}` directives. marimo-native settings (
 
 | Option | Default | Effect | Use in this book |
 |:---|:---:|:---|:---|
-| `include` | `true` | Keep this cell's node in the page | `include=false` for imports, display settings, data, and figure-saving cells |
-| `editor` | `false` | Show the source in an editable marimo editor | Reference implementations and editable examples ([§3](#3-code-the-reader-sees)) |
-| `server-output` | `true` | Include build-time output in the island | `server-output=false` together with `editor=true` on cells the user is invited to edit, to avoid duplicated output when the reader re-runs the cell |
+| `include` | `true` | Keep this cell's node in the page | `include=false` for imports, display settings, data, figure-saving cells, and the running cell behind a fenced copy ([§3](#3-code-the-reader-sees)) |
+| `editor` | `false` | Show the source in an editable marimo editor | Only cells the reader is invited to edit that show their own output ([§3](#3-code-the-reader-sees)) |
+| `server-output` | `true` | Include build-time output in the island | `server-output=false` on every `editor=true` cell, to avoid duplicated output when the reader re-runs the cell |
 | `echo` | `false` | Show the source as static text | **Do not use** ([§3](#3-code-the-reader-sees)) |
 | `eval` | `true` | Run the cell during the build | Leave at the default |
 | `output` | `true` | Render the output island | Leave at the default |
@@ -200,14 +200,52 @@ Do not add new macros.
 
 ## 3. Code the Reader Sees
 
-Static `echo=true` source is not used: on the site it has no syntax highlighting and does not wrap lines. Show code in one of two ways.
+Static `echo=true` source is not used: on the site it has no syntax highlighting and does not wrap lines. Show code in one of three ways.
 
-- **Runnable code** (reference implementations such as `kalman_filter(...)`, and examples the reader is invited to change): a normal code cell with `# jb: editor=true`. The reader then sees the code that actually runs, with highlighting, and can edit it. Add `server-output=false` if the cell produces output.
+- **Code the reader is invited to edit:** a normal code cell with `# jb: editor=true server-output=false`. Use it only for a cell that ends in an expression the reader sees (a printed check, a table, a figure), so that editing and re-running the cell visibly changes the result. On the page, the cell's output appears first and the editor follows it. Put this note in its own static prose cell immediately before every such cell, word for word, so that the reader knows the output comes from the editor and can be changed:
+
+  ```python
+  @app.cell(hide_code=True)
+  def _(mo):
+      mo.md(r"""
+      **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
+      """)
+      return
+  ```
+- **Code the reader reads** (reference implementations such as `kalman_filter(...)`, model definitions, simulators, data setup): a fenced copy of the code in a static prose cell, followed by the running cell with `# jb: include=false`, in the format below. A cell that only defines names belongs here even when a later figure uses those names, because editing it changes nothing the reader sees.
 - **Code that is not run** (a fragment, pseudo-code, a comparison with another library, a snippet in a language other than Python): a fenced block in a static prose cell, e.g. ```` ```python ````.
 
-**Fenced copies of code that also runs.** Sometimes a page needs to show code that also runs, but not as an editable cell. For example, the code belongs inside an admonition, where a cell cannot go; the reader should see only the core lines of a longer function; or an editor would invite edits that break later cells. This is allowed, but nothing keeps the two in sync: either can be edited without the other, and the page can end up showing code that no longer produced its figures. So:
+**Format of a fenced copy.** The copy is its own prose cell, placed immediately before the running cell. Any sentence introducing the code stays in the preceding prose cell.
 
-- A complete copy matches the running cell exactly, apart from the `# jb:` line. An excerpt is introduced as an excerpt ("the core of `kalman_filter` is:") and matches the corresponding lines exactly.
+````python
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ema(measurements, alpha):
+        "\"\"Return the EMA estimates x_hat[1], ..., x_hat[k]."\"\"
+        ...
+    ```
+    """)
+    return
+
+
+@app.cell
+def _(np):
+    # jb: include=false
+    def ema(measurements, alpha):
+        """Return the EMA estimates x_hat[1], ..., x_hat[k]."""
+        ...
+
+    return (ema,)
+````
+
+- Use a plain `"""` string, not `r"""`, and write every `"""` in the code as `"\"\"`. In a plain string this evaluates to `"""`, so the page shows the code as it runs. In an `r"""` string the backslashes would appear on the page.
+- Because the string is not raw, the copied code must not contain a backslash. If it needs one, ask the author.
+
+**Keeping fenced copies in sync.** Nothing keeps a fenced copy and its running cell in sync: either can be edited without the other, and the page can end up showing code that no longer produced its figures. So:
+
+- A complete copy matches the running cell exactly, excluding the `# jb:` line and the cell's final `return` line.
 - Whoever edits either one updates the other in the same change. Before finishing a page, compare every fenced copy with its running cell.
 
 Code the reader sees:
@@ -705,3 +743,4 @@ A record of settled questions, so they are not reopened by accident.
 - **Results are not numbered** ([§6.3](#63-theorems-lemmas-corollaries-and-proofs)), because they are always referred to by name.
 - **Theorems and proofs use `/// admonition` with role classes**, which leaves `important` free for Prerequisites ([§6.1](#61-admonitions)).
 - **Fenced copies of running code** are allowed when kept identical to the running cell ([§3](#3-code-the-reader-sees)).
+- **`editor=true` is reserved for code the reader is invited to edit** and that shows its own output. Reference implementations and other definitions are shown as fenced copies of an `include=false` cell ([§3](#3-code-the-reader-sees)).

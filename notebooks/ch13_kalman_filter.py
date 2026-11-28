@@ -560,9 +560,51 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def kf_predict(x, P, F, Q, B=None, u=None):
+        "\"\"Predict step: x^- = F x + B u,  P^- = F P F^T + Q."\"\"
+        x_pred = F @ x if B is None else F @ x + B @ u
+        P_pred = F @ P @ F.T + Q
+        return x_pred, P_pred
+
+
+    def kf_update(x_pred, P_pred, z, H, R):
+        "\"\"Update step with the Kalman gain; covariance in Joseph form."\"\"
+        y = z - H @ x_pred                        # innovation
+        S = H @ P_pred @ H.T + R                  # innovation covariance
+        K = np.linalg.solve(S, H @ P_pred).T      # K = P^- H^T S^-1
+        x = x_pred + K @ y
+        I_KH = np.eye(len(x)) - K @ H
+        P = I_KH @ P_pred @ I_KH.T + K @ R @ K.T  # Joseph form
+        return x, P, K, y, S
+
+
+    def kalman_filter(zs, F, H, Q, R, x0, P0, B=None, us=None):
+        "\"\"Run the filter on measurements zs[0], zs[1], ... (that is, z_1, z_2, ...).
+
+        Returns a dict of arrays: estimates "x", covariances "P", predictions
+        "x_pred", "P_pred", gains "K", innovations "y", innovation covariances "S".
+        "\"\"
+        x, P = np.asarray(x0, float), np.asarray(P0, float)
+        out = {key: [] for key in ("x", "P", "x_pred", "P_pred", "K", "y", "S")}
+        for k, z in enumerate(zs):
+            u = None if us is None else us[k]
+            x_pred, P_pred = kf_predict(x, P, F, Q, B, u)
+            x, P, K, y, S = kf_update(x_pred, P_pred, np.atleast_1d(z), H, R)
+            for key, value in zip(out, (x, P, x_pred, P_pred, K, y, S)):
+                out[key].append(value)
+        return {key: np.array(value) for key, value in out.items()}
+    ```
+    """)
+    return
+
+
 @app.cell
 def kalman_filter_impl(np):
-    # jb: editor=true
+    # jb: include=false
     def kf_predict(x, P, F, Q, B=None, u=None):
         """Predict step: x^- = F x + B u,  P^- = F P F^T + Q."""
         x_pred = F @ x if B is None else F @ x + B @ u

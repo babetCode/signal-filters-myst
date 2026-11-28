@@ -329,9 +329,22 @@ def detectors(G, np):
     return stat_are, stat_mag, stat_shoe
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
+    sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
+    GAMMA = 1e3
+    stationary = stat_shoe(sim["f_m"], sim["omega_m"]) < GAMMA
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np, simulate_gait, stat_shoe):
-    # jb: editor=true
+    # jb: include=false
     walk_turns = np.r_[np.zeros(10), np.full(4, np.pi / 4), np.zeros(10)]
     sim = simulate_gait(n_strides=24, turn_angles=walk_turns, seed=0)
     GAMMA = 1e3
@@ -455,9 +468,50 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    I3 = np.eye(3)
+
+    def error_state_F(R_hat, f_hat, omega_hat):
+        "\"\"Continuous-time matrix F of the error state [dp, dv, dtheta, db_a, db_g]."\"\"
+        F = np.zeros((15, 15))
+        F[0:3, 3:6] = I3
+        F[3:6, 6:9] = -R_hat @ skew(f_hat)
+        F[3:6, 9:12] = -R_hat
+        F[6:9, 6:9] = -skew(omega_hat)
+        F[6:9, 12:15] = -I3
+        return F
+
+    def nominal_step(x, omega_prev, omega_k, f_prev, f_k, dt):
+        "\"\"Chapter 20's mechanization for one sample, with bias-corrected readings. x = (p, v, q, b_a, b_g)."\"\"
+        p, v, q, b_a, b_g = x
+        q_new = quat_mult(q, quat_exp(0.5 * (omega_prev + omega_k - 2 * b_g) * dt))
+        q_new /= np.linalg.norm(q_new)
+        a_prev = quat_to_rotmat(q) @ (f_prev - b_a) + G_N
+        a_k = quat_to_rotmat(q_new) @ (f_k - b_a) + G_N
+        v_new = v + 0.5 * (a_prev + a_k) * dt
+        return (p + 0.5 * (v + v_new) * dt, v_new, q_new, b_a, b_g)
+
+    def inject(x, dx):
+        "\"\"Apply a 15-element error state dx to a nominal state x (x oplus dx)."\"\"
+        p, v, q, b_a, b_g = x
+        q_new = quat_mult(q, quat_exp(dx[6:9]))
+        return (p + dx[0:3], v + dx[3:6], q_new / np.linalg.norm(q_new), b_a + dx[9:12], b_g + dx[12:15])
+
+    def error_between(x, x_hat):
+        "\"\"The error state dx with x = x_hat oplus dx."\"\"
+        dtheta = quat_log(quat_mult(quat_conj(x_hat[2]), x[2]))
+        return np.concatenate([x[0] - x_hat[0], x[1] - x_hat[1], dtheta, x[3] - x_hat[3], x[4] - x_hat[4]])
+    ```
+    """)
+    return
+
+
 @app.cell
 def ekf_model(G_N, np, quat_conj, quat_exp, quat_log, quat_mult, quat_to_rotmat, skew):
-    # jb: editor=true
+    # jb: include=false
     I3 = np.eye(3)
 
     def error_state_F(R_hat, f_hat, omega_hat):
@@ -494,9 +548,41 @@ def ekf_model(G_N, np, quat_conj, quat_exp, quat_log, quat_mult, quat_to_rotmat,
     return I3, error_between, error_state_F, inject, nominal_step
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    _rng = np.random.default_rng(3)
+    _q = _rng.standard_normal(4)
+    _x_hat = (_rng.standard_normal(3), _rng.standard_normal(3), _q / np.linalg.norm(_q),
+              0.1 * _rng.standard_normal(3), 0.05 * _rng.standard_normal(3))
+    _omega_m = 2.0 * _rng.standard_normal(3)                     # rad/s
+    _f_m = 5.0 * _rng.standard_normal(3) + [0.0, 0.0, 9.81]      # m/s^2
+
+    def numerical_Phi(x_hat, omega_m, f_m, dt, eps=1e-5):
+        "\"\"Central-difference Jacobian of one nonlinear step with respect to the error state."\"\"
+        x_next = nominal_step(x_hat, omega_m, omega_m, f_m, f_m, dt)
+        Phi = np.zeros((15, 15))
+        for j in range(15):
+            dx = np.zeros(15)
+            dx[j] = eps
+            plus = error_between(nominal_step(inject(x_hat, dx), omega_m, omega_m, f_m, f_m, dt), x_next)
+            minus = error_between(nominal_step(inject(x_hat, -dx), omega_m, omega_m, f_m, f_m, dt), x_next)
+            Phi[:, j] = (plus - minus) / (2 * eps)
+        return Phi
+
+    _F = error_state_F(quat_to_rotmat(_x_hat[2]), _f_m - _x_hat[3], _omega_m - _x_hat[4])
+    F_check_error = np.abs((numerical_Phi(_x_hat, _omega_m, _f_m, 1e-6) - np.eye(15)) / 1e-6 - _F).max()
+    Phi_check_error = np.abs(numerical_Phi(_x_hat, _omega_m, _f_m, 0.01) - (np.eye(15) + _F * 0.01)).max()
+    F_check_scale = np.abs(_F).max()
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(error_between, error_state_F, inject, nominal_step, np, quat_to_rotmat):
-    # jb: editor=true
+    # jb: include=false
     _rng = np.random.default_rng(3)
     _q = _rng.standard_normal(4)
     _x_hat = (_rng.standard_normal(3), _rng.standard_normal(3), _q / np.linalg.norm(_q),
@@ -601,9 +687,63 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def zupt_ekf(omega_m, f_m, dt, stationary, q0, zaru=False, sigma_a=0.05, sigma_g=0.01,
+                 sigma_ba=1e-4, sigma_bg=1e-5, sigma_z=0.01):
+        "\"\"15-state error-state EKF with zero-velocity updates (and optional ZARU)."\"\"
+        N = len(omega_m)
+        x = (np.zeros(3), np.zeros(3), q0.copy(), np.zeros(3), np.zeros(3))  # p, v, q, b_a, b_g
+        P = np.diag(np.r_[np.full(3, 1e-8), np.full(3, 0.01**2), [0.01**2, 0.01**2, 1e-8],
+                          np.full(3, 0.05**2), np.full(3, 0.02**2)])
+        Q = np.diag(np.r_[np.zeros(3), np.full(3, (sigma_a * dt) ** 2), np.full(3, (sigma_g * dt) ** 2),
+                          np.full(3, sigma_ba**2 * dt), np.full(3, sigma_bg**2 * dt)])
+        H_v = np.hstack([np.zeros((3, 3)), I3, np.zeros((3, 9))])      # ZUPT: measures dv
+        H_w = np.hstack([np.zeros((3, 12)), I3])                       # ZARU: measures db_g
+        out = dict(p=np.zeros((N, 3)), v=np.zeros((N, 3)), q=np.zeros((N, 4)),
+                   b_a=np.zeros((N, 3)), b_g=np.zeros((N, 3)), P_diag=np.zeros((N, 15)),
+                   P_theta=np.zeros((N, 3, 3)))
+
+        def record(k):
+            for key, value in zip(["p", "v", "q", "b_a", "b_g"], x):
+                out[key][k] = value
+            out["P_diag"][k] = np.diag(P)
+            out["P_theta"][k] = P[6:9, 6:9]      # attitude-error covariance (body frame)
+
+        record(0)
+        for k in range(1, N):
+            # 1-3: linearize at the start of the period, propagate nominal state and covariance
+            Phi = np.eye(15) + error_state_F(quat_to_rotmat(x[2]), f_m[k - 1] - x[3], omega_m[k - 1] - x[4]) * dt
+            x = nominal_step(x, omega_m[k - 1], omega_m[k], f_m[k - 1], f_m[k], dt)
+            P = Phi @ P @ Phi.T + Q
+            # 4: pseudo-measurement update at stationary samples
+            if stationary[k]:
+                H, y, R_meas = H_v, -x[1], sigma_z**2 * I3              # innovation 0 - v_hat
+                if zaru:
+                    H = np.vstack([H_v, H_w])
+                    y = np.r_[-x[1], omega_m[k] - x[4]]                 # innovation omega_m - b_g_hat
+                    R_meas = np.diag(np.r_[np.full(3, sigma_z**2), np.full(3, sigma_g**2)])
+                S = H @ P @ H.T + R_meas
+                K = np.linalg.solve(S, H @ P).T                         # K = P H^T S^-1
+                dx = K @ y
+                A = np.eye(15) - K @ H
+                P = A @ P @ A.T + K @ R_meas @ K.T                      # Joseph form
+                x = inject(x, dx)                                       # x_hat <- x_hat oplus dx_hat
+                G_r = np.eye(15)
+                G_r[6:9, 6:9] = I3 - 0.5 * skew(dx[6:9])
+                P = G_r @ P @ G_r.T                                     # reset
+            record(k)
+        return out
+    ```
+    """)
+    return
+
+
 @app.cell
 def ekf_cell(I3, error_state_F, inject, nominal_step, np, quat_to_rotmat, skew):
-    # jb: editor=true
+    # jb: include=false
     def zupt_ekf(omega_m, f_m, dt, stationary, q0, zaru=False, sigma_a=0.05, sigma_g=0.01,
                  sigma_ba=1e-4, sigma_bg=1e-5, sigma_z=0.01):
         """15-state error-state EKF with zero-velocity updates (and optional ZARU)."""
@@ -664,9 +804,30 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    q0 = align_level(sim["f_m"][:100])
+    run_free = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], np.zeros(len(sim["t"]), bool), q0)
+    run_zupt = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0)
+
+    def estimated_yaw(run):
+        return rotmat_to_euler(np.array([quat_to_rotmat(q) for q in run["q"]]))[2]
+
+    def nav_attitude_std(run):
+        "\"\"Std. dev. of the attitude error about East, North, Up: covariance of R_hat dtheta."\"\"
+        R_hat = np.array([quat_to_rotmat(q) for q in run["q"]])
+        cov = R_hat @ run["P_theta"] @ np.transpose(R_hat, (0, 2, 1))
+        return np.sqrt(np.diagonal(cov, axis1=1, axis2=2))
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(align_level, np, quat_to_rotmat, rotmat_to_euler, sim, stationary, zupt_ekf):
-    # jb: editor=true
+    # jb: include=false
     q0 = align_level(sim["f_m"][:100])
     run_free = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], np.zeros(len(sim["t"]), bool), q0)
     run_zupt = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0)
@@ -794,9 +955,36 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    _Phi = np.eye(15) + error_state_F(np.eye(3), np.array([0.0, 0.0, G]), np.zeros(3)) * 0.01
+    _H_zupt = np.hstack([np.zeros((3, 3)), I3, np.zeros((3, 9))])
+    _H_zaru = np.hstack([np.zeros((3, 12)), I3])
+
+    def observability_matrix(H, Phi):
+        return np.vstack([H @ np.linalg.matrix_power(Phi, i) for i in range(15)])
+
+    _O = observability_matrix(_H_zupt, _Phi)
+    rank_zupt = np.linalg.matrix_rank(_O)
+    rank_zupt_zaru = np.linalg.matrix_rank(observability_matrix(np.vstack([_H_zupt, _H_zaru]), _Phi))
+    # The seven hidden directions derived above, as columns (order: p, v, theta, b_a, b_g)
+    _hidden = np.zeros((15, 7))
+    _hidden[0, 0] = _hidden[1, 1] = _hidden[2, 2] = 1.0       # position
+    _hidden[8, 3] = 1.0                                       # yaw
+    _hidden[14, 4] = 1.0                                      # vertical gyroscope bias
+    _hidden[7, 5], _hidden[9, 5] = 1.0, G                     # tilt about y with x accel bias
+    _hidden[6, 6], _hidden[10, 6] = 1.0, -G                   # tilt about x with y accel bias
+    hidden_residual = np.abs(_O @ _hidden).max()
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(G, I3, error_state_F, np):
-    # jb: editor=true
+    # jb: include=false
     _Phi = np.eye(15) + error_state_F(np.eye(3), np.array([0.0, 0.0, G]), np.zeros(3)) * 0.01
     _H_zupt = np.hstack([np.zeros((3, 3)), I3, np.zeros((3, 9))])
     _H_zaru = np.hstack([np.zeros((3, 12)), I3])
@@ -852,9 +1040,19 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    run_zaru = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0, zaru=True)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(q0, sim, stationary, zupt_ekf):
-    # jb: editor=true
+    # jb: include=false
     run_zaru = zupt_ekf(sim["omega_m"], sim["f_m"], sim["dt"], stationary, q0, zaru=True)
     return (run_zaru,)
 
@@ -982,9 +1180,36 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def stance_segments(stationary, min_len=5):
+        "\"\"Start and end (exclusive) indices of runs of at least min_len stationary samples."\"\"
+        edges = np.diff(np.r_[False, stationary, False].astype(int))
+        starts, ends = np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)
+        keep = ends - starts >= min_len
+        return starts[keep], ends[keep]
+
+    def gait_parameters(t, p, yaw, stationary, min_len=5):
+        "\"\"Per-stride gait parameters from an estimated trajectory and the stationary decisions."\"\"
+        s, e = stance_segments(stationary, min_len)
+        P = np.array([p[a:b].mean(axis=0) for a, b in zip(s, e)]).reshape(-1, 3)
+        psi = np.unwrap([np.angle(np.mean(np.exp(1j * yaw[a:b]))) for a, b in zip(s, e)])
+        stride_length = np.linalg.norm(np.diff(P[:, :2], axis=0), axis=1)
+        stride_time = np.diff(t[s])[1:]          # onset to onset, from the second stride on
+        clearance = np.array([p[e[i]:s[i + 1], 2].max() - P[i, 2] for i in range(len(s) - 1)])
+        return dict(stride_length=stride_length, stride_time=stride_time, cadence=120.0 / stride_time,
+                    gait_speed=stride_length[1:] / stride_time, clearance=clearance,
+                    turning_angle=np.degrees(np.diff(psi)), n_stances=len(s))
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def stance_segments(stationary, min_len=5):
         """Start and end (exclusive) indices of runs of at least min_len stationary samples."""
         edges = np.diff(np.r_[False, stationary, False].astype(int))

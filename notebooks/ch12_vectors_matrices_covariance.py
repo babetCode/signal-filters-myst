@@ -481,9 +481,25 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def confidence_ellipse(mu, Sigma, p, n_points=200):
+        "\"\"Boundary of the p confidence ellipse of N(mu, Sigma) in 2-D (2 x n_points)."\"\"
+        r = np.sqrt(-2 * np.log(1 - p))        # Mahalanobis radius
+        lam, Q = np.linalg.eigh(Sigma)         # Sigma = Q diag(lam) Q^T
+        theta = np.linspace(0, 2 * np.pi, n_points)
+        u = r * np.sqrt(lam)[:, None] * np.vstack([np.cos(theta), np.sin(theta)])
+        return np.asarray(mu, dtype=float)[:, None] + Q @ u
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def confidence_ellipse(mu, Sigma, p, n_points=200):
         """Boundary of the p confidence ellipse of N(mu, Sigma) in 2-D (2 x n_points)."""
         r = np.sqrt(-2 * np.log(1 - p))        # Mahalanobis radius
@@ -806,9 +822,25 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def condition_on_measurement(x_prior, P_prior, H, R, z):
+        "\"\"Mean and covariance of x given z = H x + v, for x ~ N(x_prior, P_prior), v ~ N(0, R)."\"\"
+        S = H @ P_prior @ H.T + R                # covariance of z (Sigma_zz)
+        K = P_prior @ H.T @ np.linalg.inv(S)     # Sigma_xz Sigma_zz^{-1}
+        x_post = x_prior + K @ (z - H @ x_prior)
+        P_post = P_prior - K @ S @ K.T           # Schur complement
+        return x_post, P_post
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def condition_on_measurement(x_prior, P_prior, H, R, z):
         """Mean and covariance of x given z = H x + v, for x ~ N(x_prior, P_prior), v ~ N(0, R)."""
         S = H @ P_prior @ H.T + R                # covariance of z (Sigma_zz)

@@ -335,9 +335,73 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def skew(a):
+        "\"\"Cross-product matrix: skew(a) @ b == np.cross(a, b)."\"\"
+        return np.array([[0.0, -a[2], a[1]],
+                         [a[2], 0.0, -a[0]],
+                         [-a[1], a[0], 0.0]])
+
+    def rot_x(phi):
+        c, s = np.cos(phi), np.sin(phi)
+        return np.array([[1.0, 0.0, 0.0], [0.0, c, -s], [0.0, s, c]])
+
+    def rot_y(theta):
+        c, s = np.cos(theta), np.sin(theta)
+        return np.array([[c, 0.0, s], [0.0, 1.0, 0.0], [-s, 0.0, c]])
+
+    def rot_z(psi):
+        c, s = np.cos(psi), np.sin(psi)
+        return np.array([[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]])
+
+    def euler_to_R(phi, theta, psi):
+        "\"\"ZYX Euler angles (roll, pitch, yaw) -> R^n_b."\"\"
+        return rot_z(psi) @ rot_y(theta) @ rot_x(phi)
+
+    def R_to_euler(R):
+        "\"\"R^n_b -> principal ZYX Euler angles (roll, pitch, yaw).
+        At gimbal lock (|r31| = 1) only psi -/+ phi is determined; we set phi = 0."\"\"
+        r31 = np.clip(R[2, 0], -1.0, 1.0)
+        theta = -np.arcsin(r31)
+        if abs(r31) < 1.0 - 1e-12:
+            return np.array([np.arctan2(R[2, 1], R[2, 2]), theta,
+                             np.arctan2(R[1, 0], R[0, 0])])
+        if r31 < 0:   # theta = +pi/2: only psi - phi is determined
+            return np.array([0.0, theta, np.arctan2(R[1, 2], R[1, 1])])
+        return np.array([0.0, theta, np.arctan2(-R[1, 2], R[1, 1])])
+
+    def Exp(theta_vec):
+        "\"\"Rotation vector -> rotation matrix (Rodrigues' formula)."\"\"
+        angle = np.linalg.norm(theta_vec)
+        if angle < 1e-12:
+            return np.eye(3) + skew(theta_vec)
+        K = skew(theta_vec / angle)
+        return np.eye(3) + np.sin(angle) * K + (1.0 - np.cos(angle)) * K @ K
+
+    def Log(R):
+        "\"\"Rotation matrix -> rotation vector with norm in [0, pi]."\"\"
+        cos_angle = np.clip((np.trace(R) - 1.0) / 2.0, -1.0, 1.0)
+        angle = np.arccos(cos_angle)
+        vee = np.array([R[2, 1] - R[1, 2], R[0, 2] - R[2, 0], R[1, 0] - R[0, 1]])
+        if angle < 1e-8:
+            return 0.5 * vee
+        if np.pi - angle < 1e-6:   # R + I = 2 u u^T: take the largest column
+            B = (R + np.eye(3)) / 2.0
+            j = np.argmax(np.diag(B))
+            u = B[:, j] / np.sqrt(B[j, j])
+            return angle * u
+        return angle / (2.0 * np.sin(angle)) * vee
+    ```
+    """)
+    return
+
+
 @app.cell
 def rotation_helpers(np):
-    # jb: editor=true
+    # jb: include=false
     def skew(a):
         """Cross-product matrix: skew(a) @ b == np.cross(a, b)."""
         return np.array([[0.0, -a[2], a[1]],

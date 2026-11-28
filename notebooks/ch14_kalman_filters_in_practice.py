@@ -204,9 +204,68 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def kf_predict(x, P, F, Q, B=None, u=None):
+        "\"\"Predict. x holds one state per row (N x n); all N runs share P."\"\"
+        x = x @ F.T if B is None else x @ F.T + u @ B.T
+        return x, F @ P @ F.T + Q
+
+
+    def kf_update(x, P, z, H, R):
+        "\"\"Joseph-form update of N runs at once (z is N x m).
+
+        Returns the new estimates, covariance, and each run's normalized
+        innovation squared y^T S^-1 y.
+        "\"\"
+        y = z - x @ H.T                          # innovations, one row per run
+        S = H @ P @ H.T + R
+        K = np.linalg.solve(S, H @ P).T          # K = P H^T S^-1
+        x = x + y @ K.T
+        I_KH = np.eye(P.shape[0]) - K @ H
+        P = I_KH @ P @ I_KH.T + K @ R @ K.T
+        P = 0.5 * (P + P.T)                      # remove rounding asymmetry
+        nis = np.einsum("ri,ij,rj->r", y, np.linalg.inv(S), y)
+        return x, P, nis
+
+
+    def run_filter(u, z, F, B, H, Q, R, x0, P0, ratio, gate=None):
+        "\"\"Predict with u[:, k] at every step; update with z[:, j] after
+        every `ratio` steps unless that reading is NaN (missing).
+
+        u: N x K control inputs; z: N x (K // ratio) measurements.
+        gate: if given, skip a reading whose NIS exceeds it (requires N = 1).
+        Returns estimates (K x N x n), covariances (K x n x n),
+        the NIS of each accepted reading, and the indices of gated readings.
+        "\"\"
+        N, K = u.shape
+        n = P0.shape[0]
+        x = np.broadcast_to(np.asarray(x0, float), (N, n)).copy()
+        P = np.array(P0, float)
+        xs, Ps = np.empty((K, N, n)), np.empty((K, n, n))
+        nis_accepted, gated = [], []
+        for k in range(K):
+            x, P = kf_predict(x, P, F, Q, B, u[:, k:k + 1])
+            j = (k + 1) // ratio - 1                  # index of a reading due now
+            if (k + 1) % ratio == 0 and not np.isnan(z[0, j]):
+                x_new, P_new, nis = kf_update(x, P, z[:, j:j + 1], H, R)
+                if gate is not None and nis[0] > gate:
+                    gated.append(j)                   # reject: keep the prediction
+                else:
+                    x, P = x_new, P_new
+                    nis_accepted.append(nis)
+            xs[k], Ps[k] = x, P
+        return xs, Ps, np.array(nis_accepted), gated
+    ```
+    """)
+    return
+
+
 @app.cell
 def kf_impl(np):
-    # jb: editor=true
+    # jb: include=false
     def kf_predict(x, P, F, Q, B=None, u=None):
         """Predict. x holds one state per row (N x n); all N runs share P."""
         x = x @ F.T if B is None else x @ F.T + u @ B.T

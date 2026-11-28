@@ -420,9 +420,45 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def kalman_filter_1d(z, x0, P0, Q, R, dx=0.0):
+        "\"\"Scalar Kalman filter for x_k = x_{k-1} + dx_k + w_k and z_k = x_k + v_k.
+
+        z      -- measurements z_1, ..., z_n (shape (n,), or (runs, n) for many runs)
+        x0, P0 -- initial estimate (a number, or one per run) and its error variance
+        Q, R   -- process noise and measurement noise variances
+        dx     -- expected change per step (a number, or one value per step)
+        Returns a dict of arrays; entry k-1 belongs to step k.
+        "\"\"
+        z = np.asarray(z, dtype=float)
+        n = z.shape[-1]
+        dx = np.broadcast_to(np.asarray(dx, dtype=float), (n,))
+        x_pred, x_est, innov = np.empty(z.shape), np.empty(z.shape), np.empty(z.shape)
+        P_pred, P_est, K, S = np.empty(n), np.empty(n), np.empty(n), np.empty(n)
+        x, P = x0, P0
+        for k in range(n):
+            # Predict: propagate the estimate and its error variance
+            x_pred[..., k] = x + dx[k]
+            P_pred[k] = P + Q
+            # Update: combine prediction and measurement with the optimal gain
+            S[k] = P_pred[k] + R                  # innovation variance (see below)
+            K[k] = P_pred[k] / S[k]               # optimal gain
+            innov[..., k] = z[..., k] - x_pred[..., k]
+            x = x_pred[..., k] + K[k] * innov[..., k]
+            P = (1 - K[k]) * P_pred[k]
+            x_est[..., k], P_est[k] = x, P
+        return dict(x_pred=x_pred, P_pred=P_pred, S=S, K=K, innov=innov, x=x_est, P=P_est)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def kalman_filter_1d(z, x0, P0, Q, R, dx=0.0):
         """Scalar Kalman filter for x_k = x_{k-1} + dx_k + w_k and z_k = x_k + v_k.
 

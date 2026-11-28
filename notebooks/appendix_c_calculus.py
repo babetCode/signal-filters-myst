@@ -1876,6 +1876,14 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
+    """)
+    return
+
+
 @app.cell
 def _(mo, np):
     # jb: editor=true server-output=false

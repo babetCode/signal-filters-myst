@@ -179,9 +179,31 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def fit_line(x, z):
+        "\"\"Least-squares line z ~ h x + c through the points (x_i, z_i).
+
+        z may hold several data sets, one per row (same x for all)."\"\"
+        x = np.asarray(x, dtype=float)
+        z = np.asarray(z, dtype=float)
+        x_bar = x.mean()
+        z_bar = z.mean(axis=-1)
+        S_xx = np.sum((x - x_bar) ** 2)
+        S_xz = np.sum((x - x_bar) * (z - z_bar[..., None]), axis=-1)
+        h_hat = S_xz / S_xx
+        c_hat = z_bar - h_hat * x_bar
+        return h_hat, c_hat
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def fit_line(x, z):
         """Least-squares line z ~ h x + c through the points (x_i, z_i).
 
@@ -403,9 +425,34 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def kalman_filter_counts(z, h, c, Q, R, x0, P0):
+        "\"\"Scalar Kalman filter: x_k = x_{k-1} + w_k (lb), z_k = h x_k + c + v_k (counts)."\"\"
+        x_hat, P = float(x0), float(P0)
+        estimates, variances = [], []
+        for z_k in z:
+            # Predict: constant weight plus process noise
+            x_pred, P_pred = x_hat, P + Q
+            # Update: compare the reading with the reading the prediction implies
+            z_pred = h * x_pred + c          # counts
+            S = h * h * P_pred + R           # innovation variance (counts^2)
+            K = P_pred * h / S               # gain (lb per count)
+            x_hat = x_pred + K * (z_k - z_pred)
+            P = (1 - K * h) * P_pred
+            estimates.append(x_hat)
+            variances.append(P)
+        return np.array(estimates), np.array(variances)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def kalman_filter_counts(z, h, c, Q, R, x0, P0):
         """Scalar Kalman filter: x_k = x_{k-1} + w_k (lb), z_k = h x_k + c + v_k (counts)."""
         x_hat, P = float(x0), float(P0)

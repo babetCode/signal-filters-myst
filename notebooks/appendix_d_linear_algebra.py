@@ -1229,9 +1229,34 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def cholesky(A):
+        "\"\"Lower-triangular L with positive diagonal such that L @ L.T == A.
+
+        Raises ValueError if the symmetric matrix A is not positive definite.
+        "\"\"
+        A = np.asarray(A, dtype=float)
+        n = A.shape[0]
+        L = np.zeros((n, n))
+        for j in range(n):
+            radicand = A[j, j] - L[j, :j] @ L[j, :j]
+            if radicand <= 0:
+                raise ValueError("matrix is not positive definite")
+            L[j, j] = np.sqrt(radicand)
+            for i in range(j + 1, n):
+                L[i, j] = (A[i, j] - L[i, :j] @ L[j, :j]) / L[j, j]
+        return L
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def cholesky(A):
         """Lower-triangular L with positive diagonal such that L @ L.T == A.
 
@@ -1250,6 +1275,14 @@ def _(np):
         return L
 
     return (cholesky,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
+    """)
+    return
 
 
 @app.cell
@@ -1593,9 +1626,23 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def skew(a):
+        "\"\"The cross-product matrix [a]_x, so that skew(a) @ b == np.cross(a, b)."\"\"
+        return np.array([[0.0, -a[2], a[1]],
+                         [a[2], 0.0, -a[0]],
+                         [-a[1], a[0], 0.0]])
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def skew(a):
         """The cross-product matrix [a]_x, so that skew(a) @ b == np.cross(a, b)."""
         return np.array([[0.0, -a[2], a[1]],
@@ -1603,6 +1650,14 @@ def _(np):
                          [-a[1], a[0], 0.0]])
 
     return (skew,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
+    """)
+    return
 
 
 @app.cell
@@ -1731,9 +1786,31 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def expm_series(A, terms=30):
+        "\"\"Partial sum I + A + A^2/2! + ... + A^(terms-1)/(terms-1)! of the exponential series.
+
+        Fine for moderate ||A||_F; production code (scipy.linalg.expm) adds
+        "scaling and squaring" so that large matrices are handled accurately.
+        "\"\"
+        A = np.asarray(A, dtype=float)
+        term = np.eye(A.shape[0])
+        total = term.copy()
+        for k in range(1, terms):
+            term = term @ A / k
+            total = total + term
+        return total
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def expm_series(A, terms=30):
         """Partial sum I + A + A^2/2! + ... + A^(terms-1)/(terms-1)! of the exponential series.
 
@@ -1749,6 +1826,14 @@ def _(np):
         return total
 
     return (expm_series,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
+    """)
+    return
 
 
 @app.cell
@@ -1861,6 +1946,14 @@ def _(mo):
     ///
 
     The code below checks the trace derivatives against finite differences.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Editable code:** the output below is produced by the code in the editor that follows it. Edit the code and re-run the cell to see how the output changes.
     """)
     return
 

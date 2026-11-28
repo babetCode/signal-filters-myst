@@ -552,9 +552,66 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    PEND_L = 1.0    # rod length L (m)
+    GRAV = 9.81     # gravitational acceleration g (m/s^2)
+    DAMP_C = 0.1    # damping rate c (1/s)
+    DT = 0.01       # time step (s)
+
+
+    def pendulum_rhs(x):
+        "\"\"a(x): time derivative of the state x = [theta, omega]."\"\"
+        theta, omega = x[0], x[1]
+        return np.array([omega, -(GRAV / PEND_L) * np.sin(theta) - DAMP_C * omega])
+
+
+    def pendulum_rhs_jacobian(x):
+        "\"\"A(x): Jacobian of a at a single state x."\"\"
+        return np.array([[0.0, 1.0],
+                         [-(GRAV / PEND_L) * np.cos(x[0]), -DAMP_C]])
+
+
+    def f_pendulum(x):
+        "\"\"f(x): one RK4 step of length DT."\"\"
+        k1 = pendulum_rhs(x)
+        k2 = pendulum_rhs(x + 0.5 * DT * k1)
+        k3 = pendulum_rhs(x + 0.5 * DT * k2)
+        k4 = pendulum_rhs(x + DT * k3)
+        return x + DT / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+
+    def F_pendulum(x):
+        "\"\"Jacobian of the RK4 step at x, by the chain rule through its stages."\"\"
+        I = np.eye(2)
+        k1 = pendulum_rhs(x)
+        k2 = pendulum_rhs(x + 0.5 * DT * k1)
+        k3 = pendulum_rhs(x + 0.5 * DT * k2)
+        K1 = pendulum_rhs_jacobian(x)
+        K2 = pendulum_rhs_jacobian(x + 0.5 * DT * k1) @ (I + 0.5 * DT * K1)
+        K3 = pendulum_rhs_jacobian(x + 0.5 * DT * k2) @ (I + 0.5 * DT * K2)
+        K4 = pendulum_rhs_jacobian(x + DT * k3) @ (I + DT * K3)
+        return I + DT / 6 * (K1 + 2 * K2 + 2 * K3 + K4)
+
+
+    def h_pendulum(x):
+        "\"\"h(x): horizontal position of the bob (m), as a 1-vector."\"\"
+        return np.array([PEND_L * np.sin(x[0])])
+
+
+    def H_pendulum(x):
+        "\"\"Jacobian of h at a single state x."\"\"
+        return np.array([[PEND_L * np.cos(x[0]), 0.0]])
+    ```
+    """)
+    return
+
+
 @app.cell
 def pendulum_model(np):
-    # jb: editor=true
+    # jb: include=false
     PEND_L = 1.0    # rod length L (m)
     GRAV = 9.81     # gravitational acceleration g (m/s^2)
     DAMP_C = 0.1    # damping rate c (1/s)
@@ -624,9 +681,50 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ekf_predict(x, P, f, F_jac, Q):
+        "\"\"Predict: x^- = f(x),  P^- = F P F^T + Q with F the Jacobian at x."\"\"
+        F = F_jac(x)
+        return f(x), F @ P @ F.T + Q
+
+
+    def ekf_update(x_pred, P_pred, z, h, H_jac, R):
+        "\"\"Update with H the Jacobian at the prediction; Joseph-form covariance."\"\"
+        H = H_jac(x_pred)
+        y = z - h(x_pred)                         # innovation
+        S = H @ P_pred @ H.T + R                  # innovation covariance
+        K = np.linalg.solve(S, H @ P_pred).T      # K = P^- H^T S^-1
+        I_KH = np.eye(len(x_pred)) - K @ H
+        P = I_KH @ P_pred @ I_KH.T + K @ R @ K.T  # Joseph form
+        return x_pred + K @ y, P
+
+
+    def run_ekf(zs, x0_hat, P0, Q, R, F_jac=F_pendulum, H_jac=H_pendulum):
+        "\"\"Run the EKF on the pendulum. zs[k] is the measurement at step k, or NaN.
+
+        Returns the estimates (shape (len(zs), 2)) and covariances (len(zs), 2, 2);
+        row 0 holds the initial estimate and covariance.
+        "\"\"
+        x, P = np.asarray(x0_hat, float), np.asarray(P0, float)
+        xs_hat, Ps = [x], [P]
+        for k in range(1, len(zs)):
+            x, P = ekf_predict(x, P, f_pendulum, F_jac, Q)
+            if not np.isnan(zs[k]):
+                x, P = ekf_update(x, P, np.array([zs[k]]), h_pendulum, H_jac, R)
+            xs_hat.append(x)
+            Ps.append(P)
+        return np.array(xs_hat), np.array(Ps)
+    ```
+    """)
+    return
+
+
 @app.cell
 def ekf_impl(F_pendulum, H_pendulum, f_pendulum, h_pendulum, np):
-    # jb: editor=true
+    # jb: include=false
     def ekf_predict(x, P, f, F_jac, Q):
         """Predict: x^- = f(x),  P^- = F P F^T + Q with F the Jacobian at x."""
         F = F_jac(x)
@@ -760,9 +858,41 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def numerical_jacobian(fun, x, eps=1e-6):
+        "\"\"Central-difference approximation of the Jacobian of fun at x."\"\"
+        x = np.asarray(x, dtype=float)
+        columns = []
+        for j in range(x.size):
+            step = np.zeros_like(x)
+            step[j] = eps
+            columns.append((fun(x + step) - fun(x - step)) / (2 * eps))
+        return np.column_stack(columns)
+
+
+    def max_jacobian_error(fun, jac, states):
+        "\"\"Largest entrywise |analytic - numerical| over the given states."\"\"
+        return max(np.abs(jac(s) - numerical_jacobian(fun, s)).max() for s in states)
+
+
+    _rng = np.random.default_rng(15)
+    test_states = np.column_stack([_rng.uniform(-np.pi, np.pi, 200),   # theta (rad)
+                                   _rng.uniform(-6.0, 6.0, 200)])     # omega (rad/s)
+    jacobian_errors = {
+        "F": max_jacobian_error(f_pendulum, F_pendulum, test_states),
+        "H": max_jacobian_error(h_pendulum, H_pendulum, test_states),
+    }
+    ```
+    """)
+    return
+
+
 @app.cell
 def jacobian_check(F_pendulum, H_pendulum, f_pendulum, h_pendulum, np):
-    # jb: editor=true
+    # jb: include=false
     def numerical_jacobian(fun, x, eps=1e-6):
         """Central-difference approximation of the Jacobian of fun at x."""
         x = np.asarray(x, dtype=float)

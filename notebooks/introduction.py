@@ -539,9 +539,27 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def cumulative_average(measurements):
+        "\"\"Return the estimates x_hat[1], ..., x_hat[k] (recursive averages) of the measurements z[1], ..., z[k]."\"\"
+        x_hat = 0.0  # x_hat[0]: any value works, because the first step gives x_hat[1] = z[1]
+        estimates = []
+        for k, z in enumerate(measurements, start=1):
+            x_pred = x_hat  # prediction: the weight is assumed constant
+            x_hat = x_pred + (1 / k) * (z - x_pred)  # prediction + weight * innovation
+            estimates.append(x_hat)
+        return np.array(estimates)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def cumulative_average(measurements):
         """Return the estimates x_hat[1], ..., x_hat[k] (recursive averages) of the measurements z[1], ..., z[k]."""
         x_hat = 0.0  # x_hat[0]: any value works, because the first step gives x_hat[1] = z[1]
@@ -709,9 +727,27 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def ema(measurements, alpha):
+        "\"\"Return the EMA estimates x_hat[1], ..., x_hat[k], with first-measurement initialization."\"\"
+        x_hat = measurements[0]  # x_hat[0] = z[1], so that x_hat[1] = z[1]
+        estimates = []
+        for z in measurements:
+            x_pred = x_hat  # prediction: the weight is assumed constant
+            x_hat = x_pred + alpha * (z - x_pred)  # prediction + alpha * innovation
+            estimates.append(x_hat)
+        return np.array(estimates)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def ema(measurements, alpha):
         """Return the EMA estimates x_hat[1], ..., x_hat[k], with first-measurement initialization."""
         x_hat = measurements[0]  # x_hat[0] = z[1], so that x_hat[1] = z[1]
@@ -1031,9 +1067,34 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def alpha_filter(measurements, alpha, delta_x):
+        "\"\"Alpha filter with first-measurement initialization and a constant expected change.
+
+        Returns arrays of the predictions x_pred[k] and the estimates x_hat[k], one entry per
+        measurement (there is no prediction for k = 1, so that entry is NaN).
+        "\"\"
+        x_hat = measurements[0]  # x_hat[1] = z[1]
+        predictions, estimates = [np.nan], [x_hat]
+        for z in measurements[1:]:
+            # Prediction step
+            x_pred = x_hat + delta_x
+            # Measurement update step
+            x_hat = x_pred + alpha * (z - x_pred)
+            predictions.append(x_pred)
+            estimates.append(x_hat)
+        return np.array(predictions), np.array(estimates)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def alpha_filter(measurements, alpha, delta_x):
         """Alpha filter with first-measurement initialization and a constant expected change.
 
@@ -1196,9 +1257,39 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def alpha_beta_filter(measurements, alpha, beta, delta_x_initial):
+        "\"\"Alpha-beta filter with first-measurement initialization.
+
+        Returns arrays of the predictions x_pred[k], the estimates x_hat[k], and the expected
+        changes delta_x_hat[k+1], one entry per measurement (there is no prediction for k = 1,
+        so that entry is NaN).
+        "\"\"
+        x_hat = measurements[0]  # x_hat[1] = z[1]
+        delta_x_hat = delta_x_initial  # delta_x_hat[2]: initial guess for the change from step 1 to 2
+        predictions, estimates, changes = [np.nan], [x_hat], [delta_x_hat]
+        for z in measurements[1:]:
+            # Prediction step
+            x_pred = x_hat + delta_x_hat
+            # Measurement update step
+            innovation = z - x_pred
+            x_hat = x_pred + alpha * innovation
+            delta_x_hat = delta_x_hat + beta * innovation
+            predictions.append(x_pred)
+            estimates.append(x_hat)
+            changes.append(delta_x_hat)
+        return np.array(predictions), np.array(estimates), np.array(changes)
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def alpha_beta_filter(measurements, alpha, beta, delta_x_initial):
         """Alpha-beta filter with first-measurement initialization.
 

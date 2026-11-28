@@ -365,9 +365,87 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def qmul(p, q):
+        "\"\"Hamilton product of scalar-first quaternions p and q, each [w, x, y, z]."\"\"
+        pw, px, py, pz = p
+        qw, qx, qy, qz = q
+        return np.array([pw * qw - px * qx - py * qy - pz * qz,
+                         pw * qx + px * qw + py * qz - pz * qy,
+                         pw * qy - px * qz + py * qw + pz * qx,
+                         pw * qz + px * qy - py * qx + pz * qw])
+
+    def qconj(q):
+        return np.array([q[0], -q[1], -q[2], -q[3]])
+
+    def q_to_R(q):
+        "\"\"Unit quaternion q^n_b -> rotation matrix R^n_b."\"\"
+        w, x, y, z = q
+        return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+                         [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+                         [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)]])
+
+    def R_to_q(R):
+        "\"\"Rotation matrix -> one of its two unit quaternions (largest-square method)."\"\"
+        sq = np.array([1 + R[0, 0] + R[1, 1] + R[2, 2], 1 + R[0, 0] - R[1, 1] - R[2, 2],
+                       1 - R[0, 0] + R[1, 1] - R[2, 2], 1 - R[0, 0] - R[1, 1] + R[2, 2]])
+        i = int(np.argmax(sq))
+        c = 0.5 * np.sqrt(sq[i])          # the largest component, >= 1/2
+        f = 1.0 / (4.0 * c)
+        if i == 0:
+            q = [c, (R[2, 1] - R[1, 2]) * f, (R[0, 2] - R[2, 0]) * f, (R[1, 0] - R[0, 1]) * f]
+        elif i == 1:
+            q = [(R[2, 1] - R[1, 2]) * f, c, (R[0, 1] + R[1, 0]) * f, (R[0, 2] + R[2, 0]) * f]
+        elif i == 2:
+            q = [(R[0, 2] - R[2, 0]) * f, (R[0, 1] + R[1, 0]) * f, c, (R[1, 2] + R[2, 1]) * f]
+        else:
+            q = [(R[1, 0] - R[0, 1]) * f, (R[0, 2] + R[2, 0]) * f, (R[1, 2] + R[2, 1]) * f, c]
+        return np.array(q)
+
+    def q_exp(theta_vec):
+        "\"\"Rotation vector -> unit quaternion Exp_q."\"\"
+        angle = np.linalg.norm(theta_vec)
+        if angle < 1e-12:
+            return np.array([1.0, *(0.5 * np.asarray(theta_vec))])
+        return np.array([np.cos(angle / 2), *(np.sin(angle / 2) / angle * np.asarray(theta_vec))])
+
+    def q_log(q):
+        "\"\"Unit quaternion -> rotation vector with norm <= pi."\"\"
+        q = q if q[0] >= 0 else -q
+        n = np.linalg.norm(q[1:])
+        if n < 1e-12:
+            return 2.0 * q[1:]
+        return 2.0 * np.arctan2(n, q[0]) / n * q[1:]
+
+    def euler_to_q(phi, theta, psi):
+        "\"\"ZYX Euler angles (roll, pitch, yaw) -> q^n_b."\"\"
+        cf, sf = np.cos(phi / 2), np.sin(phi / 2)
+        ct, st = np.cos(theta / 2), np.sin(theta / 2)
+        cp, sp = np.cos(psi / 2), np.sin(psi / 2)
+        return np.array([cf * ct * cp + sf * st * sp, sf * ct * cp - cf * st * sp,
+                         cf * st * cp + sf * ct * sp, cf * ct * sp - sf * st * cp])
+
+    def q_to_euler(q):
+        "\"\"q^n_b -> principal ZYX Euler angles (roll, pitch, yaw)."\"\"
+        w, x, y, z = q
+        return np.array([np.arctan2(2 * (y * z + w * x), 1 - 2 * (x * x + y * y)),
+                         np.arcsin(np.clip(2 * (w * y - x * z), -1.0, 1.0)),
+                         np.arctan2(2 * (x * y + w * z), 1 - 2 * (y * y + z * z))])
+
+    def q_rotate(q, v):
+        "\"\"Rotate a 3-vector v: the vector part of the Hamilton product q [0, v] q*."\"\"
+        return qmul(qmul(q, np.array([0.0, *v])), qconj(q))[1:]
+    ```
+    """)
+    return
+
+
 @app.cell
 def quaternion_library(np):
-    # jb: editor=true
+    # jb: include=false
     def qmul(p, q):
         """Hamilton product of scalar-first quaternions p and q, each [w, x, y, z]."""
         pw, px, py, pz = p

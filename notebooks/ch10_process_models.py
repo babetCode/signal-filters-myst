@@ -330,9 +330,46 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def kalman_filter_1d(z, u, a, b, Q, R, x0, P0, c=0.0):
+        "\"\"Scalar Kalman filter for x_k = a x_{k-1} + b u_k + c + w_k, z_k = x_k + v_k.
+
+        z holds z_1..z_N along its last axis (several runs may be stacked as rows);
+        u holds u_1..u_N (or a single number used every step).
+        Returns estimates x_hat_k, error variances P_k, innovations, and
+        innovation variances S_k, for k = 1..N.
+        "\"\"
+        z = np.asarray(z, dtype=float)
+        u = np.broadcast_to(np.asarray(u, dtype=float), z.shape)
+        n = z.shape[-1]
+        x_hat = np.full(z.shape[:-1], float(x0))
+        P = float(P0)
+        estimates, innovations = np.empty(z.shape), np.empty(z.shape)
+        variances, innovation_vars = np.empty(n), np.empty(n)
+        for k in range(n):
+            # Predict with the process model
+            x_pred = a * x_hat + b * u[..., k] + c
+            P_pred = a * a * P + Q
+            # Update with the measurement
+            S = P_pred + R
+            K = P_pred / S
+            innovation = z[..., k] - x_pred
+            x_hat = x_pred + K * innovation
+            P = (1 - K) * P_pred
+            estimates[..., k], innovations[..., k] = x_hat, innovation
+            variances[k], innovation_vars[k] = P, S
+        return estimates, variances, innovations, innovation_vars
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def kalman_filter_1d(z, u, a, b, Q, R, x0, P0, c=0.0):
         """Scalar Kalman filter for x_k = a x_{k-1} + b u_k + c + w_k, z_k = x_k + v_k.
 
@@ -391,9 +428,32 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def energy_balance_coefficients(age, height_cm, activity, kcal_per_lb=3500.0):
+        "\"\"Coefficients of x_k = a x_{k-1} + b u_k + c for a man (Mifflin-St Jeor
+        BMR times an activity multiplier); x in lb, u in kcal/day, one-day steps."\"\"
+        kappa = 0.45359237                                   # kg per lb
+        gamma = 10 * kappa * activity                        # kcal/day per lb
+        delta = activity * (6.25 * height_cm - 5 * age + 5)  # kcal/day
+        a = 1 - gamma / kcal_per_lb
+        b = 1 / kcal_per_lb
+        c = -delta / kcal_per_lb
+        return a, b, c, gamma, delta
+
+    a_bulk, b_bulk, c_bulk, gamma_bulk, delta_bulk = energy_balance_coefficients(
+        age=23, height_cm=175, activity=1.5
+    )
+    ```
+    """)
+    return
+
+
 @app.cell
 def _():
-    # jb: editor=true
+    # jb: include=false
     def energy_balance_coefficients(age, height_cm, activity, kcal_per_lb=3500.0):
         """Coefficients of x_k = a x_{k-1} + b u_k + c for a man (Mifflin-St Jeor
         BMR times an activity multiplier); x in lb, u in kcal/day, one-day steps."""
@@ -875,9 +935,25 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ```python
+    def sample_autocorrelation(nu, max_lag):
+        "\"\"r(l) for l = 1..max_lag of a sequence whose mean should be 0."\"\"
+        nu = np.asarray(nu, dtype=float)
+        n = len(nu)
+        denominator = np.sum(nu**2)
+        return np.array([np.sum(nu[: n - l] * nu[l:]) / denominator
+                         for l in range(1, max_lag + 1)])
+    ```
+    """)
+    return
+
+
 @app.cell
 def _(np):
-    # jb: editor=true
+    # jb: include=false
     def sample_autocorrelation(nu, max_lag):
         """r(l) for l = 1..max_lag of a sequence whose mean should be 0."""
         nu = np.asarray(nu, dtype=float)
