@@ -81,7 +81,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 20](ch20_strapdown_inertial_navigation.md): the navigation equations and their discrete mechanization, the drift laws, the gait cycle, the gait simulator, and the SHOE detector.
     - [Chapter 19](ch19_ahrs.md): the error-state Kalman filter with the right (body-frame) attitude perturbation $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, its injection and reset steps, and the magnetometer.

@@ -69,7 +69,7 @@ def _(Path):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the bathroom-scale example, the notation $x_k$ (true value) and $z_k$ (measurement), and the definitions of {term}`signal` and {term}`noise`.
     - [Chapter 3](ch3_sets_for_probability.md): {term}`preimages <preimage>` and the lemma that preimages preserve unions, intersections, and complements; {term}`countable` sets, including that $\mathbb Q$ and $\mathbb N \times \mathbb N$ are countable; the Archimedean property and the density of $\mathbb Q$ in $\mathbb R$; {term}`supremum` and {term}`infimum`; {term}`intervals <interval>`.

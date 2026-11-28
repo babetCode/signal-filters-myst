@@ -61,7 +61,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 5](ch5_random_variables.md): measurement noise and the normal distribution.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation, $\operatorname{Var}(aX + b)$, variances and covariances of sums, and unbiased estimators.

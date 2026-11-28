@@ -59,7 +59,7 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the bulking example, the prediction $\hat x_k^-$, and the alpha-beta filter.
     - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.

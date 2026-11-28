@@ -75,7 +75,7 @@ def latex_macros(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): connectives, quantifiers and their negations, and the proof techniques (contrapositive, contradiction, cases).
     - [Chapter 2](ch2_axioms_of_set_theory.md): the axioms of set theory (especially Separation, Replacement, Union, Power Set, Regularity, and Choice), ordered pairs, Cartesian products, functions, the natural numbers, induction, and the Recursion Theorem.

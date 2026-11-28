@@ -70,7 +70,7 @@ def _(Path):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the cumulative average and the {term}`exponential moving average` with first-measurement initialization.
     - [Chapter 3](ch3_sets_for_probability.md): finite sums; {term}`absolute value` and the triangle inequality; the Archimedean property.

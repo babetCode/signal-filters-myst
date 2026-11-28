@@ -76,7 +76,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular the state-space model and its assumptions (A1)–(A6), the Joseph form, the Kalman gain, observability, and the piecewise-constant acceleration model.
     - [Chapter 9](ch9_noise_levels.md): the normalized innovation squared, the chi-squared distribution, filter consistency, and what $Q = 0$ does to the gain.

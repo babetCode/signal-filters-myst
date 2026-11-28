@@ -7,7 +7,10 @@
 import marimo
 
 __generated_with = "0.25.1"
-app = marimo.App(app_title="1. Language of Logic", css_file="notebook-styles.css")
+app = marimo.App(
+    app_title="1. Language of Logic",
+    css_file="notebook-styles.css",
+)
 
 
 @app.cell
@@ -56,7 +59,7 @@ def display_format(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the notation $z_k$, $\hat x_k$, $\hat x_k^-$ and the update $\hat x_k = \hat x_{k-1} + \alpha(z_k - \hat x_{k-1})$ (used only in examples).
     - [Appendix A: Formal Logic](appendix_a_formal_logic.md) (optional; the formal grammar, semantics, and deductive system behind this chapter).

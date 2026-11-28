@@ -56,7 +56,7 @@ def display_format(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): connectives, truth tables, quantifiers, and informal proofs.
     - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): the ZFC axioms used as examples here.

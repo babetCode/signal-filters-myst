@@ -74,7 +74,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 12](ch12_vectors_matrices_covariance.md): bold lowercase vectors and bold uppercase matrices.
     - [Appendix D: Matrix Multiplication](appendix_d_linear_algebra.md), [Transpose, Identity, and Inverse](appendix_d_linear_algebra.md), and [Linear Independence, Basis, and Rank](appendix_d_linear_algebra.md): a matrix is determined by its action on a basis, and a square matrix with a left inverse is invertible.

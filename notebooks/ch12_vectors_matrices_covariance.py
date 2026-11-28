@@ -59,7 +59,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 4](ch4_probability_spaces.md): almost surely, and continuity of probability from below (one lemma only).
     - [Chapter 5](ch5_random_variables.md): random variables, joint and marginal densities, independence as factorization of the joint density, and the normal distribution.

@@ -80,7 +80,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 17](ch17_rotations.md): rotation matrices, ZYX Euler angles, the kinematics $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, the exponential map, and the small-angle approximation.
     - [Chapter 18](ch18_quaternions.md): the Hamilton product, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and exact integration for a constant rate.

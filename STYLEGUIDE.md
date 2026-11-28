@@ -391,7 +391,7 @@ A label is a name for a heading or a result that links can point to. Labels are 
 
 ### 7.3 Glossary Terms
 
-- Reference a term with `` {term}`variance` `` or `` {term}`variances <variance>` ``. The part in angle brackets matches the glossary term's spelling; case does not matter.
+- Reference a term with `` {term}`variance` `` or `` {term}`variances <variance>` ``. The part in angle brackets is the glossary term's name in lowercase, as on the existing pages.
 - Link the first use of a term in each section. Do not link every use.
 - Reference only terms that exist ([§10.2](#102-glossary-terms)) or that your page defines.
 - No math inside the link text ([§6.5](#65-math)).
@@ -401,7 +401,7 @@ A label is a name for a heading or a result that links can point to. Labels are 
 If a word must be used informally before its definition, mark the first informal use with a footnote that links to the definition:
 
 ```
-[^informal-probability]: Used informally here; defined precisely in [Chapter 4: Probability Measures](#ch4-sec-kolmogorovs-axioms).
+[^informal-probability]: Used informally here; defined precisely in [Chapter 4: Kolmogorov's Axioms](#ch4-sec-kolmogorovs-axioms).
 ```
 
 ### 7.5 Citations
@@ -447,7 +447,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
    - Clear: "the Discrete Probability Measures theorem below does this once for all models of this kind"
 3. **Give every pronoun and abstract noun a clear antecedent.** "It", "this", "the connection", or "the result" must refer to something named in the same sentence or the one before. When a sentence asserts a relationship, it names both sides.
    - Unclear: "Chapter 6 proves the connection."
-   - Clear: "Chapter 6 proves that the relative frequency of an event converges to its probability (the weak law of large numbers)."
+   - Clear: "Chapter 6 proves that, as the number $n$ of independent trials grows, the probability that an event's relative frequency differs from its probability by more than any fixed amount tends to $0$ (the weak law of large numbers)."
 4. **Keep types straight.** Do not say that an object *is* something of a different kind: a question is not a set, and a function is not a number. Say what corresponds to what.
    - Unclear: "A question about its value, 'is $X$ in $B$?', is the set of outcomes $X^{-1}[B]$."
    - Clear: "The question 'is $X$ in $B$?' has the answer *yes* exactly for the outcomes in $X^{-1}[B]$."
@@ -465,7 +465,7 @@ Each rule below came up in proofreading. The examples are from earlier drafts.
    - Clear: "The converse of the Discrete Probability Measures theorem also holds: every probability measure on $(\Omega, \mathcal P(\Omega))$ with $\Omega$ countable arises this way."
 9. **Do not claim that something is obvious.** Do not write "clearly", "obviously", "trivially", or "it is easy to see". Give the one-line reason instead.
    - Unclear: "Axioms 1 and 2 clearly hold."
-   - Clear: "Axiom 1 holds because $p$ and $1 - p$ are in $[0, 1]$, and axiom 2 because $\mathbb P(\Omega) = 1$ by definition."
+   - Clear: "Axiom 1 holds because each assigned value ($0$, $p$, $1 - p$, $1$) is nonnegative, and axiom 2 holds because $\mathbb P(\Omega) = 1$ was assigned directly."
 10. **Explain unexpected generality on the spot.** When a statement is more general or weaker than the reader expects at that point, say why in the same place. For example, if a sum of probabilities is said to lie in $[0, \infty]$, say why the range is not yet known to be $[0, 1]$, and which fact narrows it.
 11. **Answer the obvious question.** If a careful reader would stop and ask "why not just...?" or "is this the same as ...?", answer it where it arises, briefly, or link to where it is answered.
 
@@ -655,7 +655,7 @@ uv run python notebooks/<file>.py                  # runs every cell; must finis
 make book-build                                    # exports all notebooks and runs a strict HTML build
 ```
 
-The strict build fails on unresolved `{term}` references, cross-reference labels, and citations. Running a notebook rewrites its SVGs in `notebooks/public/`; that is expected.
+On Windows, set `PYTHONUTF8=1` first (the Makefile sets it for `make` targets), because the notebooks contain non-ASCII characters. The strict build fails on unresolved `{term}` references, cross-reference labels, and citations. Running a notebook rewrites its SVGs in `notebooks/public/`; that is expected.
 
 Then read the rendered page (`make preview`) and check, by eye:
 

@@ -59,7 +59,7 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): power sets, the intersection $\bigcap F$ of a nonempty set of sets, sets of functions $Y^X$, and the Axiom of Choice (used once, for the Vitali set).
     - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and De Morgan's laws, {term}`indexed families <indexed family>` and the Disjointification lemma, {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including the Listing theorem and the countability of $\mathbb Q$), the Archimedean property, {term}`intervals <interval>`, and the {term}`extended real numbers`.

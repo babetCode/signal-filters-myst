@@ -56,7 +56,7 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): functions, the set $Y^X$ of all functions from $X$ to $Y$, Cartesian products, induction, and definition by recursion.
     - [Chapter 3](ch3_sets_for_probability.md): finite sums $\sum$, composition and inverse functions, and $\mathbb R$ as a complete ordered field (including absolute value).

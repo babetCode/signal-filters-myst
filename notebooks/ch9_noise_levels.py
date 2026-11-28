@@ -131,7 +131,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the {term}`exponential moving average`, the alpha filter, the expected change $\Delta x_k$, and the bulking data.
     - [Chapter 5](ch5_random_variables.md): the {term}`uniform distribution` and the theorem that quantization error is nearly uniform, the {term}`normal distribution` and the density of $aX + b$, linear combinations of independent normal random variables, {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and the measurement-noise model.

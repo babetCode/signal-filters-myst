@@ -113,7 +113,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, the cumulative average, and the {term}`exponential moving average` (EMA) with first-measurement initialization.
     - [Chapter 2](ch2_axioms_of_set_theory.md): proof by induction.

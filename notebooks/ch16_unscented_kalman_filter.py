@@ -78,7 +78,7 @@ def display_settings(Path, dedent, mo, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 8](ch8_bayesian_view.md): the Bayes filter, likelihoods, and posteriors (for particle filters).
     - [Chapter 12](ch12_vectors_matrices_covariance.md): covariance matrices, multivariate normal distributions, and confidence ellipses.

@@ -152,7 +152,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the alpha filter $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and first-measurement initialization.
     - [Chapter 6](ch6_expectation_and_variance.md): variance of sums of independent random variables, and the steady-state variance $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.

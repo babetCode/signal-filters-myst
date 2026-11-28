@@ -76,7 +76,7 @@ def display_format(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 1](ch1_language_of_logic.md): statements and predicates; the connectives $\neg, \land, \lor, \rightarrow, \leftrightarrow$; the quantifiers $\forall$, $\exists$, $\exists!$ and the bounded forms $\forallin{x}{A}$, $\existsin{x}{A}$; the notations $:=$ (defining an object) and $:\Longleftrightarrow$ (defining a property); and the proof techniques (direct proof, contradiction, cases, proving $\leftrightarrow$ in two directions).
     - [Appendix A](appendix_a_formal_logic.md) (optional): the formal language behind the notation of this chapter.

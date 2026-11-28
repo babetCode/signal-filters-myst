@@ -76,7 +76,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 17](ch17_rotations.md): rotation matrices and their properties (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), ZYX Euler angles and their extraction, Rodrigues' formula, Euler's rotation theorem, rotation vectors and $\operatorname{Exp}$, angular velocity, and the constant-angular-velocity theorem. The rotation angle is written $\vartheta$ because $\theta$ is pitch.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](appendix_d_linear_algebra.md): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.

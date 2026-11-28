@@ -77,7 +77,7 @@ def display_format(dedent, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): all of it, especially induction, the Recursion Theorem, Equality of Functions, and the recursive definitions of $+$, $\cdot$, and $<$ on $\mathbb N$.
     - [Chapter 3](ch3_sets_for_probability.md) (optional): the definitions of a {term}`field`, an {term}`ordered field`, an {term}`upper bound`, a {term}`supremum`, a {term}`complete ordered field`, and a {term}`bijective` function. Each is restated here where it is first needed, so this appendix can be read directly after Chapter 2.

@@ -70,7 +70,7 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 5](ch5_random_variables.md): the distribution of $aX + b$ when $X$ is normal.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity and monotonicity of expectation; the law of large numbers.

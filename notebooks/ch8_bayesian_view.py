@@ -104,7 +104,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 4](ch4_probability_spaces.md): {term}`conditional probability`, the law of total probability, and Bayes' theorem for events.
     - [Chapter 5](ch5_random_variables.md): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and the integral $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, the density of $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and the factorization of their joint density, the continuous convolution formula, and sums of independent normal random variables.

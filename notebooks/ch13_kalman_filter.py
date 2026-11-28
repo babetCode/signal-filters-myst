@@ -67,7 +67,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Introduction](introduction.md): the alpha-beta filter.
     - [Chapter 6](ch6_expectation_and_variance.md): linearity of expectation; covariance.

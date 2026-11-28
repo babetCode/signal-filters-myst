@@ -78,7 +78,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// seealso | 🔗 **Prerequisites**
+    /// important | 🔗 **Prerequisites**
         attrs: {class: no-icon}
     - [Chapter 2](ch2_axioms_of_set_theory.md): functions, the natural numbers $\mathbb N = \{0, 1, 2, \ldots\}$, induction, and the Recursion Theorem.
     - [Chapter 3](ch3_sets_for_probability.md): sequences, finite sums $\sum$, countable sets, $\mathbb R$ as a complete ordered field (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), the Archimedean property and the density of $\mathbb Q$, absolute value and the triangle inequality, intervals, and the extended real numbers $[0, \infty]$.

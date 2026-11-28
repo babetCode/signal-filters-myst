@@ -93,4 +93,21 @@ link to section
 
 As pointed out in the chapter notes, chapters should be updated to use [cross-references](https://mystmd.org/guide/cross-references) and [proof and theorems](https://mystmd.org/guide/proofs-and-theorems), using kinds and/or labels to be able to reference them.
 
-Pureley for development purposes, it's nice to have things render properly in the marimo notebook (although this doesn't matter at all for deployment, it just makes development nicer). As such, it would be nice to establish book conventions for which marimo admonition styes ['note', 'attention', 'caution', 'danger', 'error', 'tip', 'hint', 'warning', 'important', 'info', 'success'] should get translated to which mystmd admonitions styles [note, important, hint, seealso, tip, attention, caution, warning, danger, error], that way the notebooks can be written in a way that renders during development, and then sync_notebooks can export them properly to .md. currently, seealso is being used directly in marimo and not rending properly. it would also be nice to have a dedicated marimo syntax that renders nicely which is reserved to be exported to proof/lemma/theorem directives in mystmd.
+Pureley for development purposes, it's nice to have things render properly in the marimo notebook (although this doesn't matter at all for deployment, it just makes development nicer). As such, it would be nice to establish book conventions for which marimo admonition styes should get translated to which mystmd admonitions styles, since not all admonition types are available in both:
+
+| Admonition Type | Availability | Color in marimo | Color in MyST |
+| --- | --- | --- | --- |
+| attention | Both | Yellow | Orange |
+| caution | Both | Red | Orange |
+| danger | Both | Red | Red |
+| error | Both | Red | Red |
+| hint | Both | Grey | Green |
+| important | Both | Teal | Blue |
+| note | Both | Blue | Blue |
+| seealso | mystmd | — | Green |
+| tip | Both | Green | Green |
+| warning | Both | Dark Gold | Orange |
+
+that way the notebooks can be written in a way that renders during development, and then sync_notebooks can export them properly to .md. currently, seealso is being used directly in marimo and not rending properly. it would also be nice to have a dedicated marimo syntax that renders nicely which is reserved to be exported to proof/lemma/theorem directives in mystmd.
+
+This could be done by using custom classes in the mystmd 
