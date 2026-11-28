@@ -59,18 +59,6 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 13](#ch13-sec-the-optimal-gain) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
-
-    /// attention | 🗝️ **Key Idea**
-    A Kalman filter is only as good as its model. Tune $\mathbf Q$, $\mathbf R$, and $\mathbf P_0$ from physical reasoning, then *check* them: when the model is right, the normalized errors $\mathbf e^\top\mathbf P^{-1}\mathbf e$ and normalized innovations $\tilde{\mathbf y}^\top\mathbf S^{-1}\tilde{\mathbf y}$ follow known chi-squared distributions, and departures from those distributions reveal what is wrong.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 13](#ch13): the whole chapter, in particular the {term}`state-space model` and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), the {term}`Joseph form`, the {term}`Kalman gain`, [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
     - [Chapter 9](#ch9): the {term}`normalized innovation squared`, the {term}`chi-squared distribution`, {term}`filter consistency`, and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
@@ -79,6 +67,18 @@ def _(mo):
     - [Chapter 5](#ch5): [independence](#ch5-sec-independence); [the distribution of a sum of independent random variables](#ch5-sec-sums-of-independent-random-variables).
     - Appendix C: [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus); [Multiple Integrals](#appc-sec-multiple-integrals): only for the derivation of the continuous white-noise acceleration model.
     - Appendix D: [Cholesky Decomposition](#appd-sec-cholesky-decomposition); [The Matrix Exponential](#appd-sec-the-matrix-exponential).
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [Chapter 13](#ch13-sec-the-optimal-gain) proved that the Kalman filter is optimal, *given* its model: known noise covariances $\mathbf Q$ and $\mathbf R$, a known initial mean and covariance, a measurement at every step, and exact arithmetic. None of these is given in practice. This chapter is about the engineering between the theorem and a working filter: how to choose what the theorem takes as given, how to handle data that arrive late, at different rates, or not at all, how to combine different sensors, and, most importantly, how to *test* whether a filter's reported uncertainty is honest. Everything is demonstrated on one running example, a cart on a track, which is a one-dimensional rehearsal of the foot-mounted inertial navigation of Part VI.
+
+    /// attention | 🗝️ **Key Idea**
+    A Kalman filter is only as good as its model. Tune $\mathbf Q$, $\mathbf R$, and $\mathbf P_0$ from physical reasoning, then *check* them: when the model is right, the normalized errors $\mathbf e^\top\mathbf P^{-1}\mathbf e$ and normalized innovations $\tilde{\mathbf y}^\top\mathbf S^{-1}\tilde{\mathbf y}$ follow known chi-squared distributions, and departures from those distributions reveal what is wrong.
     ///
     """)
     return
@@ -322,9 +322,9 @@ def _(mo):
     <!-- label: ch14-sec-initialization -->
     ## Initialization
 
-    The filter needs $\hat{\mathbf x}_0$ and $\mathbf P_0$ before the first measurement. Assumption (A5) of Chapter 13 says they are the true mean and covariance of $\mathbf x_0$; in practice they encode what you know before the data arrive. The two ways to get them wrong are not symmetric:
+    The filter needs $\hat{\mathbf x}_0$ and $\mathbf P_0$ before the first measurement. Assumption (A5) of Chapter 13 says they are the true mean and covariance of $\mathbf x_0$; in practice they encode what we know before the data arrive. The two ways to get them wrong are not symmetric:
 
-    - **$\mathbf P_0$ too small** claims knowledge you do not have. The first gains are then too small, and a wrong $\hat{\mathbf x}_0$ is corrected slowly, in the worst case not at all (see Filter Divergence below).
+    - **$\mathbf P_0$ too small** claims knowledge we do not have. The first gains are then too small, and a wrong $\hat{\mathbf x}_0$ is corrected slowly, in the worst case not at all (see Filter Divergence below).
     - **$\mathbf P_0$ too large** only says "I know little", and the first measurements quickly override $\hat{\mathbf x}_0$. The price is purely numerical: very large entries in $\mathbf P_0$ combined with the simplified covariance update can destroy the covariance through rounding (see Numerical Stability below).
 
     So when in doubt, choose $\mathbf P_0$ large. In the limit the choice of $\hat{\mathbf x}_0$ stops mattering:

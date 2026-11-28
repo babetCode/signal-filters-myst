@@ -57,10 +57,11 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 17](#ch17-thm-no-global-three-parameter-description) ended with a negative result: no description of every rotation by three numbers is free of jumps and singularities. Quaternions get around it with one extra number. A unit quaternion is a point on the unit sphere in $\mathbb R^4$; multiplying quaternions composes rotations; and the attitude kinematics become the *linear* equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$, whose coefficients never blow up. Quaternions are also cheap: four numbers instead of nine, and restoring unit length after rounding is a single division. Every attitude filter in the rest of this book stores the attitude as a unit quaternion.
-
-    /// attention | 🗝️ **Key Idea**
-    The unit quaternion $q = [\cos\tfrac\vartheta2,\ \sin\tfrac\vartheta2\,\mathbf u]$ represents the rotation by $\vartheta$ about $\mathbf u$. Vectors rotate as $q\otimes[0, \mathbf v]\otimes q^*$, rotations compose by the Hamilton product $\otimes$, and attitude evolves by the singularity-free linear equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$. The one price is that $q$ and $-q$ represent the same rotation.
+    /// important | 🔗 **Prerequisites**
+    - [Chapter 17](#ch17): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), {term}`rotation vectors <rotation vector>` and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
+    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
+    - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
+    - [Chapter 3](#ch3): the definition of a {term}`field`, for one remark.
     ///
     """)
     return
@@ -69,11 +70,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 🔗 **Prerequisites**
-    - [Chapter 17](#ch17): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), {term}`rotation vectors <rotation vector>` and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
-    - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
-    - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
-    - [Chapter 3](#ch3): the definition of a {term}`field`, for one remark.
+    [Chapter 17](#ch17-thm-no-global-three-parameter-description) ended with a negative result: no description of every rotation by three numbers is free of jumps and singularities. Quaternions get around it with one extra number. A unit quaternion is a point on the unit sphere in $\mathbb R^4$; multiplying quaternions composes rotations; and the attitude kinematics become the *linear* equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$, whose coefficients never blow up. Quaternions are also cheap: four numbers instead of nine, and restoring unit length after rounding is a single division. Every attitude filter in the rest of this book stores the attitude as a unit quaternion.
+
+    /// attention | 🗝️ **Key Idea**
+    The unit quaternion $q = [\cos\tfrac\vartheta2,\ \sin\tfrac\vartheta2\,\mathbf u]$ represents the rotation by $\vartheta$ about $\mathbf u$. Vectors rotate as $q\otimes[0, \mathbf v]\otimes q^*$, rotations compose by the Hamilton product $\otimes$, and attitude evolves by the singularity-free linear equation $\dot q = \tfrac12 q\otimes[0, \boldsymbol\omega^b]$. The one price is that $q$ and $-q$ represent the same rotation.
     ///
     """)
     return

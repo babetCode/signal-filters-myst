@@ -1367,7 +1367,7 @@ def _(mo):
     Often the best fix is not a different filter but a better *problem*: a state in which the errors stay small. That is the idea behind the error-state filters of Parts V and VI, which apply an EKF to the small error of an attitude or navigation solution rather than to the attitude itself, so that linearization is accurate and the EKF's low cost is kept.
 
     /// attention | 🗝️ **Key Idea**
-    Linear model: Kalman filter. Mild nonlinearity with small uncertainty: EKF. Strong nonlinearity or large uncertainty with a single-peaked posterior: UKF. Multiple peaks: particle filter. Whatever you choose, verify consistency with Monte Carlo tests.
+    Linear model: Kalman filter. Mild nonlinearity with small uncertainty: EKF. Strong nonlinearity or large uncertainty with a single-peaked posterior: UKF. Multiple peaks: particle filter. Whichever filter we choose, we verify its consistency with Monte Carlo tests.
     ///
     """)
     return

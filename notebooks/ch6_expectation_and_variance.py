@@ -100,9 +100,9 @@ def _(mo):
     <!-- label: ch6-sec-expected-value -->
     ## Expected Value
 
-    Suppose a crude scale's noise $V$ takes the values $-1$, $0$, and $+1$ lb with probabilities $\tfrac14$, $\tfrac12$, $\tfrac14$. Over many readings we would expect about a quarter to be 1 lb low, half to be exact, and a quarter to be 1 lb high, so the average error should be about
-    $$(-1)\cdot\tfrac14 + 0 \cdot \tfrac12 + (+1)\cdot\tfrac14 = 0 \text{ lb}.$$
-    A second scale's noise $W$ takes the values $-1$, $0$, $+2$ lb with the same probabilities. Its most likely error is still $0$, but its average error should be about $(-1)\cdot\tfrac14 + 0 + 2\cdot\tfrac14 = \tfrac14$ lb: it reads high *on average*. The probability-weighted average of a random variable's values is its expected value. (That the average of many readings really approaches this number is a theorem, the law of large numbers, proved later in this chapter.)
+    Suppose a crude scale's noise $V$ takes the values $-1$, $0$, and $+1$ kg with probabilities $\tfrac14$, $\tfrac12$, $\tfrac14$. Over many readings we would expect about a quarter to be 1 kg low, half to be exact, and a quarter to be 1 kg high, so the average error should be about
+    $$(-1)\cdot\tfrac14 + 0 \cdot \tfrac12 + (+1)\cdot\tfrac14 = 0 \text{ kg}.$$
+    A second scale's noise $W$ takes the values $-1$, $0$, $+2$ kg with the same probabilities. Its most likely error is still $0$, but its average error should be about $(-1)\cdot\tfrac14 + 0 + 2\cdot\tfrac14 = \tfrac14$ kg: it reads high *on average*. The probability-weighted average of a random variable's values is its expected value. (That the average of many readings really approaches this number is a theorem, the law of large numbers, proved later in this chapter.)
 
     /// note | 📖 **Definition**
     <u>**Expected value**</u>
@@ -125,7 +125,7 @@ def _(mo):
 
     **Examples.**
 
-    - The two crude scales: $\mathbb E[V] = 0$ and $\mathbb E[W] = \tfrac14$ lb.
+    - The two crude scales: $\mathbb E[V] = 0$ and $\mathbb E[W] = \tfrac14$ kg.
     - *Indicators.* For an event $A$, $\mathbf 1_A$ takes the value $1$ with probability $\mathbb P(A)$ and $0$ otherwise, so $\mathbb E[\mathbf 1_A] = 1 \cdot \mathbb P(A) + 0 \cdot (1 - \mathbb P(A)) = \mathbb P(A)$. Every probability is an expected value.
     """)
     return
@@ -255,7 +255,7 @@ def _(mo):
     <!-- label: ch6-sec-variance-and-standard-deviation -->
     ## Variance and Standard Deviation
 
-    Two scales can both be right on average and still be very different: one scatters its readings within $\pm 0.1$ lb of the truth, the other within $\pm 3$ lb. The expected value cannot tell them apart. We need a number for *spread*, and the natural choice is the expected squared distance from the mean. Squaring (rather than taking the absolute value) is what makes the theory work: squared deviations of independent quantities add (proved below), which is exactly what we need to analyze averaging, and the mean squared error splits cleanly into a bias part and a spread part.
+    Two scales can both be right on average and still be very different: one scatters its readings within $\pm 0.1$ kg of the truth, the other within $\pm 3$ kg. The expected value cannot tell them apart. We need a number for *spread*, and the natural choice is the expected squared distance from the mean. Squaring (rather than taking the absolute value) is what makes the theory work: squared deviations of independent quantities add (proved below), which is exactly what we need to analyze averaging, and the mean squared error splits cleanly into a bias part and a spread part.
 
     /// admonition | 📐 **Lemma (Finite Second Moment)**
         attrs: {class: lemma, id: ch6-lem-finite-second-moment}
@@ -280,7 +280,7 @@ def _(mo):
     The standard deviation of a {term}`random variable` $X$ with $\mathbb E[X^2] < \infty$ is $\sigma_X := \sqrt{\operatorname{Var}(X)}$, the nonnegative square root of its {term}`variance`.
     ///
 
-    The variance is measured in squared units (lb$^2$); the standard deviation is back in the units of $X$ (lb), which makes it the number to compare with the readings themselves.
+    The variance is measured in squared units (kg$^2$); the standard deviation is back in the units of $X$ (kg), which makes it the number to compare with the readings themselves.
 
     /// admonition | 📐 **Theorem (Properties of Variance)**
         attrs: {class: theorem, id: ch6-thm-properties-of-variance}
@@ -314,7 +314,7 @@ def _(mo):
     Since $e^{t} \ge 1 + t \ge t$ for $t \ge 0$ ([Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm)), $e^{M^2/2} \ge M^2/2$, so $0 \le M\varphi(M) \le \frac{2}{M\sqrt{2\pi}} \to 0$. Hence $\mathbb E[Z^2] = 1$ and, since $\mathbb E[Z] = 0$, $\operatorname{Var}(Z) = 1$. For $X \sim \mathcal N(\mu, \sigma^2)$, Chapter 5's affine corollary gives $Z := (X - \mu)/\sigma \sim \mathcal N(0, 1)$, so $\operatorname{Var}(Z) = 1$ by the first case. Since $X = \mu + \sigma Z$, part 3 of the previous theorem gives $\operatorname{Var}(X) = \sigma^2$. $\blacksquare$
     ///
 
-    So the parameters of $\mathcal N(\mu, \sigma^2)$ are its mean and variance, which justifies the notation. In the standard measurement-noise model, each $V_k$ has mean $0$ and variance $\sigma^2$; Chapter 7 will call this variance $R$. The crude scale's noise $V$ has $\operatorname{Var}(V) = \mathbb E[V^2] - 0^2 = \tfrac12$ lb$^2$.
+    So the parameters of $\mathcal N(\mu, \sigma^2)$ are its mean and variance, which justifies the notation. In the standard measurement-noise model, each $V_k$ has mean $0$ and variance $\sigma^2$; Chapter 7 will call this variance $R$. The crude scale's noise $V$ has $\operatorname{Var}(V) = \mathbb E[V^2] - 0^2 = \tfrac12$ kg$^2$.
     """)
     return
 
@@ -350,7 +350,7 @@ def _(mo):
     Let $\mu := \mathbb E[X]$, $\nu := \mathbb E[Y]$. (1) $(X - \mu)(Y - \nu) = XY - \nu X - \mu Y + \mu\nu$; linearity gives $\mathbb E[XY] - \mu\nu$. (2) Immediate from the definition. (3) By linearity, $(aX + bY + c) - \mathbb E[aX + bY + c] = a(X - \mu) + b(Y - \nu)$; multiply by $W - \mathbb E[W]$ and use linearity. The second argument follows by symmetry. $\blacksquare$
     ///
 
-    Covariance has units (lb$^2$ for two readings in lb), so its size is hard to judge alone. Dividing by the standard deviations makes it dimensionless.
+    Covariance has units (kg$^2$ for two readings in kg), so its size is hard to judge alone. Dividing by the standard deviations makes it dimensionless.
 
     /// note | 📖 **Definition**
     <u>**Correlation coefficient**</u>
@@ -419,7 +419,7 @@ def _(mo):
     $$\operatorname{Var}\Big(\sum_{i=1}^n a_i X_i\Big) = \sum_{i=1}^n a_i^2\operatorname{Var}(X_i).$$
     ///
 
-    For uncorrelated quantities, variances add, while standard deviations do not: two independent readings with $\sigma = 1$ lb have a sum with variance $2$ lb$^2$ and standard deviation $\sqrt 2 \approx 1.41$ lb, not $2$ lb. Errors partly cancel. If instead the two readings were perfectly correlated ($\rho = 1$), the cross term would add $2\sigma^2$ and the sum would have variance $4$ lb$^2$: no cancellation at all. This is the whole mechanism behind averaging.
+    For uncorrelated quantities, variances add, while standard deviations do not: two independent readings with $\sigma = 1$ kg have a sum with variance $2$ kg$^2$ and standard deviation $\sqrt 2 \approx 1.41$ kg, not $2$ kg. Errors partly cancel. If instead the two readings were perfectly correlated ($\rho = 1$), the cross term would add $2\sigma^2$ and the sum would have variance $4$ kg$^2$: no cancellation at all. This is the whole mechanism behind averaging.
 
     <!-- label: ch6-sec-estimators -->
     ## Estimators
@@ -468,7 +468,7 @@ def _(mo):
 
     Two extreme estimators of a weight $x$ from scale readings $Z_i = x + V_i$, with $\mathbb E[V_i] = 0$ and $\operatorname{Var}(V_i) = \sigma^2$, show both terms at work:
 
-    - The constant $\hat X := 155$ ignores the data. Its variance is $0$, but its bias is $155 - x$, so it is not unbiased, and its MSE $(155 - x)^2$ is excellent only for someone who happens to weigh 155 lb.
+    - The constant $\hat X := 70$ ignores the data. Its variance is $0$, but its bias is $70 - x$, so it is not unbiased, and its MSE $(70 - x)^2$ is excellent only for someone who happens to weigh 70 kg.
     - The first reading $\hat X := Z_1$ is unbiased ($\mathbb E[Z_1] = x$ for every $x$), but its MSE is $\operatorname{Var}(Z_1) = \sigma^2$, no matter how many readings are available.
 
     /// attention | 🗝️ **Key Idea**
@@ -516,7 +516,7 @@ def _(mo):
     $\mathbb E[Z_i] = x$, $\operatorname{Var}(Z_i) = \operatorname{Var}(V_i) = \sigma^2$, and $\operatorname{Cov}(Z_i, Z_j) = \operatorname{Cov}(V_i, V_j) = 0$ for $i \ne j$, since adding constants changes neither variances nor covariances. The theorem gives $\mathbb E[\bar Z_k] = x$ for every $x$ and $\operatorname{Var}(\bar Z_k) = \sigma^2/k$; the bias–variance decomposition gives the MSE. The normal case is Chapter 5's corollary on linear combinations of independent normals. $\blacksquare$
     ///
 
-    This is the promise of the Introduction, now a theorem. With the canonical scale ($\sigma = 1$ lb, 30 readings in 3 s), the cumulative average after 3 s has standard deviation $1/\sqrt{30} \approx 0.18$ lb, and about 95% of the time it lands within $\pm 0.37$ lb of the true weight. The improvement is slow, though: the standard deviation falls like $1/\sqrt k$, so halving it takes four times as many readings.
+    This is the promise of the Introduction, now a theorem. With the canonical scale ($\sigma = 0.5$ kg, 30 readings in 3 s), the cumulative average after 3 s has standard deviation $0.5/\sqrt{30} \approx 0.091$ kg, and about 95% of the time it lands within $\pm 0.18$ kg of the true weight. The improvement is slow, though: the standard deviation falls like $1/\sqrt k$, so halving it takes four times as many readings.
 
     /// attention | 🗝️ **Key Idea**
     Averaging $k$ readings whose noise is uncorrelated with mean $0$ and variance $\sigma^2$ gives an unbiased estimate with variance $\sigma^2/k$. Only three assumptions are used: zero mean (for unbiasedness), equal variances, and zero covariances (for the variance). Neither independence nor normality is needed.
@@ -597,7 +597,7 @@ def _(mo):
     Let $\mu := \mathbb E[X]$. ($\Leftarrow$) If $\mathbb P(X = \mu) = 1$, then $X$ is discrete with $C = \{\mu\}$, and LOTUS gives $\operatorname{Var}(X) = (\mu - \mu)^2 \cdot 1 = 0$. ($\Rightarrow$) Chebyshev gives $\mathbb P(|X - \mu| \ge \tfrac1n) \le 0$ for every $n \ge 1$. The events $\{|X - \mu| \ge \tfrac1n\}$ increase with $n$, and their union is $\{X \ne \mu\}$ by the Archimedean property, so continuity from below gives $\mathbb P(X \ne \mu) = 0$. $\blacksquare$
     ///
 
-    The widget below runs 2,000 independent simulated experiments. In each, the scale takes up to 400 readings of a true weight, and we track the sample mean of the noise, $\bar V_k = \bar Z_k - x$. The normal and uniform noise options have mean $0$ and variance $1$ lb$^2$; the heavy-tailed option has the density $h$ from the start of the chapter, and no mean at all. The left panel shows how the 2,000 sample means after $k$ readings are spread; the right panel shows, for every $k$, the fraction of experiments whose sample mean missed by $\varepsilon$ or more, together with Chebyshev's bound $\sigma^2/(k\varepsilon^2)$. Try all three noise options.
+    The widget below runs 2,000 independent simulated experiments. In each, the scale takes up to 400 readings of a true weight, and we track the sample mean of the noise, $\bar V_k = \bar Z_k - x$. The normal and uniform noise options have mean $0$ and variance $1$ kg$^2$; the heavy-tailed option has the density $h$ from the start of the chapter, and no mean at all. The left panel shows how the 2,000 sample means after $k$ readings are spread; the right panel shows, for every $k$, the fraction of experiments whose sample mean missed by $\varepsilon$ or more, together with Chebyshev's bound $\sigma^2/(k\varepsilon^2)$. Try all three noise options.
     """)
     return
 
@@ -626,7 +626,7 @@ def _(avg_running_means, mo):
         options=list(avg_running_means.keys()), value="Normal, variance 1", label="noise distribution"
     )
     avg_k_slider = mo.ui.slider(1, 400, 1, value=10, label=r"number of readings $k$", show_value=True)
-    avg_eps_slider = mo.ui.slider(0.05, 1.0, 0.05, value=0.25, label=r"tolerance $\varepsilon$ (lb)", show_value=True)
+    avg_eps_slider = mo.ui.slider(0.05, 1.0, 0.05, value=0.25, label=r"tolerance $\varepsilon$ (kg)", show_value=True)
     return avg_dist_dropdown, avg_eps_slider, avg_k_slider
 
 
@@ -662,8 +662,8 @@ def _(
     _ax1.axvspan(-4, -_eps, color="0.85", zorder=0)
     _ax1.axvspan(_eps, 4, color="0.85", zorder=0, label=r"miss by $\geq\varepsilon$")
     _ax1.set_xlim(-4, 4)
-    _ax1.set_xlabel(r"sample mean of the noise, $\bar V_k$ (lb)")
-    _ax1.set_ylabel("density (1/lb)")
+    _ax1.set_xlabel(r"sample mean of the noise, $\bar V_k$ (kg)")
+    _ax1.set_ylabel("density (1/kg)")
     _ax1.set_title("Spread of the sample mean", style="italic")
     _ax1.legend(loc="upper right", fontsize=8)
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -686,10 +686,10 @@ def _(
 
     if _heavy:
         _txt = (f"After k = {_k} readings, {100 * _miss[_k - 1]:.1f}% of experiments miss by at least "
-                f"{_eps:.2f} lb. There is no Chebyshev bound: this noise has no variance (not even a mean).")
+                f"{_eps:.2f} kg. There is no Chebyshev bound: this noise has no variance (not even a mean).")
     else:
         _txt = (f"After k = {_k} readings, {100 * _miss[_k - 1]:.1f}% of experiments miss by at least "
-                f"{_eps:.2f} lb; Chebyshev guarantees at most {100 * min(1, 1 / (_k * _eps**2)):.1f}%.")
+                f"{_eps:.2f} kg; Chebyshev guarantees at most {100 * min(1, 1 / (_k * _eps**2)):.1f}%.")
     mo.vstack([avg_dist_dropdown, avg_k_slider, avg_eps_slider, _plot, mo.md(_txt)])
     return
 
@@ -755,7 +755,7 @@ def _(mo):
     Since $0 \le 1 - \alpha < 1$, the powers $(1 - \alpha)^{2k-1}$ are nonincreasing in $k$ and tend to $0$ ([Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits)). $\blacksquare$
     ///
 
-    At $k = 1$ the formula gives $\sigma^2$, the variance of a single reading, and the variance then falls toward its floor $\sigma^2\alpha/(2-\alpha)$. Unlike the sample mean's $\sigma^2/k$, the floor is not zero: old readings are gradually forgotten, so the EMA never accumulates more than a fixed amount of information. Its floor equals the variance of a sample mean of $(2 - \alpha)/\alpha$ readings, so an EMA behaves in the long run like an average over its last $(2-\alpha)/\alpha$ readings. For the Introduction's $\alpha = 0.05$ that is $39$ readings, or $3.9$ s at 10 samples/s. After the Introduction's 30 readings, the EMA with $\alpha = 0.05$ has standard deviation about $0.27$ lb, against $0.18$ lb for the cumulative average.
+    At $k = 1$ the formula gives $\sigma^2$, the variance of a single reading, and the variance then falls toward its floor $\sigma^2\alpha/(2-\alpha)$. Unlike the sample mean's $\sigma^2/k$, the floor is not zero: old readings are gradually forgotten, so the EMA never accumulates more than a fixed amount of information. Its floor equals the variance of a sample mean of $(2 - \alpha)/\alpha$ readings, so an EMA behaves in the long run like an average over its last $(2-\alpha)/\alpha$ readings. For the Introduction's $\alpha = 0.05$ that is $39$ readings, or $3.9$ s at 10 samples/s. After the Introduction's 30 readings, the EMA with $\alpha = 0.05$ has standard deviation about $0.14$ kg, against $0.09$ kg for the cumulative average.
 
     /// admonition | 📐 **Corollary (For a Constant Value, Averaging Beats the EMA)**
         attrs: {class: corollary, id: ch6-cor-for-a-constant-value-averaging-beats-the-ema}
@@ -811,7 +811,7 @@ def _(mo):
     <!-- label: ch6-sec-tracking-a-ramp-lag -->
     ### Tracking a Ramp: Lag
 
-    Let the true value change at a constant rate: $x_k = x_0 + ck$ for a slope $c$ (in lb per step). In the bulking example, $c = 0.2$ lb/day.
+    Let the true value change at a constant rate: $x_k = x_0 + ck$ for a slope $c$ (in kg per step). In the bulking example, $c = 0.1$ kg/day.
 
     /// admonition | 📐 **Theorem (EMA on a Ramp)**
         attrs: {class: theorem, id: ch6-thm-ema-on-a-ramp}
@@ -832,7 +832,7 @@ def _(mo):
     For the variance, $\hat X_k - m_k = \sum_i w_{k,i}(Z_i - x_i) = \sum_i w_{k,i}V_i$, exactly as for a constant value, so the variance is unchanged. The bias–variance decomposition gives the MSE, and $(1-\alpha)^{k-1} \to 0$ gives the limits. $\blacksquare$
     ///
 
-    The limit has a simple meaning. In the long run $\mathbb E[\hat X_k] \approx x_k - c\frac{1-\alpha}{\alpha} = x_0 + c\big(k - \frac{1-\alpha}{\alpha}\big)$: on average the EMA reports the value the truth had $\frac{1-\alpha}{\alpha}$ steps ago. That delay is the EMA's *lag*. With $\alpha = 0.2$ the lag is $4$ days, so the bulker's EMA reads $0.8$ lb low; with $\alpha = 0.05$ on the 10 samples/s scale the lag is $19$ samples, almost 2 s. The same number of steps measures how slowly the EMA absorbs a sudden jump: after a jump, its noise-free error shrinks by the factor $1 - \alpha$ per step, and $0.95^{19} \approx 0.38$. That is why a scale with a small $\alpha$ feels sluggish when you step on it.
+    The limit has a simple meaning. In the long run $\mathbb E[\hat X_k] \approx x_k - c\frac{1-\alpha}{\alpha} = x_0 + c\big(k - \frac{1-\alpha}{\alpha}\big)$: on average the EMA reports the value the truth had $\frac{1-\alpha}{\alpha}$ steps ago. That delay is the EMA's *lag*. With $\alpha = 0.2$ the lag is $4$ days, so the bulker's EMA reads $0.4$ kg low; with $\alpha = 0.05$ on the 10 samples/s scale the lag is $19$ samples, almost 2 s. The same number of steps measures how slowly the EMA absorbs a sudden jump: after a jump, its noise-free error shrinks by the factor $1 - \alpha$ per step, and $0.95^{19} \approx 0.38$. That is why a scale with a small $\alpha$ feels sluggish when you step on it.
 
     <!-- label: ch6-sec-the-lagnoise-trade-off -->
     ### The Lag–Noise Trade-off
@@ -861,9 +861,9 @@ def _(mo):
     *The equation and uniqueness.* At an interior minimum the derivative vanishes ([Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema)), and $M'(\alpha) = 0$ rearranges to $\alpha^3 = \lambda(1-\alpha)(2-\alpha)^2$. On $(0, 1)$ the left side is strictly increasing and the right side is strictly decreasing (a product of positive, strictly decreasing factors), so the equation has at most one solution. Every minimizer lies in $(0, 1)$ and solves it, so the minimizer is unique. $\blacksquare$
     ///
 
-    For the bulking example ($c = 0.2$ lb/day, $\sigma = 1$ lb, so $\lambda = 0.04$), solving the cubic numerically gives $\alpha^* \approx 0.396$ and $\operatorname{MSE}_\infty(\alpha^*) \approx 0.340$ lb$^2$, a root mean squared error of about $0.58$ lb. Compare $1$ lb$^2$ for the raw readings ($\alpha = 1$) and $3.29$ lb$^2$ for the sluggish $\alpha = 0.1$. If the truth is constant ($c = 0$), the theorem does not apply: $\operatorname{MSE}_\infty = \sigma^2\alpha/(2-\alpha)$ keeps decreasing as $\alpha \to 0$, which is the steady-state view of the fact that, for a constant value, one should average everything.
+    For the bulking example ($c = 0.1$ kg/day, $\sigma = 0.5$ kg, so $\lambda = 0.04$), solving the cubic numerically gives $\alpha^* \approx 0.396$ and $\operatorname{MSE}_\infty(\alpha^*) \approx 0.085$ kg$^2$, a root mean squared error of about $0.29$ kg. Compare $0.25$ kg$^2$ for the raw readings ($\alpha = 1$) and $0.82$ kg$^2$ for the sluggish $\alpha = 0.1$. If the truth is constant ($c = 0$), the theorem does not apply: $\operatorname{MSE}_\infty = \sigma^2\alpha/(2-\alpha)$ keeps decreasing as $\alpha \to 0$, which is the steady-state view of the fact that, for a constant value, one should average everything.
 
-    The widget below puts the whole analysis together. The left panel plots the exact bias$^2$, variance, and MSE of $\hat X_k$ against $\alpha$ for your choice of slope, noise, and step $k$, with the steady-state MSE dotted. The right panel shows one sample path. With the default settings it is the book's 28-day bulking data set (seed 2, readings rounded to 0.1 lb). Below the plots, a Monte Carlo simulation of 4,000 independent runs checks the formulas. The code for the EMA and for the formulas is:
+    The widget below puts the whole analysis together. The left panel plots the exact bias$^2$, variance, and MSE of $\hat X_k$ against $\alpha$ for your choice of slope, noise, and step $k$, with the steady-state MSE dotted. The right panel shows one sample path. With the default settings it is the book's 28-day bulking data set (seed 2, readings rounded to 0.1 kg). Below the plots, a Monte Carlo simulation of 4,000 independent runs checks the formulas. The code for the EMA and for the formulas is:
     """)
     return
 
@@ -923,8 +923,8 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     ema_alpha_slider = mo.ui.slider(0.02, 1.0, 0.01, value=0.2, label=r"$\alpha$", show_value=True)
-    ema_c_slider = mo.ui.slider(0.0, 0.5, 0.05, value=0.2, label=r"slope $c$ (lb/day)", show_value=True)
-    ema_sigma_slider = mo.ui.slider(0.2, 3.0, 0.1, value=1.0, label=r"noise $\sigma$ (lb)", show_value=True)
+    ema_c_slider = mo.ui.slider(0.0, 0.25, 0.025, value=0.1, label=r"slope $c$ (kg/day)", show_value=True)
+    ema_sigma_slider = mo.ui.slider(0.1, 1.5, 0.05, value=0.5, label=r"noise $\sigma$ (kg)", show_value=True)
     ema_k_slider = mo.ui.slider(2, 120, 1, value=28, label=r"day $k$", show_value=True)
     return ema_alpha_slider, ema_c_slider, ema_k_slider, ema_sigma_slider
 
@@ -955,11 +955,11 @@ def _(
     _a_best = _alphas[np.argmin(_m)]
 
     _days = np.arange(1, _k + 1)
-    _truth = 155 + _c * (_days - 1)
+    _truth = 70 + _c * (_days - 1)
     _z_path = np.round(_truth + _s * ema_path_noise[:_k], 1)
     _est_path = ema(_z_path, _a)
 
-    _z_mc = 155 + _c * (_days - 1) + _s * ema_mc_noise[:, :_k]
+    _z_mc = 70 + _c * (_days - 1) + _s * ema_mc_noise[:, :_k]
     _err = ema(_z_mc, _a)[:, -1] - _truth[-1]
     _bias_th, _var_th, _mse_th = ema_ramp_theory(_a, _c, _s, _k)
 
@@ -974,7 +974,7 @@ def _(
     _ax1.set_ylim(0, 2.2 * _s**2)
     _ax1.set_xlim(0, 1)
     _ax1.set_xlabel(r"$\alpha$")
-    _ax1.set_ylabel("lb$^2$")
+    _ax1.set_ylabel("kg$^2$")
     _ax1.set_title(r"Error of the EMA estimate versus $\alpha$", style="italic")
     _ax1.legend(loc="upper right", fontsize=8)
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -984,7 +984,7 @@ def _(
               label="measurements")
     _ax2.plot(_days, _est_path, color="C1", linewidth=2, label=rf"EMA, $\alpha$ = {_a:.2f}")
     _ax2.set_xlabel("day $k$")
-    _ax2.set_ylabel("weight (lb)")
+    _ax2.set_ylabel("weight (kg)")
     _ax2.set_title("One sample path", style="italic")
     _ax2.legend(loc="upper left", fontsize=8)
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -995,7 +995,7 @@ def _(
     _lines = [
         rf"Day {_k}, $\alpha = {_a:.2f}$: theory versus 4,000 simulated runs.",
         "",
-        "| | bias (lb) | variance (lb$^2$) | MSE (lb$^2$) |",
+        "| | bias (kg) | variance (kg$^2$) | MSE (kg$^2$) |",
         "|:---|:---:|:---:|:---:|",
         f"| exact formula | {_bias_th:+.3f} | {_var_th:.3f} | {_mse_th:.3f} |",
         f"| Monte Carlo | {np.mean(_err):+.3f} | {np.var(_err):.3f} | {np.mean(_err**2):.3f} |",
@@ -1017,7 +1017,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     The EMA formulas rest on these assumptions:
 
-    - **First-measurement initialization.** With zero initialization ($\hat X_0 = 0$), the weights sum to $1 - (1-\alpha)^k$, so for a constant value the bias is $-x(1-\alpha)^k$. For a 155 lb person, $\alpha = 0.05$, and 30 readings, that is about $-33$ lb.
+    - **First-measurement initialization.** With zero initialization ($\hat X_0 = 0$), the weights sum to $1 - (1-\alpha)^k$, so for a constant value the bias is $-x(1-\alpha)^k$. For a 70 kg person, $\alpha = 0.05$, and 30 readings, that is about $-15$ kg.
     - **A ramp.** The bias formula is exact only for $x_k = x_0 + ck$. After a sudden step (stepping onto the scale), the noise-free error shrinks by the factor $1 - \alpha$ per step; if the rate itself changes (a diet change, or a person who speeds up), the lag changes with it, and for an accelerating truth it grows without bound.
     - **Uncorrelated noise.** For correlated noise, $\operatorname{Var}(\hat X_k) = \sum_i\sum_j w_{k,i}w_{k,j}\operatorname{Cov}(V_i, V_j)$, which is larger than the formula above when the correlations are positive.
     - **Known $c$ and $\sigma$.** The best $\alpha$ depends on $c^2/\sigma^2$, which is rarely known in advance and can change over time. The Kalman filter of Chapter 9 sets its gain from explicitly modeled noise levels, and Chapter 9 shows that its steady state is exactly an EMA.

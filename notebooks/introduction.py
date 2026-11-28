@@ -62,18 +62,18 @@ def data(Path, np):
     IMAGES_DIR = Path(__file__).parent.parent / "notebooks" / "public"
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Bathroom scale: constant true weight, HX711 at 10 SPS, 3 s of data, sigma = 1 lb
-    true_weight = 155.0  # lb
+    # Bathroom scale: constant true weight, HX711 at 10 SPS, 3 s of data, sigma = 0.5 kg
+    true_weight = 70.0  # kg
     _sps = 10  # samples per second
     _k = np.arange(1, 3 * _sps + 1)  # k = 1, ..., 30
     scale_t = _k / _sps  # time of measurement k, in seconds
-    scale_z = np.round(true_weight + np.random.default_rng(1).normal(0.0, 1.0, _k.size), 2)
+    scale_z = np.round(true_weight + np.random.default_rng(1).normal(0.0, 0.5, _k.size), 2)
 
-    # Bulking: 28 daily weigh-ins, true gain 0.2 lb/day, daily reading noise sigma = 1 lb
-    bulk_rate = 0.2  # lb/day (1.4 lb/week)
+    # Bulking: 28 daily weigh-ins, true gain 0.1 kg/day, daily reading noise sigma = 0.5 kg
+    bulk_rate = 0.1  # kg/day (0.7 kg/week)
     bulk_days = np.arange(1, 29)
     bulk_x = true_weight + bulk_rate * (bulk_days - 1)
-    bulk_z = np.round(bulk_x + np.random.default_rng(2).normal(0.0, 1.0, bulk_days.size), 1)
+    bulk_z = np.round(bulk_x + np.random.default_rng(2).normal(0.0, 0.5, bulk_days.size), 1)
     return (
         IMAGES_DIR,
         bulk_days,
@@ -141,7 +141,7 @@ def _(mo):
     mo.md(r"""
     In this book, time is counted in **steps** $k = 1, 2, 3, \ldots$, one per measurement, and $k = 0$ stands for the starting point before any measurement has been taken. We write
 
-    - $z_k$ for the **measurement** at step $k$ (for the scale, the $k$-th reading from the ADC, converted to pounds), and
+    - $z_k$ for the **measurement** at step $k$ (for the scale, the $k$-th reading from the ADC, converted to kilograms), and
     - $x_k$ for the **true value** at step $k$ (your true weight at the time of the $k$-th measurement).
 
     Both $k \mapsto z_k$ and $k \mapsto x_k$ are signals whose domain is the set of steps. We can observe every $z_k$, but we can never observe any $x_k$ directly, and that is the whole problem.
@@ -310,7 +310,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/intro_weight_measurements_fig.svg" class="graphic" alt="Ten weight measurements taken 0.1 s apart, scattered between about 153.7 and 155.9 lb." />
+    <img src="public/intro_weight_measurements_fig.svg" class="graphic" alt="Ten weight measurements taken 0.1 s apart, scattered between about 69.3 and 70.5 kg." />
     """)
     return
 
@@ -332,10 +332,10 @@ def make_weight_measurements_fig(
     )
     _ax.set(
         xlabel="Time (s)",
-        ylabel="Weight (lb)",
+        ylabel="Weight (kg)",
         xticks=scale_t[:10],
-        ylim=(true_weight - 3, true_weight + 3),
-        yticks=np.arange(true_weight - 3, true_weight + 4, 1),
+        ylim=(true_weight - 1.5, true_weight + 1.5),
+        yticks=np.arange(true_weight - 1.5, true_weight + 2, 0.5),
     )
     _ax.legend(loc="upper right")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -349,12 +349,12 @@ def make_weight_measurements_fig(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    We can immediately tell that you're in the mid-150s, but we're not sure exactly where. The fluctuations look random[^informal-random]: some readings are too high and others too low. We will make two assumptions about the noise:
+    We can immediately tell that you weigh about 70 kg, but we're not sure exactly where. The fluctuations look random[^informal-random]: some readings are too high and others too low. We will make two assumptions about the noise:
 
-    1. **Zero mean:** if the same measurement could be repeated many times, its noise would average out to 0 lb[^zero-mean]. In other words, the scale does not systematically read too high or too low.
+    1. **Zero mean:** if the same measurement could be repeated many times, its noise would average out to 0 kg[^zero-mean]. In other words, the scale does not systematically read too high or too low.
     2. **Unrelated noise:** the noise in one measurement tells us nothing about the noise in any other[^unrelated].
 
-    Under these assumptions, averaging measurements makes the noise cancel out in a precise sense. The average of $k$ measurements is centered on the true value, just like a single measurement, but the variance[^informal-variance] of its noise (roughly, the average squared size of the noise) is $1/k$ times as large. Since the typical size of the noise is the square root of its variance, the typical error shrinks like $1/\sqrt{k}$: if a single measurement typically misses by about 1 lb, as our simulated scale does, then the average of 30 measurements typically misses by only about $1/\sqrt{30} \approx 0.18$ lb.
+    Under these assumptions, averaging measurements makes the noise cancel out in a precise sense. The average of $k$ measurements is centered on the true value, just like a single measurement, but the variance[^informal-variance] of its noise (roughly, the average squared size of the noise) is $1/k$ times as large. Since the typical size of the noise is the square root of its variance, the typical error shrinks like $1/\sqrt{k}$: if a single measurement typically misses by about 0.5 kg, as our simulated scale does, then the average of 30 measurements typically misses by only about $0.5/\sqrt{30} \approx 0.09$ kg.
 
     [^informal-random]: Used informally here: we cannot predict the next fluctuation. Randomness is made precise by probability spaces in [Chapter 4](#ch4-sec-kolmogorovs-axioms) and random variables in [Chapter 5](#ch5-sec-definition).
 
@@ -378,7 +378,7 @@ def _(mo):
     Averaging relies on three assumptions, and each one can fail:
 
     - **The true value is constant.** If it changes while we average (you are still stepping onto the platform, or you pick up a cat), the average mixes old and new values and lags behind the truth. Most of the rest of this chapter deals with this failure.
-    - **The noise has mean zero.** If every reading is 2 lb too high because the scale is miscalibrated, then so is the average of any number of readings: averaging cannot remove an error that every measurement shares. [Chapter 11](#ch11-sec-sensor-bias-and-a-drifting-tare) treats such sensor bias.
+    - **The noise has mean zero.** If every reading is 1 kg too high because the scale is miscalibrated, then so is the average of any number of readings: averaging cannot remove an error that every measurement shares. [Chapter 11](#ch11-sec-sensor-bias-and-a-drifting-tare) treats such sensor bias.
     - **The noise in different measurements is unrelated.** If you sway slowly back and forth, neighboring readings err in the same direction, and averaging $k$ of them reduces the variance by much less than a factor of $k$.
     ///
     """)
@@ -396,7 +396,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo, scale_z):
     mo.md(rf"""
-    $$({scale_z[0]:.2f} + {scale_z[1]:.2f})/2 = {(scale_z[0] + scale_z[1]) / 2:.2f}\text{{ lb}}.$$
+    $$({scale_z[0]:.2f} + {scale_z[1]:.2f})/2 = {(scale_z[0] + scale_z[1]) / 2:.2f}\text{{ kg}}.$$
     """)
     return
 
@@ -412,7 +412,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo, scale_z):
     mo.md(rf"""
-    $$({scale_z[0]:.2f} + {scale_z[1]:.2f} + {scale_z[2]:.2f})/3 = {(scale_z[0] + scale_z[1] + scale_z[2]) / 3:.2f}\text{{ lb}},$$
+    $$({scale_z[0]:.2f} + {scale_z[1]:.2f} + {scale_z[2]:.2f})/3 = {(scale_z[0] + scale_z[1] + scale_z[2]) / 3:.2f}\text{{ kg}},$$
     """)
     return
 
@@ -575,7 +575,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/intro_cumulative_avg_fig.svg" class="graphic" alt="Thirty weight measurements over 3 seconds with their cumulative average, which settles close to the true weight of 155 lb." />
+    <img src="public/intro_cumulative_avg_fig.svg" class="graphic" alt="Thirty weight measurements over 3 seconds with their cumulative average, which settles close to the true weight of 70 kg." />
     """)
     return
 
@@ -603,10 +603,10 @@ def make_cumulative_avg_fig(
     )
     _ax.set(
         xlabel="Time (s)",
-        ylabel="Weight (lb)",
+        ylabel="Weight (kg)",
         xticks=np.arange(0, 3.01, 0.2),
-        ylim=(true_weight - 3, true_weight + 3),
-        yticks=np.arange(true_weight - 3, true_weight + 4, 1),
+        ylim=(true_weight - 1.5, true_weight + 1.5),
+        yticks=np.arange(true_weight - 1.5, true_weight + 2, 0.5),
     )
     _ax.tick_params(axis="x", labelrotation=45)
     _ax.legend(loc="upper right")
@@ -701,7 +701,7 @@ def _(mo):
     One additional consideration with EMA filters is initialization. The cumulative average returns the first measurement as its first estimate no matter what $\bar x_0$ is, because its first weight is $\frac11 = 1$. The EMA's weight is $\alpha < 1$, so we must give it a starting value $\hat x_0$ to combine with the first measurement. There are three common approaches:
 
     1. *First-measurement initialization:* We set $\hat x_0 = z_1$ as soon as we get the first measurement, ensuring that the first estimate equals the first measurement, $\hat x_1 = z_1$. This is the most common approach and the one we use here.
-    2. *Zero initialization:* We set $\hat x_0 = 0$, so that the first estimate is $\hat x_1 = \alpha z_1$. This is fast and simple, but the filter takes some time to stabilize, especially with low $\alpha$ values: since each step multiplies the weight of $\hat x_0$ by $1-\alpha$, it still carries a weight of $(1-\alpha)^k$ after $k$ steps. With $\alpha = 0.1$, that is about 10% after 22 measurements, enough to pull a 155 lb reading down by about 15 lb, so the beginning of the filtered signal may need to be cropped out.
+    2. *Zero initialization:* We set $\hat x_0 = 0$, so that the first estimate is $\hat x_1 = \alpha z_1$. This is fast and simple, but the filter takes some time to stabilize, especially with low $\alpha$ values: since each step multiplies the weight of $\hat x_0$ by $1-\alpha$, it still carries a weight of $(1-\alpha)^k$ after $k$ steps. With $\alpha = 0.1$, that is about 10% after 22 measurements, enough to pull a 70 kg reading down by about 7 kg, so the beginning of the filtered signal may need to be cropped out.
     3. *Calibration-period initialization:* We reserve some period of time at the beginning of data collection for calibration, during which we average the measurements. Then we set $\hat x_0$ equal to that average and begin filtering with our EMA. This is less computationally efficient and is more common in economic forecasting and stock predictions.
     """)
     return
@@ -755,7 +755,7 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Use the slider to choose $\alpha$; the cumulative average (gray, dashed) is shown for comparison. Then tick the box to pick up a 10 lb cat halfway through, so that the true value is no longer constant.
+    Use the slider to choose $\alpha$; the cumulative average (gray, dashed) is shown for comparison. Then tick the box to pick up a 5 kg cat halfway through, so that the true value is no longer constant.
     """)
     return
 
@@ -765,7 +765,7 @@ def _(mo):
     ema_alpha = mo.ui.slider(
         start=0.05, stop=0.95, step=0.05, value=0.1, label=r"$\alpha$", show_value=True
     )
-    ema_cat = mo.ui.checkbox(value=False, label="Pick up a 10 lb cat at 1.5 s")
+    ema_cat = mo.ui.checkbox(value=False, label="Pick up a 5 kg cat at 1.5 s")
     return ema_alpha, ema_cat
 
 
@@ -783,7 +783,7 @@ def ema_fig_interactive(
     scale_z,
     true_weight,
 ):
-    _cat = np.where(scale_t > 1.5, 10.0, 0.0) if ema_cat.value else np.zeros_like(scale_t)
+    _cat = np.where(scale_t > 1.5, 5.0, 0.0) if ema_cat.value else np.zeros_like(scale_t)
     ema_truth = true_weight + _cat
     _z = scale_z + _cat
     ema_estimates = ema(_z, ema_alpha.value)
@@ -800,10 +800,10 @@ def ema_fig_interactive(
         scale_t, ema_estimates, color="C1", marker=".",
         label=rf"EMA $\hat{{x}}_k$, $\alpha = {ema_alpha.value:.2f}$",
     )
-    _top = true_weight + (14 if ema_cat.value else 3)
+    _top = true_weight + (7 if ema_cat.value else 1.5)
     _ax.set(
         xlabel="Time (s)",
-        ylabel="Weight (lb)",
+        ylabel="Weight (kg)",
         xticks=np.arange(0, 3.01, 0.2),
         ylim=(true_weight - 3, _top),
     )
@@ -824,7 +824,7 @@ def ema_fig_interactive(
 @app.cell(hide_code=True)
 def _(ema_averages, ema_estimates, ema_truth, mo, scale_t):
     mo.md(rf"""
-    After {scale_t[-1]:.0f} seconds, the EMA reads {ema_estimates[-1]:.2f} lb and the cumulative average reads {ema_averages[-1]:.2f} lb, while the true value is {ema_truth[-1]:.0f} lb.
+    After {scale_t[-1]:.0f} seconds, the EMA reads {ema_estimates[-1]:.2f} kg and the cumulative average reads {ema_averages[-1]:.2f} kg, while the true value is {ema_truth[-1]:.0f} kg.
     """)
     return
 
@@ -915,7 +915,7 @@ def _(mo):
     <!-- label: intro-sec-step-by-step-example -->
     ### Step-by-Step Example
 
-    As an example, imagine that after weighing yourself on your bathroom scale, you decide to start eating more in order to bulk up. You start weighing yourself every morning for four weeks to track your weight gain. For our EMA, we had 10 measurements per second. Here, we are only taking one measurement per day, and each daily reading is off by about 1 lb in either direction because of the water and food in your body[^daily-noise]:
+    As an example, imagine that after weighing yourself on your bathroom scale, you decide to start eating more in order to bulk up. You start weighing yourself every morning for four weeks to track your weight gain. For our EMA, we had 10 measurements per second. Here, we are only taking one measurement per day, and each daily reading is off by about 0.5 kg in either direction because of the water and food in your body[^daily-noise]:
 
     [^daily-noise]: Each daily reading is itself the output of the scale's own filter, so the scale's electrical noise is small. What remains is mostly real day-to-day variation in the water and food in your body. Since we want to track the slow trend in your weight, we treat that variation as noise: the "true value" $x_k$ is the trend.
     """)
@@ -925,7 +925,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/intro_alpha_beta_weight_measurements_fig.svg" class="graphic" alt="Twenty-eight daily weigh-ins that scatter by about a pound around a slowly rising trend, from about 155 lb to about 160 lb." />
+    <img src="public/intro_alpha_beta_weight_measurements_fig.svg" class="graphic" alt="Twenty-eight daily weigh-ins that scatter by about half a kilogram around a slowly rising trend, from about 70 kg to about 72.7 kg." />
     """)
     return
 
@@ -946,7 +946,7 @@ def make_alpha_beta_weight_measurements_fig(
     )
     _ax.set(
         xlabel="Time (days)",
-        ylabel="Weight (lb)",
+        ylabel="Weight (kg)",
         xticks=bulk_days,
         ylim=(np.floor(bulk_z.min()) - 1, np.ceil(bulk_z.max()) + 1),
     )
@@ -965,20 +965,20 @@ def make_alpha_beta_weight_measurements_fig(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    How fast should we expect your weight to change? An energy-balance estimate[^delta-prediction] predicts that if you eat about 3,230 kcal per day, you will gain about 0.2 lb per day (1.4 lb per week). So we choose the same expected change every day, $\Delta x_k = 0.2$ lb, together with the weight $\alpha = 0.2$.
+    How fast should we expect your weight to change? An energy-balance estimate[^delta-prediction] predicts that if you eat about 3,300 kcal per day, you will gain about 0.1 kg per day (0.7 kg per week). So we choose the same expected change every day, $\Delta x_k = 0.1$ kg, together with the weight $\alpha = 0.2$.
 
-    [^delta-prediction]: For our example person, a moderately active 23-year-old man who is 175 cm tall and weighs 155 lb (70.3 kg), a realistic weight gain rate can be obtained with the following strategy:
+    [^delta-prediction]: For our example person, a moderately active 23-year-old man who is 175 cm tall and weighs 70 kg, a realistic weight gain rate can be obtained with the following strategy:
         - Use the Mifflin–St Jeor estimate for BMR:
-          $$\text{BMR} \approx 10(\text{weight in kg}) + 6.25(\text{height in cm}) - 5(\text{age in years}) + 5 \approx 1{,}687\text{ kcal/day}.$$
+          $$\text{BMR} \approx 10(\text{weight in kg}) + 6.25(\text{height in cm}) - 5(\text{age in years}) + 5 \approx 1{,}684\text{ kcal/day}.$$
           (For women, the final $+5$ is replaced by $-161$.)
         - TDEE is commonly estimated by multiplying BMR by some activity multiplier. For moderate activity, 1.5 is used:
-          $$\text{TDEE} \approx 1.5\,\text{BMR} \approx 2{,}530\text{ kcal/day}.$$
+          $$\text{TDEE} \approx 1.5\,\text{BMR} \approx 2{,}526\text{ kcal/day}.$$
         - Estimate the energy balance from DEI and TDEE:
           $$\text{Energy Balance} = \text{DEI} - \text{TDEE}.$$
-        - Max Wishnofsky's 1958 paper, *Caloric Equivalents of Gained or Lost Weight*, estimates that $3{,}500\text{ kcal} \approx 1\text{ lb}$ of body weight [@wishnofsky1958].
+        - Max Wishnofsky's 1958 paper, *Caloric Equivalents of Gained or Lost Weight*, estimates that $7{,}700\text{ kcal} \approx 1\text{ kg}$ of body weight [@wishnofsky1958].
         - Estimate the weight gain:
-          $$\text{Weight Gain (lb/day)} = \frac{\text{Energy Balance}}{3{,}500}.$$
-          Gaining 0.2 lb per day therefore takes a surplus of $0.2 \times 3{,}500 = 700$ kcal per day, that is, a DEI of about $2{,}530 + 700 = 3{,}230$ kcal per day.
+          $$\text{Weight Gain (kg/day)} = \frac{\text{Energy Balance}}{7{,}700}.$$
+          Gaining 0.1 kg per day therefore takes a surplus of $0.1 \times 7{,}700 = 770$ kcal per day, that is, a DEI of about $2{,}526 + 770 = 3{,}296$ kcal per day.
 
         All of these are rough population averages, so your true rate may well differ from the prediction; the rest of this section shows what happens when $\Delta x_k$ is wrong. Also, TDEE grows with body weight, so the same intake produces slightly less gain as you grow; [Chapter 10](#ch10-sec-the-energy-balance-model) builds this into the prediction.
     """)
@@ -988,8 +988,8 @@ def _(mo):
 @app.cell
 def step_example(bulk_z):
     # jb: include=false
-    # Hand computation of the first three days with alpha = 0.2 and expected change 0.2 lb/day
-    _alpha, _dx = 0.2, 0.2
+    # Hand computation of the first three days with alpha = 0.2 and expected change 0.1 kg/day
+    _alpha, _dx = 0.2, 0.1
     ex_z = bulk_z[:3]
     ex_pred2 = ex_z[0] + _dx
     ex_innov2 = ex_z[1] - ex_pred2
@@ -1012,9 +1012,9 @@ def _(
     mo,
 ):
     mo.md(rf"""
-    **Day 1:** The scale reads $z_1 = {ex_z[0]:.1f}$ lb. Using first-measurement initialization, we set our first estimate
+    **Day 1:** The scale reads $z_1 = {ex_z[0]:.1f}$ kg. Using first-measurement initialization, we set our first estimate
 
-    $$\hat x_1 = z_1 = {ex_z[0]:.1f}\text{{ lb}}.$$
+    $$\hat x_1 = z_1 = {ex_z[0]:.1f}\text{{ kg}}.$$
 
     **Day 2:**
 
@@ -1022,25 +1022,25 @@ def _(
 
       First we predict $x_2$ by adding the expected change to our previous estimate:
 
-      $$\hat x^-_2 = \hat x_1 + \Delta x_2 = {ex_z[0]:.1f} + 0.2 = {ex_pred2:.2f}\text{{ lb}}.$$
+      $$\hat x^-_2 = \hat x_1 + \Delta x_2 = {ex_z[0]:.1f} + 0.1 = {ex_pred2:.2f}\text{{ kg}}.$$
 
     - <u>Measurement Update Step</u>
 
-      Next, we use the measurement to update this prediction. The scale reads $z_2 = {ex_z[1]:.1f}$ lb, so the innovation is $\tilde y_2 = z_2 - \hat x^-_2 = {ex_innov2:.2f}$ lb, and our second estimate is
+      Next, we use the measurement to update this prediction. The scale reads $z_2 = {ex_z[1]:.1f}$ kg, so the innovation is $\tilde y_2 = z_2 - \hat x^-_2 = {ex_innov2:.2f}$ kg, and our second estimate is
 
-      $$\hat x_2 = \hat x^-_2 + \alpha\tilde y_2 = {ex_pred2:.2f} + 0.2\,({ex_innov2:.2f}) = {ex_est2:.2f}\text{{ lb}}.$$
+      $$\hat x_2 = \hat x^-_2 + \alpha\tilde y_2 = {ex_pred2:.2f} + 0.2\,({ex_innov2:.2f}) = {ex_est2:.2f}\text{{ kg}}.$$
 
     **Day 3:**
 
     - <u>Prediction Step</u>
 
-      $$\hat x^-_3 = \hat x_2 + \Delta x_3 = {ex_est2:.2f} + 0.2 = {ex_pred3:.2f}\text{{ lb}}.$$
+      $$\hat x^-_3 = \hat x_2 + \Delta x_3 = {ex_est2:.2f} + 0.1 = {ex_pred3:.2f}\text{{ kg}}.$$
 
     - <u>Measurement Update Step</u>
 
-      The scale reads $z_3 = {ex_z[2]:.1f}$ lb, so $\tilde y_3 = {ex_innov3:.2f}$ lb and
+      The scale reads $z_3 = {ex_z[2]:.1f}$ kg, so $\tilde y_3 = {ex_innov3:.2f}$ kg and
 
-      $$\hat x_3 = \hat x^-_3 + \alpha\tilde y_3 = {ex_pred3:.2f} + 0.2\,({ex_innov3:.2f}) = {ex_est3:.2f}\text{{ lb}}.$$
+      $$\hat x_3 = \hat x^-_3 + \alpha\tilde y_3 = {ex_pred3:.2f} + 0.2\,({ex_innov3:.2f}) = {ex_est3:.2f}\text{{ kg}}.$$
 
     And then we continue in this fashion, repeating the prediction step and then the measurement update step for each of our future measurements.
     """)
@@ -1109,7 +1109,7 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Let's run this filter on all 28 days of measurements. In this simulation, the true weight (black line) rises by exactly 0.2 lb per day, so $\Delta x = 0.2$ lb/day is the correct expected change. Use the sliders to change $\alpha$ and the expected change $\Delta x$, which is the same for every day.
+    Let's run this filter on all 28 days of measurements. In this simulation, the true weight (black line) rises by exactly 0.1 kg per day, so $\Delta x = 0.1$ kg/day is the correct expected change. Use the sliders to change $\alpha$ and the expected change $\Delta x$, which is the same for every day.
     """)
     return
 
@@ -1120,8 +1120,8 @@ def _(mo):
         start=0.05, stop=1.0, step=0.05, value=0.2, label=r"$\alpha$", show_value=True
     )
     af_dx = mo.ui.slider(
-        start=-0.4, stop=1.0, step=0.05, value=0.2,
-        label=r"$\Delta x$ (lb/day)", show_value=True,
+        start=-0.2, stop=0.5, step=0.025, value=0.1,
+        label=r"$\Delta x$ (kg/day)", show_value=True,
     )
     return af_alpha, af_dx
 
@@ -1152,13 +1152,13 @@ def alpha_filter_fig_interactive(
         label=r"Prediction $\hat{x}_k^-$",
     )
     _ax.plot(bulk_days, af_estimates, color="C1", marker=".", label=r"Estimate $\hat{x}_k$")
-    _lo = min(151.0, np.nanmin([_pred, af_estimates]) - 0.5)
-    _hi = max(166.0, np.nanmax([_pred, af_estimates]) + 0.5)
-    _ax.set(xlabel="Time (days)", ylabel="Weight (lb)", ylim=(_lo, _hi))
+    _lo = min(68.0, np.nanmin([_pred, af_estimates]) - 0.25)
+    _hi = max(75.5, np.nanmax([_pred, af_estimates]) + 0.25)
+    _ax.set(xlabel="Time (days)", ylabel="Weight (kg)", ylim=(_lo, _hi))
     _ax.legend(loc="upper left", fontsize="small")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.set_title(
-        rf"Alpha Filter with $\alpha = {af_alpha.value:.2f}$, $\Delta x = {af_dx.value:.2f}$ lb/day",
+        rf"Alpha Filter with $\alpha = {af_alpha.value:.2f}$, $\Delta x = {af_dx.value:.3f}$ kg/day",
         style="italic",
     )
     _fig.tight_layout()
@@ -1174,7 +1174,7 @@ def _(af_alpha, af_dx, af_estimates, bulk_rate, bulk_x, mo, np):
     _offset = (1 - af_alpha.value) / af_alpha.value * (af_dx.value - bulk_rate)
     _last_week = np.mean(af_estimates[-7:] - bulk_x[-7:])
     mo.md(rf"""
-    With $\alpha = {af_alpha.value:.2f}$ and $\Delta x = {af_dx.value:.2f}$ lb/day, the estimates over the last week are on average {_last_week:+.2f} lb away from the true weight. The noise-free calculation below predicts a steady offset of {_offset:+.2f} lb.
+    With $\alpha = {af_alpha.value:.2f}$ and $\Delta x = {af_dx.value:.3f}$ kg/day, the estimates over the last week are on average {_last_week:+.2f} kg away from the true weight. The noise-free calculation below predicts a steady offset of {_offset:+.2f} kg.
     """)
     return
 
@@ -1182,13 +1182,13 @@ def _(af_alpha, af_dx, af_estimates, bulk_rate, bulk_x, mo, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Unsurprisingly, this works quite well when our value of $\Delta x$ is correct. When $\Delta x$ is wrong, however, the estimates drift away from the true weight until they settle at a constant offset. Try $\Delta x = 1$ lb/day, the kind of rate a careless diet calculation might suggest, or $\Delta x = 0$, which turns the alpha filter back into the EMA.
+    Unsurprisingly, this works quite well when our value of $\Delta x$ is correct. When $\Delta x$ is wrong, however, the estimates drift away from the true weight until they settle at a constant offset. Try $\Delta x = 0.5$ kg/day, the kind of rate a careless diet calculation might suggest, or $\Delta x = 0$, which turns the alpha filter back into the EMA.
 
     We can compute this offset. Suppose there is no noise, the true weight changes by the same amount $c$ every step, and our constant expected change $\Delta x$ is wrong by $d = \Delta x - c$. Write $e_k = \hat x_k - x_k$ for the error at step $k$. Since $z_k = x_k$,
 
     $$e_k = \hat x_k^- + \alpha(x_k - \hat x_k^-) - x_k = (1-\alpha)(\hat x_k^- - x_k) = (1-\alpha)(\hat x_{k-1} + \Delta x - x_{k-1} - c) = (1-\alpha)(e_{k-1} + d).$$
 
-    The number $e^* = \frac{1-\alpha}{\alpha}\,d$ satisfies the same equation, $e^* = (1-\alpha)(e^* + d)$, as you can check by expanding the right-hand side. Subtracting the two equations gives $e_k - e^* = (1-\alpha)(e_{k-1} - e^*)$, so each step multiplies the distance from $e^*$ by $1-\alpha$, and
+    The number $e^* = \frac{1-\alpha}{\alpha}\,d$ satisfies the same equation, $e^* = (1-\alpha)(e^* + d)$, as expanding the right-hand side confirms. Subtracting the two equations gives $e_k - e^* = (1-\alpha)(e_{k-1} - e^*)$, so each step multiplies the distance from $e^*$ by $1-\alpha$, and
 
     $$e_k - e^* = (1-\alpha)^{k-1}(e_1 - e^*).$$
 
@@ -1309,7 +1309,7 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Try it on the same 28 days of data. The initial guess starts at $\widehat{\Delta x}_2 = 0$ ("I have no idea how fast I'm gaining"). Watch the lower panel, where $\beta$ pulls the expected change toward the true 0.2 lb/day. Then set $\beta = 0$ to get the alpha filter back, with its offset, or start from the careless guess of 1 lb/day.
+    Try it on the same 28 days of data. The initial guess starts at $\widehat{\Delta x}_2 = 0$ ("I have no idea how fast I'm gaining"). Watch the lower panel, where $\beta$ pulls the expected change toward the true 0.1 kg/day. Then set $\beta = 0$ to get the alpha filter back, with its offset, or start from the careless guess of 0.5 kg/day.
     """)
     return
 
@@ -1323,8 +1323,8 @@ def _(mo):
         start=0.0, stop=0.3, step=0.01, value=0.03, label=r"$\beta$", show_value=True
     )
     ab_dx0 = mo.ui.slider(
-        start=-0.4, stop=1.0, step=0.05, value=0.0,
-        label=r"Initial $\widehat{\Delta x}_2$ (lb/day)", show_value=True,
+        start=-0.2, stop=0.5, step=0.025, value=0.0,
+        label=r"Initial $\widehat{\Delta x}_2$ (kg/day)", show_value=True,
     )
     return ab_alpha, ab_beta, ab_dx0
 
@@ -1361,9 +1361,9 @@ def alpha_beta_fig_interactive(
         label=r"Prediction $\hat{x}_k^-$",
     )
     _ax.plot(bulk_days, ab_estimates, color="C1", marker=".", label=r"Estimate $\hat{x}_k$")
-    _lo = min(151.0, np.nanmin([_pred, ab_estimates]) - 0.5)
-    _hi = max(166.0, np.nanmax([_pred, ab_estimates]) + 0.5)
-    _ax.set(ylabel="Weight (lb)", ylim=(_lo, _hi))
+    _lo = min(68.0, np.nanmin([_pred, ab_estimates]) - 0.25)
+    _hi = max(75.5, np.nanmax([_pred, ab_estimates]) + 0.25)
+    _ax.set(ylabel="Weight (kg)", ylim=(_lo, _hi))
     _ax.legend(loc="upper left", fontsize="small")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.set_title(
@@ -1378,8 +1378,8 @@ def alpha_beta_fig_interactive(
     )
     _ax_rate.set(
         xlabel="Time (days)",
-        ylabel="Change (lb/day)",
-        ylim=(min(-0.5, ab_changes.min() - 0.1), max(1.1, ab_changes.max() + 0.1)),
+        ylabel="Change (kg/day)",
+        ylim=(min(-0.25, ab_changes.min() - 0.05), max(0.55, ab_changes.max() + 0.05)),
     )
     _ax_rate.legend(loc="upper right", fontsize="small")
     _ax_rate.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -1394,7 +1394,7 @@ def alpha_beta_fig_interactive(
 @app.cell(hide_code=True)
 def _(ab_changes, ab_estimates, bulk_rate, bulk_x, mo):
     mo.md(rf"""
-    After 28 days, the alpha-beta filter estimates the change per day as {ab_changes[-1]:.3f} lb/day (true: {bulk_rate:.3f} lb/day) and your weight as {ab_estimates[-1]:.2f} lb (true: {bulk_x[-1]:.2f} lb).
+    After 28 days, the alpha-beta filter estimates the change per day as {ab_changes[-1]:.3f} kg/day (true: {bulk_rate:.3f} kg/day) and your weight as {ab_estimates[-1]:.2f} kg (true: {bulk_x[-1]:.2f} kg).
     """)
     return
 

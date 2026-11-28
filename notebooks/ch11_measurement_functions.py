@@ -71,7 +71,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Every chapter so far has assumed that the scale reports pounds: $z_k = x_k + v_k$. It doesn't. Its load cell produces a tiny voltage, and its analog-to-digital converter turns that voltage into an integer, a number of *counts*, that is only *related* to your weight. Most sensors are like this: a thermometer reports a resistance, an accelerometer a voltage, a GPS receiver signal travel times. The filter's state is the quantity we care about; the sensor reports something else.
+    Every chapter so far has assumed that the scale reports kilograms: $z_k = x_k + v_k$. It doesn't. Its load cell produces a tiny voltage, and its analog-to-digital converter turns that voltage into an integer, a number of *counts*, that is only *related* to your weight. Most sensors are like this: a thermometer reports a resistance, an accelerometer a voltage, a GPS receiver signal travel times. The filter's state is the quantity we care about; the sensor reports something else.
 
     The bridge between the two is a **measurement function**: the reading the sensor should produce for a given state. This chapter writes it down for the scale, estimates its unknown parameters from weights we know (calibration by least squares), and adds it to the Kalman filter. Along the way we meet a problem the scalar filter cannot solve. If the scale's offset drifts, it becomes a second unknown, and a reading cannot tell a heavier person on a scale with a low offset from a lighter person on a scale with a high one.
 
@@ -86,18 +86,18 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     <!-- label: ch11-sec-from-pounds-to-counts -->
-    ## From Pounds to Counts
+    ## From Kilograms to Counts
 
     A bathroom scale's load cells are strain gauges wired as a bridge whose output voltage is proportional to the force on the platform, plus a small imbalance even when the platform is empty. The HX711 converter samples that voltage at 10 or 80 SPS and outputs a 24-bit signed integer [@avia_hx711_datasheet]. Over the scale's working range the count is, to a good approximation, a straight-line function of the weight on the platform:
     $$z_k = h\,x_k + c + v_k,$$
     where
 
-    - $x_k$ is the weight in pounds (the state),
-    - $h$ is the **sensitivity**, the number of counts per pound (our scale: $h = 20{,}000$ counts/lb),
+    - $x_k$ is the weight in kilograms (the state),
+    - $h$ is the **sensitivity**, the number of counts per kilogram (our scale: $h = 40{,}000$ counts/kg),
     - $c$ is the **offset**, the reading with an empty platform (our scale: $c = 85{,}000$ counts), and
-    - $v_k$ is noise. When a person stands on the scale it is dominated by body sway; we use a standard deviation of $20{,}000$ counts, which is $1$ lb, as in earlier chapters.
+    - $v_k$ is noise. When a person stands on the scale it is dominated by body sway; we use a standard deviation of $20{,}000$ counts, which is $0.5$ kg, as in earlier chapters.
 
-    So a 155 lb person produces readings around $20{,}000 \cdot 155 + 85{,}000 = 3{,}185{,}000$ counts. One count is $1/20{,}000 = 0.00005$ lb, so the converter's resolution is far finer than the noise, and the quantization noise of [Chapter 9](#ch9-sec-quantization) is negligible here.
+    So a 70 kg person produces readings around $40{,}000 \cdot 70 + 85{,}000 = 2{,}885{,}000$ counts. One count is $1/40{,}000 = 0.000025$ kg, so the converter's resolution is far finer than the noise, and the quantization noise of [Chapter 9](#ch9-sec-quantization) is negligible here.
 
     The straight line $x \mapsto hx + c$ is an example of the following idea.
 
@@ -134,7 +134,7 @@ def _(mo):
     The process of estimating the unknown parameters of a sensor's measurement function (such as $h$ and $c$ in $z = hx + c + v$) from readings taken while the measured quantity has known values.
     ///
 
-    To calibrate the scale we place known weights on it: an empty platform and plates of $45$, $90$, and $135$ lb, taking $m$ readings each. That gives $n = 4m$ pairs $(x_i, z_i)$, where $x_i$ is the known plate weight and $z_i = h x_i + c + v_i$. Each pair alone is noisy. Which line fits all of them best? The standard answer is to make the misfits, squared, as small as possible.
+    To calibrate the scale we place known weights on it: an empty platform and plates of $20$, $40$, and $60$ kg, taking $m$ readings each. That gives $n = 4m$ pairs $(x_i, z_i)$, where $x_i$ is the known plate weight and $z_i = h x_i + c + v_i$. Each pair alone is noisy. Which line fits all of them best? The standard answer is to make the misfits, squared, as small as possible.
 
     /// note | 📖 **Definition**
     <u>**Least squares**</u>
@@ -247,9 +247,9 @@ def _(mo):
     The error is $(\hat h - h)x + (\hat c - c)$, with mean $0$ and variance $x^2\operatorname{Var}(\hat h) + \operatorname{Var}(\hat c) + 2x\operatorname{Cov}(\hat h, \hat c) = R\big(x^2 + \bar x^2 - 2x\bar x\big)/S_{xx} + R/n$. $\blacksquare$
     ///
 
-    Three lessons follow. More readings (larger $n$) help, but so do plates that are far apart (larger $S_{xx}$). The line is most accurate in the middle of the plates, at $x = \bar x$, and gets worse the farther we extrapolate: a 155 lb person is beyond our heaviest plate. And $\hat h$ and $\hat c$ are negatively correlated when $\bar x > 0$: a line that is too steep must start too low to pass through the middle of the data. With our plates the correlation coefficient is $-\bar x/\sqrt{S_{xx}/n + \bar x^2} \approx -0.80$, whatever $m$ is. Uncertainties that are correlated like this are the subject of [Chapter 12](#ch12).
+    Three lessons follow. More readings (larger $n$) help, but so do plates that are far apart (larger $S_{xx}$). The line is most accurate in the middle of the plates, at $x = \bar x$, and gets worse the farther we extrapolate: a 70 kg person is beyond our heaviest plate. And $\hat h$ and $\hat c$ are negatively correlated when $\bar x > 0$: a line that is too steep must start too low to pass through the middle of the data. With our plates the correlation coefficient is $-\bar x/\sqrt{S_{xx}/n + \bar x^2} \approx -0.80$, whatever $m$ is. Uncertainties that are correlated like this are the subject of [Chapter 12](#ch12).
 
-    The plot below simulates a calibration. The left panel shows each reading's deviation from the true line, converted to pounds, together with the fitted line's deviation; the shaded band is $\pm 2$ standard deviations from the corollary. The right panel repeats the calibration 1000 times and plots the errors of $\hat h$ and $\hat c$.
+    The plot below simulates a calibration. The left panel shows each reading's deviation from the true line, converted to kilograms, together with the fitted line's deviation; the shaded band is $\pm 2$ standard deviations from the corollary. The right panel repeats the calibration 1000 times and plots the errors of $\hat h$ and $\hat c$.
     """)
     return
 
@@ -267,9 +267,9 @@ def _(mo):
 @app.cell
 def _(cal_m, cal_sigma, fit_line, np):
     # jb: include=false
-    H_TRUE = 20_000.0  # counts/lb
+    H_TRUE = 40_000.0  # counts/kg
     C_TRUE = 85_000.0  # counts
-    PLATES = np.array([0.0, 45.0, 90.0, 135.0])
+    PLATES = np.array([0.0, 20.0, 40.0, 60.0])
     _eps = np.random.default_rng(11).standard_normal((4, 30))
     _eps_mc = np.random.default_rng(12).standard_normal((1000, 4, 30))
     cal_x = np.repeat(PLATES, cal_m.value)
@@ -303,20 +303,20 @@ def _(
     _Sxx = np.sum((cal_x - _xbar) ** 2)
     _sd_h = np.sqrt(_R / _Sxx)
     _sd_c = np.sqrt(_R * (1 / _n + _xbar**2 / _Sxx))
-    _xs = np.linspace(-10, 200, 300)
+    _xs = np.linspace(-5, 90, 300)
     _band = 2 * np.sqrt(_R * (1 / _n + (_xs - _xbar) ** 2 / _Sxx)) / H_TRUE
-    _err155 = ((h_hat - H_TRUE) * 155 + (c_hat - C_TRUE)) / H_TRUE
-    _sd155 = np.sqrt(_R * (1 / _n + (155 - _xbar) ** 2 / _Sxx)) / H_TRUE
+    _err70 = ((h_hat - H_TRUE) * 70 + (c_hat - C_TRUE)) / H_TRUE
+    _sd70 = np.sqrt(_R * (1 / _n + (70 - _xbar) ** 2 / _Sxx)) / H_TRUE
 
     _fig, (_ax1, _ax2) = plt.subplots(1, 2, figsize=(11, 4.2))
     _ax1.plot(cal_x, (cal_z - H_TRUE * cal_x - C_TRUE) / H_TRUE, "o", mfc="none", mec="black", ms=5, label="Readings")
     _ax1.plot(_xs, ((h_hat - H_TRUE) * _xs + (c_hat - C_TRUE)) / H_TRUE, color="C1", lw=2, label="Fitted line")
     _ax1.fill_between(_xs, -_band, _band, color="C1", alpha=0.2, label=r"$\pm 2$ s.d. of the fitted line")
     _ax1.axhline(0, color="black", lw=1.2, label="True line")
-    _ax1.axvline(155, color="gray", ls=":", lw=1)
-    _ax1.text(157, 0.92, "155 lb", color="gray", fontsize=9, transform=_ax1.get_xaxis_transform())
-    _ax1.set_xlabel("Plate weight (lb)")
-    _ax1.set_ylabel("Deviation from true line (lb)")
+    _ax1.axvline(70, color="gray", ls=":", lw=1)
+    _ax1.text(71, 0.92, "70 kg", color="gray", fontsize=9, transform=_ax1.get_xaxis_transform())
+    _ax1.set_xlabel("Plate weight (kg)")
+    _ax1.set_ylabel("Deviation from true line (kg)")
     _ax1.set_title("Calibration readings and fitted line", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="lower left")
@@ -325,7 +325,7 @@ def _(
     _ax2.plot([h_hat - H_TRUE], [c_hat - C_TRUE], "*", color="C1", ms=14, mec="black", label="This calibration")
     _ax2.axhline(0, color="black", lw=0.8)
     _ax2.axvline(0, color="black", lw=0.8)
-    _ax2.set_xlabel(r"$\hat h - h$ (counts/lb)")
+    _ax2.set_xlabel(r"$\hat h - h$ (counts/kg)")
     _ax2.set_ylabel(r"$\hat c - c$ (counts)")
     _ax2.set_title("Calibration errors are negatively correlated", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
@@ -333,11 +333,11 @@ def _(
     _fig.tight_layout()
 
     _text = mo.md(
-        f"This calibration: $\\hat h = {h_hat:,.0f}$ counts/lb, $\\hat c = {c_hat:,.0f}$ counts. "
+        f"This calibration: $\\hat h = {h_hat:,.0f}$ counts/kg, $\\hat c = {c_hat:,.0f}$ counts. "
         f"Theory: s.d.$(\\hat h) = {_sd_h:,.0f}$, s.d.$(\\hat c) = {_sd_c:,.0f}$; "
         f"over 1000 simulated calibrations: {np.std(h_hat_mc):,.0f} and {np.std(c_hat_mc):,.0f}, "
         f"correlation {np.corrcoef(h_hat_mc, c_hat_mc)[0, 1]:.2f}. "
-        f"At 155 lb this calibration is off by **{_err155:+.2f} lb** (s.d. {_sd155:.2f} lb)."
+        f"At 70 kg this calibration is off by **{_err70:+.2f} kg** (s.d. {_sd70:.2f} kg)."
     )
     mo.vstack([mo.hstack([cal_sigma, cal_m], justify="start", gap=2), graphic(_fig), _text])
     return
@@ -346,7 +346,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    With the default settings (the same 1 lb noise as a swaying person, 10 readings per plate) the calibration error at 155 lb has a standard deviation of about $0.3$ lb. That is larger than the uncertainty left after filtering 30 readings of a standing person ($1/\sqrt{30} \approx 0.18$ lb), and unlike that uncertainty, it will not shrink however long the person stands on the scale. Fortunately, plates do not sway: their readings are much less noisy than a person's, so a real calibration does far better. Move the noise slider down to see how quickly the error shrinks.
+    With the default settings (the same 0.5 kg noise as a swaying person, 10 readings per plate) the calibration error at 70 kg has a standard deviation of about $0.16$ kg. That is larger than the uncertainty left after filtering 30 readings of a standing person ($0.5/\sqrt{30} \approx 0.09$ kg), and unlike that uncertainty, it will not shrink however long the person stands on the scale. Fortunately, plates do not sway: their readings are much less noisy than a person's, so a real calibration does far better. Move the noise slider down to see how quickly the error shrinks.
 
     Under the stated assumptions, least squares is the best we can do among unbiased estimators that are linear in the readings: this is the Gauss–Markov theorem ([Wikipedia: Gauss–Markov theorem](https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem)). If the noise is also normal, the least-squares line is the line that makes the observed readings most likely ([Chapter 8](#ch8-sec-prior-likelihood-posterior-and-evidence)'s {term}`likelihood`), because the normal density decreases with the squared residual.
     """)
@@ -375,9 +375,9 @@ def _(mo):
 
     Now let a person stand on the calibrated scale. For the moment we take $h$ and $c$ as known exactly; the next section relaxes this. The process model is that of a constant weight, $x_k = x_{k-1} + w_k$ with process-noise variance $Q$ ($Q = 0$ for someone standing perfectly still), and the measurement model is
     $$z_k = h\,x_k + c + v_k, \qquad \operatorname{Var}(v_k) = R \ \text{counts}^2.$$
-    The prediction step is unchanged ([Chapter 10](#ch10-sec-predicting-with-a-linear-model)): $\hat x_k^- = \hat x_{k-1}$, $P_k^- = P_{k-1} + Q$. The update must compare a reading in counts with a prediction in pounds, so it first converts the prediction into the reading it implies, $h\hat x_k^- + c$, and uses the difference as the {term}`innovation`:
+    The prediction step is unchanged ([Chapter 10](#ch10-sec-predicting-with-a-linear-model)): $\hat x_k^- = \hat x_{k-1}$, $P_k^- = P_{k-1} + Q$. The update must compare a reading in counts with a prediction in kilograms, so it first converts the prediction into the reading it implies, $h\hat x_k^- + c$, and uses the difference as the {term}`innovation`:
     $$\tilde y_k := z_k - (h\,\hat x_k^- + c), \qquad \hat x_k = \hat x_k^- + K_k\,\tilde y_k.$$
-    The innovation is in counts and the estimate in pounds, so the gain $K_k$ is in pounds per count. Which gain is best?
+    The innovation is in counts and the estimate in kilograms, so the gain $K_k$ is in kilograms per count. Which gain is best?
 
     /// admonition | 📐 **Theorem (Optimal Gain with a Measurement Function)**
         attrs: {class: theorem, id: ch11-thm-optimal-gain-with-a-measurement-function}
@@ -399,11 +399,11 @@ def _(mo):
     which is smallest exactly when $K = hP_k^-/S$, with minimum $P_k^-\big(S - h^2 P_k^-\big)/S = P_k^- R/S$. Since $1 - K_k h = (S - h^2P_k^-)/S = R/S$, this equals $(1 - K_k h)P_k^-$. Finally, the innovation is $\tilde y_k = h x_k + c + v_k - h\hat x_k^- - c = v_k - h\,e_k^-$, with mean $0$ and variance $h^2 P_k^- + R$. $\blacksquare$
     ///
 
-    With $h = 1$ and $c = 0$ this is Chapter 7's {term}`optimal gain` $P^-/(P^- + R)$. The general formula makes sense in the limits: if the sensor is insensitive ($h \to 0$) the gain goes to $0$ and the reading is ignored; if the noise vanishes ($R \to 0$) the gain goes to $1/h$, which converts the reading straight into pounds, $\hat x_k = (z_k - c)/h$.
+    With $h = 1$ and $c = 0$ this is Chapter 7's {term}`optimal gain` $P^-/(P^- + R)$. The general formula makes sense in the limits: if the sensor is insensitive ($h \to 0$) the gain goes to $0$ and the reading is ignored; if the noise vanishes ($R \to 0$) the gain goes to $1/h$, which converts the reading straight into kilograms, $\hat x_k = (z_k - c)/h$.
 
-    In fact, filtering in counts is the same as converting to pounds first.
+    In fact, filtering in counts is the same as converting to kilograms first.
 
-    /// admonition | 📐 **Theorem (Filtering in Counts Equals Filtering in Pounds)**
+    /// admonition | 📐 **Theorem (Filtering in Counts Equals Filtering in Kilograms)**
         attrs: {class: theorem, id: ch11-thm-filtering-in-counts-equals-filtering-in-pounds}
     Let $h \neq 0$. Running the filter above on the counts $z_k$ produces the same estimates and error variances as running Chapter 9's filter on the converted readings $y_k := (z_k - c)/h$ with measurement variance $R/h^2$, from the same $\hat x_0$ and $P_0$.
     ///
@@ -425,7 +425,7 @@ def _(mo):
     mo.md("""
     ```python
     def kalman_filter_counts(z, h, c, Q, R, x0, P0):
-        "\"\"Scalar Kalman filter: x_k = x_{k-1} + w_k (lb), z_k = h x_k + c + v_k (counts)."\"\"
+        "\"\"Scalar Kalman filter: x_k = x_{k-1} + w_k (kg), z_k = h x_k + c + v_k (counts)."\"\"
         x_hat, P = float(x0), float(P0)
         estimates, variances = [], []
         for z_k in z:
@@ -434,7 +434,7 @@ def _(mo):
             # Update: compare the reading with the reading the prediction implies
             z_pred = h * x_pred + c          # counts
             S = h * h * P_pred + R           # innovation variance (counts^2)
-            K = P_pred * h / S               # gain (lb per count)
+            K = P_pred * h / S               # gain (kg per count)
             x_hat = x_pred + K * (z_k - z_pred)
             P = (1 - K * h) * P_pred
             estimates.append(x_hat)
@@ -449,7 +449,7 @@ def _(mo):
 def _(np):
     # jb: include=false
     def kalman_filter_counts(z, h, c, Q, R, x0, P0):
-        """Scalar Kalman filter: x_k = x_{k-1} + w_k (lb), z_k = h x_k + c + v_k (counts)."""
+        """Scalar Kalman filter: x_k = x_{k-1} + w_k (kg), z_k = h x_k + c + v_k (counts)."""
         x_hat, P = float(x0), float(P0)
         estimates, variances = [], []
         for z_k in z:
@@ -458,7 +458,7 @@ def _(np):
             # Update: compare the reading with the reading the prediction implies
             z_pred = h * x_pred + c          # counts
             S = h * h * P_pred + R           # innovation variance (counts^2)
-            K = P_pred * h / S               # gain (lb per count)
+            K = P_pred * h / S               # gain (kg per count)
             x_hat = x_pred + K * (z_k - z_pred)
             P = (1 - K * h) * P_pred
             estimates.append(x_hat)
@@ -497,9 +497,9 @@ def _(mo):
     By the previous theorem, the filter's estimates are those of Chapter 9's filter applied to $y_k = (z_k - \hat c)/\hat h$. With $Q = 0$ and first-measurement initialization that filter's gains are $1/k$ ([Chapter 7](#ch7-thm-optimal-gains-for-a-constant), [Chapter 9](#ch9-thm-no-process-noise)), so $\hat x_N$ is the average $\frac1N\sum_{k=1}^N y_k$. By linearity of expectation, $\mathbb E[\hat x_N] = (hx + c - \hat c)/\hat h$; subtract $x = \hat h x/\hat h$. $\blacksquare$
     ///
 
-    The filter's reported variance $P_N$ shrinks like $1/N$, but the bias stays. The filter becomes *confidently wrong*. A 1% error in $h$ is an error of about 1.5 lb at 155 lb; an offset that has drifted by 10,000 counts is a 0.5 lb error for everyone.
+    The filter's reported variance $P_N$ shrinks like $1/N$, but the bias stays. The filter becomes *confidently wrong*. A 1% error in $h$ is an error of about 0.7 kg at 70 kg; an offset that has drifted by 10,000 counts is a 0.25 kg error for everyone.
 
-    The plot below filters 3 seconds of readings (30 samples at 10 SPS) from a 155 lb person, interpreted with the calibration from the previous plot; move the calibration sliders there and this plot changes too. The slider here shifts the true offset away from its calibrated value. The circles are the readings converted with the calibrated function, $(z_k - \hat c)/\hat h$; the right axis shows the corresponding counts. The filter starts with no information ($\hat x_0 = 0$, $P_0 = 10^6$ lb$^2$), which is equivalent to first-measurement initialization.
+    The plot below filters 3 seconds of readings (30 samples at 10 SPS) from a 70 kg person, interpreted with the calibration from the previous plot; move the calibration sliders there and this plot changes too. The slider here shifts the true offset away from its calibrated value. The circles are the readings converted with the calibrated function, $(z_k - \hat c)/\hat h$; the right axis shows the corresponding counts. The filter starts with no information ($\hat x_0 = 0$, $P_0 = 10^6$ kg$^2$), which is equivalent to first-measurement initialization.
     """)
     return
 
@@ -526,7 +526,7 @@ def _(
     plt,
     tare_drift,
 ):
-    _x_true = 155.0
+    _x_true = 70.0
     _sigma = 20_000.0
     _t = np.arange(1, 31) / 10
     _c_now = C_TRUE + tare_drift.value
@@ -539,9 +539,9 @@ def _(
     _ax.axhline(_x_true, color="black", lw=1.5, label="True weight")
     _ax.plot(_t, _est, color="C1", lw=2, label="Estimate")
     _ax.fill_between(_t, _est - 2 * np.sqrt(_P), _est + 2 * np.sqrt(_P), color="C1", alpha=0.2, label=r"$\pm 2\sqrt{P_k}$")
-    _ax.set_ylim(150, 160)
+    _ax.set_ylim(67.5, 72.5)
     _ax.set_xlabel("Time (s)")
-    _ax.set_ylabel("Weight (lb)")
+    _ax.set_ylabel("Weight (kg)")
     _sec = _ax.secondary_yaxis(
         "right", functions=(lambda w: (h_hat * w + c_hat) / 1e6, lambda z: (z * 1e6 - c_hat) / h_hat)
     )
@@ -552,9 +552,9 @@ def _(
     _fig.tight_layout()
 
     _text = mo.md(
-        rf"After 3 s the filter reports **{_est[-1]:.2f} $\pm$ {2 * np.sqrt(_P[-1]):.2f} lb** ($\pm 2$ s.d.); "
-        f"the true weight is 155 lb, an error of **{_est[-1] - _x_true:+.2f} lb**. "
-        f"The bias predicted by the theorem is **{_bias:+.2f} lb**; the rest is noise."
+        rf"After 3 s the filter reports **{_est[-1]:.2f} $\pm$ {2 * np.sqrt(_P[-1]):.2f} kg** ($\pm 2$ s.d.); "
+        f"the true weight is 70 kg, an error of **{_est[-1] - _x_true:+.2f} kg**. "
+        f"The bias predicted by the theorem is **{_bias:+.2f} kg**; the rest is noise."
     )
     mo.vstack([tare_drift, graphic(_fig), _text])
     return
@@ -566,7 +566,7 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The measurement function is known.** Calibration errors and offset drift are biases. They do not show up in $P_k$, so the filter reports more confidence than it deserves. Re-zeroing ("taring") the scale before each use removes offset drift; periodic recalibration catches changes in $h$.
     - **The noise is white with known variance $R$.** Body sway is slow, so consecutive readings share part of their error. As in [Chapter 7](#ch7-thm-ignoring-correlation), ignoring that correlation makes the filter overconfident. Estimating $R$ from data ([Chapter 9](#ch9-sec-estimating-r)) at the sampling rate actually used helps; so does sampling more slowly.
-    - **The sensor stays in its linear range.** The HX711's 24-bit output tops out at $2^{23} - 1 = 8{,}388{,}607$ counts, which on our scale is about $(8{,}388{,}607 - 85{,}000)/20{,}000 \approx 415$ lb. Beyond that every reading is the same, and the model fails silently.
+    - **The sensor stays in its linear range.** The HX711's 24-bit output tops out at $2^{23} - 1 = 8{,}388{,}607$ counts, which on our scale is about $(8{,}388{,}607 - 85{,}000)/40{,}000 \approx 208$ kg. Beyond that every reading is the same, and the model fails silently.
     ///
     """)
     return
@@ -580,7 +580,7 @@ def _(mo):
 
     Suppose the offset drifts enough that we cannot trust the last tare, and we try to estimate it along with the weight. Every reading of a person on the platform has the form $z = hx + c + v$. For any number $\delta$, the pair $(x + \delta,\; c - h\delta)$ predicts *exactly* the same reading as $(x, c)$:
     $$h\,(x + \delta) + (c - h\delta) = hx + c.$$
-    So the readings, however many, cannot distinguish a person who is 1 lb heavier on a scale whose offset is 20,000 counts lower. Averaging pins down the combination $hx + c$ ever more precisely, but tells us nothing about how it splits between $x$ and $c$. In the left panel below, all the pairs consistent with the averaged readings lie in a diagonal band, and the band never shrinks to a point.
+    So the readings, however many, cannot distinguish a person who is 1 kg heavier on a scale whose offset is 40,000 counts lower. Averaging pins down the combination $hx + c$ ever more precisely, but tells us nothing about how it splits between $x$ and $c$. In the left panel below, all the pairs consistent with the averaged readings lie in a diagonal band, and the band never shrinks to a point.
 
     The remedy is a reading in which the two unknowns enter differently. With the platform **empty**, $x = 0$ and the reading is $z_0 = c + v_0$, which measures the offset alone: a horizontal band in the right panel. Together, the two kinds of reading pin down both unknowns. This is exactly what a scale does when it tares itself at power-on, before you step on.
     """)
@@ -590,7 +590,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/ch11_two_unknowns.svg" class="graphic" alt="Two panels in the plane of weight (horizontal) and offset in pound-equivalents (vertical). Left: thirty standing readings constrain the pair only to a diagonal band. Right: thirty empty-platform readings add a horizontal band, and the two bands intersect in a small region around the true pair." />
+    <img src="public/ch11_two_unknowns.svg" class="graphic" alt="Two panels in the plane of weight (horizontal) and offset in kilogram-equivalents (vertical). Left: thirty standing readings constrain the pair only to a diagonal band. Right: thirty empty-platform readings add a horizontal band, and the two bands intersect in a small region around the true pair." />
     """)
     return
 
@@ -598,9 +598,9 @@ def _(mo):
 @app.cell
 def _(IMAGES_DIR, np, plt):
     # jb: include=false
-    _x0, _c0 = 155.0, 85_000.0 / 20_000.0  # true weight and offset (lb-equivalent)
-    _half = 2 / np.sqrt(30)  # +/- 2 s.d. of a 30-reading average (lb)
-    _xs = np.linspace(145, 165, 200)
+    _x0, _c0 = 70.0, 85_000.0 / 40_000.0  # true weight and offset (kg-equivalent)
+    _half = 2 * 0.5 / np.sqrt(30)  # +/- 2 s.d. of a 30-reading average (kg)
+    _xs = np.linspace(65, 75, 200)
     _fig, _axes = plt.subplots(1, 2, figsize=(10, 4.2), sharey=True)
     for _i, _ax in enumerate(_axes):
         _ax.fill_between(_xs, _x0 + _c0 - _xs - _half, _x0 + _c0 - _xs + _half, color="C0", alpha=0.25,
@@ -608,12 +608,12 @@ def _(IMAGES_DIR, np, plt):
         if _i == 1:
             _ax.axhspan(_c0 - _half, _c0 + _half, color="C3", alpha=0.25, label=r"empty-platform readings: $c/h \approx$ const.")
         _ax.plot([_x0], [_c0], "k+", ms=12, mew=2, label="true $(x, c/h)$")
-        _ax.set_xlim(145, 165)
-        _ax.set_ylim(-5, 14)
-        _ax.set_xlabel("Weight $x$ (lb)")
+        _ax.set_xlim(65, 75)
+        _ax.set_ylim(-2.5, 7)
+        _ax.set_xlabel("Weight $x$ (kg)")
         _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
         _ax.legend(fontsize=8, loc="upper right")
-    _axes[0].set_ylabel("Offset $c/h$ (lb)")
+    _axes[0].set_ylabel("Offset $c/h$ (kg)")
     _axes[0].set_title("Thirty standing readings", style="italic")
     _axes[1].set_title("Plus thirty empty-platform readings", style="italic")
     _fig.tight_layout()

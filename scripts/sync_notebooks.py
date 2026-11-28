@@ -61,7 +61,7 @@ JB_FRONTMATTER_PATTERN = re.compile(
 FRONTMATTER_PATTERN = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
 
 # The keys a page's jb-frontmatter may set, in the order they are written
-# (STYLEGUIDE.md §2.2). `title` comes from `app_title`; everything else is set
+# (STYLEGUIDE.md, "Frontmatter"). `title` comes from `app_title`; everything else is set
 # once for the whole book in content/myst.yml.
 PAGE_FRONTMATTER_KEYS = ["subtitle", "short_title", "description", "label", "abbreviations"]
 PROJECT_FRONTMATTER_KEYS = {"numbering", "math", "license"}
@@ -264,7 +264,7 @@ def apply_jb_frontmatter(content: str, source: str = "") -> str:
 
 
 def expected_page_label(stem: str) -> str:
-    """The page label the style guide's §7.1 prescribes for a notebook:
+    """The page label the style guide's "Labels" section prescribes for a notebook:
     `intro`, `ch7`, `appc`, or the stem itself (`index`)."""
     if stem == "introduction":
         return "intro"
@@ -287,7 +287,7 @@ def project_abbreviations() -> dict:
 
 
 def check_page_frontmatter(content: str, stem: str, source: str = "") -> dict:
-    """Check a raw export's jb-frontmatter against STYLEGUIDE.md §2.2 and
+    """Check a raw export's jb-frontmatter against STYLEGUIDE.md ("Frontmatter") and
     return its parsed contents."""
     match = JB_FRONTMATTER_PATTERN.search(content)
     if not match:

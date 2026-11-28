@@ -56,20 +56,6 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 20](#ch20) left us with two facts. A foot-mounted IMU integrated on its own drifts hundreds of meters in half a minute. Yet once per stride the foot stands still, and a detector can tell us when. This chapter combines them. Its key concept is the **zero-velocity update**: treating "the velocity is zero" as a *measurement* in a Kalman filter.
-
-    The payoff is larger than it looks. A velocity measurement corrects more than the velocity, because the filter's covariance matrix records how attitude errors and sensor biases *produced* the velocity error during the preceding swing. One update therefore corrects all of them. The result is a trajectory accurate to millimeters per stride, from which we compute the quantities a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle. We will also meet a hard limit: no number of zero-velocity updates can tell the filter which way it is facing.
-
-    /// attention | 🗝️ **Key Idea**
-    "The foot is not moving" is a measurement. Fed to an error-state Kalman filter once per stride, it bounds the velocity error and, through the filter's cross-covariances, corrects position, tilt, and sensor biases too. Heading is the exception: it is unobservable from zero-velocity information.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 20](#ch20): [the navigation equations](#ch20-sec-the-navigation-equations) and their [discrete mechanization](#ch20-sec-discrete-implementation-at-100-hz), [the drift laws](#ch20-thm-drift-laws), the {term}`gait cycle`, [the gait simulator](#ch20-sec-a-synthetic-gait-simulator), and [the SHOE detector](#ch20-thm-glrt-for-a-stationary-imu).
     - [Chapter 19](#ch19): the {term}`error-state Kalman filter` with the right (body-frame) attitude perturbation $q = \hat q\otimes\delta q(\delta\boldsymbol\theta)$, [its injection and reset steps](#ch19-sec-injection-and-reset), and the {term}`magnetometer`.
@@ -78,6 +64,20 @@ def _(mo):
     - [Chapter 10](#ch10): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
     - [Chapter 17](#ch17) and [Chapter 18](#ch18): $\operatorname{Exp}$, $\operatorname{Exp}_q$, $\operatorname{Log}_q$, [the small-angle approximation](#ch17-thm-small-angle-approximation) $\operatorname{Exp}(\delta\boldsymbol\theta) \approx \mathbf I + [\delta\boldsymbol\theta]_\times$, and the identity $[\mathbf R\mathbf a]_\times = \mathbf R[\mathbf a]_\times\mathbf R^\top$.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices), [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential), and [Appendix D: Block Matrices and the Schur Complement](#appd-sec-block-matrices-and-the-schur-complement).
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [Chapter 20](#ch20) left us with two facts. A foot-mounted IMU integrated on its own drifts hundreds of meters in half a minute. Yet once per stride the foot stands still, and a detector can tell us when. This chapter combines them. Its key concept is the **zero-velocity update**: treating "the velocity is zero" as a *measurement* in a Kalman filter.
+
+    The payoff is larger than it looks. A velocity measurement corrects more than the velocity, because the filter's covariance matrix records how attitude errors and sensor biases *produced* the velocity error during the preceding swing. One update therefore corrects all of them. The result is a trajectory accurate to millimeters per stride, from which we compute the quantities a clinician wants: stride length, stride time, cadence, gait speed, foot clearance, and turning angle. We will also meet a hard limit: no number of zero-velocity updates can tell the filter which way it is facing.
+
+    /// attention | 🗝️ **Key Idea**
+    "The foot is not moving" is a measurement. Fed to an error-state Kalman filter once per stride, it bounds the velocity error and, through the filter's cross-covariances, corrects position, tilt, and sensor biases too. Heading is the exception: it is unobservable from zero-velocity information.
     ///
     """)
     return

@@ -54,18 +54,6 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In Part II the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part VI) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](#ch9-sec-the-scalar-kalman-filter) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
-
-    /// attention | 🗝️ **Key Idea**
-    The multivariate Kalman filter predicts with $\hat{\mathbf x}_k^- = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$, then corrects the prediction with the gain $\mathbf K_k = \mathbf P_k^-\mathbf H^\top\mathbf S_k^{-1}$, the unique gain that minimizes the error variance of every component of the state at once. Each step is the matrix version of a scalar step you already know.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Introduction](#intro): the {term}`alpha-beta filter`.
     - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); {term}`covariance`.
@@ -85,6 +73,18 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    In Part II the state was a single number. Many quantities we care about are not. The bulking example needs a weight *and* a rate of gain; a moving cart needs a position and a velocity; a foot-mounted inertial sensor (Part VI) needs fifteen numbers. This chapter generalizes the scalar {term}`Kalman filter` of [Chapter 9](#ch9-sec-the-scalar-kalman-filter) to a state *vector*. Every scalar becomes a vector or a matrix, every proof becomes a few lines of matrix algebra, and the whole filter follows from one idea: choose the gain that minimizes the total error variance.
+
+    /// attention | 🗝️ **Key Idea**
+    The multivariate Kalman filter predicts with $\hat{\mathbf x}_k^- = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$, then corrects the prediction with the gain $\mathbf K_k = \mathbf P_k^-\mathbf H^\top\mathbf S_k^{-1}$, the unique gain that minimizes the error variance of every component of the state at once. Each step is the matrix version of a scalar step we already know.
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     <!-- label: ch13-sec-a-second-state-variable -->
     ## A Second State Variable
 
@@ -92,7 +92,7 @@ def _(mo):
 
     $$\mathbf x_k = \begin{bmatrix} x_k \\ r_k \end{bmatrix},$$
 
-    where $x_k$ is the true weight on day $k$ (lb), as in Parts I and II, and $r_k$ is the true rate of gain (lb/day). If the rate stayed constant during each day of length $\Delta t = 1$ day, then $x_k = x_{k-1} + \Delta t\, r_{k-1}$ and $r_k = r_{k-1}$, that is,
+    where $x_k$ is the true weight on day $k$ (kg), as in Parts I and II, and $r_k$ is the true rate of gain (kg/day). If the rate stayed constant during each day of length $\Delta t = 1$ day, then $x_k = x_{k-1} + \Delta t\, r_{k-1}$ and $r_k = r_{k-1}$, that is,
 
     $$\mathbf x_k = \mathbf F\mathbf x_{k-1}, \qquad \mathbf F = \begin{bmatrix} 1 & \Delta t \\ 0 & 1\end{bmatrix}.$$
 
@@ -147,7 +147,7 @@ def _(mo):
     The covariance matrix $\mathbf R_k := \operatorname{Cov}(\mathbf v_k)$ of the measurement-noise vector of a state-space model.
     ///
 
-    The matrix $\mathbf B_k$ is called the *control-input matrix*. In the bulking example $n = 2$, $m = 1$, there is no control input ($\mathbf B_k = \mathbf 0$), $\mathbf F_k = \mathbf F$, $\mathbf H_k = \mathbf H$, and $\mathbf R_k = \sigma_v^2 = 1\ \text{lb}^2$. Its $\mathbf Q_k$ is derived in the example below.
+    The matrix $\mathbf B_k$ is called the *control-input matrix*. In the bulking example $n = 2$, $m = 1$, there is no control input ($\mathbf B_k = \mathbf 0$), $\mathbf F_k = \mathbf F$, $\mathbf H_k = \mathbf H$, and $\mathbf R_k = \sigma_v^2 = 0.25\ \text{kg}^2$. Its $\mathbf Q_k$ is derived in the example below.
 
     To keep the formulas readable we drop the subscript $k$ from $\mathbf F, \mathbf B, \mathbf H, \mathbf Q, \mathbf R$. Every result below still holds with the subscripts restored, because each proof uses one time step at a time.
     """)
@@ -328,7 +328,7 @@ def _(mo):
 
     $$\operatorname{tr}\mathbf P_k = \sum_{i=1}^n\mathbb E\big[e_{k,i}^2\big] = \mathbb E\big[\|\mathbf e_k\|^2\big],$$
 
-    the mean squared length of the error vector. In the bulking example this adds $\text{lb}^2$ to $(\text{lb/day})^2$, which looks like an arbitrary choice of units. The theorem below shows that the choice does not matter: the gain that minimizes the trace minimizes the error variance of *every* linear combination of state components at once.
+    the mean squared length of the error vector. In the bulking example this adds $\text{kg}^2$ to $(\text{kg/day})^2$, which looks like an arbitrary choice of units. The theorem below shows that the choice does not matter: the gain that minimizes the trace minimizes the error variance of *every* linear combination of state components at once.
 
     Write $\mathbf P^- := \mathbf P_k^-$, $\mathbf S := \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$, and $\mathbf P(\mathbf K) := (\mathbf I - \mathbf K\mathbf H)\mathbf P^-(\mathbf I - \mathbf K\mathbf H)^\top + \mathbf K\mathbf R\mathbf K^\top$.
 
@@ -382,7 +382,7 @@ def _(mo):
     - The Joseph form evaluated at $\mathbf K$ is the *exact* covariance of the gain actually used, for every $\boldsymbol\delta$ (Theorem: Update with an Arbitrary Gain). By the Kalman Gain theorem it exceeds the optimum by only $\boldsymbol\delta\mathbf S\boldsymbol\delta^\top$, which is second order in $\boldsymbol\delta$.
     - The simplified form evaluated at $\mathbf K$ is $(\mathbf I - \mathbf K\mathbf H)\mathbf P^- = \mathbf P(\mathbf K^*) - \boldsymbol\delta\mathbf H\mathbf P^-$, which differs from the true covariance $\mathbf P(\mathbf K^*) + \boldsymbol\delta\mathbf S\boldsymbol\delta^\top$ by $-\boldsymbol\delta\mathbf H\mathbf P^- - \boldsymbol\delta\mathbf S\boldsymbol\delta^\top$: an error of *first* order in $\boldsymbol\delta$, and in general not even a symmetric matrix.
 
-    This is why the Joseph form exists. The table below checks both claims on the bulking model of the next sections (steady-state $\mathbf P^-$, $\sigma_a = 0.05\ \text{lb/day}^2$, $R = 1\ \text{lb}^2$), with the two entries of the gain perturbed in opposite directions, $\mathbf K = [(1 + \varepsilon)K^*_1,\ (1 - \varepsilon)K^*_2]^\top$, as rounding might. Each column reports the largest absolute entry of a matrix difference, relative to the largest entry of $\mathbf P(\mathbf K^*)$.
+    This is why the Joseph form exists. The table below checks both claims on the bulking model of the next sections (steady-state $\mathbf P^-$, $\sigma_a = 0.025\ \text{kg/day}^2$, $R = 0.25\ \text{kg}^2$), with the two entries of the gain perturbed in opposite directions, $\mathbf K = [(1 + \varepsilon)K^*_1,\ (1 - \varepsilon)K^*_2]^\top$, as rounding might. Each column reports the largest absolute entry of a matrix difference, relative to the largest entry of $\mathbf P(\mathbf K^*)$.
     """)
     return
 
@@ -393,9 +393,9 @@ def gain_perturbation_check(np):
     _dt = 1.0
     _F = np.array([[1.0, _dt], [0.0, 1.0]])
     _G = np.array([[_dt**2 / 2], [_dt]])
-    _Q = 0.05**2 * _G @ _G.T
+    _Q = 0.025**2 * _G @ _G.T
     _H = np.array([[1.0, 0.0]])
-    _R = np.array([[1.0]])
+    _R = np.array([[0.25]])
     _P = np.eye(2)
     for _ in range(2000):
         _Pm = _F @ _P @ _F.T + _Q
@@ -425,7 +425,7 @@ def gain_perturbation_check(np):
     _Kp = 1.5 * _K
     _N = 200_000
     _em = _rng.multivariate_normal(np.zeros(2), _Pm, size=_N)
-    _v = _rng.normal(0.0, 1.0, size=(_N, 1))
+    _v = _rng.normal(0.0, 0.5, size=(_N, 1))
     _e = _em @ (np.eye(2) - _Kp @ _H).T + _v @ _Kp.T
     gain_mc_rel_err = np.abs(np.cov(_e.T) - _joseph(_Kp)).max() / np.abs(_joseph(_Kp)).max()
     gain_perturbation_rows = _rows
@@ -648,17 +648,17 @@ def _(mo):
     <!-- label: ch13-sec-example-a-bulk-then-a-cut -->
     ## Example: A Bulk, Then a Cut
 
-    Back to the 28 daily weigh-ins of the bulking example: you weigh 155 lb on day 1 and gain 1.4 lb/week (0.2 lb/day), and each morning's reading has noise with $\sigma_v = 1$ lb. This time the diet changes halfway: after the weigh-in on day 15 you switch to a cut and *lose* 1.4 lb/week from then on. The readings on days 1 to 15 are exactly the Introduction's (same true weights, same noise); from day 16 on, the true weight falls instead of rising. The Introduction's alpha-beta filter, with its hand-picked gains, can only follow such a change slowly. The Kalman filter with state $\mathbf x_k = [x_k, r_k]^\top$ chooses its gains itself.
+    Back to the 28 daily weigh-ins of the bulking example: you weigh 70 kg on day 1 and gain 0.7 kg/week (0.1 kg/day), and each morning's reading has noise with $\sigma_v = 0.5$ kg. This time the diet changes halfway: after the weigh-in on day 15 you switch to a cut and *lose* 0.7 kg/week from then on. The readings on days 1 to 15 are exactly the Introduction's (same true weights, same noise); from day 16 on, the true weight falls instead of rising. The Introduction's alpha-beta filter, with its hand-picked gains, can only follow such a change slowly. The Kalman filter with state $\mathbf x_k = [x_k, r_k]^\top$ chooses its gains itself.
 
-    **Process noise.** The model $\mathbf x_k = \mathbf F\mathbf x_{k-1}$ says the rate never changes. To allow change, suppose that during day $k$ the rate changes at an unknown constant "acceleration" $a_k$ (lb/day$^2$), with the $a_k$ uncorrelated across days, mean $0$, and variance $\sigma_a^2$. Over one day,
+    **Process noise.** The model $\mathbf x_k = \mathbf F\mathbf x_{k-1}$ says the rate never changes. To allow change, suppose that during day $k$ the rate changes at an unknown constant "acceleration" $a_k$ (kg/day$^2$), with the $a_k$ uncorrelated across days, mean $0$, and variance $\sigma_a^2$. Over one day,
     $$r_k = r_{k-1} + a_k\Delta t, \qquad x_k = x_{k-1} + r_{k-1}\Delta t + \tfrac12 a_k\Delta t^2,$$
     so $\mathbf w_k = \boldsymbol\Gamma a_k$ with $\boldsymbol\Gamma = [\tfrac12\Delta t^2,\ \Delta t]^\top$, and by the Covariance Rules
     $$\mathbf Q = \operatorname{Cov}(\boldsymbol\Gamma a_k) = \sigma_a^2\boldsymbol\Gamma\boldsymbol\Gamma^\top = \sigma_a^2\begin{bmatrix}\tfrac14\Delta t^4 & \tfrac12\Delta t^3 \\ \tfrac12\Delta t^3 & \Delta t^2\end{bmatrix}.$$
     The $a_k$ are uncorrelated across days, so (A3) holds. This *piecewise-constant acceleration* model is one of two standard choices; [Chapter 14](#ch14-sec-choosing-q) compares it with the other.
 
-    **Initial condition.** On day 0, before the first weigh-in, you know your weight to about $\pm 1$ lb and have no idea of the rate beyond "within about $\pm 0.5$ lb/day": $\hat{\mathbf x}_0 = [155, 0]^\top$, $\mathbf P_0 = \operatorname{diag}(1, 0.25)$.
+    **Initial condition.** On day 0, before the first weigh-in, you know your weight to about $\pm 0.5$ kg and have no idea of the rate beyond "within about $\pm 0.25$ kg/day": $\hat{\mathbf x}_0 = [70, 0]^\top$, $\mathbf P_0 = \operatorname{diag}(0.25, 0.0625)$.
 
-    The diet change is a single jump of the rate by $-0.4$ lb/day, not a stream of small zero-mean accelerations, so the model is deliberately imperfect, as every real model is. The sliders set the filter's $\sigma_a$ and $R$; the data always have $\sigma_v = 1$ lb.
+    The diet change is a single jump of the rate by $-0.2$ kg/day, not a stream of small zero-mean accelerations, so the model is deliberately imperfect, as every real model is. The sliders set the filter's $\sigma_a$ and $R$; the data always have $\sigma_v = 0.5$ kg.
     """)
     return
 
@@ -669,14 +669,14 @@ def bulk_data(np):
     bulk_days = 28
     bulk_dt = 1.0
     _k = np.arange(0, bulk_days + 1)
-    bulk_rate_true = np.where(_k < 15, 0.2, -0.2)  # r_k, lb/day (change from day k to k+1)
-    bulk_x_true = np.empty(bulk_days + 1)  # x_k, lb, for k = 0, ..., 28
-    bulk_x_true[0] = 154.8  # so that x_1 = 155, as in the Introduction
+    bulk_rate_true = np.where(_k < 15, 0.1, -0.1)  # r_k, kg/day (change from day k to k+1)
+    bulk_x_true = np.empty(bulk_days + 1)  # x_k, kg, for k = 0, ..., 28
+    bulk_x_true[0] = 69.9  # so that x_1 = 70, as in the Introduction
     for _i in range(1, bulk_days + 1):
         bulk_x_true[_i] = bulk_x_true[_i - 1] + bulk_rate_true[_i - 1] * bulk_dt
-    # Same noise as the Introduction's weigh-ins (seed 2, rounded to 0.1 lb), so
+    # Same noise as the Introduction's weigh-ins (seed 2, rounded to 0.1 kg), so
     # days 1-15 reproduce the Introduction's data exactly.
-    bulk_z = np.round(bulk_x_true[1:] + np.random.default_rng(2).normal(0.0, 1.0, bulk_days), 1)
+    bulk_z = np.round(bulk_x_true[1:] + np.random.default_rng(2).normal(0.0, 0.5, bulk_days), 1)
     return bulk_days, bulk_dt, bulk_rate_true, bulk_x_true, bulk_z
 
 
@@ -686,23 +686,23 @@ def bulk_model(bulk_dt, np):
     bulk_F = np.array([[1.0, bulk_dt], [0.0, 1.0]])
     bulk_H = np.array([[1.0, 0.0]])
     bulk_Gamma = np.array([[bulk_dt**2 / 2], [bulk_dt]])
-    bulk_x0 = np.array([155.0, 0.0])
-    bulk_P0 = np.diag([1.0, 0.25])
+    bulk_x0 = np.array([70.0, 0.0])
+    bulk_P0 = np.diag([0.25, 0.0625])
     return bulk_F, bulk_Gamma, bulk_H, bulk_P0, bulk_x0
 
 
 @app.cell(hide_code=True)
 def _(mo):
     sigma_a_slider = mo.ui.slider(
-        steps=[0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0],
-        value=0.05,
-        label=r"filter's $\sigma_a$ (lb/day$^2$)",
+        steps=[0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5],
+        value=0.025,
+        label=r"filter's $\sigma_a$ (kg/day$^2$)",
         show_value=True,
     )
     r_slider = mo.ui.slider(
-        steps=[0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 10.0],
-        value=1.0,
-        label=r"filter's $R$ (lb$^2$)",
+        steps=[0.025, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.5],
+        value=0.25,
+        label=r"filter's $R$ (kg$^2$)",
         show_value=True,
     )
     return r_slider, sigma_a_slider
@@ -740,14 +740,14 @@ def bulk_interactive(
     _ax1.plot(_days, bulk_result["x_pred"][:, 0], ":", color="red", label="predictions")
     _ax1.plot(_days, _x[:, 0], "-", color="C1", label="estimates")
     _ax1.fill_between(_days, _x[:, 0] - 2 * _sd[:, 0], _x[:, 0] + 2 * _sd[:, 0], color="C1", alpha=0.2, label=r"$\pm 2\sigma$")
-    _ax1.set_ylabel("weight (lb)")
+    _ax1.set_ylabel("weight (kg)")
     _ax1.legend(loc="lower center", ncol=3, fontsize=8)
     _ax1.set_title("Weight", style="italic")
     _ax2.step(np.arange(0, bulk_days + 1), bulk_rate_true, where="post", color="black", lw=1.2, label="truth")
     _ax2.plot(_days, _x[:, 1], "-", color="C1", label="estimate")
     _ax2.fill_between(_days, _x[:, 1] - 2 * _sd[:, 1], _x[:, 1] + 2 * _sd[:, 1], color="C1", alpha=0.2, label=r"$\pm 2\sigma$")
     _ax2.axhline(0, color="gray", lw=0.6)
-    _ax2.set_ylabel("rate (lb/day)")
+    _ax2.set_ylabel("rate (kg/day)")
     _ax2.set_xlabel("day")
     _ax2.set_ylim(-0.9, 0.9)
     _ax2.legend(loc="upper right", fontsize=8)
@@ -766,7 +766,7 @@ def _(bulk_rate_true, bulk_result, mo, np):
     _sd_r = np.sqrt(bulk_result["P"][:, 1, 1])
     _inside = np.mean(np.abs(_x[:, 1] - bulk_rate_true[1:]) <= 2 * _sd_r)
     mo.md(rf"""
-    With these settings the filter estimates a rate of ${_x[13, 1]:+.3f} \pm {2 * _sd_r[13]:.3f}$ lb/day on day 14 (truth $+0.2$) and ${_x[-1, 1]:+.3f} \pm {2 * _sd_r[-1]:.3f}$ lb/day on day 28 (truth $-0.2$), where $\pm$ is two standard deviations. The true rate lies inside the $\pm 2\sigma$ band on {100 * _inside:.0f}% of the days. The gains went from $\mathbf K_1 = [{_K[0, 0]:.3f},\ {_K[0, 1]:.4f}]^\top$ on day 1 to $\mathbf K_{{28}} = [{_K[-1, 0]:.3f},\ {_K[-1, 1]:.4f}]^\top$ on day 28.
+    With these settings the filter estimates a rate of ${_x[13, 1]:+.3f} \pm {2 * _sd_r[13]:.3f}$ kg/day on day 14 (truth $+0.1$) and ${_x[-1, 1]:+.3f} \pm {2 * _sd_r[-1]:.3f}$ kg/day on day 28 (truth $-0.1$), where $\pm$ is two standard deviations. The true rate lies inside the $\pm 2\sigma$ band on {100 * _inside:.0f}% of the days. The gains went from $\mathbf K_1 = [{_K[0, 0]:.3f},\ {_K[0, 1]:.4f}]^\top$ on day 1 to $\mathbf K_{{28}} = [{_K[-1, 0]:.3f},\ {_K[-1, 1]:.4f}]^\top$ on day 28.
     """)
     return
 
@@ -777,8 +777,8 @@ def _(mo):
     Things to try:
 
     - **Small $\sigma_a$** (say $0.005$) tells the filter that the rate hardly ever changes. The rate band shrinks, and after the diet change the estimated rate creeps toward the truth over weeks while the true rate sits far outside the band. This is the vector version of [Chapter 9](#ch9-thm-no-process-noise)'s observation that $Q = 0$ turns the filter into a running average that stops listening.
-    - **Large $\sigma_a$** (say $0.5$) lets the rate change quickly, so the estimate can follow the cut within days, but every noisy reading now moves the rate estimate by tenths of a lb/day, and the $\pm 2\sigma$ band becomes so wide that it says little.
-    - **Small $R$** makes the filter trust each reading; **large $R$** makes it trust its own predictions. The data, with true $\sigma_v = 1$ lb, do not change.
+    - **Large $\sigma_a$** (say $0.25$) lets the rate change quickly, so the estimate can follow the cut within days, but every noisy reading now moves the rate estimate by several hundredths of a kg/day, and the $\pm 2\sigma$ band becomes so wide that it says little.
+    - **Small $R$** makes the filter trust each reading; **large $R$** makes it trust its own predictions. The data, with true $\sigma_v = 0.5$ kg, do not change.
     - In every setting, the gains settle to constants within a few weeks. The section Alpha-Beta Revisited shows what those constants are.
     """)
     return
@@ -830,11 +830,11 @@ def _(mo):
 
     **Bulking.** $\mathcal O = \begin{bmatrix}1 & 0 \\ 1 & \Delta t\end{bmatrix}$ has determinant $\Delta t \ne 0$, so rank 2: the model is observable, and the rate can be learned from weights alone.
 
-    **Tare offset.** In Chapter 11 the scale reports raw counts $z = hx + c + v$ with $h = 20{,}000$ counts/lb, an offset $c$ near $85{,}000$ counts, and $\sigma_v = 20{,}000$ counts. Treat the unknown offset as a second constant state: $\mathbf x = [x, c]^\top$, $\mathbf F = \mathbf I$, $\mathbf H = [h,\ 1]$. Then
+    **Tare offset.** In Chapter 11 the scale reports raw counts $z = hx + c + v$ with $h = 40{,}000$ counts/kg, an offset $c$ near $85{,}000$ counts, and $\sigma_v = 20{,}000$ counts. Treat the unknown offset as a second constant state: $\mathbf x = [x, c]^\top$, $\mathbf F = \mathbf I$, $\mathbf H = [h,\ 1]$. Then
     $$\mathcal O = \begin{bmatrix} h & 1 \\ h & 1\end{bmatrix}$$
-    has rank 1, so the model is **not** observable. The null space is spanned by $\mathbf d = [1, -h]^\top$: a person 1 lb heavier on a scale whose offset is 20,000 counts lower produces exactly the same readings, forever. The fix from Chapter 11 is to read the scale with the platform **empty** before you step on. Those readings have $\mathbf H_k = [0,\ 1]$, so the stacked matrix contains the rows $[0,\ 1]$ and $[h,\ 1]$ and has rank 2.
+    has rank 1, so the model is **not** observable. The null space is spanned by $\mathbf d = [1, -h]^\top$: a person 1 kg heavier on a scale whose offset is 40,000 counts lower produces exactly the same readings, forever. The fix from Chapter 11 is to read the scale with the platform **empty** before you step on. Those readings have $\mathbf H_k = [0,\ 1]$, so the stacked matrix contains the rows $[0,\ 1]$ and $[h,\ 1]$ and has rank 2.
 
-    The filter below sees 30 readings at 10 Hz. The first $n_e$ are taken with the platform empty; then you (155 lb) step on. Its prior is deliberately vague: $\hat{\mathbf x}_0 = [150\ \text{lb},\ 80{,}000\ \text{counts}]^\top$ with standard deviations of 20 lb and 50,000 counts.
+    The filter below sees 30 readings at 10 Hz. The first $n_e$ are taken with the platform empty; then you (70 kg) step on. Its prior is deliberately vague: $\hat{\mathbf x}_0 = [67.5\ \text{kg},\ 80{,}000\ \text{counts}]^\top$ with standard deviations of 10 kg and 50,000 counts.
     """)
     return
 
@@ -850,17 +850,17 @@ def _(mo):
 @app.cell
 def tare_setup(np):
     # jb: include=false
-    tare_h = 20_000.0  # counts/lb
+    tare_h = 40_000.0  # counts/kg
     tare_c = 85_000.0  # counts
     tare_sigma = 20_000.0  # counts
-    tare_weight = 155.0  # lb
+    tare_weight = 70.0  # kg
     tare_n = 30
     tare_noise = np.random.default_rng(5).normal(0.0, tare_sigma, tare_n)
 
     def tare_filter(n_empty, kf_update):
         """Constant state [weight, offset]; returns estimates and std devs."""
-        _x = np.array([150.0, 80_000.0])
-        _P = np.diag([20.0**2, 50_000.0**2])
+        _x = np.array([67.5, 80_000.0])
+        _P = np.diag([10.0**2, 50_000.0**2])
         _R = np.array([[tare_sigma**2]])
         _est, _sd = [], []
         for _j in range(tare_n):
@@ -897,16 +897,16 @@ def tare_interactive(
     _ax1.axhline(tare_weight, color="black", lw=1.2, label="truth")
     _ax1.plot(_t, tare_est[:, 0], color="C1", label="estimate")
     _ax1.fill_between(_t, tare_est[:, 0] - 2 * tare_sd[:, 0], tare_est[:, 0] + 2 * tare_sd[:, 0], color="C1", alpha=0.2, label=r"$\pm 2\sigma$")
-    _ax1.set_ylim(140, 170)
+    _ax1.set_ylim(62.5, 77.5)
     _ax1.set_xlabel("time (s)")
-    _ax1.set_ylabel("weight (lb)")
+    _ax1.set_ylabel("weight (kg)")
     _ax1.set_title("Weight estimate", style="italic")
     _ax1.legend(loc="upper right", fontsize=8)
     _ax2.plot(_t, _sd0[:, 0], "--", color="gray", label=r"$n_e = 0$ (unobservable)")
     _ax2.plot(_t, tare_sd[:, 0], color="C1", label=rf"$n_e = {_ne}$")
     _ax2.set_yscale("log")
     _ax2.set_xlabel("time (s)")
-    _ax2.set_ylabel("standard deviation of weight (lb)")
+    _ax2.set_ylabel("standard deviation of weight (kg)")
     _ax2.set_title("Weight uncertainty", style="italic")
     _ax2.legend(loc="upper right", fontsize=8)
     for _ax in (_ax1, _ax2):
@@ -919,7 +919,7 @@ def tare_interactive(
 @app.cell(hide_code=True)
 def _(mo, n_empty_slider, tare_est, tare_sd):
     mo.md(rf"""
-    After 3 s with $n_e = {n_empty_slider.value}$, the filter reports a weight of ${tare_est[-1, 0]:.2f} \pm {2 * tare_sd[-1, 0]:.2f}$ lb ($\pm 2\sigma$). With $n_e = 0$, the weight's standard deviation stalls near 2.5 lb no matter how long you stand there. The readings pin down $hx + c$ ever more precisely, but they say nothing about the split between $x$ and $c$, so that split stays as uncertain as the prior made it. A single empty reading breaks the tie, and more empty readings tighten it further.
+    After 3 s with $n_e = {n_empty_slider.value}$, the filter reports a weight of ${tare_est[-1, 0]:.2f} \pm {2 * tare_sd[-1, 0]:.2f}$ kg ($\pm 2\sigma$). With $n_e = 0$, the weight's standard deviation stalls near 1.2 kg no matter how long you stand there. The readings pin down $hx + c$ ever more precisely, but they say nothing about the split between $x$ and $c$, so that split stays as uncertain as the prior made it. A single empty reading breaks the tie, and more empty readings tighten it further.
     """)
     return
 
@@ -1017,7 +1017,7 @@ def _(mo):
 
     Solving relations 1 and 2 for $\alpha$ and $\beta$ gives the closed form published by @kalata1984:
     $$\alpha = -\frac{\Lambda^2 + 8\Lambda - (\Lambda + 4)\sqrt{\Lambda^2 + 8\Lambda}}{8}, \qquad \beta = \frac{\Lambda^2 + 4\Lambda - \Lambda\sqrt{\Lambda^2 + 8\Lambda}}{4}.$$
-    You can confirm by substitution that these satisfy relations 1 and 2. The table compares them with the gains reached by iterating the Riccati recursion 3,000 times from $\mathbf P_0 = 10^3\,\mathbf I$.
+    Substituting them confirms that these satisfy relations 1 and 2. The table compares them with the gains reached by iterating the Riccati recursion 3,000 times from $\mathbf P_0 = 10^3\,\mathbf I$.
     """)
     return
 
@@ -1151,7 +1151,7 @@ def _(
     sigma_a_slider,
 ):
     mo.md(rf"""
-    With $\sigma_a = {sigma_a_slider.value:g}$ lb/day$^2$ and $R = {r_slider.value:g}$ lb$^2$, the tracking index is $\Lambda = {ab_lambda:.4g}$. Kalata's formulas give $\alpha = {ab_alpha_k:.4f}$ and $\beta = {ab_beta_k:.4f}$; after 100 days the Kalman filter's own gains are $\alpha_{{100}} = {ab_alpha_riccati:.4f}$ and $\beta_{{100}} = {ab_beta_riccati:.4f}$. (For very small $\Lambda$ the gains are still falling after 100 days; the theorem only promises convergence in the limit.) By Part 3 of the theorem, the steady-state filter knows your weight to within one standard deviation of $\sigma_v\sqrt\alpha = {(r_slider.value * ab_alpha_k) ** 0.5:.2f}$ lb, compared with $\sigma_v = {r_slider.value ** 0.5:.2f}$ lb for a single reading. In the Introduction you picked $\alpha$ and $\beta$ with sliders; now they follow from the noise levels alone.
+    With $\sigma_a = {sigma_a_slider.value:g}$ kg/day$^2$ and $R = {r_slider.value:g}$ kg$^2$, the tracking index is $\Lambda = {ab_lambda:.4g}$. Kalata's formulas give $\alpha = {ab_alpha_k:.4f}$ and $\beta = {ab_beta_k:.4f}$; after 100 days the Kalman filter's own gains are $\alpha_{{100}} = {ab_alpha_riccati:.4f}$ and $\beta_{{100}} = {ab_beta_riccati:.4f}$. (For very small $\Lambda$ the gains are still falling after 100 days; the theorem only promises convergence in the limit.) By Part 3 of the theorem, the steady-state filter knows your weight to within one standard deviation of $\sigma_v\sqrt\alpha = {(r_slider.value * ab_alpha_k) ** 0.5:.2f}$ kg, compared with $\sigma_v = {r_slider.value ** 0.5:.2f}$ kg for a single reading. In the Introduction you picked $\alpha$ and $\beta$ with sliders; now they follow from the noise levels alone.
     """)
     return
 

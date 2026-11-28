@@ -81,9 +81,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Probability theory assigns numbers to *sets* of outcomes.[^informal-probability] The question "does the scale read above 156 lb?" is not a number. It is the set of all situations in which the reading exceeds 156 lb, and its probability is a number attached to that set. Before [Chapter 4](#ch4) can define probability, we need four tools from set theory:
+    Probability theory assigns numbers to *sets* of outcomes.[^informal-probability] The question "does the scale read above 70.5 kg?" is not a number. It is the set of all situations in which the reading exceeds 70.5 kg, and its probability is a number attached to that set. Before [Chapter 4](#ch4) can define probability, we need four tools from set theory:
 
-    1. **Complements, and unions and intersections of infinitely many sets.** These are "not", "or", and "and" for questions, including questions with infinitely many conditions, such as "every future reading is within 1 lb of the truth".
+    1. **Complements, and unions and intersections of infinitely many sets.** These are "not", "or", and "and" for questions, including questions with infinitely many conditions, such as "every future reading is within 0.5 kg of the truth".
     2. **Preimages.** They translate a condition on a measured number into the set of situations that produce it.
     3. **Countable versus uncountable infinity.** Probabilities add up over a *list* of disjoint events, but the possible values of a noisy reading cannot be listed. This mismatch is why Chapter 4 cannot give every set a probability.
     4. **The real numbers and the extended real numbers $[0, \infty]$**, where measurements, probabilities, and infinite sums live.

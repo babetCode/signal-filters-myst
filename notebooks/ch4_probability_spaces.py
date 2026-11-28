@@ -84,14 +84,14 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     <!-- label: ch4-sec-motivation-a-scale-reading-to-0-1-lb -->
-    ## Motivation: A Scale Reading to 0.1 lb
+    ## Motivation: A Scale Reading to 0.1 kg
 
-    Our scale computes its weight estimate as a real number but displays it rounded to $0.1$ lb. Suppose the true weight is $155$ lb, and write a single reading as $155 + \omega$, where $\omega$ is the noise in pounds.[^noise-informal] Questions about the display are questions about $\omega$:
+    Our scale computes its weight estimate as a real number but displays it rounded to $0.1$ kg. Suppose the true weight is $70$ kg, and write a single reading as $70 + \omega$, where $\omega$ is the noise in kilograms.[^noise-informal] Questions about the display are questions about $\omega$:
 
-    - "The display shows $155.0$" happens exactly when $154.95 \le 155 + \omega < 155.05$, that is, when $\omega \in [-0.05, 0.05)$.
-    - "The display does not show $155.0$" is the complement $\mathbb R \setminus [-0.05, 0.05)$.
-    - "The display shows $155.0$ or $155.1$" is the union $[-0.05, 0.05) \cup [0.05, 0.15) = [-0.05, 0.15)$.
-    - "Every one of infinitely many readings displays $155.0$" combines infinitely many conditions, one per reading, with "and".
+    - "The display shows $70.0$" happens exactly when $69.95 \le 70 + \omega < 70.05$, that is, when $\omega \in [-0.05, 0.05)$.
+    - "The display does not show $70.0$" is the complement $\mathbb R \setminus [-0.05, 0.05)$.
+    - "The display shows $70.0$ or $70.1$" is the union $[-0.05, 0.05) \cup [0.05, 0.15) = [-0.05, 0.15)$.
+    - "Every one of infinitely many readings displays $70.0$" combines infinitely many conditions, one per reading, with "and".
 
     So the questions we want probabilities for are *sets* of possible noise values, combined with complements, unions, and intersections, sometimes of infinitely many sets. The question "what is the probability that $\omega$ is exactly $0.03$?" will turn out to have the answer $0$ in every reasonable continuous model, even though some value of $\omega$ certainly occurs. A probability model therefore assigns probabilities to sets, and it must say which sets.
 
@@ -199,7 +199,7 @@ def _(mo):
     2. $\{\emptyset, \Omega\}$ is a $\sigma$-algebra, the smallest one, since every $\sigma$-algebra contains $\Omega$ and $\emptyset$.
     3. *A finite example.* For a die, $\mathcal F = \{\emptyset, \{1, 3, 5\}, \{2, 4, 6\}, \Omega\}$ is a $\sigma$-algebra. It contains $\Omega$, and the complement of each member is a member. For a sequence of members, the union is $\Omega$ if $\Omega$ occurs or both $\{1, 3, 5\}$ and $\{2, 4, 6\}$ occur; otherwise it is $\{1, 3, 5\}$ or $\{2, 4, 6\}$ if that set occurs; and otherwise every member of the sequence is $\emptyset$ and so is the union.
 
-    The third example describes **partial information**. If you are told only whether the die shows an even number, you can decide every event in $\mathcal F$ (did "odd" happen?) but not, say, $\{6\}$. In filtering, the information available at a given time is described in exactly this way.
+    The third example describes **partial information**. If we are told only whether the die shows an even number, we can decide every event in $\mathcal F$ (did "odd" happen?) but not, say, $\{6\}$. In filtering, the information available at a given time is described in exactly this way.
     """)
     return
 
@@ -361,7 +361,7 @@ def _(mo):
     3. We use the good-sets principle. Let $\mathcal A := \{B \subseteq \mathbb R : B + t \in \mathcal B(\mathbb R)\}$. Because $x \mapsto x + t$ is a bijection of $\mathbb R$ with inverse $x \mapsto x - t$, we have $\mathbb R + t = \mathbb R$, $(\mathbb R \setminus B) + t = \mathbb R \setminus (B + t)$, and $\big(\bigcup_n B_n\big) + t = \bigcup_n (B_n + t)$. So $\mathcal A$ is a $\sigma$-algebra. Translating an interval gives an interval of the same form, for example $[a, b] + t = [a + t, b + t]$, so $\mathcal I \subseteq \mathcal A$. Hence $\mathcal B(\mathbb R) = \sigma(\mathcal I) \subseteq \mathcal A$. $\blacksquare$
     ///
 
-    Not every subset of $\mathbb R$ is a Borel set: the Vitali sets constructed later in this chapter are not ([Vitali Sets Are Not Borel Sets](#ch4-cor-vitali-sets-are-not-borel-sets)). But every set you are likely to write down is, so restricting events to Borel sets costs nothing in practice.
+    Not every subset of $\mathbb R$ is a Borel set: the Vitali sets constructed later in this chapter are not ([Vitali Sets Are Not Borel Sets](#ch4-cor-vitali-sets-are-not-borel-sets)). But every set we are likely to write down is, so restricting events to Borel sets costs nothing in practice.
     """)
     return
 
@@ -698,7 +698,7 @@ def _(mo):
     ///
 
     **Back to the scale.** As a toy model, suppose the noise $\omega$ of a reading is uniformly distributed on $[-0.5, 0.5]$: take $\Omega := [-0.5, 0.5]$, $\mathcal F := \mathcal B(\Omega)$, and $\mathbb P := \lambda$ restricted to $\mathcal F$, a probability measure because $\lambda(\Omega) = 1$. Then
-    $$\mathbb P(\text{display shows } 155.0) = \lambda([-0.05, 0.05)) = 0.1, \qquad \mathbb P(\text{noise is exactly } 0.03) = \lambda(\{0.03\}) = 0.$$
+    $$\mathbb P(\text{display shows } 70.0) = \lambda([-0.05, 0.05)) = 0.1, \qquad \mathbb P(\text{noise is exactly } 0.03) = \lambda(\{0.03\}) = 0.$$
     Real scale noise is closer to normal than to uniform. [Chapter 5](#ch5-sec-continuous-random-variables) builds such models from densities, and also shows that the rounding error of a display is well modeled as uniform.
     """)
     return
@@ -812,7 +812,7 @@ def _(mo):
 
     Both scenarios reveal the same fact, that card 3 is not the queen, yet card 1's probability is $\tfrac12$ in one and $\tfrac13$ in the other. The difference lies in $\mathbb P(\text{observation} \mid \text{hypothesis})$: in Scenario 2, the dealer's choice carries information about where the queen is. For filtering, the lesson is that a measurement can only be interpreted through a model of how it was produced, not through its value alone. (Scenario 2 is the [Monty Hall problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): switching to card 2 doubles your chance of winning.)
 
-    **Example (a faulty load cell).** Suppose a scale's load cell is faulty with probability $0.01$. A healthy cell gives a reading more than $2$ lb from the truth with probability $0.05$, and a faulty one with probability $0.9$. (A discrete probability space with four outcomes, healthy or faulty and off or not, realizes these numbers.) A reading comes out $2.5$ lb off. With $W$ the event "the cell is faulty" and $O$ the event "the reading is more than $2$ lb off",
+    **Example (a faulty load cell).** Suppose a scale's load cell is faulty with probability $0.01$. A healthy cell gives a reading more than $1$ kg from the truth with probability $0.05$, and a faulty one with probability $0.9$. (A discrete probability space with four outcomes, healthy or faulty and off or not, realizes these numbers.) A reading comes out $1.25$ kg off. With $W$ the event "the cell is faulty" and $O$ the event "the reading is more than $1$ kg off",
     $$\mathbb P(W \mid O) = \frac{\mathbb P(O \mid W)\,\mathbb P(W)}{\mathbb P(O \mid W)\,\mathbb P(W) + \mathbb P(O \mid W^c)\,\mathbb P(W^c)} = \frac{0.9 \cdot 0.01}{0.9 \cdot 0.01 + 0.05 \cdot 0.99} \approx 0.154.$$
     Even after a reading that a healthy cell rarely produces, the cell is most likely healthy, because faults are rare to begin with. Confusing $\mathbb P(O \mid W) = 0.9$ with $\mathbb P(W \mid O) \approx 0.15$ is a common mistake. Deciding whether to discard such a reading as an outlier involves exactly this trade-off ([Chapter 14](#ch14-sec-outlier-gating)).
 
@@ -855,7 +855,7 @@ def _(mo):
     $A \cap B^c = A \setminus B$, so by Monotonicity $\mathbb P(A \cap B^c) = \mathbb P(A) - \mathbb P(A)\,\mathbb P(B) = \mathbb P(A)\,\mathbb P(B^c)$. The other two cases follow by applying this to the pair $(B, A)$ and then to $(A^c, B)$. $\blacksquare$
     ///
 
-    **Disjoint is not independent.** If $A \cap B = \emptyset$ with $\mathbb P(A) > 0$ and $\mathbb P(B) > 0$, then $\mathbb P(A \cap B) = 0 < \mathbb P(A)\,\mathbb P(B)$. Disjoint events with positive probability are always *dependent*: knowing that $A$ happened tells you that $B$ did not.
+    **Disjoint is not independent.** If $A \cap B = \emptyset$ with $\mathbb P(A) > 0$ and $\mathbb P(B) > 0$, then $\mathbb P(A \cap B) = 0 < \mathbb P(A)\,\mathbb P(B)$. Disjoint events with positive probability are always *dependent*: knowing that $A$ happened tells us that $B$ did not.
 
     **Pairwise is not mutual.** Toss a fair coin twice: $\Omega = \{HH, HT, TH, TT\}$, each outcome with probability $\tfrac14$. Let $A := \{HH, HT\}$ (first toss heads), $B := \{HH, TH\}$ (second toss heads), and $C := \{HH, TT\}$ (the tosses agree). Each has probability $\tfrac12$, and each pairwise intersection is $\{HH\}$, with probability $\tfrac14 = \tfrac12 \cdot \tfrac12$. So $A, B, C$ are pairwise independent. But
     $$\mathbb P(A \cap B \cap C) = \mathbb P(\{HH\}) = \tfrac14 \neq \tfrac18 = \mathbb P(A)\,\mathbb P(B)\,\mathbb P(C),$$

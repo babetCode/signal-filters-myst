@@ -79,12 +79,26 @@ def helpers(np):
 @app.cell
 def scale_data(np):
     # jb: include=false
-    scale_x = 155.0
-    scale_R = 1.0
-    # Same data as the Introduction: 3 s at 10 samples/s, noise sigma = 1 lb, seed 1
-    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 1.0, 30), 2)
+    scale_x = 70.0
+    scale_R = 0.25
+    # Same data as the Introduction: 3 s at 10 samples/s, noise sigma = 0.5 kg, seed 1
+    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 0.5, 30), 2)
     scale_t = np.arange(1, 31) / 10
     return scale_R, scale_t, scale_x, scale_z
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// important | 🔗 **Prerequisites**
+    - [Introduction](#intro): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, [the cumulative average](#intro-sec-a-recursive-average), and the {term}`exponential moving average` (EMA) with [first-measurement initialization](#intro-sec-initialization).
+    - [Chapter 2](#ch2): [proof by induction](#ch2-thm-induction).
+    - [Chapter 5](#ch5): {term}`random variables <random variable>`, the {term}`normal distribution`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model) $z_k = x_k + v_k$.
+    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance` and [its properties](#ch6-thm-properties-of-covariance) (including linearity in each argument and [the Cauchy–Schwarz inequality](#ch6-thm-cauchyschwarz-inequality)), {term}`uncorrelated` random variables, [the variance of a linear combination](#ch6-thm-variance-of-a-linear-combination), in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, [Bienaymé's corollary](#ch6-cor-bienayme), {term}`unbiased` estimators, {term}`mean squared error` and [the bias–variance decomposition](#ch6-thm-biasvariance-decomposition), the variance $\sigma^2/k$ of the {term}`sample mean`, and [the EMA's error variance](#ch6-thm-ema-of-a-constant-value), including [the corollary that for a constant value averaging beats the EMA](#ch6-cor-for-a-constant-value-averaging-beats-the-ema).
+    - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation in one tip).
+    ///
+    """)
+    return
 
 
 @app.cell(hide_code=True)
@@ -108,20 +122,6 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    /// important | 🔗 **Prerequisites**
-    - [Introduction](#intro): {term}`estimate`, {term}`prediction` $\hat x_k^-$, {term}`innovation`, [the cumulative average](#intro-sec-a-recursive-average), and the {term}`exponential moving average` (EMA) with [first-measurement initialization](#intro-sec-initialization).
-    - [Chapter 2](#ch2): [proof by induction](#ch2-thm-induction).
-    - [Chapter 5](#ch5): {term}`random variables <random variable>`, the {term}`normal distribution`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model) $z_k = x_k + v_k$.
-    - [Chapter 6](#ch6): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance` and [its properties](#ch6-thm-properties-of-covariance) (including linearity in each argument and [the Cauchy–Schwarz inequality](#ch6-thm-cauchyschwarz-inequality)), {term}`uncorrelated` random variables, [the variance of a linear combination](#ch6-thm-variance-of-a-linear-combination), in particular $\operatorname{Var}(aX + bY) = a^2\operatorname{Var}X + b^2\operatorname{Var}Y + 2ab\operatorname{Cov}(X, Y)$, [Bienaymé's corollary](#ch6-cor-bienayme), {term}`unbiased` estimators, {term}`mean squared error` and [the bias–variance decomposition](#ch6-thm-biasvariance-decomposition), the variance $\sigma^2/k$ of the {term}`sample mean`, and [the EMA's error variance](#ch6-thm-ema-of-a-constant-value), including [the corollary that for a constant value averaging beats the EMA](#ch6-cor-for-a-constant-value-averaging-beats-the-ema).
-    - [Appendix C: Derivatives](#appc-sec-derivatives) (optional; only for the alternative derivation in one tip).
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// attention | 🗝️ **Key Idea**
     To combine two unbiased, uncorrelated sources of information about the same quantity, weight each source in proportion to the *other* source's variance. The optimal gain $\alpha^* = P^-/(P^- + R)$ does exactly this, and the combined error variance $P^-R/(P^- + R)$ is smaller than both $P^-$ and $R$.
     ///
@@ -135,7 +135,7 @@ def _(mo):
     <!-- label: ch7-sec-a-concrete-example -->
     ## A Concrete Example
 
-    Return to the bathroom scale from the Introduction: the true weight is $x = 155$ lb, the scale delivers 10 readings per second, and each reading has measurement noise with standard deviation $1$ lb, so variance $R = 1\ \text{lb}^2$. The first five readings are
+    Return to the bathroom scale from the Introduction: the true weight is $x = 70$ kg, the scale delivers 10 readings per second, and each reading has measurement noise with standard deviation $0.5$ kg, so variance $R = 0.25\ \text{kg}^2$. The first five readings are
     """)
     return
 
@@ -145,11 +145,11 @@ def _(mo, scale_z):
     _avg4 = scale_z[:4].mean()
     _z5 = scale_z[4]
     mo.md(rf"""
-    $$z_1, \ldots, z_5 = {scale_z[0]:.2f},\ {scale_z[1]:.2f},\ {scale_z[2]:.2f},\ {scale_z[3]:.2f},\ {scale_z[4]:.2f}\ \text{{lb}}.$$
+    $$z_1, \ldots, z_5 = {scale_z[0]:.2f},\ {scale_z[1]:.2f},\ {scale_z[2]:.2f},\ {scale_z[3]:.2f},\ {scale_z[4]:.2f}\ \text{{kg}}.$$
 
-    After four readings the cumulative average is $\hat x_4 = {_avg4:.2f}$ lb. By Chapter 6, the error of an average of four readings has variance $R/4 = 0.25\ \text{{lb}}^2$. Because the weight does not change, our prediction for the fifth step is the previous estimate, $\hat x_5^- = \hat x_4$, with error variance $P_5^- = 0.25\ \text{{lb}}^2$. The cumulative average combines it with $z_5$ using $\alpha = 1/5$:
+    After four readings the cumulative average is $\hat x_4 = {_avg4:.2f}$ kg. By Chapter 6, the error of an average of four readings has variance $R/4 = 0.0625\ \text{{kg}}^2$. Because the weight does not change, our prediction for the fifth step is the previous estimate, $\hat x_5^- = \hat x_4$, with error variance $P_5^- = 0.0625\ \text{{kg}}^2$. The cumulative average combines it with $z_5$ using $\alpha = 1/5$:
 
-    $$\hat x_5 = \hat x_5^- + \tfrac15\,(z_5 - \hat x_5^-) = {_avg4:.2f} + \tfrac15\,({_z5:.2f} - {_avg4:.2f}) = {_avg4 + (_z5 - _avg4) / 5:.2f}\ \text{{lb}}.$$
+    $$\hat x_5 = \hat x_5^- + \tfrac15\,(z_5 - \hat x_5^-) = {_avg4:.2f} + \tfrac15\,({_z5:.2f} - {_avg4:.2f}) = {_avg4 + (_z5 - _avg4) / 5:.2f}\ \text{{kg}}.$$
     """)
     return
 
@@ -174,7 +174,7 @@ def _(mo):
 
     In Chapters 4–6, random variables were written in uppercase ($X$, $Y$) and their values in lowercase ($x$, $y$). From here on we adopt the convention of the filtering literature instead:
 
-    - The symbols $x_k$, $z_k$, $v_k$, $\hat x_k$, $\hat x_k^-$, $e_k$, $e_k^-$ denote {term}`random variables <random variable>`: functions on a {term}`probability space` $(\Omega, \mathcal F, \mathbb P)$. The same symbols also denote the values these functions take at the outcome that actually occurred, and the context makes clear which is meant. For example, $\mathbb E[z_5]$ treats $z_5$ as a random variable, while "$z_5 = 155.91$" reports its observed value.
+    - The symbols $x_k$, $z_k$, $v_k$, $\hat x_k$, $\hat x_k^-$, $e_k$, $e_k^-$ denote {term}`random variables <random variable>`: functions on a {term}`probability space` $(\Omega, \mathcal F, \mathbb P)$. The same symbols also denote the values these functions take at the outcome that actually occurred, and the context makes clear which is meant. For example, $\mathbb E[z_5]$ treats $z_5$ as a random variable, while "$z_5 = 70.45$" reports its observed value.
     - Uppercase letters such as $P_k$, $P_k^-$, and $R$ (and later $Q$ and $S_k$) are *not* random: they are numbers, namely variances. The gain $\alpha$ is also a number. This is the reason for the switch: Kalman filter texts reserve uppercase letters for variances (which become matrices in Part III), so random quantities must be written in lowercase.
     - A number $c$ can be regarded as the constant random variable $\omega \mapsto c$, with $\mathbb E c = c$ and $\operatorname{Var} c = 0$, so all of Chapter 6's rules apply to it. A true weight $x$ that does not change is such a constant.
     """)
@@ -407,7 +407,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// tip | **The calculus route**
-    If you know derivatives ([Appendix C: Derivatives](#appc-sec-derivatives)), you can also set $P'(\alpha) = -2(1 - \alpha)P^- + 2\alpha R$ to zero, which gives $\alpha = \alpha^*$, and note $P''(\alpha) = 2(P^- + R) > 0$. Completing the square gives more: item 1 is an exact formula for the penalty of every other gain, not just the location of the minimum.
+    With derivatives ([Appendix C: Derivatives](#appc-sec-derivatives)), we can also set $P'(\alpha) = -2(1 - \alpha)P^- + 2\alpha R$ to zero, which gives $\alpha = \alpha^*$, and note $P''(\alpha) = 2(P^- + R) > 0$. Completing the square gives more: item 1 is an exact formula for the penalty of every other gain, not just the location of the minimum.
     ///
     """)
     return
@@ -433,7 +433,7 @@ def _(mo):
     <!-- label: ch7-sec-seeing-the-combination -->
     ## Seeing the Combination
 
-    Use the sliders to set $P^-$ and $R$. The left panel shows the error variance $P(\alpha)$ and its two parts; its lowest point is at $\alpha^*$. The right panel shows, for a true weight of $155$ lb, the distributions of the prediction $\hat x^-$, the measurement $z$, and the optimal estimate $\hat x$, assuming normal errors[^normal-for-drawing]. The markers on the horizontal axis show one simulated draw of each: the estimate always lies between the prediction and the measurement, closer to the more reliable one, and its distribution is always the narrowest.
+    Use the sliders to set $P^-$ and $R$. The left panel shows the error variance $P(\alpha)$ and its two parts; its lowest point is at $\alpha^*$. The right panel shows, for a true weight of $70$ kg, the distributions of the prediction $\hat x^-$, the measurement $z$, and the optimal estimate $\hat x$, assuming normal errors[^normal-for-drawing]. The markers on the horizontal axis show one simulated draw of each: the estimate always lies between the prediction and the measurement, closer to the more reliable one, and its distribution is always the narrowest.
 
     [^normal-for-drawing]: Drawing a density requires choosing a distribution, so the figure takes $e^-$ and $v$ to be independent and normal. Then $\hat x$ is normal too, by [Chapter 5](#ch5-cor-linear-combinations-of-independent-normals)'s corollary on linear combinations of independent normal random variables. The theorem itself does not use normality.
     """)
@@ -443,10 +443,10 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     pm_slider = mo.ui.slider(
-        0.1, 4.0, 0.1, value=2.0, label=r"Prediction error variance $P^-$ (lb$^2$)", show_value=True
+        0.025, 1.0, 0.025, value=0.5, label=r"Prediction error variance $P^-$ (kg$^2$)", show_value=True
     )
     r_slider = mo.ui.slider(
-        0.1, 4.0, 0.1, value=1.0, label=r"Measurement noise variance $R$ (lb$^2$)", show_value=True
+        0.025, 1.0, 0.025, value=0.25, label=r"Measurement noise variance $R$ (kg$^2$)", show_value=True
     )
     return pm_slider, r_slider
 
@@ -474,12 +474,12 @@ def _(combo_draw, graphic, mo, normal_pdf, np, plt, pm_slider, r_slider):
     _ax1.annotate(rf"$\alpha^*={_a_star:.2f}$", (_a_star, _P_star), textcoords="offset points", xytext=(6, -16))
     _ax1.set_ylim(0, 1.6 * max(_Pm, _R))
     _ax1.set_xlabel(r"gain $\alpha$")
-    _ax1.set_ylabel(r"error variance (lb$^2$)")
+    _ax1.set_ylabel(r"error variance (kg$^2$)")
     _ax1.set_title("Error variance versus gain", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(loc="upper center", fontsize=8)
 
-    _x = 155.0
+    _x = 70.0
     _s = np.sqrt(max(_Pm, _R))
     _grid = np.linspace(_x - 4 * _s, _x + 4 * _s, 600)
     _xm = _x + np.sqrt(_Pm) * combo_draw[0]
@@ -493,8 +493,8 @@ def _(combo_draw, graphic, mo, normal_pdf, np, plt, pm_slider, r_slider):
     _ax2.plot([_zz], [0], "o", markerfacecolor="none", markeredgecolor="black", markeredgewidth=1.5, clip_on=False, zorder=5)
     _ax2.plot([_xh], [0], "o", color="C1", clip_on=False, zorder=6)
     _ax2.set_ylim(bottom=0)
-    _ax2.set_xlabel("weight (lb)")
-    _ax2.set_ylabel(r"density (1/lb)")
+    _ax2.set_xlabel("weight (kg)")
+    _ax2.set_ylabel(r"density (1/kg)")
     _ax2.set_title("Distributions of the two sources and the estimate", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(loc="upper right", fontsize=8)
@@ -504,9 +504,9 @@ def _(combo_draw, graphic, mo, normal_pdf, np, plt, pm_slider, r_slider):
         mo.hstack([pm_slider, r_slider], justify="start", gap=2),
         graphic(_fig),
         mo.md(
-            rf"$\alpha^* = {_a_star:.3f}$, $\;P^* = {_P_star:.3f}\ \text{{lb}}^2$, "
-            rf"standard deviations: prediction ${np.sqrt(_Pm):.2f}$ lb, measurement ${np.sqrt(_R):.2f}$ lb, "
-            rf"estimate ${np.sqrt(_P_star):.2f}$ lb."
+            rf"$\alpha^* = {_a_star:.3f}$, $\;P^* = {_P_star:.3f}\ \text{{kg}}^2$, "
+            rf"standard deviations: prediction ${np.sqrt(_Pm):.2f}$ kg, measurement ${np.sqrt(_R):.2f}$ kg, "
+            rf"estimate ${np.sqrt(_P_star):.2f}$ kg."
         ),
     ])
     plt.close(_fig)
@@ -587,8 +587,8 @@ def _(
               label=rf"$\alpha={mc_alpha.value:.2f}$: var $={_e_cmp.var():.3f}$")
     _ax1.hist(_e_opt, bins=_bins, density=True, color="C1", alpha=0.6,
               label=rf"optimal $\alpha={_a_opt:.2f}$: var $={_e_opt.var():.3f}$")
-    _ax1.set_xlabel(r"estimation error $e$ (lb)")
-    _ax1.set_ylabel("density (1/lb)")
+    _ax1.set_xlabel(r"estimation error $e$ (kg)")
+    _ax1.set_ylabel("density (1/kg)")
     _ax1.set_title("Histogram of simulated errors", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper right")
@@ -599,7 +599,7 @@ def _(
     _ax2.plot(_grid, _sample_var, "o", markerfacecolor="none", markeredgecolor="black", label="simulation")
     _ax2.axvline(_a_opt, color="C1", linewidth=0.8)
     _ax2.set_xlabel(r"gain $\alpha$")
-    _ax2.set_ylabel(r"error variance (lb$^2$)")
+    _ax2.set_ylabel(r"error variance (kg$^2$)")
     _ax2.set_title("Sample variance versus formula", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(fontsize=8, loc="upper center")
@@ -612,7 +612,7 @@ def _(
         mo.md(
             rf"Covariance $c = {_c:.3f}$; optimal gain ${_a_opt:.3f}$ "
             rf"(the uncorrelated formula would give $P^-/(P^-+R) = {_a_naive:.3f}$); "
-            rf"largest gap between simulation and formula: ${np.max(np.abs(_sample_var - ((1 - _grid) ** 2 * _Pm + _grid**2 * _R + 2 * _grid * (1 - _grid) * _c))):.3f}\ \text{{lb}}^2$."
+            rf"largest gap between simulation and formula: ${np.max(np.abs(_sample_var - ((1 - _grid) ** 2 * _Pm + _grid**2 * _R + 2 * _grid * (1 - _grid) * _c))):.3f}\ \text{{kg}}^2$."
         ),
     ])
     plt.close(_fig)
@@ -722,7 +722,7 @@ def _(mo):
     <!-- label: ch7-sec-cumulative-average-versus-ema -->
     ### Cumulative Average Versus EMA
 
-    The figure runs both filters on the Introduction's 30 scale readings. The bands show $\pm 2$ standard deviations of each estimate's error, from $P_k = R/k$ for the cumulative average and from Chapter 6's exact formula for the EMA. The right panel compares the two error variances with a Monte Carlo estimate from 2,000 simulated runs. Whatever $\alpha$ you choose, the EMA's error variance eventually stops shrinking, while the cumulative average's keeps falling like $1/k$.
+    The figure runs both filters on the Introduction's 30 scale readings. The bands show $\pm 2$ standard deviations of each estimate's error, from $P_k = R/k$ for the cumulative average and from Chapter 6's exact formula for the EMA. The right panel compares the two error variances with a Monte Carlo estimate from 2,000 simulated runs. Whatever $\alpha$ we choose, the EMA's error variance eventually stops shrinking, while the cumulative average's keeps falling like $1/k$.
     """)
     return
 
@@ -736,7 +736,7 @@ def _(mo):
 @app.cell
 def _(np, scale_x):
     # jb: include=false
-    seq_mc_z = scale_x + np.random.default_rng(11).normal(0.0, 1.0, (2000, 30))
+    seq_mc_z = scale_x + np.random.default_rng(11).normal(0.0, 0.5, (2000, 30))
     return (seq_mc_z,)
 
 
@@ -773,9 +773,9 @@ def _(
     _ax1.fill_between(scale_t, _avg - 2 * np.sqrt(_P_avg), _avg + 2 * np.sqrt(_P_avg), color="C1", alpha=0.2)
     _ax1.plot(scale_t, _ema, color="C2", linewidth=1.5, label=rf"EMA, $\alpha={seq_alpha.value:.2f}$")
     _ax1.fill_between(scale_t, _ema - 2 * np.sqrt(_P_ema), _ema + 2 * np.sqrt(_P_ema), color="C2", alpha=0.15)
-    _ax1.set_ylim(scale_x - 3.5, scale_x + 4.5)
+    _ax1.set_ylim(scale_x - 1.75, scale_x + 2.25)
     _ax1.set_xlabel("time (s)")
-    _ax1.set_ylabel("weight (lb)")
+    _ax1.set_ylabel("weight (kg)")
     _ax1.set_title(r"Estimates with $\pm 2$ standard deviation bands", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper center", ncol=2)
@@ -787,7 +787,7 @@ def _(
     _ax2.axhline(seq_alpha.value / (2 - seq_alpha.value) * scale_R, color="C2", linestyle=":", linewidth=1,
                  label=r"EMA limit $\frac{\alpha}{2-\alpha}R$")
     _ax2.set_xlabel("step $k$")
-    _ax2.set_ylabel(r"error variance (lb$^2$)")
+    _ax2.set_ylabel(r"error variance (kg$^2$)")
     _ax2.set_title("Error variance versus step", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4, which="both")
     _ax2.legend(fontsize=8, loc="lower left")
@@ -797,9 +797,9 @@ def _(
         seq_alpha,
         graphic(_fig),
         mo.md(
-            rf"After $k = 30$ readings: cumulative average ${_avg[-1]:.2f}$ lb with error variance "
-            rf"$R/30 = {_P_avg[-1]:.3f}\ \text{{lb}}^2$; EMA ${_ema[-1]:.2f}$ lb with error variance "
-            rf"${_P_ema[-1]:.3f}\ \text{{lb}}^2$ (${_P_ema[-1] / _P_avg[-1]:.1f}$ times larger)."
+            rf"After $k = 30$ readings: cumulative average ${_avg[-1]:.2f}$ kg with error variance "
+            rf"$R/30 = {_P_avg[-1]:.4f}\ \text{{kg}}^2$; EMA ${_ema[-1]:.2f}$ kg with error variance "
+            rf"${_P_ema[-1]:.4f}\ \text{{kg}}^2$ (${_P_ema[-1] / _P_avg[-1]:.1f}$ times larger)."
         ),
     ])
     plt.close(_fig)
@@ -859,7 +859,7 @@ def _(mo):
     By the formula above, $P(\alpha^*) = \big[(1-\alpha^*)^2 P^- + \alpha^{*2} R\big] + 2\alpha^*(1-\alpha^*)c$, and the bracket equals $P^*$ by item 1 of the Optimal Gain theorem with $\alpha = \alpha^*$. If $P^-, R > 0$, then $0 < \alpha^* < 1$, so the extra term is positive when $c > 0$. $\blacksquare$
     ///
 
-    For example, with $P^- = R = 1\ \text{lb}^2$ and $c = 0.5\ \text{lb}^2$, the filter uses $\alpha^* = 0.5$ and reports $P^* = 0.5\ \text{lb}^2$, but the actual error variance is $0.5 + 2(0.5)(0.5)(0.5) = 0.75\ \text{lb}^2$. Here the gain happens to be optimal anyway ($\alpha_c = 0.5/1 = 0.5$), but the reported variance is wrong: the two sources contain less independent information than the filter believes. Try it in the simulation above with $P^- = R = 1$ and correlation $0.5$.
+    For example, with $P^- = R = 1\ \text{kg}^2$ and $c = 0.5\ \text{kg}^2$, the filter uses $\alpha^* = 0.5$ and reports $P^* = 0.5\ \text{kg}^2$, but the actual error variance is $0.5 + 2(0.5)(0.5)(0.5) = 0.75\ \text{kg}^2$. Here the gain happens to be optimal anyway ($\alpha_c = 0.5/1 = 0.5$), but the reported variance is wrong: the two sources contain less independent information than the filter believes. Try it in the simulation above with $P^- = R = 1$ and correlation $0.5$.
     """)
     return
 
@@ -874,7 +874,7 @@ def _(mo):
 
     $$\mathbb E[e^2] = P(\alpha) + \big((1-\alpha)\,b^- + \alpha\, b_v\big)^2.$$
 
-    The gain that minimizes this depends on the unknown biases, and no gain removes a bias shared by both sources. Averaging does not help either. If every reading of a constant weight has $\mathbb E v_k = b$, say a scale that reads $0.5$ lb heavy, then the cumulative average has $\mathbb E\hat x_k = x + b$ and
+    The gain that minimizes this depends on the unknown biases, and no gain removes a bias shared by both sources. Averaging does not help either. If every reading of a constant weight has $\mathbb E v_k = b$, say a scale that reads $0.5$ kg heavy, then the cumulative average has $\mathbb E\hat x_k = x + b$ and
 
     $$\mathbb E\big[(\hat x_k - x)^2\big] = \frac Rk + b^2 \;\ge\; b^2 \quad\text{for every } k.$$
 
@@ -899,14 +899,14 @@ def _(mo):
 
     Three consequences:
 
-    - **Small gain errors are cheap.** The penalty grows with the *square* of the gain error. With $P^- = R = 1\ \text{lb}^2$, using $\tilde\alpha = 0.6$ instead of $0.5$ costs only $2(0.1)^2 = 0.02\ \text{lb}^2$ on top of $P^* = 0.5\ \text{lb}^2$.
+    - **Small gain errors are cheap.** The penalty grows with the *square* of the gain error. With $P^- = R = 1\ \text{kg}^2$, using $\tilde\alpha = 0.6$ instead of $0.5$ costs only $2(0.1)^2 = 0.02\ \text{kg}^2$ on top of $P^* = 0.5\ \text{kg}^2$.
     - **Only the ratio sets the gain.** Multiplying both $\tilde P^-$ and $\tilde R$ by the same factor leaves $\tilde\alpha$ unchanged but multiplies $\tilde P$ by that factor. A filter can therefore estimate well while reporting a misleading error variance. In the sequential constant-weight problem, the gains $1/k$ do not depend on $R$ at all, so a wrong $\tilde R$ changes only the reported $P_k = \tilde R/k$.
-    - **The reported variance can be badly wrong.** With $P^- = R = 1\ \text{lb}^2$ but $\tilde R = 0.25\ \text{lb}^2$ (an overly optimistic datasheet), the filter uses $\tilde\alpha = 0.8$, whose actual error variance is $0.2^2 + 0.8^2 = 0.68\ \text{lb}^2$, but it reports $\tilde P = 0.2\ \text{lb}^2$, claiming to be $3.4$ times more certain than it is. [Chapter 9](#ch9-sec-checking-the-noise-levels) shows how to detect this from the measurements alone.
+    - **The reported variance can be badly wrong.** With $P^- = R = 1\ \text{kg}^2$ but $\tilde R = 0.25\ \text{kg}^2$ (an overly optimistic datasheet), the filter uses $\tilde\alpha = 0.8$, whose actual error variance is $0.2^2 + 0.8^2 = 0.68\ \text{kg}^2$, but it reports $\tilde P = 0.2\ \text{kg}^2$, claiming to be $3.4$ times more certain than it is. [Chapter 9](#ch9-sec-checking-the-noise-levels) shows how to detect this from the measurements alone.
 
     <!-- label: ch7-sec-linear-is-not-everything -->
     ### Linear Is Not Everything
 
-    The Optimal Gain theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. It says nothing about nonlinear rules such as "if the reading is more than 5 lb from the prediction, ignore it." When the errors are normal, [Chapter 8](#ch8-cor-the-optimal-gain-is-optimal-among-all-estimators) proves that no rule of any kind beats the optimal gain. When the noise has occasional large outliers, Chapter 8 shows a nonlinear rule that does.
+    The Optimal Gain theorem compares only estimates of the form $\hat x^- + \alpha(z - \hat x^-)$. It says nothing about nonlinear rules such as "if the reading is more than 2 kg from the prediction, ignore it." When the errors are normal, [Chapter 8](#ch8-cor-the-optimal-gain-is-optimal-among-all-estimators) proves that no rule of any kind beats the optimal gain. When the noise has occasional large outliers, Chapter 8 shows a nonlinear rule that does.
     """)
     return
 

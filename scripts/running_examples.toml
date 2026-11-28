@@ -1,0 +1,64 @@
+# Canonical values of the book's running examples (STYLEGUIDE.md, "Running Examples").
+#
+# These numbers are the source of truth. `make check-examples` runs every notebook
+# and compares the globals listed in scripts/check_notebooks.py (EXAMPLE_GLOBALS)
+# with the values below, so a page that drifts from them fails the check.
+# Units are SI, except food energy in kcal.
+
+[scale]
+# Bathroom scale (Introduction, Chapters 2, 5-9): a person standing still.
+true_weight = 70.0        # kg, constant while standing
+sigma = 0.5               # kg, measurement noise (R = 0.25 kg^2), Gaussian
+sample_rate = 10          # samples/s (the HX711 supports 10 or 80)
+n_samples = 30            # 3 s of data
+seed = 1                  # np.random.default_rng(seed).normal(0, sigma, n_samples)
+decimals = 2              # readings are rounded to 0.01 kg
+display_step = 0.1        # kg, the scale's display resolution (Chapters 4, 5, 9, Appendix C)
+
+[bulking]
+# Daily weigh-ins while bulking (Introduction, Chapters 6, 9, 10, 13).
+start_weight = 70.0       # kg on day 1
+rate = 0.1                # kg/day (0.7 kg/week)
+days = 28
+sigma = 0.5               # kg, daily reading noise (water and food dominate)
+seed = 2                  # np.random.default_rng(seed).normal(0, sigma, days)
+decimals = 1              # readings are rounded to 0.1 kg
+# The person, for the Mifflin-St Jeor BMR and the energy-balance model (Chapter 10):
+age = 23                  # years
+height = 175              # cm
+activity = 1.5            # multiplier (moderate)
+kcal_per_kg = 7700.0      # energy per kg of body weight [@wishnofsky1958]
+
+[load_cell]
+# Raw HX711 counts z = h x + c + v (Chapters 11-13).
+h = 40000.0               # counts/kg
+c = 85000.0               # counts
+sigma = 20000.0           # counts (= 0.5 kg)
+plates = [0.0, 20.0, 40.0, 60.0]   # kg, calibration weights
+
+[cart]
+# 1-D cart (Chapter 14): a position sensor plus an accelerometer used as the control
+# input; foreshadows Part VI. Not checked automatically.
+position_rate = 10        # Hz
+position_sigma = 0.5      # m
+accel_rate = 100          # Hz
+
+[pendulum]
+# Damped pendulum (Chapters 15-16). Truth integrated with RK4, state [theta, omega].
+length = 1.0              # m
+gravity = 9.81            # m/s^2
+damping = 0.1             # 1/s
+dt = 0.01                 # s
+measurement_rate = 20     # Hz, horizontal bob position L sin(theta)
+sigma = 0.05              # m
+
+[imu]
+# Inertial measurement unit (Chapters 19-21); conventions are in "Orientation Conventions".
+rate = 100                # Hz
+gyro_sigma = 0.01         # rad/s, white noise
+gyro_bias = 0.01          # rad/s per axis (constant or a slow random walk)
+accel_sigma = 0.05        # m/s^2, white noise
+accel_bias = 0.05         # m/s^2 per axis
+mag_sigma = 0.5           # uT
+mag_field = [0.0, 22.0, -42.0]   # uT in ENU (points north and down)
+gravity = 9.81            # m/s^2

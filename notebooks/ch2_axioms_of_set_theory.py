@@ -979,7 +979,7 @@ def _(mo):
 
     Here $A$ is the set of possible estimates (the real numbers, in Part I). The step index matters because the rule changes with $k$: for the cumulative average, $G(k, x) = x + \tfrac1k\,(z_k - x)$ depends on $k$ through the gain $\tfrac1k$ and through the measurement $z_k$, which is a fixed parameter of the rule[^measurements-fixed]. The theorem guarantees that the estimates exist and are unambiguous; it says nothing about whether they are *good*. That question occupies the rest of Part I.
 
-    Below, the scale readings of the Introduction (true weight 155 lb, readings scattered by about 1 lb) are filtered by the rule $G(k, x) = x + \alpha_k\,(z_k - x)$ with two choices of gain: $\alpha_k = 1/k$ (the cumulative average) and the constant $\alpha_k = 0.2$ for $k \ge 2$ of an {term}`exponential moving average` (EMA). In both cases $\alpha_1 = 1$, which makes $\hat x_1 = z_1$ whatever the initial value $\hat x_0$ (first-measurement initialization). The code evaluates $\hat x_1, \hat x_2, \ldots$ in order, which computes exactly the function the theorem guarantees.
+    Below, the scale readings of the Introduction (true weight 70 kg, readings scattered by about 0.5 kg) are filtered by the rule $G(k, x) = x + \alpha_k\,(z_k - x)$ with two choices of gain: $\alpha_k = 1/k$ (the cumulative average) and the constant $\alpha_k = 0.2$ for $k \ge 2$ of an {term}`exponential moving average` (EMA). In both cases $\alpha_1 = 1$, which makes $\hat x_1 = z_1$ whatever the initial value $\hat x_0$ (first-measurement initialization). The code evaluates $\hat x_1, \hat x_2, \ldots$ in order, which computes exactly the function the theorem guarantees.
 
     [^measurements-fixed]: Treating the measurements as given makes $G$ a fixed function. In [Chapter 5](#ch5-sec-the-measurement-noise-model) the measurements become random variables, and the recursion is applied to each possible sequence of measurements.
     """)
@@ -989,7 +989,7 @@ def _(mo):
 @app.cell
 def _(np):
     # jb: include=false
-    scale_z = np.round(155.0 + np.random.default_rng(1).normal(0.0, 1.0, 30), 2)
+    scale_z = np.round(70.0 + np.random.default_rng(1).normal(0.0, 0.5, 30), 2)
     return (scale_z,)
 
 
@@ -1026,13 +1026,13 @@ def _(gain_choice, graphic, mo, np, plt, scale_z, steps_slider):
 
     _ks = np.arange(1, _K + 1)
     _fig, _ax = plt.subplots(figsize=(7, 3.6))
-    _ax.axhline(155.0, color="black", linewidth=1, label="true weight")
+    _ax.axhline(70.0, color="black", linewidth=1, label="true weight")
     _ax.plot(_ks, scale_z[:_K], "o", mfc="none", mec="black", label=r"measurement $z_k$")
     _ax.plot(_ks, _xhat[1:], "-o", color="C1", markersize=4, label=r"estimate $\hat x_k$")
     _ax.set_xlim(0.5, 30.5)
-    _ax.set_ylim(152.0, 158.0)
+    _ax.set_ylim(68.5, 71.5)
     _ax.set_xlabel("step $k$ (samples at 10 Hz)")
-    _ax.set_ylabel("weight (lb)")
+    _ax.set_ylabel("weight (kg)")
     _ax.set_title(r"Evaluating $\hat x_k = G(k, \hat x_{k-1})$ step by step", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(loc="upper right", fontsize=8)
@@ -1043,7 +1043,7 @@ def _(gain_choice, graphic, mo, np, plt, scale_z, steps_slider):
     _a = _gain(_K, _rule)
     _step_text = mo.md(
         rf"Last step: $\hat x_{{{_K}}} = \hat x_{{{_K - 1}}} + \alpha_{{{_K}}}\,(z_{{{_K}}} - \hat x_{{{_K - 1}}})"
-        rf" = {_xhat[_K - 1]:.2f} + {_a:.3f}\,({scale_z[_K - 1]:.2f} - {_xhat[_K - 1]:.2f}) = {_xhat[_K]:.2f}$ lb."
+        rf" = {_xhat[_K - 1]:.2f} + {_a:.3f}\,({scale_z[_K - 1]:.2f} - {_xhat[_K - 1]:.2f}) = {_xhat[_K]:.2f}$ kg."
     )
     mo.vstack([mo.hstack([steps_slider, gain_choice], justify="start", gap=2), _plot, _step_text])
     return

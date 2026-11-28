@@ -249,9 +249,9 @@ def _(mo):
     $$\operatorname{Cov}(\mathbf y) = \mathbb E\big[\mathbf A(\mathbf x - \boldsymbol\mu)(\mathbf x - \boldsymbol\mu)^\top\mathbf A^\top\big] = \mathbf A\,\mathbb E\big[(\mathbf x - \boldsymbol\mu)(\mathbf x - \boldsymbol\mu)^\top\big]\,\mathbf A^\top = \mathbf A\boldsymbol\Sigma\mathbf A^\top. \;\blacksquare$$
     ///
 
-    **Example (the rate model).** In Chapter 10's rate model, one prediction step maps the error vector $\mathbf e = [e^x, e^r]^\top$ (weight, daily rate) to $\mathbf F\mathbf e$ with $\mathbf F = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$, ignoring process noise. Suppose today the errors are uncorrelated, with standard deviations $1$ lb and $0.1$ lb/day: $\mathbf P = \operatorname{diag}(1, 0.01)$. Then
-    $$\mathbf F\mathbf P\mathbf F^\top = \begin{bmatrix}1.01 & 0.01\\ 0.01 & 0.01\end{bmatrix}, \qquad \mathbf F^{10}\mathbf P(\mathbf F^{10})^\top = \begin{bmatrix}2 & 0.1\\ 0.1 & 0.01\end{bmatrix},$$
-    since $\mathbf F^{10} = \begin{bmatrix}1 & 10\\ 0 & 1\end{bmatrix}$. The correlation grows from $0$ to about $0.10$ after one day and to $0.1/\sqrt{2 \cdot 0.01} \approx 0.71$ after ten days without a weigh-in: the prediction ties the weight error to the rate error. This one line of matrix algebra replaces Chapter 10's separate formulas for two variances and a covariance.
+    **Example (the rate model).** In Chapter 10's rate model, one prediction step maps the error vector $\mathbf e = [e^x, e^r]^\top$ (weight, daily rate) to $\mathbf F\mathbf e$ with $\mathbf F = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$, ignoring process noise. Suppose today the errors are uncorrelated, with standard deviations $0.5$ kg and $0.05$ kg/day: $\mathbf P = \operatorname{diag}(0.25, 0.0025)$. Then
+    $$\mathbf F\mathbf P\mathbf F^\top = \begin{bmatrix}0.2525 & 0.0025\\ 0.0025 & 0.0025\end{bmatrix}, \qquad \mathbf F^{10}\mathbf P(\mathbf F^{10})^\top = \begin{bmatrix}0.5 & 0.025\\ 0.025 & 0.0025\end{bmatrix},$$
+    since $\mathbf F^{10} = \begin{bmatrix}1 & 10\\ 0 & 1\end{bmatrix}$. The correlation grows from $0$ to about $0.10$ after one day and to $0.025/\sqrt{0.5 \cdot 0.0025} \approx 0.71$ after ten days without a weigh-in: the prediction ties the weight error to the rate error. This one line of matrix algebra replaces Chapter 10's separate formulas for two variances and a covariance.
 
     Between two different random vectors we need the covariance of every component of one with every component of the other.
 
@@ -405,7 +405,7 @@ def _(mo):
     <!-- label: ch12-sec-mahalanobis-distance-and-confidence-ellipses -->
     ## Mahalanobis Distance and Confidence Ellipses
 
-    How far is a point from the center of a multivariate normal distribution? Plain distance is the wrong measure: a deviation of 2 lb is ordinary along a direction with a standard deviation of 5 lb and extraordinary along one with 0.1 lb. The right measure counts standard deviations, direction by direction.
+    How far is a point from the center of a multivariate normal distribution? Plain distance is the wrong measure: a deviation of 1 kg is ordinary along a direction with a standard deviation of 2.5 kg and extraordinary along one with 0.05 kg. The right measure counts standard deviations, direction by direction.
 
     /// note | 📖 **Definition**
     <u>**Mahalanobis distance**</u>
@@ -697,7 +697,7 @@ def _(mo):
     - **Covariance:** subtract $\boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}$, which is positive semidefinite ($\mathbf a^\top\boldsymbol\Sigma_{xz}\boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}\mathbf a = (\boldsymbol\Sigma_{zx}\mathbf a)^\top\boldsymbol\Sigma_{zz}^{-1}(\boldsymbol\Sigma_{zx}\mathbf a) \ge 0$). So observing $\mathbf z$ never increases the variance of any linear combination of $\mathbf x$. Remarkably, the new covariance does not depend on the observed value $\mathbf z$ at all, so it can be computed before any data arrive.
     - **Scalars:** for $n = m = 1$ with standard deviations $\sigma_x, \sigma_z$ and correlation $\rho$, the conditional mean is $\mu_x + \rho\,\frac{\sigma_x}{\sigma_z}(z - \mu_z)$ and the conditional variance is $\sigma_x^2(1 - \rho^2)$.
 
-    Geometrically, conditioning is slicing: fix $z$, cut the joint density along that line, and rescale the slice to integrate to $1$. The figure shows this for a weight $x \sim \mathcal N(155, 4)$ and a reading $z = x + v$ with independent $v \sim \mathcal N(0, 1)$.
+    Geometrically, conditioning is slicing: fix $z$, cut the joint density along that line, and rescale the slice to integrate to $1$. The figure shows this for a weight $x \sim \mathcal N(70, 1)$ and a reading $z = x + v$ with independent $v \sim \mathcal N(0, 0.25)$.
     """)
     return
 
@@ -705,7 +705,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <img src="public/ch12_conditioning_slice.svg" class="graphic" alt="Left: confidence ellipses of the joint distribution of a weight x and a reading z, with the horizontal line z = 157 and the line of conditional means. Right: the prior density of x, centered at 155, and the much narrower conditional density given z = 157, centered at 156.6." />
+    <img src="public/ch12_conditioning_slice.svg" class="graphic" alt="Left: confidence ellipses of the joint distribution of a weight x and a reading z, with the horizontal line z = 71 and the line of conditional means. Right: the prior density of x, centered at 70, and the much narrower conditional density given z = 71, centered at 70.8." />
     """)
     return
 
@@ -713,9 +713,9 @@ def _(mo):
 @app.cell
 def _(IMAGES_DIR, np, plt):
     # jb: include=false
-    _mu = np.array([155.0, 155.0])
-    _S = np.array([[4.0, 4.0], [4.0, 5.0]])
-    _z_obs = 157.0
+    _mu = np.array([70.0, 70.0])
+    _S = np.array([[1.0, 1.0], [1.0, 1.25]])
+    _z_obs = 71.0
     _m = _mu[0] + _S[0, 1] / _S[1, 1] * (_z_obs - _mu[1])
     _v = _S[0, 0] - _S[0, 1] ** 2 / _S[1, 1]
     _fig, (_ax1, _ax2) = plt.subplots(1, 2, figsize=(11, 4.5))
@@ -725,26 +725,26 @@ def _(IMAGES_DIR, np, plt):
         _r = np.sqrt(-2 * np.log(1 - _p))
         _b = _mu[:, None] + _Q @ (_r * np.sqrt(_lam)[:, None] * np.vstack([np.cos(_th), np.sin(_th)]))
         _ax1.plot(_b[0], _b[1], color="C0", ls=_ls, lw=1.2, label=f"{_p:.0%} ellipse of $(x, z)$")
-    _zs = np.linspace(147, 163, 2)
+    _zs = np.linspace(66, 74, 2)
     _ax1.plot(_mu[0] + _S[0, 1] / _S[1, 1] * (_zs - _mu[1]), _zs, color="C1", lw=1.5, label=r"conditional mean $m(z)$")
     _ax1.axhline(_z_obs, color="black", lw=1, label=f"observed $z = {_z_obs:.0f}$")
     _ax1.plot([_m], [_z_obs], "o", color="C1")
-    _ax1.set_xlim(147, 163)
-    _ax1.set_ylim(147, 163)
+    _ax1.set_xlim(66, 74)
+    _ax1.set_ylim(66, 74)
     _ax1.set_aspect("equal")
-    _ax1.set_xlabel("Weight $x$ (lb)")
-    _ax1.set_ylabel("Reading $z$ (lb)")
+    _ax1.set_xlabel("Weight $x$ (kg)")
+    _ax1.set_ylabel("Reading $z$ (kg)")
     _ax1.set_title("Joint distribution of weight and reading", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper left")
-    _xs = np.linspace(147, 163, 400)
+    _xs = np.linspace(66, 74, 400)
     _ax2.plot(_xs, np.exp(-0.5 * (_xs - _mu[0]) ** 2 / _S[0, 0]) / np.sqrt(2 * np.pi * _S[0, 0]), color="black", ls="--",
-              label=r"before: $\mathcal{N}(155, 4)$")
+              label=r"before: $\mathcal{N}(70, 1)$")
     _ax2.plot(_xs, np.exp(-0.5 * (_xs - _m) ** 2 / _v) / np.sqrt(2 * np.pi * _v), color="C1", lw=2,
               label=rf"given $z = {_z_obs:.0f}$: $\mathcal{{N}}({_m:.1f}, {_v:.1f})$")
     _ax2.axvline(_z_obs, color="gray", lw=0.8, ls=":")
-    _ax2.set_xlabel("Weight $x$ (lb)")
-    _ax2.set_ylabel("Density (1/lb)")
+    _ax2.set_xlabel("Weight $x$ (kg)")
+    _ax2.set_ylabel("Density (1/kg)")
     _ax2.set_title("Conditioning is slicing", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(fontsize=8, loc="upper left")
@@ -757,7 +757,7 @@ def _(IMAGES_DIR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Here $\operatorname{Cov}(x, z) = \operatorname{Var}(x) = 4$ and $\operatorname{Var}(z) = 4 + 1 = 5$, so the reading $z = 157$ moves the mean by $\tfrac45 \cdot 2 = 1.6$ lb to $156.6$ lb and shrinks the variance from $4$ to $4 - \tfrac{16}{5} = 0.8$ lb$^2$. That is precisely Chapter 7's update with gain $4/5$.
+    Here $\operatorname{Cov}(x, z) = \operatorname{Var}(x) = 1$ and $\operatorname{Var}(z) = 1 + 0.25 = 1.25$, so the reading $z = 71$ moves the mean by $\tfrac45 \cdot 1 = 0.8$ kg to $70.8$ kg and shrinks the variance from $1$ to $1 - \tfrac{1}{1.25} = 0.2$ kg$^2$. That is precisely Chapter 7's update with gain $4/5$.
 
     The conditional mean also has a meaning that does not depend on normality: it is the best *linear* estimate for any distribution with these means and covariances. For jointly normal vectors it is moreover the conditional expectation $\mathbb E[\mathbf x \mid \mathbf z]$, which [Chapter 8](#ch8-thm-the-posterior-mean-is-the-mmse-estimator) showed is the best estimate of all.
 
@@ -814,7 +814,7 @@ def _(mo):
 
     [Chapter 13](#ch13-sec-the-optimal-gain) derives the same gain without assuming normality, by minimizing the error variance over all gains, and adds the prediction step. The best-linear-estimator theorem above already tells us why the two derivations agree: the conditional mean of jointly normal vectors is the best linear update.
 
-    **Example: weight and offset.** Return to Chapter 11's scale, with the offset converted to pounds using the calibrated sensitivity (so $c = 85{,}000/20{,}000 = 4.25$ lb nominally). The state is $\mathbf x = [x, c]^\top$ (weight, offset). Before anyone steps on, the filter believes $x \sim \mathcal N(150, 5^2)$ and, from the last tare, $c \sim \mathcal N(4.25, \sigma_c^2)$, independently, so $\mathbf P^- = \operatorname{diag}(25, \sigma_c^2)$. Actually, the person weighs 155 lb and the offset has drifted to $5.25$ lb. A 3-second standing measurement averages 30 readings, $z_1 = x + c + v_1$ with $\operatorname{Var}(v_1) = 1/30$ lb$^2$, so $\mathbf H = [1\ \ 1]$. An empty-platform measurement, also an average of 30 readings, is $z_0 = c + v_0$, with row $[0\ \ 1]$. Conditioning on both measurements at once uses the stacked $\mathbf H = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$ and $\mathbf R = \operatorname{diag}(1/30, 1/30)$.
+    **Example: weight and offset.** Return to Chapter 11's scale, with the offset converted to kilograms using the calibrated sensitivity (so $c = 85{,}000/40{,}000 = 2.125$ kg nominally). The state is $\mathbf x = [x, c]^\top$ (weight, offset). Before anyone steps on, the filter believes $x \sim \mathcal N(67.5, 2.5^2)$ and, from the last tare, $c \sim \mathcal N(2.125, \sigma_c^2)$, independently, so $\mathbf P^- = \operatorname{diag}(6.25, \sigma_c^2)$. Actually, the person weighs 70 kg and the offset has drifted to $2.625$ kg. A 3-second standing measurement averages 30 readings, $z_1 = x + c + v_1$ with $\operatorname{Var}(v_1) = 0.25/30 = 1/120$ kg$^2$, so $\mathbf H = [1\ \ 1]$. An empty-platform measurement, also an average of 30 readings, is $z_0 = c + v_0$, with row $[0\ \ 1]$. Conditioning on both measurements at once uses the stacked $\mathbf H = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$ and $\mathbf R = \operatorname{diag}(1/120, 1/120)$.
     """)
     return
 
@@ -851,7 +851,7 @@ def _(np):
 
 @app.cell(hide_code=True)
 def _(mo):
-    offset_sd = mo.ui.slider(0.2, 5.0, step=0.1, value=2.0, show_value=True, label=r"Prior offset s.d. $\sigma_c$ (lb)")
+    offset_sd = mo.ui.slider(0.1, 2.5, step=0.05, value=1.0, show_value=True, label=r"Prior offset s.d. $\sigma_c$ (kg)")
     use_empty = mo.ui.checkbox(value=False, label="Also condition on the empty-platform measurement")
     return offset_sd, use_empty
 
@@ -867,15 +867,15 @@ def _(
     plt,
     use_empty,
 ):
-    _x_true = np.array([155.0, 5.25])
-    _noise = np.random.default_rng(5).normal(0.0, 1.0, 2) / np.sqrt(30)
+    _x_true = np.array([70.0, 2.625])
+    _noise = np.random.default_rng(5).normal(0.0, 0.5, 2) / np.sqrt(30)
     _z1 = np.array([_x_true[0] + _x_true[1] + _noise[0]])
     _z0 = np.array([_x_true[1] + _noise[1]])
-    _x_prior = np.array([150.0, 4.25])
-    _P_prior = np.diag([25.0, offset_sd.value**2])
-    _x1, _P1 = condition_on_measurement(_x_prior, _P_prior, np.array([[1.0, 1.0]]), np.array([[1 / 30]]), _z1)
+    _x_prior = np.array([67.5, 2.125])
+    _P_prior = np.diag([6.25, offset_sd.value**2])
+    _x1, _P1 = condition_on_measurement(_x_prior, _P_prior, np.array([[1.0, 1.0]]), np.array([[1 / 120]]), _z1)
     _H2 = np.array([[1.0, 1.0], [0.0, 1.0]])
-    _x2, _P2 = condition_on_measurement(_x_prior, _P_prior, _H2, np.diag([1 / 30, 1 / 30]), np.concatenate([_z1, _z0]))
+    _x2, _P2 = condition_on_measurement(_x_prior, _P_prior, _H2, np.diag([1 / 120, 1 / 120]), np.concatenate([_z1, _z0]))
 
     _fig, _ax = plt.subplots(figsize=(7, 5.5))
     _e = confidence_ellipse(_x_prior, _P_prior, 0.95)
@@ -888,10 +888,10 @@ def _(
         _ax.fill(_e[0], _e[1], color="C1", alpha=0.4, label="given both measurements")
         _ax.plot(*_x2, "o", color="C1", ms=5)
     _ax.plot(*_x_true, "k+", ms=14, mew=2, label="truth")
-    _ax.set_xlim(135, 168)
-    _ax.set_ylim(-8, 16)
-    _ax.set_xlabel("Weight $x$ (lb)")
-    _ax.set_ylabel("Offset $c$ (lb)")
+    _ax.set_xlim(60, 76.5)
+    _ax.set_ylim(-4, 8)
+    _ax.set_xlabel("Weight $x$ (kg)")
+    _ax.set_ylabel("Offset $c$ (kg)")
     _ax.set_title("Conditioning on scale readings", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(fontsize=8, loc="upper right")
@@ -899,7 +899,7 @@ def _(
 
     def _describe(_m, _P):
         _r = _P[0, 1] / np.sqrt(_P[0, 0] * _P[1, 1])
-        return (rf"weight {_m[0]:.2f} $\pm$ {2 * np.sqrt(_P[0, 0]):.2f} lb, offset {_m[1]:.2f} $\pm$ {2 * np.sqrt(_P[1, 1]):.2f} lb "
+        return (rf"weight {_m[0]:.2f} $\pm$ {2 * np.sqrt(_P[0, 0]):.2f} kg, offset {_m[1]:.2f} $\pm$ {2 * np.sqrt(_P[1, 1]):.2f} kg "
                 rf"($\pm 2$ s.d.), correlation {_r:+.2f}")
 
     _lines = [f"Given the standing measurement: {_describe(_x1, _P1)}."]
@@ -912,7 +912,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The standing measurement pins down $x + c$ very precisely but leaves $x - c$ almost as uncertain as before: the ellipse becomes a thin diagonal sliver, and the weight and offset become strongly *negatively* correlated (if the offset is higher, the weight must be lower). How uncertain the weight remains depends entirely on how well we knew the offset: with $\sigma_c = 2$ lb the weight is still uncertain by about $\pm 3.7$ lb (two standard deviations), and no number of standing readings would change that. This is Chapter 11's "two unknowns, one reading", now quantified. Check the box to add the empty-platform measurement: its row $[0\ \ 1]$ cuts across the sliver, and both unknowns are pinned down. Chapter 13 turns the question "do the measurements cut across every direction?" into the rank test for {term}`observability`.
+    The standing measurement pins down $x + c$ very precisely but leaves $x - c$ almost as uncertain as before: the ellipse becomes a thin diagonal sliver, and the weight and offset become strongly *negatively* correlated (if the offset is higher, the weight must be lower). How uncertain the weight remains depends entirely on how well we knew the offset: with $\sigma_c = 1$ kg the weight is still uncertain by about $\pm 1.9$ kg (two standard deviations), and no number of standing readings would change that. This is Chapter 11's "two unknowns, one reading", now quantified. Check the box to add the empty-platform measurement: its row $[0\ \ 1]$ cuts across the sliver, and both unknowns are pinned down. Chapter 13 turns the question "do the measurements cut across every direction?" into the rank test for {term}`observability`.
 
     Conditioning on the two measurements one after the other, using the first result as the prior for the second, gives exactly the same answer as conditioning on both at once (try it with `condition_on_measurement`). [Chapter 14](#ch14-sec-sequential-updates) uses this to process measurements one at a time.
     """)

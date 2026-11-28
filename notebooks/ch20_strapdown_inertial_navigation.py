@@ -56,20 +56,6 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 19](#ch19) estimated the {term}`attitude` of an {term}`inertial measurement unit`. An IMU strapped to a shoe can, in principle, do much more: integrate its {term}`gyroscope` once to get attitude, its {term}`accelerometer` twice to get position, and so track every stride a person takes, with no camera, beacon, or satellite in sight. That is **strapdown inertial navigation**, the key concept of this chapter.
-
-    Its central difficulty is also the reason this chapter belongs in a book about filters. Integration accumulates errors. We will derive exactly how fast: a constant accelerometer error grows into a position error proportional to $t^2$, and a constant gyroscope error into one proportional to $t^3$. With a consumer-grade IMU, the position is off by meters within a few seconds. Walking offers a way out: once per stride, the foot stands still on the ground, so its true velocity is known to be zero. This chapter builds the navigation equations, a synthetic walking simulator with exact ground truth, and detectors that find the stationary moments. [Chapter 21](#ch21) turns those moments into Kalman filter measurements.
-
-    /// attention | 🗝️ **Key Idea**
-    Inertial navigation integrates, and integration turns small constant sensor errors into position errors that grow like $t^2$ and $t^3$. A walking foot is stationary once per stride, which provides a perfect velocity measurement roughly every second, provided we can detect when it happens.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 17](#ch17): [rotation matrices](#ch17-sec-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [the kinematics](#ch17-sec-angular-velocity) $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, [the exponential map](#ch17-sec-rotation-vectors-and-the-exponential-map), and [the small-angle approximation](#ch17-thm-small-angle-approximation).
     - [Chapter 18](#ch18): the {term}`Hamilton product`, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
@@ -78,6 +64,20 @@ def _(mo):
     - [Chapter 9](#ch9): {term}`white noise`, {term}`random walks <random walk>`, and the {term}`chi-squared distribution`.
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) and [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus).
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices) and [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential).
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [Chapter 19](#ch19) estimated the {term}`attitude` of an {term}`inertial measurement unit`. An IMU strapped to a shoe can, in principle, do much more: integrate its {term}`gyroscope` once to get attitude, its {term}`accelerometer` twice to get position, and so track every stride a person takes, with no camera, beacon, or satellite in sight. That is **strapdown inertial navigation**, the key concept of this chapter.
+
+    Its central difficulty is also the reason this chapter belongs in a book about filters. Integration accumulates errors. We will derive exactly how fast: a constant accelerometer error grows into a position error proportional to $t^2$, and a constant gyroscope error into one proportional to $t^3$. With a consumer-grade IMU, the position is off by meters within a few seconds. Walking offers a way out: once per stride, the foot stands still on the ground, so its true velocity is known to be zero. This chapter builds the navigation equations, a synthetic walking simulator with exact ground truth, and detectors that find the stationary moments. [Chapter 21](#ch21) turns those moments into Kalman filter measurements.
+
+    /// attention | 🗝️ **Key Idea**
+    Inertial navigation integrates, and integration turns small constant sensor errors into position errors that grow like $t^2$ and $t^3$. A walking foot is stationary once per stride, which provides a perfect velocity measurement roughly every second, provided we can detect when it happens.
     ///
     """)
     return

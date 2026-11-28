@@ -67,15 +67,29 @@ def helpers(np):
 @app.cell
 def scale_data(np):
     # jb: include=false
-    scale_x = 155.0
-    scale_R = 1.0
-    # Same data as the Introduction: 3 s at 10 samples/s, noise sigma = 1 lb, seed 1
-    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 1.0, 30), 2)
+    scale_x = 70.0
+    scale_R = 0.25
+    # Same data as the Introduction: 3 s at 10 samples/s, noise sigma = 0.5 kg, seed 1
+    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 0.5, 30), 2)
     scale_t = np.arange(1, 31) / 10
     # The same readings with three large outliers (a hand on the counter, a bump)
     scale_z_outliers = scale_z.copy()
-    scale_z_outliers[[5, 13, 21]] += np.array([9.0, -7.0, 12.0])
+    scale_z_outliers[[5, 13, 21]] += np.array([4.5, -3.5, 6.0])
     return scale_R, scale_t, scale_x, scale_z, scale_z_outliers
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    /// important | 🔗 **Prerequisites**
+    - [Chapter 4](#ch4): {term}`conditional probability`, [the law of total probability](#ch4-thm-law-of-total-probability), and [Bayes' theorem for events](#ch4-thm-bayes-theorem-for-events).
+    - [Chapter 5](#ch5): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and [the integral](#ch5-thm-the-normal-density-is-a-pdf) $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, [the density of](#ch5-thm-density-of-ax-b) $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and [the factorization of their joint density](#ch5-thm-factorization-criteria), [the continuous convolution formula](#ch5-thm-continuous-convolution), and [sums of independent normal random variables](#ch5-thm-sums-of-independent-normals).
+    - [Chapter 6](#ch6): {term}`expected value` and [the law of the unconscious statistician](#ch6-thm-lotus) (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
+    - [Chapter 7](#ch7): [the lowercase convention for random quantities](#ch7-sec-random-quantities-in-lowercase), {term}`estimation error`, {term}`error variance`, and [the Optimal Gain theorem](#ch7-thm-optimal-gain).
+    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](#appc-sec-improper-integrals), and [Multiple Integrals](#appc-sec-multiple-integrals) (Fubini's theorem and substitution).
+    ///
+    """)
+    return
 
 
 @app.cell(hide_code=True)
@@ -89,20 +103,6 @@ def _(mo):
     2. A proof that, when the noise is normal, the optimal gain is not just the best gain but the best estimator of *any* form.
     3. A recipe for what to do when the noise is *not* normal, for instance when a reading occasionally goes wild.
     4. The **Bayes filter**, a general recursion for estimating a changing quantity, of which the Kalman filter is the normal special case.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    /// important | 🔗 **Prerequisites**
-    - [Chapter 4](#ch4): {term}`conditional probability`, [the law of total probability](#ch4-thm-law-of-total-probability), and [Bayes' theorem for events](#ch4-thm-bayes-theorem-for-events).
-    - [Chapter 5](#ch5): {term}`probability density functions <probability density function>`, the {term}`normal distribution` and [the integral](#ch5-thm-the-normal-density-is-a-pdf) $\int_{-\infty}^\infty e^{-u^2/2}\,du = \sqrt{2\pi}$, [the density of](#ch5-thm-density-of-ax-b) $aX + b$, {term}`joint densities <joint density>` (defined through the joint CDF) and {term}`marginal densities <marginal density>`, {term}`independent random variables` and [the factorization of their joint density](#ch5-thm-factorization-criteria), [the continuous convolution formula](#ch5-thm-continuous-convolution), and [sums of independent normal random variables](#ch5-thm-sums-of-independent-normals).
-    - [Chapter 6](#ch6): {term}`expected value` and [the law of the unconscious statistician](#ch6-thm-lotus) (LOTUS) for densities, {term}`variance`, and {term}`mean squared error`, including $\text{MSE} = \text{variance} + \text{bias}^2$.
-    - [Chapter 7](#ch7): [the lowercase convention for random quantities](#ch7-sec-random-quantities-in-lowercase), {term}`estimation error`, {term}`error variance`, and [the Optimal Gain theorem](#ch7-thm-optimal-gain).
-    - [Appendix C: The Riemann Integral](#appc-sec-the-riemann-integral), [Improper Integrals](#appc-sec-improper-integrals), and [Multiple Integrals](#appc-sec-multiple-integrals) (Fubini's theorem and substitution).
-    ///
     """)
     return
 
@@ -471,13 +471,13 @@ def _(mo):
     <!-- label: ch8-sec-when-the-noise-is-not-normal -->
     ## When the Noise Is Not Normal
 
-    Real scales occasionally produce a wild reading: you steady yourself on the counter, the dog bumps the platform. A simple model of this: usually the noise is $\mathcal N(0, \sigma_1^2)$ with $\sigma_1 = 1$ lb, but with a small probability $\varepsilon$ it is an *outlier* drawn from $\mathcal N(0, \sigma_2^2)$ with a much larger $\sigma_2$. Precisely, $v := (1 - b)\,\sigma_1 g_1 + b\,\sigma_2 g_2$, where $g_1, g_2 \sim \mathcal N(0, 1)$ and $b$ (with $\mathbb P(b = 1) = \varepsilon$, $\mathbb P(b = 0) = 1 - \varepsilon$) are independent of each other and of $x$. By the law of total probability (Chapter 4), $\mathbb P(v \le a) = (1-\varepsilon)\,\mathbb P(\sigma_1 g_1 \le a) + \varepsilon\,\mathbb P(\sigma_2 g_2 \le a)$, so $v$ has the *mixture* density
+    Real scales occasionally produce a wild reading: you steady yourself on the counter, the dog bumps the platform. A simple model of this: usually the noise is $\mathcal N(0, \sigma_1^2)$ with $\sigma_1 = 0.5$ kg, but with a small probability $\varepsilon$ it is an *outlier* drawn from $\mathcal N(0, \sigma_2^2)$ with a much larger $\sigma_2$. Precisely, $v := (1 - b)\,\sigma_1 g_1 + b\,\sigma_2 g_2$, where $g_1, g_2 \sim \mathcal N(0, 1)$ and $b$ (with $\mathbb P(b = 1) = \varepsilon$, $\mathbb P(b = 0) = 1 - \varepsilon$) are independent of each other and of $x$. By the law of total probability (Chapter 4), $\mathbb P(v \le a) = (1-\varepsilon)\,\mathbb P(\sigma_1 g_1 \le a) + \varepsilon\,\mathbb P(\sigma_2 g_2 \le a)$, so $v$ has the *mixture* density
 
     $$f_v(\eta) = (1 - \varepsilon)\,\mathcal N(\eta;\, 0, \sigma_1^2) + \varepsilon\,\mathcal N(\eta;\, 0, \sigma_2^2),$$
 
-    with mean $0$ and variance $R = (1-\varepsilon)\sigma_1^2 + \varepsilon\sigma_2^2$ (integrate $\eta$ and $\eta^2$ against each part). Let the prior be $x \sim \mathcal N(m, P^-)$ with $m = 155$ lb and $P^- = 1\ \text{lb}^2$, as if several readings had already been averaged.
+    with mean $0$ and variance $R = (1-\varepsilon)\sigma_1^2 + \varepsilon\sigma_2^2$ (integrate $\eta$ and $\eta^2$ against each part). Let the prior be $x \sim \mathcal N(m, P^-)$ with $m = 70$ kg and $P^- = 0.25\ \text{kg}^2$, as if several readings had already been averaged.
 
-    **The best gain.** Chapter 7 needs only means and variances, so the best estimator of the form $m + \alpha(z - m)$ uses $K = P^-/(P^- + R)$ and has mean squared error $P^-R/(P^- + R)$. With $\varepsilon = 0.1$ and $\sigma_2 = 10$ lb, $R = 10.9\ \text{lb}^2$, so $K \approx 0.08$: because *any* reading might be an outlier, the best gain nearly ignores *every* reading.
+    **The best gain.** Chapter 7 needs only means and variances, so the best estimator of the form $m + \alpha(z - m)$ uses $K = P^-/(P^- + R)$ and has mean squared error $P^-R/(P^- + R)$. With $\varepsilon = 0.1$ and $\sigma_2 = 5$ kg, $R = 2.725\ \text{kg}^2$, so $K \approx 0.08$: because *any* reading might be an outlier, the best gain nearly ignores *every* reading.
 
     **The best estimator.** Bayes' theorem gives the posterior $\propto \mathcal N(\xi;\, m, P^-)\,f_v(\zeta - \xi)$. The proof of the Normal Update theorem showed that $\mathcal N(\xi;\, m, P^-)\,\mathcal N(\zeta - \xi;\, 0, \sigma^2) = \mathcal N(\zeta;\, m, P^- + \sigma^2)\,\mathcal N(\xi;\, \mu, P)$ with $\mu = m + \frac{P^-}{P^- + \sigma^2}(\zeta - m)$ and $P = \frac{P^-\sigma^2}{P^- + \sigma^2}$. Applying this to each part of the mixture, the posterior is itself a mixture of two normal densities,
 
@@ -495,8 +495,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     out_eps = mo.ui.slider(0.0, 0.5, 0.02, value=0.1, label=r"Outlier probability $\varepsilon$", show_value=True)
-    out_sd = mo.ui.slider(1.0, 20.0, 0.5, value=10.0, label=r"Outlier standard deviation $\sigma_2$ (lb)", show_value=True)
-    out_zeta = mo.ui.slider(145.0, 175.0, 0.5, value=158.0, label=r"Observed reading $\zeta$ (lb)", show_value=True)
+    out_sd = mo.ui.slider(0.5, 10.0, 0.25, value=5.0, label=r"Outlier standard deviation $\sigma_2$ (kg)", show_value=True)
+    out_zeta = mo.ui.slider(65.0, 80.0, 0.25, value=71.5, label=r"Observed reading $\zeta$ (kg)", show_value=True)
     return out_eps, out_sd, out_zeta
 
 
@@ -515,7 +515,7 @@ def _(np):
 
 @app.cell(hide_code=True)
 def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zeta, plt):
-    _m, _Pm, _s1 = 155.0, 1.0, 1.0
+    _m, _Pm, _s1 = 70.0, 0.25, 0.5
     _eps, _s2, _zeta = out_eps.value, out_sd.value, out_zeta.value
     _R = (1 - _eps) * _s1**2 + _eps * _s2**2
     _K_lin = _Pm / (_Pm + _R)
@@ -527,7 +527,7 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
         _mu2 = _m + _Pm / (_Pm + _s2**2) * (zz - _m)
         return (_w1 * _mu1 + _w2 * _mu2) / (_w1 + _w2), _w2 / (_w1 + _w2)
 
-    _grid = np.linspace(140.0, 180.0, 4001)
+    _grid = np.linspace(62.5, 82.5, 4001)
     _h = _grid[1] - _grid[0]
     _prior = normal_pdf(_grid, _m, _Pm)
     _lik = mixture_pdf(_zeta - _grid, _eps, _s1**2, _s2**2)
@@ -538,7 +538,7 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
     _lin = _m + _K_lin * (_zeta - _m)
 
     # Estimator curves over a range of readings
-    _zz = np.linspace(145.0, 175.0, 241)
+    _zz = np.linspace(65.0, 80.0, 241)
     _post_all = normal_pdf(_grid[None, :], _m, _Pm) * mixture_pdf(_zz[:, None] - _grid[None, :], _eps, _s1**2, _s2**2)
     _map_curve = _grid[np.argmax(_post_all, axis=1)]
     _mmse_curve = _mmse(_zz)[0]
@@ -558,11 +558,11 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
     _ax1.axvline(_map, color="C3", linestyle="-.", linewidth=1, label=f"MAP {_map:.2f}")
     _ax1.axvline(_lin, color="gray", linestyle="--", linewidth=1, label=f"best gain {_lin:.2f}")
     _ax1.plot([_zeta], [0], "o", markerfacecolor="none", markeredgecolor="black", markeredgewidth=1.5, clip_on=False, zorder=5)
-    _ax1.set_xlim(145, 175)
+    _ax1.set_xlim(65, 80)
     _ax1.set_ylim(bottom=0)
-    _ax1.set_xlabel(r"weight $\xi$ (lb)")
-    _ax1.set_ylabel("density (1/lb)")
-    _ax1.set_title(rf"Posterior for the reading $\zeta = {_zeta:.1f}$ lb", style="italic")
+    _ax1.set_xlabel(r"weight $\xi$ (kg)")
+    _ax1.set_ylabel("density (1/kg)")
+    _ax1.set_title(rf"Posterior for the reading $\zeta = {_zeta:.2f}$ kg", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=7, loc="upper right")
 
@@ -570,9 +570,9 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
     _ax2.plot(_zz, _map_curve, color="C3", linestyle="-.", linewidth=1, label="MAP")
     _ax2.plot(_zz, _m + _K_lin * (_zz - _m), color="gray", linestyle="--", label=rf"best gain $K = {_K_lin:.3f}$")
     _ax2.plot(_zz, _m + 0.5 * (_zz - _m), color="C0", linestyle=":", label=r"gain $0.5$ (no outliers)")
-    _ax2.set_ylim(150, 165)
-    _ax2.set_xlabel(r"reading $\zeta$ (lb)")
-    _ax2.set_ylabel("estimate (lb)")
+    _ax2.set_ylim(67.5, 75)
+    _ax2.set_xlabel(r"reading $\zeta$ (kg)")
+    _ax2.set_ylabel("estimate (kg)")
     _ax2.set_title("Estimate as a function of the reading", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(fontsize=7, loc="upper left")
@@ -582,9 +582,9 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
         mo.hstack([out_eps, out_sd, out_zeta], justify="start", gap=2),
         graphic(_fig),
         mo.md(
-            rf"Noise variance $R = {_R:.2f}\ \text{{lb}}^2$. Posterior probability that this reading is an outlier: "
-            rf"${_p_out:.3f}$. Mean squared error over 100,000 simulated readings: best gain ${_mse_lin:.3f}\ \text{{lb}}^2$ "
-            rf"(formula $P^-R/(P^-+R) = {_Pm * _R / (_Pm + _R):.3f}$), posterior mean ${_mse_mmse:.3f}\ \text{{lb}}^2$."
+            rf"Noise variance $R = {_R:.3f}\ \text{{kg}}^2$. Posterior probability that this reading is an outlier: "
+            rf"${_p_out:.3f}$. Mean squared error over 100,000 simulated readings: best gain ${_mse_lin:.3f}\ \text{{kg}}^2$ "
+            rf"(formula $P^-R/(P^-+R) = {_Pm * _R / (_Pm + _R):.3f}$), posterior mean ${_mse_mmse:.3f}\ \text{{kg}}^2$."
         ),
     ])
     plt.close(_fig)
@@ -595,7 +595,7 @@ def _(graphic, mixture_pdf, mo, normal_pdf, np, out_eps, out_mc, out_sd, out_zet
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    With the default settings, the posterior mean has a mean squared error of about $0.6\ \text{lb}^2$, against about $0.9\ \text{lb}^2$ for the best gain. For readings about $4$ lb from the prior mean (try $\zeta = 159.5$ lb) the posterior has two bumps, one for "good reading" and one for "outlier", and as $\zeta$ crosses this region the MAP estimate jumps from one bump to the other while the posterior mean moves smoothly.
+    With the default settings, the posterior mean has a mean squared error of about $0.15\ \text{kg}^2$, against about $0.23\ \text{kg}^2$ for the best gain. For readings about $2$ kg from the prior mean (try $\zeta = 71.75$ kg) the posterior has two bumps, one for "good reading" and one for "outlier", and as $\zeta$ crosses this region the MAP estimate jumps from one bump to the other while the posterior mean moves smoothly.
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **The nonlinear estimator needs the exact noise model.** It used $\varepsilon$ and $\sigma_2$. With a wrong outlier model it can do worse than the best gain, which only needs $R$.
@@ -876,10 +876,10 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    We run it on the Introduction's 30 bathroom-scale readings (true weight $155$ lb, noise standard deviation $1$ lb). Before the first reading we only know that the person weighs roughly $150 \pm 20$ lb, so the prior is $p_0 = \mathcal N(150, 10^2)$. For comparison, the normal Bayes filter (Chapter 7's update recursion with the same prior and $R = 1\ \text{lb}^2$) is drawn as a dashed purple line.
+    We run it on the Introduction's 30 bathroom-scale readings (true weight $70$ kg, noise standard deviation $0.5$ kg). Before the first reading we only know that the person weighs roughly $67.5 \pm 10$ kg, so the prior is $p_0 = \mathcal N(67.5, 5^2)$. For comparison, the normal Bayes filter (Chapter 7's update recursion with the same prior and $R = 0.25\ \text{kg}^2$) is drawn as a dashed purple line.
 
     - With **normal noise** and the **normal likelihood**, the grid filter and the normal Bayes filter agree to within the grid's resolution, as the corollary predicts.
-    - Switch the data to include **three outliers** (at $0.6$ s, $1.4$ s, and $2.2$ s). The normal filter is yanked toward each one. Switch the grid filter's likelihood to the **outlier mixture** ($\varepsilon = 0.1$, $\sigma_2 = 10$ lb) and it barely notices them.
+    - Switch the data to include **three outliers** (at $0.6$ s, $1.4$ s, and $2.2$ s). The normal filter is yanked toward each one. Switch the grid filter's likelihood to the **outlier mixture** ($\varepsilon = 0.1$, $\sigma_2 = 5$ kg) and it barely notices them.
     - Add a **random change per step** to see the predict step at work: the posterior can no longer become arbitrarily narrow, because each step adds uncertainty. The normal Bayes filter then uses the matching $Q$.
     """)
     return
@@ -889,12 +889,12 @@ def _(mo):
 def _(mo):
     grid_data = mo.ui.dropdown(options=["normal noise", "normal noise + 3 outliers"], value="normal noise", label="Data")
     grid_lik = mo.ui.dropdown(
-        options=["normal (sigma = 1 lb)", "outlier mixture (epsilon = 0.1, sigma_2 = 10 lb)"],
-        value="normal (sigma = 1 lb)",
+        options=["normal (sigma = 0.5 kg)", "outlier mixture (epsilon = 0.1, sigma_2 = 5 kg)"],
+        value="normal (sigma = 0.5 kg)",
         label="Grid filter's likelihood",
     )
     grid_sw = mo.ui.slider(
-        steps=[0.0, 0.05, 0.1, 0.2, 0.3, 0.5], value=0.0, label=r"Random change per step: std of $w_k$ (lb)", show_value=True
+        steps=[0.0, 0.025, 0.05, 0.1, 0.15, 0.25], value=0.0, label=r"Random change per step: std of $w_k$ (kg)", show_value=True
     )
     grid_k = mo.ui.slider(1, 30, 1, value=30, label=r"Show the posterior at step $k$", show_value=True)
     return grid_data, grid_k, grid_lik, grid_sw
@@ -921,15 +921,15 @@ def _(
 ):
     _z = scale_z if grid_data.value == "normal noise" else scale_z_outliers
     _Q = grid_sw.value**2
-    _m0, _P0 = 150.0, 100.0
-    _grid = np.linspace(110.0, 200.0, 4501)
+    _m0, _P0 = 67.5, 25.0
+    _grid = np.linspace(47.5, 92.5, 4501)
     _h = _grid[1] - _grid[0]
     if grid_lik.value.startswith("normal"):
         def _lik(zk, g):
             return normal_pdf(zk - g, 0.0, scale_R)
     else:
         def _lik(zk, g):
-            return mixture_pdf(zk - g, 0.1, 1.0, 100.0)
+            return mixture_pdf(zk - g, 0.1, 0.25, 25.0)
     _posts = grid_bayes_filter(_z, _grid, normal_pdf(_grid, _m0, _P0), _lik, Q=_Q)
     _gmean = (_posts * _grid).sum(axis=1) * _h
     _gvar = (_posts * (_grid[None, :] - _gmean[:, None]) ** 2).sum(axis=1) * _h
@@ -951,10 +951,10 @@ def _(
     _ax1.axvline(scale_x, color="black", linewidth=1, label="true weight")
     _ax1.plot([_z[_k - 1]], [0], "o", markerfacecolor="none", markeredgecolor="black", markeredgewidth=1.5,
               clip_on=True, zorder=5, label=r"reading $z_k$")
-    _ax1.set_xlim(151, 159)
+    _ax1.set_xlim(68, 72)
     _ax1.set_ylim(bottom=0)
-    _ax1.set_xlabel(r"weight $\xi$ (lb)")
-    _ax1.set_ylabel("density (1/lb)")
+    _ax1.set_xlabel(r"weight $\xi$ (kg)")
+    _ax1.set_ylabel("density (1/kg)")
     _ax1.set_title(f"Posterior at step k = {_k}", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=7, loc="upper left")
@@ -965,9 +965,9 @@ def _(
     _ax2.fill_between(scale_t, _gmean - 2 * np.sqrt(_gvar), _gmean + 2 * np.sqrt(_gvar), color="C1", alpha=0.2)
     _ax2.plot(scale_t, _xs, color="C4", linestyle="--", label="normal Bayes filter")
     _ax2.axvline(scale_t[_k - 1], color="gray", linewidth=0.8)
-    _ax2.set_ylim(150, 162) if grid_data.value == "normal noise" else _ax2.set_ylim(145, 170)
+    _ax2.set_ylim(67.5, 73) if grid_data.value == "normal noise" else _ax2.set_ylim(65, 77.5)
     _ax2.set_xlabel("time (s)")
-    _ax2.set_ylabel("weight (lb)")
+    _ax2.set_ylabel("weight (kg)")
     _ax2.set_title(r"Estimates with $\pm 2$ standard deviation band (grid)", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax2.legend(fontsize=7, loc="upper right", ncol=2)
@@ -978,8 +978,8 @@ def _(
         mo.hstack([grid_sw, grid_k], justify="start", gap=2),
         graphic(_fig),
         mo.md(
-            rf"At step $k = {_k}$: grid posterior mean ${_gmean[_k - 1]:.4f}$ lb, variance ${_gvar[_k - 1]:.5f}\ \text{{lb}}^2$; "
-            rf"normal Bayes filter mean ${_xs[_k - 1]:.4f}$ lb, variance ${_Ps[_k - 1]:.5f}\ \text{{lb}}^2$."
+            rf"At step $k = {_k}$: grid posterior mean ${_gmean[_k - 1]:.4f}$ kg, variance ${_gvar[_k - 1]:.6f}\ \text{{kg}}^2$; "
+            rf"normal Bayes filter mean ${_xs[_k - 1]:.4f}$ kg, variance ${_Ps[_k - 1]:.6f}\ \text{{kg}}^2$."
         ),
     ])
     plt.close(_fig)
@@ -990,7 +990,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    With normal noise, the normal likelihood, and no random change, the two filters agree to about four decimal places, and after $30$ readings the posterior variance is $1/(1/100 + 30/1) \approx 0.0333\ \text{lb}^2$, essentially Chapter 7's $R/30$: a vague prior acts like no prior at all. The grid filter costs thousands of multiplications per step where the normal filter needs a handful, which is the practical reason for the Kalman filter's popularity; the grid filter's advantage is that it does not care what shape the densities have.
+    With normal noise, the normal likelihood, and no random change, the two filters agree to about four decimal places, and after $30$ readings the posterior variance is $1/(1/25 + 30/0.25) \approx 0.00833\ \text{kg}^2$, essentially Chapter 7's $R/30$: a vague prior acts like no prior at all. The grid filter costs thousands of multiplications per step where the normal filter needs a handful, which is the practical reason for the Kalman filter's popularity; the grid filter's advantage is that it does not care what shape the densities have.
 
     <!-- label: ch8-sec-summary -->
     ## Summary

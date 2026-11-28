@@ -133,18 +133,6 @@ def rotation_helpers(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [Chapter 18](#ch18-thm-exact-quaternion-update) integrates *perfect* gyroscope readings exactly. Real readings are not perfect: a gyroscope bias of just $0.01$ rad/s, typical of inexpensive MEMS sensors, makes the integrated attitude $34^\circ$ wrong after one minute. Two other sensors see directions that do not drift: an accelerometer at rest measures gravity, which fixes "down", and a magnetometer measures the Earth's magnetic field, which fixes "north". Both are noisy, and both are corrupted when the body accelerates or a magnetic object comes near. An **attitude and heading reference system** (AHRS) fuses the three into one attitude estimate. This chapter builds two: a *complementary filter*, which turns out to be exactly the Introduction's alpha filter, and an *error-state Kalman filter* that also estimates the gyroscope bias and reports its own uncertainty. The same attitude machinery is the core of the inertial navigation in Chapters 20 and 21.
-
-    /// attention | 🗝️ **Key Idea**
-    Gyroscopes are accurate over short times but drift; gravity and the magnetic field are accurate over long times but noisy and easily disturbed. Fusing them means trusting the gyroscope for fast changes and the reference directions for slow ones.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Introduction](#intro): [the alpha filter](#intro-sec-predicting-the-change) $\hat x_k = \hat x_k^- + \alpha(z_k - \hat x_k^-)$ with prediction $\hat x_k^- = \hat x_{k-1} + \Delta x_k$ and [first-measurement initialization](#intro-sec-initialization).
     - [Chapter 6](#ch6): [variance of sums of independent random variables](#ch6-thm-variance-of-a-linear-combination), and [the steady-state variance](#ch6-thm-ema-of-a-constant-value) $\sigma^2\alpha/(2-\alpha)$ of an exponential moving average.
@@ -153,6 +141,18 @@ def _(mo):
     - [Chapters 13](#ch13), [14](#ch14), and [15](#ch15): [the Kalman filter equations](#ch13-sec-the-algorithm), the {term}`Joseph form`, [sequential updates](#ch14-sec-sequential-updates), {term}`gating`, and [the extended Kalman filter with its Jacobians](#ch15-sec-the-extended-kalman-filter).
     - [Chapter 17](#ch17): [ENU/FLU frames](#ch17-sec-reference-frames), [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [angular velocity](#ch17-sec-angular-velocity), $\operatorname{Exp}$ and $\operatorname{Log}$, [the small-angle approximation](#ch17-thm-small-angle-approximation), and the error-state convention $\mathbf R = \hat{\mathbf R}\operatorname{Exp}(\delta\boldsymbol\theta)$.
     - [Chapter 18](#ch18): {term}`unit quaternions <unit quaternion>`, [the exact update](#ch18-thm-exact-quaternion-update) $q_k = q_{k-1}\otimes\operatorname{Exp}_q(\boldsymbol\omega_k\Delta t)$, and $\operatorname{Exp}_q(\delta\boldsymbol\theta) \approx [1, \tfrac12\delta\boldsymbol\theta]$.
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [Chapter 18](#ch18-thm-exact-quaternion-update) integrates *perfect* gyroscope readings exactly. Real readings are not perfect: a gyroscope bias of just $0.01$ rad/s, typical of inexpensive MEMS sensors, makes the integrated attitude $34^\circ$ wrong after one minute. Two other sensors see directions that do not drift: an accelerometer at rest measures gravity, which fixes "down", and a magnetometer measures the Earth's magnetic field, which fixes "north". Both are noisy, and both are corrupted when the body accelerates or a magnetic object comes near. An **attitude and heading reference system** (AHRS) fuses the three into one attitude estimate. This chapter builds two: a *complementary filter*, which turns out to be exactly the Introduction's alpha filter, and an *error-state Kalman filter* that also estimates the gyroscope bias and reports its own uncertainty. The same attitude machinery is the core of the inertial navigation in Chapters 20 and 21.
+
+    /// attention | 🗝️ **Key Idea**
+    Gyroscopes are accurate over short times but drift; gravity and the magnetic field are accurate over long times but noisy and easily disturbed. Fusing them means trusting the gyroscope for fast changes and the reference directions for slow ones.
     ///
     """)
     return

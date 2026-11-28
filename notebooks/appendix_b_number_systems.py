@@ -193,7 +193,7 @@ def _(mo):
     $$\forallin{x}{X}\,\forallin{y}{X}\,\forallin{z}{X}\,\big((x \sim y \land y \sim z) \rightarrow x \sim z\big).$$
     ///
 
-    Equality on any set is an equivalence relation. For intuition[^display-informal]: a scale that displays weight to the nearest 0.1 lb treats two true weights as equivalent when they produce the same display. The order $<$ on $\mathbb N$ is transitive but neither reflexive nor symmetric, so it is not an equivalence relation.
+    Equality on any set is an equivalence relation. For intuition[^display-informal]: a scale that displays weight to the nearest 0.1 kg treats two true weights as equivalent when they produce the same display. The order $<$ on $\mathbb N$ is transitive but neither reflexive nor symmetric, so it is not an equivalence relation.
 
     /// note | 📖 **Definition**
     <u>**Equivalence class**</u>

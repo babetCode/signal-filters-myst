@@ -7,7 +7,7 @@ project:
   license:
     content: CC-BY-4.0
     code: MIT
-  # Settings every page inherits. Pages never repeat these (STYLEGUIDE.md §2.2).
+  # Settings every page inherits. Pages never repeat these (STYLEGUIDE.md, "Frontmatter").
   numbering:
     equations: false
   math:

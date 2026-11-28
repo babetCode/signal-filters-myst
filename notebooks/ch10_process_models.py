@@ -402,16 +402,16 @@ def _(mo):
     <!-- label: ch10-sec-the-energy-balance-model -->
     ## The Energy-Balance Model
 
-    The Introduction's footnote estimated a daily weight gain from the energy you eat and the energy you burn. Let us turn that recipe into a process model for the 28-day bulk: a 23-year-old man, 175 cm tall, with a moderate activity level, starting at 155 lb. Weight $x_k$ is in pounds and is measured each morning; the input $u_k$ is the energy eaten on day $k$, in kcal.
+    The Introduction's footnote estimated a daily weight gain from the energy you eat and the energy you burn. Let us turn that recipe into a process model for the 28-day bulk: a 23-year-old man, 175 cm tall, with a moderate activity level, starting at 70 kg. Weight $x_k$ is in kilograms and is measured each morning; the input $u_k$ is the energy eaten on day $k$, in kcal.
 
     1. **Basal metabolic rate.** The Mifflin–St Jeor equation for men [@mifflin1990] estimates
     $$\text{BMR} = 10\,m + 6.25\,H - 5\,A + 5 \ \text{kcal/day},$$
-    with mass $m$ in kg, height $H$ in cm, and age $A$ in years. A weight of $x$ lb is a mass of $m = \kappa x$ kg, with $\kappa = 0.45359237$ kg/lb.
+    with mass $m$ in kg, height $H$ in cm, and age $A$ in years. The state is the weight itself, so $m = x$.
     2. **Total daily energy expenditure.** TDEE is BMR times an activity multiplier $s$ ($s = 1.5$ for moderate activity). So
-    $$\text{TDEE}(x) = \gamma\,x + \delta, \qquad \gamma := 10\,s\,\kappa, \qquad \delta := s\,(6.25\,H - 5\,A + 5).$$
-    The key observation is that **TDEE is linear in weight**: every extra pound costs $\gamma$ kcal per day to maintain.
+    $$\text{TDEE}(x) = \gamma\,x + \delta, \qquad \gamma := 10\,s, \qquad \delta := s\,(6.25\,H - 5\,A + 5).$$
+    The key observation is that **TDEE is linear in weight**: every extra kilogram costs $\gamma$ kcal per day to maintain.
     3. **Energy balance.** On day $k$ you eat $u_k$ and burn $\text{TDEE}(x_{k-1})$, using the weight at the start of the day. The surplus is $u_k - \gamma x_{k-1} - \delta$ kcal.
-    4. **Energy to weight.** With $\rho = 3500$ kcal per lb [@wishnofsky1958], the weight changes by the surplus divided by $\rho$:
+    4. **Energy to weight.** With $\rho = 7700$ kcal per kg [@wishnofsky1958], the weight changes by the surplus divided by $\rho$:
     $$x_k = x_{k-1} + \frac{u_k - \gamma x_{k-1} - \delta}{\rho}.$$
 
     Collecting terms gives the process model
@@ -426,15 +426,14 @@ def _(mo):
 def _(mo):
     mo.md("""
     ```python
-    def energy_balance_coefficients(age, height_cm, activity, kcal_per_lb=3500.0):
+    def energy_balance_coefficients(age, height_cm, activity, kcal_per_kg=7700.0):
         "\"\"Coefficients of x_k = a x_{k-1} + b u_k + c for a man (Mifflin-St Jeor
-        BMR times an activity multiplier); x in lb, u in kcal/day, one-day steps."\"\"
-        kappa = 0.45359237                                   # kg per lb
-        gamma = 10 * kappa * activity                        # kcal/day per lb
+        BMR times an activity multiplier); x in kg, u in kcal/day, one-day steps."\"\"
+        gamma = 10 * activity                                # kcal/day per kg
         delta = activity * (6.25 * height_cm - 5 * age + 5)  # kcal/day
-        a = 1 - gamma / kcal_per_lb
-        b = 1 / kcal_per_lb
-        c = -delta / kcal_per_lb
+        a = 1 - gamma / kcal_per_kg
+        b = 1 / kcal_per_kg
+        c = -delta / kcal_per_kg
         return a, b, c, gamma, delta
 
     a_bulk, b_bulk, c_bulk, gamma_bulk, delta_bulk = energy_balance_coefficients(
@@ -448,15 +447,14 @@ def _(mo):
 @app.cell
 def _():
     # jb: include=false
-    def energy_balance_coefficients(age, height_cm, activity, kcal_per_lb=3500.0):
+    def energy_balance_coefficients(age, height_cm, activity, kcal_per_kg=7700.0):
         """Coefficients of x_k = a x_{k-1} + b u_k + c for a man (Mifflin-St Jeor
-        BMR times an activity multiplier); x in lb, u in kcal/day, one-day steps."""
-        kappa = 0.45359237                                   # kg per lb
-        gamma = 10 * kappa * activity                        # kcal/day per lb
+        BMR times an activity multiplier); x in kg, u in kcal/day, one-day steps."""
+        gamma = 10 * activity                                # kcal/day per kg
         delta = activity * (6.25 * height_cm - 5 * age + 5)  # kcal/day
-        a = 1 - gamma / kcal_per_lb
-        b = 1 / kcal_per_lb
-        c = -delta / kcal_per_lb
+        a = 1 - gamma / kcal_per_kg
+        b = 1 / kcal_per_kg
+        c = -delta / kcal_per_kg
         return a, b, c, gamma, delta
 
     a_bulk, b_bulk, c_bulk, gamma_bulk, delta_bulk = energy_balance_coefficients(
@@ -474,14 +472,14 @@ def _():
 
 @app.cell(hide_code=True)
 def _(a_bulk, b_bulk, c_bulk, delta_bulk, gamma_bulk, mo):
-    _tdee155 = gamma_bulk * 155 + delta_bulk
-    _u_02 = _tdee155 + 0.2 * 3500
+    _tdee70 = gamma_bulk * 70 + delta_bulk
+    _u_01 = _tdee70 + 0.1 * 7700
     mo.md(rf"""
-    gives $\gamma = {gamma_bulk:.4f}$ kcal/day per lb, $\delta = {delta_bulk:.3f}$ kcal/day, and
+    gives $\gamma = {gamma_bulk:.4f}$ kcal/day per kg, $\delta = {delta_bulk:.3f}$ kcal/day, and
 
-    $$a = {a_bulk:.6f}, \qquad b = 1/3500 \approx {b_bulk*1e4:.4f}\times 10^{{-4}}\ \text{{lb/kcal}}, \qquad c = {c_bulk:.4f}\ \text{{lb}}.$$
+    $$a = {a_bulk:.6f}, \qquad b = 1/7700 \approx {b_bulk*1e4:.4f}\times 10^{{-4}}\ \text{{kg/kcal}}, \qquad c = {c_bulk:.4f}\ \text{{kg}}.$$
 
-    At 155 lb, TDEE is ${_tdee155:.0f}$ kcal/day, so gaining $0.2$ lb/day (the 1.4 lb/week target) takes an intake of about ${_u_02:.0f}$ kcal/day.
+    At 70 kg, TDEE is ${_tdee70:.0f}$ kcal/day, so gaining $0.1$ kg/day (the 0.7 kg/week target) takes an intake of about ${_u_01:.0f}$ kcal/day.
     """)
     return
 
@@ -493,15 +491,15 @@ def _(mo):
 
     **It is linear.** Strictly, the constant $c$ makes the model *affine* rather than linear in the sense of the definition. But a known constant can be absorbed into the input: with the *effective input* $\tilde u_k := u_k - \delta$, the intake beyond the weight-independent part of TDEE, we have $b\,u_k + c = b\,\tilde u_k$ and $x_k = a\,x_{k-1} + b\,\tilde u_k$. Linearity in the state is what matters for the Kalman filter, and it holds because TDEE is linear in weight. (A BMR formula with a $\sqrt{\text{weight}}$ term would not give a linear model.)
 
-    **It has an equilibrium.** Since $a < 1$, a heavier body burns more, so a constant intake $u$ cannot make you gain forever. Solving $x^* = a\,x^* + b\,u + c$ gives the equilibrium weight
+    **It has an equilibrium.** Since $a < 1$, a heavier body burns more, so a constant intake $u$ cannot make the weight grow forever. Solving $x^* = a\,x^* + b\,u + c$ gives the equilibrium weight
     $$x^* = \frac{b\,u + c}{1 - a} = \frac{u - \delta}{\gamma},$$
-    and subtracting $x^* = a x^* + bu + c$ from the model gives $x_k - x^* = a\,(x_{k-1} - x^*)$, so by induction $x_k - x^* = a^k(x_0 - x^*)$. With $a = 0.998056$ the gap shrinks by only about $0.19\%$ per day; it takes $1/(1 - a) \approx 514$ days to shrink by a factor of $e$. Over four weeks the gain is therefore almost a straight line, but it slows slightly as TDEE rises (to about $0.19$ lb/day after four weeks at a constant $3230$ kcal/day).
+    and subtracting $x^* = a x^* + bu + c$ from the model gives $x_k - x^* = a\,(x_{k-1} - x^*)$, so by induction $x_k - x^* = a^k(x_0 - x^*)$. With $a = 0.998052$ the gap shrinks by only about $0.19\%$ per day; it takes $1/(1 - a) \approx 513$ days to shrink by a factor of $e$. Over four weeks the gain is therefore almost a straight line, but it slows slightly as TDEE rises (to about $0.095$ kg/day after four weeks at a constant $3300$ kcal/day).
 
     **Logging error becomes process noise.** Suppose the true intake is $u_k^{\text{true}}$ but the food log records $u_k = u_k^{\text{true}} + \varepsilon_k$, where the logging errors $\varepsilon_k$ have mean $0$ and variance $\sigma_u^2$. Suppose also that the true weight follows $x_k = a\,x_{k-1} + b\,u_k^{\text{true}} + c + w_k^{\text{m}}$, where $w_k^{\text{m}}$ (variance $q_{\text{m}}$) collects everything else the model misses. Written in terms of what we know,
     $$x_k = a\,x_{k-1} + b\,u_k + c + \underbrace{\big(w_k^{\text{m}} - b\,\varepsilon_k\big)}_{w_k},$$
     so the process noise seen by the filter is $w_k = w_k^{\text{m}} - b\,\varepsilon_k$. If $w_k^{\text{m}}$ and $\varepsilon_k$ are independent, Chapter 6's rules give
     $$Q = q_{\text{m}} + b^2\sigma_u^2.$$
-    A logging error of $\sigma_u = 300$ kcal/day contributes $b\,\sigma_u = 300/3500 \approx 0.086$ lb of daily uncertainty. This is the general recipe: anything the model needs but does not know exactly becomes process noise, and its variance follows from Chapter 6.
+    A logging error of $\sigma_u = 300$ kcal/day contributes $b\,\sigma_u = 300/7700 \approx 0.039$ kg of daily uncertainty. This is the general recipe: anything the model needs but does not know exactly becomes process noise, and its variance follows from Chapter 6.
     """)
     return
 
@@ -512,9 +510,9 @@ def _(mo):
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Population formulas.** Mifflin–St Jeor predicts the *average* BMR of people with your age, height, and weight. Individuals typically differ by around 10%. A wrong $\gamma$ or $\delta$ is a *bias*, not noise: it adds the same error every day, so the estimate drifts away from the truth instead of scattering around it. The last section shows how to detect this.
     - **The activity multiplier is a guess,** and it changes when your training changes.
-    - **The 3500 kcal/lb rule** treats every pound gained or lost as the same tissue. Over months it overestimates weight change, because expenditure adapts and the composition of the change varies [@hall2011]. For four weeks it is a reasonable approximation.
+    - **The 7700 kcal/kg rule** treats every kilogram gained or lost as the same tissue. Over months it overestimates weight change, because expenditure adapts and the composition of the change varies [@hall2011]. For four weeks it is a reasonable approximation.
     - **Logging errors are rarely zero-mean.** People tend to under-report what they eat. A systematic under-report is a bias in $u_k$, with the same effect as a wrong TDEE.
-    - **Day-to-day water and food-content swings** (about $\pm 1$ lb) are not in the model. They make the *reading* differ from the tissue weight we model, so they belong in the measurement noise $R$, not in $Q$.
+    - **Day-to-day water and food-content swings** (about $\pm 0.5$ kg) are not in the model. They make the *reading* differ from the tissue weight we model, so they belong in the measurement noise $R$, not in $Q$.
     ///
     """)
     return
@@ -528,13 +526,13 @@ def _(mo):
 
     Which model should the filter use: Chapter 9's random walk, or the energy-balance model? We simulate 28 days of bulking in which the intake changes halfway through, which is exactly the kind of change a fixed expected change $\Delta x_k$ cannot anticipate. So, unlike the straight-line weigh-ins of the Introduction and Chapter 9, the true weight here is not a straight line; the plotted month does reuse their measurement noise.
 
-    - **Truth.** The true weight follows the energy-balance model, starting from $x_0 \sim \mathcal N(155, 1)$. The planned intake is $2880$ kcal/day for days 1–14 and $3580$ kcal/day for days 15–28, a surplus of about $350$ and then $1050$ kcal/day at 155 lb (about $0.1$ and then $0.3$ lb/day, so $0.2$ lb/day on average). The actual intake varies around the plan from day to day with a standard deviation of $300$ kcal, and the model misses a little extra (process noise $w_k^{\text{m}}$ with standard deviation $0.05$ lb).
-    - **Measurements.** One weigh-in each morning, $z_k = x_k + v_k$ with $v_k \sim \mathcal N(0, 1)$, so $R = 1$ lb$^2$, displayed to 0.1 lb.
+    - **Truth.** The true weight follows the energy-balance model, starting from $x_0 \sim \mathcal N(70, 0.25)$. The planned intake is $2910$ kcal/day for days 1–14 and $3680$ kcal/day for days 15–28, a surplus of about $385$ and then $1155$ kcal/day at 70 kg (about $0.05$ and then $0.15$ kg/day, so $0.1$ kg/day on average). The actual intake varies around the plan from day to day with a standard deviation of $300$ kcal, and the model misses a little extra (process noise $w_k^{\text{m}}$ with standard deviation $0.025$ kg).
+    - **Measurements.** One weigh-in each morning, $z_k = x_k + v_k$ with $v_k \sim \mathcal N(0, 0.25)$, so $R = 0.25$ kg$^2$, displayed to 0.1 kg.
     - **Food log.** The logged intake is the actual intake plus a logging error with standard deviation $\sigma_u$ (the slider).
-    - **Random-walk filter** (Chapter 9): $\hat x_k^- = \hat x_{k-1} + 0.2$, using the plan's average gain. Its $Q$ is set to the value that gives the smallest error on these simulations, found by trying a grid of values. This is an advantage it would not have in practice, since there we cannot compare with the truth.
+    - **Random-walk filter** (Chapter 9): $\hat x_k^- = \hat x_{k-1} + 0.1$, using the plan's average gain. Its $Q$ is set to the value that gives the smallest error on these simulations, found by trying a grid of values. This is an advantage it would not have in practice, since there we cannot compare with the truth.
     - **Energy-balance filter:** $a$, $b$, $c$ from above, the logged intake, and $Q = q_{\text{m}} + b^2\sigma_u^2$.
 
-    Both filters start from $\hat x_0 = 155$ with $P_0 = 1$. The plot shows one simulated month; the error figures below it are root-mean-square errors over 2000 simulated months.
+    Both filters start from $\hat x_0 = 70$ with $P_0 = 0.25$. The plot shows one simulated month; the error figures below it are root-mean-square errors over 2000 simulated months.
     """)
     return
 
@@ -545,24 +543,24 @@ def _(a_bulk, b_bulk, c_bulk, np):
     # 28-day bulking simulation (common random numbers for every slider value)
     N_DAYS = 28
     N_RUNS = 2000
-    R_BULK = 1.0
-    SIGMA_MODEL = 0.05
+    R_BULK = 0.25
+    SIGMA_MODEL = 0.025
     SIGMA_DAY = 300.0
-    RW_RATE = 0.2
+    RW_RATE = 0.1
     days = np.arange(1, N_DAYS + 1)
-    intake_plan = np.where(days <= 14, 2880.0, 3580.0)
+    intake_plan = np.where(days <= 14, 2910.0, 3680.0)
     _rng = np.random.default_rng(10)
     u_true_mc = intake_plan + SIGMA_DAY * _rng.standard_normal((N_RUNS, N_DAYS))
     log_noise_mc = _rng.standard_normal((N_RUNS, N_DAYS))
     _w = SIGMA_MODEL * _rng.standard_normal((N_RUNS, N_DAYS))
-    x0_mc = 155.0 + _rng.standard_normal(N_RUNS)
+    x0_mc = 70.0 + 0.5 * _rng.standard_normal(N_RUNS)
     x_true_mc = np.empty((N_RUNS, N_DAYS))
     _x = x0_mc.copy()
     for _k in range(N_DAYS):
         _x = a_bulk * _x + b_bulk * u_true_mc[:, _k] + c_bulk + _w[:, _k]
         x_true_mc[:, _k] = _x
     _v = np.sqrt(R_BULK) * _rng.standard_normal((N_RUNS, N_DAYS))
-    _v[0] = np.random.default_rng(2).normal(0, 1, N_DAYS)  # displayed run: the book's bulking noise
+    _v[0] = np.random.default_rng(2).normal(0, 0.5, N_DAYS)  # displayed run: the book's bulking noise
     z_mc = np.round(x_true_mc + _v, 1)
     return (
         N_DAYS,
@@ -597,8 +595,8 @@ def _(
     # jb: include=false
     # Best Q for the random walk, and energy-model error for a grid of logging errors
     _best = (np.inf, None, None)
-    for _Q in np.geomspace(1e-3, 0.5, 37):
-        _est = kalman_filter_1d(z_mc, RW_RATE, 1.0, 1.0, _Q, R_BULK, 155.0, 1.0)[0]
+    for _Q in np.geomspace(2.5e-4, 0.125, 37):
+        _est = kalman_filter_1d(z_mc, RW_RATE, 1.0, 1.0, _Q, R_BULK, 70.0, 0.25)[0]
         _rmse = np.sqrt(np.mean((_est - x_true_mc) ** 2))
         if _rmse < _best[0]:
             _best = (_rmse, _Q, _est)
@@ -608,7 +606,7 @@ def _(
         _u_log = u_true_mc + sigma_u * log_noise_mc
         _Q = SIGMA_MODEL**2 + (b_bulk * sigma_u) ** 2
         return kalman_filter_1d(
-            z_mc, _u_log, a_bulk, b_bulk, _Q, R_BULK, 155.0, 1.0, c=c_bulk
+            z_mc, _u_log, a_bulk, b_bulk, _Q, R_BULK, 70.0, 0.25, c=c_bulk
         )
 
     sigma_u_grid = np.arange(0, 1501, 50)
@@ -682,15 +680,15 @@ def _(
     _ax.axvline(14.5, color="gray", lw=0.8, ls=":")
     _ax.text(14.7, _ax.get_ylim()[0] + 0.3, "intake increases", color="gray", fontsize=9)
     _ax.set_xlabel("Day $k$")
-    _ax.set_ylabel("Weight (lb)")
+    _ax.set_ylabel("Weight (kg)")
     _ax.set_title("Bulking month: energy-balance versus random-walk model", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(loc="upper left", fontsize=9)
     _fig.tight_layout()
 
     _summary = mo.md(
-        f"Over 2000 simulated months, RMSE of the energy-balance filter: **{_rmse_e:.3f} lb**; "
-        f"random-walk filter (best $Q$): **{rmse_rw:.3f} lb**; raw weigh-ins: 1 lb. "
+        f"Over 2000 simulated months, RMSE of the energy-balance filter: **{_rmse_e:.3f} kg**; "
+        f"random-walk filter (best $Q$): **{rmse_rw:.3f} kg**; raw weigh-ins: 0.5 kg. "
         f"(Shaded: the energy-balance filter's $\\pm 2\\sqrt{{P_k}}$ band.)"
     )
     mo.vstack([mo.hstack([model_choice, sigma_u_slider], justify="start", gap=2), graphic(_fig), _summary])
@@ -702,7 +700,7 @@ def _(Q_rw, mo, sigma_u_crossover):
     mo.md(rf"""
     Some things to notice:
 
-    - **The random walk lags the diet change.** It predicts $0.2$ lb/day throughout, so in the first two weeks it overestimates the gain and in the last two it underestimates it. To keep up, it needs a large $Q$ (its best value here is $Q \approx {Q_rw:.3f}$ lb$^2$), which in turn makes it follow the noise more.
+    - **The random walk lags the diet change.** It predicts $0.1$ kg/day throughout, so in the first two weeks it overestimates the gain and in the last two it underestimates it. To keep up, it needs a large $Q$ (its best value here is $Q \approx {Q_rw:.4f}$ kg$^2$), which in turn makes it follow the noise more.
     - **The energy-balance model knows about the change the day it happens,** because the change is in the input. A known input can do the work of a quantity we would otherwise have to estimate.
     - **A model is only as good as its inputs.** As $\sigma_u$ grows, so does the energy-balance model's $Q = q_{{\text{{m}}}} + b^2\sigma_u^2$. Beyond a logging error of about ${sigma_u_crossover:.0f}$ kcal/day, the simple random walk wins in these simulations, even though the energy model is the "true" one, because a very noisy input carries less information than a well-tuned constant drift.
     """)
@@ -715,7 +713,7 @@ def _(mo):
     <!-- label: ch10-sec-continuous-time-models-and-discretization -->
     ## Continuous-Time Models and Discretization
 
-    The energy balance does not really happen once a day: you burn energy continuously. Writing $x(t)$ for the weight at time $t$ (in days) and $u(t)$ for the rate of eating (kcal/day), the physics says that the rate of change of stored energy, $\rho\,\dot x(t)$, equals intake minus expenditure:
+    The energy balance does not really happen once a day: the body burns energy continuously. Writing $x(t)$ for the weight at time $t$ (in days) and $u(t)$ for the rate of eating (kcal/day), the physics says that the rate of change of stored energy, $\rho\,\dot x(t)$, equals intake minus expenditure:
     $$\rho\,\dot x(t) = u(t) - \gamma\,x(t) - \delta \quad\Longleftrightarrow\quad \dot x(t) = \lambda\,x(t) + g\,\tilde u(t), \qquad \lambda := -\frac{\gamma}{\rho}, \quad g := \frac{1}{\rho},$$
     with the effective input $\tilde u(t) = u(t) - \delta$. This is a linear {term}`differential equation` ([Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations)). Most physical laws come in this continuous-time form, while a filter runs in discrete steps. Converting one into the other has a name.
 
@@ -822,13 +820,13 @@ def _(a_bulk, b_bulk, c_bulk, delta_bulk, gamma_bulk, mo, np):
     _lam = -gamma_bulk * b_bulk
     _a_exact = np.exp(_lam)
     _b_exact = (np.exp(_lam) - 1) / _lam * b_bulk
-    _u = gamma_bulk * 155 + delta_bulk + 700
-    _x_eu, _x_ex = 155.0, 155.0
+    _u = gamma_bulk * 70 + delta_bulk + 770
+    _x_eu, _x_ex = 70.0, 70.0
     for _ in range(28):
         _x_eu = a_bulk * _x_eu + b_bulk * _u + c_bulk
         _x_ex = _a_exact * _x_ex + _b_exact * (_u - delta_bulk)
     mo.md(rf"""
-    For the bulking model, $\tau = \rho/\gamma \approx {-1/_lam:.0f}$ days, so one day is tiny compared with $\tau$. The exact coefficients are $a = e^{{\lambda}} = {_a_exact:.7f}$ and $b = {_b_exact*1e4:.4f}\times 10^{{-4}}$, against Euler's $a = {a_bulk:.7f}$ and $b = {b_bulk*1e4:.4f}\times 10^{{-4}}$. After 28 days at a constant ${_u:.0f}$ kcal/day the two predictions differ by ${abs(_x_eu - _x_ex):.3f}$ lb, far below the 1 lb scatter of the scale. Euler's method is perfectly adequate here. It would not be adequate for a system whose time constant is comparable to the sample period, such as a fast process sampled slowly.
+    For the bulking model, $\tau = \rho/\gamma \approx {-1/_lam:.0f}$ days, so one day is tiny compared with $\tau$. The exact coefficients are $a = e^{{\lambda}} = {_a_exact:.7f}$ and $b = {_b_exact*1e4:.4f}\times 10^{{-4}}$, against Euler's $a = {a_bulk:.7f}$ and $b = {b_bulk*1e4:.4f}\times 10^{{-4}}$. After 28 days at a constant ${_u:.0f}$ kcal/day the two predictions differ by ${abs(_x_eu - _x_ex):.4f}$ kg, far below the 0.5 kg scatter of the scale. Euler's method is perfectly adequate here. It would not be adequate for a system whose time constant is comparable to the sample period, such as a fast process sampled slowly.
     """)
     return
 
@@ -852,7 +850,7 @@ def _(mo):
     <!-- label: ch10-sec-rate-models-when-the-state-needs-two-numbers -->
     ## Rate Models: When the State Needs Two Numbers
 
-    The energy-balance model needs a food log. Without one, what can we say about how weight changes? A natural assumption is that you gain at some rate $r_k$ that persists from day to day but drifts slowly:
+    The energy-balance model needs a food log. Without one, what can we say about how weight changes? A natural assumption is that the weight changes at some rate $r_k$ that persists from day to day but drifts slowly:
     $$x_k = x_{k-1} + r_{k-1}, \qquad r_k = r_{k-1} + w_k,$$
     with $w_k$ white noise. Now weight alone is not a state: two people with the same weight today but different rates will weigh different amounts tomorrow. The pair $(x_k, r_k)$ is a state, and we must estimate *both* numbers. The Introduction's alpha-beta filter did exactly that, with two hand-picked gains $\alpha$ and $\beta$.
 
@@ -970,12 +968,12 @@ def _(SIGMA_DAY, SIGMA_MODEL, a_bulk, b_bulk, c_bulk, np):
     _plan = 2530.0 + np.repeat(_surplus, 7)
     _u_true = _plan + SIGMA_DAY * _rng.standard_normal(N_LONG)
     u_log_long = _u_true + SIGMA_U_LONG * _rng.standard_normal(N_LONG)
-    _x = 155.0 + _rng.standard_normal()
+    _x = 70.0 + 0.5 * _rng.standard_normal()
     x_true_long = np.empty(N_LONG)
     for _k in range(N_LONG):
         _x = a_bulk * _x + b_bulk * _u_true[_k] + c_bulk + SIGMA_MODEL * _rng.standard_normal()
         x_true_long[_k] = _x
-    z_long = np.round(x_true_long + _rng.standard_normal(N_LONG), 1)
+    z_long = np.round(x_true_long + 0.5 * _rng.standard_normal(N_LONG), 1)
     return N_LONG, SIGMA_U_LONG, u_log_long, x_true_long, z_long
 
 
@@ -1010,14 +1008,14 @@ def _(
 ):
     _a, _b, _c, _, _ = energy_balance_coefficients(23, 175, activity_model.value)
     _Q = SIGMA_MODEL**2 + (_b * SIGMA_U_LONG) ** 2
-    _est, _P, _innov, _S = kalman_filter_1d(z_long, u_log_long, _a, _b, _Q, R_BULK, 155.0, 1.0, c=_c)
+    _est, _P, _innov, _S = kalman_filter_1d(z_long, u_log_long, _a, _b, _Q, R_BULK, 70.0, 0.25, c=_c)
     _nu = _innov / np.sqrt(_S)
     _max_lag = 20
     _r = sample_autocorrelation(_nu, _max_lag)
     _band = 1.96 / np.sqrt(N_LONG)
     _outside = int(np.sum(np.abs(_r) > _band))
     _rmse = np.sqrt(np.mean((_est - x_true_long) ** 2))
-    _est_rw = kalman_filter_1d(z_long, RW_RATE, 1.0, 1.0, Q_rw, R_BULK, 155.0, 1.0)[0]
+    _est_rw = kalman_filter_1d(z_long, RW_RATE, 1.0, 1.0, Q_rw, R_BULK, 70.0, 0.25)[0]
     _rmse_rw = np.sqrt(np.mean((_est_rw - x_true_long) ** 2))
 
     _fig, (_ax1, _ax2) = plt.subplots(1, 2, figsize=(10, 4))
@@ -1049,7 +1047,7 @@ def _(
         f"Mean of $\\nu_k$: **{np.mean(_nu):+.2f}** (band $\\pm${_band:.2f}); "
         f"average NIS: **{np.mean(_nu**2):.2f}** (should be near 1); "
         f"lags outside the band: **{_outside} of {_max_lag}**. "
-        f"RMSE against the truth: energy-balance **{_rmse:.2f} lb**, random walk **{_rmse_rw:.2f} lb**."
+        f"RMSE against the truth: energy-balance **{_rmse:.2f} kg**, random walk **{_rmse_rw:.2f} kg**."
     )
     mo.vstack([activity_model, graphic(_fig), _summary])
     return
@@ -1070,7 +1068,7 @@ def _(mo):
     mo.md(r"""
     /// caution | ⚠️ **Assumptions and Failure Modes**
     - **Passing is not proof.** White innovations mean the data do not contradict the model; they do not show that the model is right. Small errors (here, a few percent in TDEE) pass easily, and the test has little power with little data.
-    - **Failing does not say what is wrong.** A wrong model, a wrong $Q$, a wrong $R$, or correlated measurement noise all produce correlated innovations. Combine the test with the mean and NIS checks, and with what you know about the system.
+    - **Failing does not say what is wrong.** A wrong model, a wrong $Q$, a wrong $R$, or correlated measurement noise all produce correlated innovations. Combine the test with the mean and NIS checks, and with what we know about the system.
     - **The band is approximate.** It relies on a large-$N$ approximation and on the innovations being independent with a common distribution. With 20 lags, about one value outside the band is expected by chance alone.
     - **Early innovations** depend on the initial guess $\hat x_0$ and $P_0$. If those are badly wrong, discard the first few innovations before testing.
     ///
@@ -1088,7 +1086,7 @@ def _(mo):
 
     1. **Innovation checks.** Mean near $0$, average NIS near $1$, and white innovations. These work on real data, without the truth.
     2. **Prediction error on new data.** Tune a model on one stretch of data and compare models by their one-step prediction errors (the innovations) on another. A model tuned and judged on the same data can look better than it is.
-    3. **Simplicity.** Every parameter is something that can be wrong. The random walk has one number to choose ($Q$); the energy-balance model has many (age, height, activity, the 3500 kcal rule, and the noise levels).
+    3. **Simplicity.** Every parameter is something that can be wrong. The random walk has one number to choose ($Q$); the energy-balance model has many (age, height, activity, the 7700 kcal rule, and the noise levels).
     4. **The cost of the inputs.** The energy-balance model is only as good as a daily food log, which takes effort and has its own errors.
     5. **Purpose and time scale.** For a four-week bulk, neglecting metabolic adaptation is harmless; for a year-long weight-loss plan it is not.
 
@@ -1114,7 +1112,7 @@ def _(mo):
     <!-- label: ch10-sec-whats-next -->
     ## What's Next
 
-    So far every measurement has been the state plus noise, $z_k = x_k + v_k$. But a scale does not output pounds: its load cell and analog-to-digital converter output a raw number of *counts*, related to your weight through a sensitivity and an offset that must themselves be measured. [Chapter 11](#ch11) adds a **measurement function** to the filter, calibrates it by least squares, and finds that a drifting offset is a second unknown that a single reading cannot separate from the weight. That is the second reason, after this chapter's rate model, to move to state vectors.
+    So far every measurement has been the state plus noise, $z_k = x_k + v_k$. But a scale does not output kilograms: its load cell and analog-to-digital converter output a raw number of *counts*, related to your weight through a sensitivity and an offset that must themselves be measured. [Chapter 11](#ch11) adds a **measurement function** to the filter, calibrates it by least squares, and finds that a drifting offset is a second unknown that a single reading cannot separate from the weight. That is the second reason, after this chapter's rate model, to move to state vectors.
     """)
     return
 

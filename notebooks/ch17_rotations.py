@@ -57,18 +57,6 @@ def display_settings(Path, dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](#ch18).
-
-    /// attention | 🗝️ **Key Idea**
-    The orientation of a body is a rotation matrix $\mathbf R^n_b$ that converts body coordinates into navigation coordinates. It evolves according to $\dot{\mathbf R}^n_b = \mathbf R^n_b[\boldsymbol\omega^b]_\times$, where $\boldsymbol\omega^b$ is what a gyroscope measures. Every description of orientation by only three numbers, such as yaw, pitch, and roll, is singular somewhere.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 12](#ch12): [bold lowercase vectors and bold uppercase matrices](#ch12-sec-notation-and-linear-algebra-toolkit).
     - [Appendix D: Matrix Multiplication](#appd-sec-matrix-multiplication), [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse), and [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank): a matrix is determined by its action on a basis, and [a square matrix with a left inverse is invertible](#appd-thm-invertible-matrix-theorem).
@@ -77,6 +65,18 @@ def _(mo):
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $[\mathbf a]_\times\mathbf b = \mathbf a\times\mathbf b$, every $3\times 3$ skew-symmetric matrix is $[\mathbf a]_\times$ for exactly one $\mathbf a$, and [the triple-product expansion](#appd-thm-cross-product-identities) $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$.
     - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\exp(\mathbf A) = \sum_{m\ge 0}\mathbf A^m/m!$, $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$, and $\exp(\mathbf A + \mathbf B) = \exp(\mathbf A)\exp(\mathbf B)$ when $\mathbf A\mathbf B = \mathbf B\mathbf A$.
     - [Appendix C: Derivatives](#appc-sec-derivatives) ([the product rule](#appc-thm-differentiation-rules), applied entrywise to matrices) and [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm) (the power series and remainder bounds of $\sin$ and $\cos$).
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    A sensor strapped to a shoe measures angular rate and acceleration along its *own* axes, and those axes tumble with every step. Gravity, the Earth's magnetic field, and the path walked are described in axes fixed to the ground. Every orientation filter in Parts V and VI therefore needs three things: a precise way to convert vectors between the two sets of axes, an equation for how that conversion changes as the body turns, and a map of where each description of orientation breaks down. This chapter supplies all three. Rotation matrices do the conversion, the angular-velocity equation $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$ describes its evolution, and gimbal lock is the breakdown that motivates quaternions in [Chapter 18](#ch18).
+
+    /// attention | 🗝️ **Key Idea**
+    The orientation of a body is a rotation matrix $\mathbf R^n_b$ that converts body coordinates into navigation coordinates. It evolves according to $\dot{\mathbf R}^n_b = \mathbf R^n_b[\boldsymbol\omega^b]_\times$, where $\boldsymbol\omega^b$ is what a gyroscope measures. Every description of orientation by only three numbers, such as yaw, pitch, and roll, is singular somewhere.
     ///
     """)
     return

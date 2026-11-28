@@ -54,25 +54,6 @@ def display_settings(dedent, mo, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Calculus is built on a single idea: the **limit**, which makes "gets as close as we like" precise. Infinite sums, instantaneous rates of change, areas, and exponential decay are all limits, and a filter designer meets every one of them:
-
-    - **Probability** ([Chapter 4](#ch4)) adds up infinitely many probabilities. Such a sum is a *series*, and the continuity of probability is a statement about limits of sequences.
-    - **Densities and expectations** ([Chapter 5](#ch5) and [Chapter 6](#ch6)) are *integrals*. The normal density only makes sense once we know that $\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}$.
-    - **Continuous-time models** ([Chapter 10](#ch10)) are *differential equations*. Turning them into the recursions that a filter runs requires solving them.
-    - **The extended Kalman filter** ([Chapter 15](#ch15)) replaces nonlinear functions by first-order *Taylor approximations*, which are built from *Jacobians*.
-
-    This appendix builds all of these from the axioms of the real numbers in [Chapter 3](#ch3-sec-the-real-numbers). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
-
-    /// attention | 🗝️ **Key Idea**
-    A limit is the exact value that a family of approximations approaches: every tolerance, however small, is eventually met. Every concept in this appendix (the sum of a series, the derivative, the integral, the exponential function) is a limit.
-    ///
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 2](#ch2): {term}`functions <function>`, the {term}`natural numbers` $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
     - [Chapter 3](#ch3): {term}`sequences <sequence>`, [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as a {term}`complete ordered field` (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), {term}`intervals <interval>`, and the {term}`extended real numbers` $[0, \infty]$.
@@ -100,6 +81,25 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    Calculus is built on a single idea: the **limit**, which makes "gets as close as we like" precise. Infinite sums, instantaneous rates of change, areas, and exponential decay are all limits, and a filter designer meets every one of them:
+
+    - **Probability** ([Chapter 4](#ch4)) adds up infinitely many probabilities. Such a sum is a *series*, and the continuity of probability is a statement about limits of sequences.
+    - **Densities and expectations** ([Chapter 5](#ch5) and [Chapter 6](#ch6)) are *integrals*. The normal density only makes sense once we know that $\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}$.
+    - **Continuous-time models** ([Chapter 10](#ch10)) are *differential equations*. Turning them into the recursions that a filter runs requires solving them.
+    - **The extended Kalman filter** ([Chapter 15](#ch15)) replaces nonlinear functions by first-order *Taylor approximations*, which are built from *Jacobians*.
+
+    This appendix builds all of these from the axioms of the real numbers in [Chapter 3](#ch3-sec-the-real-numbers). Every result is either proven or stated precisely with a link to a proof. (The italicized words above are used informally here; each is defined precisely below.)
+
+    /// attention | 🗝️ **Key Idea**
+    A limit is the exact value that a family of approximations approaches: every tolerance, however small, is eventually met. Every concept in this appendix (the sum of a series, the derivative, the integral, the exponential function) is a limit.
+    ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     <!-- label: appc-sec-sequences-and-limits -->
     ## Sequences and Limits
 
@@ -107,7 +107,7 @@ def _(mo):
 
     $$e_k = (\hat x_{k-1} - x) + \alpha(x - \hat x_{k-1}) = (1 - \alpha)\,e_{k-1}, \qquad\text{so}\qquad e_k = (1-\alpha)^k e_0$$
 
-    by induction on $k$. With $\alpha = 0.2$, each step removes 20% of the remaining error. The error is never exactly zero (unless $e_0 = 0$), yet it becomes as small as we like: for any tolerance, say $0.1$ lb, there is a step after which the error stays below that tolerance forever. "Eventually within any tolerance" is exactly what a limit is.
+    by induction on $k$. With $\alpha = 0.2$, each step removes 20% of the remaining error. The error is never exactly zero (unless $e_0 = 0$), yet it becomes as small as we like: for any tolerance, say $0.1$ kg, there is a step after which the error stays below that tolerance forever. "Eventually within any tolerance" is exactly what a limit is.
 
     /// note | 📖 **Definition**
     <u>**Limit of a sequence**</u>
@@ -604,7 +604,7 @@ def _(mo):
     <!-- label: appc-sec-limits-of-functions-and-continuity -->
     ## Limits of Functions and Continuity
 
-    A scale's display rounds the true weight to a step of $\Delta = 0.1$ lb ([Chapter 4](#ch4-sec-motivation-a-scale-reading-to-0-1-lb) starts from this example). The display shows $Q(x) := \Delta\lfloor x/\Delta + \tfrac12\rfloor$, where $\lfloor y\rfloor$ denotes the greatest integer $\le y$ (it exists by the Archimedean property). Near a true weight of $155.02$ lb, small changes in weight don't change the display at all. Near $155.05$ lb, an arbitrarily small increase flips the display from $155.0$ to $155.1$. *Continuity* makes "small changes in the input cause small changes in the output" precise. It is built on the limit of a function.
+    A scale's display rounds the true weight to a step of $\Delta = 0.1$ kg ([Chapter 4](#ch4-sec-motivation-a-scale-reading-to-0-1-lb) starts from this example). The display shows $Q(x) := \Delta\lfloor x/\Delta + \tfrac12\rfloor$, where $\lfloor y\rfloor$ denotes the greatest integer $\le y$ (it exists by the Archimedean property). Near a true weight of $70.02$ kg, small changes in weight don't change the display at all. Near $70.05$ kg, an arbitrarily small increase flips the display from $70.0$ to $70.1$. *Continuity* makes "small changes in the input cause small changes in the output" precise. It is built on the limit of a function.
 
     Limits of functions also let us talk about values a function never takes. The average slope of $x \mapsto x^2$ between $1$ and $1 + h$ is $g(h) := \frac{(1+h)^2 - 1}{h}$ for $h \ne 0$. At $h = 0$ the formula reads $0/0$, which is meaningless, but for $h \ne 0$ we have $g(h) = 2 + h$, which is close to $2$ whenever $h$ is close to $0$.
 
@@ -758,7 +758,7 @@ def _(mo):
     ///
 
     /// caution | ⚠️ **Assumptions and Failure Modes**
-    - **The intermediate value theorem needs continuity.** The display $Q$ jumps from $155.0$ to $155.1$ but never shows $155.05$.
+    - **The intermediate value theorem needs continuity.** The display $Q$ jumps from $70.0$ to $70.1$ but never shows $70.05$.
     - **It also needs an interval.** $f(x) = 1/x$ is continuous on $[-1, 0) \cup (0, 1]$ with $f(-1) < 0 < f(1)$, yet it is never $0$.
     - **Uniform continuity needs a closed bounded interval.** $x^2$ on $\mathbb R$ fails (shown above), and so does $1/x$ on $(0, 1]$: near $0$, inputs $\frac1n$ and $\frac{1}{2n}$ are close but their values differ by $n$.
     - **Completeness again.** Over $\mathbb Q$, the function $x^2 - 2$ is continuous on $\{q \in \mathbb Q : 0 \le q \le 2\}$, negative at $0$ and positive at $2$, but never $0$.
@@ -1373,9 +1373,9 @@ def _(mo):
 
     **Examples.** For $n \in \mathbb N$, $\frac{x^{n+1}}{n+1}$ is an antiderivative of $x^n$, so $\int_a^b x^n\,dx = \frac{b^{n+1} - a^{n+1}}{n+1}$. In particular $\int_0^1 x^2\,dx = \frac13$, without any sums of squares.
 
-    **Quantization noise.** A quantizer with step $\Delta$ (like the scale's $0.1$ lb display) makes a rounding error between $-\frac\Delta2$ and $\frac\Delta2$. If the error is spread evenly over that interval, its average square is
+    **Quantization noise.** A quantizer with step $\Delta$ (like the scale's $0.1$ kg display) makes a rounding error between $-\frac\Delta2$ and $\frac\Delta2$. If the error is spread evenly over that interval, its average square is
     $$\frac{1}{\Delta}\int_{-\Delta/2}^{\Delta/2} x^2\,dx = \frac{1}{\Delta}\Big[\frac{x^3}{3}\Big]_{-\Delta/2}^{\Delta/2} = \frac{1}{\Delta}\Big(\frac{\Delta^3}{24} + \frac{\Delta^3}{24}\Big) = \frac{\Delta^2}{12}.$$
-    For $\Delta = 0.1$ lb this is about $0.00083$ lb$^2$, whose square root is about $0.029$ lb. [Chapter 9](#ch9-sec-quantization) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
+    For $\Delta = 0.1$ kg this is about $0.00083$ kg$^2$, whose square root is about $0.029$ kg. [Chapter 9](#ch9-sec-quantization) identifies this number as the {term}`variance` of quantization noise. (With $\Delta = 1$ it is the $\frac{1}{12}$ of the Riemann-sum figure.)
     """)
     return
 

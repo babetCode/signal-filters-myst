@@ -144,7 +144,7 @@ def _(mo):
 
     The last two rows of the conditional surprise most readers: when $P$ is false, $P \rightarrow Q$ is true whatever $Q$ is. Think of $P \rightarrow Q$ as a promise: "If it rains tomorrow, I will bring an umbrella." The promise is broken in exactly one situation: it rains and I don't bring one. If it doesn't rain, I have kept my promise whether or not I bring an umbrella. A conditional whose hypothesis is false is called *vacuously true*.
 
-    Vacuous truth is what makes general rules work. "For every reading, if the reading exceeds 300 lb then the scale displays an error" should be true of a correctly working scale, and that requires the conditional to be true for each reading below 300 lb, where its hypothesis is false.
+    Vacuous truth is what makes general rules work. "For every reading, if the reading exceeds 150 kg then the scale displays an error" should be true of a correctly working scale, and that requires the conditional to be true for each reading below 150 kg, where its hypothesis is false.
 
     The conditional also asserts no cause and effect. "If $2 + 2 = 5$, then the Moon is made of cheese" is true, because its hypothesis is false. In mathematics, $P \rightarrow Q$ is a claim about truth values only.
     """)

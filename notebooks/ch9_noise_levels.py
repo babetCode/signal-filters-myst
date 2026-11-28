@@ -81,19 +81,19 @@ def data(Path, np):
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
     # Bathroom scale, the Introduction's 30 readings (seed 1)
-    scale_x = 155.0
-    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 1.0, 30), 2)
+    scale_x = 70.0
+    scale_z = np.round(scale_x + np.random.default_rng(1).normal(0.0, 0.5, 30), 2)
 
-    # Bathroom scale with a shifting load: 15 s at 10 SPS, random walk with Q = 0.01 lb^2 per step
-    shift_Q, shift_R = 0.01, 1.0
+    # Bathroom scale with a shifting load: 15 s at 10 SPS, random walk with Q = 0.0025 kg^2 per step
+    shift_Q, shift_R = 0.0025, 0.25
     shift_t = np.arange(1, 151) / 10
     shift_x = scale_x + np.cumsum(np.random.default_rng(7).normal(0.0, np.sqrt(shift_Q), shift_t.size))
     shift_z = np.round(shift_x + np.random.default_rng(6).normal(0.0, np.sqrt(shift_R), shift_t.size), 2)
 
     # Bulking: the Introduction's 28 daily weigh-ins (seed 2)
     bulk_days = np.arange(1, 29)
-    bulk_x = 155 + 0.2 * (bulk_days - 1)
-    bulk_z = np.round(bulk_x + np.random.default_rng(2).normal(0, 1, 28), 1)
+    bulk_x = 70 + 0.1 * (bulk_days - 1)
+    bulk_z = np.round(bulk_x + np.random.default_rng(2).normal(0, 0.5, 28), 1)
     return (
         IMAGES_DIR,
         bulk_days,
@@ -112,16 +112,6 @@ def data(Path, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Part I ended with the optimal gain $K_k = P_k^-/(P_k^- + R)$, under the assumption that we *know* the measurement noise variance $R$ and the prediction's error variance $P_k^-$. This chapter answers the Introduction's next question: how do we determine these noise levels?
-
-    $R$ is the easier one: we measure it. $P_k^-$ takes more work, because it depends on how much the true value can change between measurements in ways our prediction does not foresee. Modeling that change as *process noise* with variance $Q$ gives a one-line rule for $P_k^-$, and together with Chapter 7's update it forms the scalar **Kalman filter**. We then prove that in the long run the Kalman filter becomes an exponential moving average, which finally tells us how to choose the EMA's $\alpha$, and we learn to check from the measurements alone whether a filter's noise levels are right.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Introduction](#intro): the {term}`exponential moving average`, [the alpha filter](#intro-sec-predicting-the-change), [the expected change](#intro-sec-predicting-the-change) $\Delta x_k$, and [the bulking data](#intro-sec-alpha-beta-filter).
     - [Chapter 5](#ch5): the {term}`uniform distribution` and [the theorem that quantization error is nearly uniform](#ch5-thm-quantization-error-is-nearly-uniform), the {term}`normal distribution` and [the density of](#ch5-thm-density-of-ax-b) $aX + b$, [linear combinations of independent normal random variables](#ch5-cor-linear-combinations-of-independent-normals), {term}`independent and identically distributed` random variables, {term}`stochastic processes <stochastic process>`, and [the measurement-noise model](#ch5-sec-the-measurement-noise-model).
@@ -130,6 +120,16 @@ def _(mo):
     - [Chapter 8](#ch8): [the normal Bayes filter](#ch8-cor-the-normal-bayes-filter) and [the central limit theorem](#ch8-thm-central-limit-theorem).
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([geometric convergence](#appc-thm-geometric-series) and [limit laws](#appc-thm-limit-laws-for-sequences)), [Derivatives](#appc-sec-derivatives) and [The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus) (for the $\chi^2$ density, including [integration by parts](#appc-thm-integration-by-parts)), and [Improper Integrals](#appc-sec-improper-integrals).
     ///
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Part I ended with the optimal gain $K_k = P_k^-/(P_k^- + R)$, under the assumption that we *know* the measurement noise variance $R$ and the prediction's error variance $P_k^-$. This chapter answers the Introduction's next question: how do we determine these noise levels?
+
+    $R$ is the easier one: we measure it. $P_k^-$ takes more work, because it depends on how much the true value can change between measurements in ways our prediction does not foresee. Modeling that change as *process noise* with variance $Q$ gives a one-line rule for $P_k^-$, and together with Chapter 7's update it forms the scalar **Kalman filter**. We then prove that in the long run the Kalman filter becomes an exponential moving average, which finally tells us how to choose the EMA's $\alpha$, and we learn to check from the measurements alone whether a filter's noise levels are right.
     """)
     return
 
@@ -174,7 +174,7 @@ def _(mo):
     because $\sum_i (y_i - \mu) = n(\bar y - \mu)$. Take expectations. Each $\mathbb E[(y_i - \mu)^2] = \sigma^2$, and $\mathbb E[(\bar y - \mu)^2] = \operatorname{Var}\bar y = \sigma^2/n$, since the variance of a sum of pairwise uncorrelated random variables is the sum of their variances (Chapter 6). So $\mathbb E\big[\sum_i (y_i - \bar y)^2\big] = n\sigma^2 - \sigma^2 = (n-1)\sigma^2$. Dividing by $n - 1$ gives $\sigma^2$; dividing by $n$ gives $\frac{n-1}{n}\sigma^2$. $\blacksquare$
     ///
 
-    The deviations from $\bar y$ are systematically smaller than the deviations from the true mean $\mu$, because $\bar y$ is computed from the same data and sits in their middle; dividing by $n - 1$ exactly compensates. For example, the Introduction's 30 readings of a constant 155 lb, whose noise has variance $R = 1\ \text{lb}^2$, give
+    The deviations from $\bar y$ are systematically smaller than the deviations from the true mean $\mu$, because $\bar y$ is computed from the same data and sits in their middle; dividing by $n - 1$ exactly compensates. For example, the Introduction's 30 readings of a constant 70 kg, whose noise has variance $R = 0.25\ \text{kg}^2$, give
     """)
     return
 
@@ -182,7 +182,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo, np, scale_z):
     mo.md(rf"""
-    $$\bar y = {scale_z.mean():.3f}\ \text{{lb}}, \qquad s^2 = {np.var(scale_z, ddof=1):.3f}\ \text{{lb}}^2.$$
+    $$\bar y = {scale_z.mean():.3f}\ \text{{kg}}, \qquad s^2 = {np.var(scale_z, ddof=1):.4f}\ \text{{kg}}^2.$$
     """)
     return
 
@@ -259,7 +259,7 @@ def _(mo):
     <!-- label: ch9-sec-datasheets -->
     ### Datasheets
 
-    Before any data exist, a sensor's datasheet gives a first estimate. Noise is usually specified either as an RMS value, which for zero-mean noise is the standard deviation $\sigma$, so $R = \sigma^2$, or as a *peak-to-peak* value. For normal noise a common convention takes peak-to-peak $\approx 6.6\,\sigma$, because $\mathbb P(|v| \le 3.3\sigma) \approx 0.999$. Two cautions apply. First, the units must match the filter's: noise quoted in ADC counts or microvolts must be converted to the units of $z_k$ (pounds here; [Chapter 11](#ch11-sec-from-pounds-to-counts) treats this conversion). Second, a datasheet describes only the electronics. For a bathroom scale such as one built on the HX711 ADC [@avia_hx711_datasheet], the person's own movement usually dominates, so the datasheet value is a lower bound on $R$.
+    Before any data exist, a sensor's datasheet gives a first estimate. Noise is usually specified either as an RMS value, which for zero-mean noise is the standard deviation $\sigma$, so $R = \sigma^2$, or as a *peak-to-peak* value. For normal noise a common convention takes peak-to-peak $\approx 6.6\,\sigma$, because $\mathbb P(|v| \le 3.3\sigma) \approx 0.999$. Two cautions apply. First, the units must match the filter's: noise quoted in ADC counts or microvolts must be converted to the units of $z_k$ (kilograms here; [Chapter 11](#ch11-sec-from-pounds-to-counts) treats this conversion). Second, a datasheet describes only the electronics. For a bathroom scale such as one built on the HX711 ADC [@avia_hx711_datasheet], the person's own movement usually dominates, so the datasheet value is a lower bound on $R$.
 
     <!-- label: ch9-sec-quantization -->
     ### Quantization
@@ -283,7 +283,7 @@ def _(mo):
     $$\operatorname{Var} u = \mathbb E[u^2] = \frac1\Delta\int_{-\Delta/2}^{\Delta/2} u^2\,du = \frac1\Delta\cdot\frac{u^3}{3}\bigg|_{-\Delta/2}^{\Delta/2} = \frac1\Delta\cdot\frac{2}{3}\cdot\frac{\Delta^3}{8} = \frac{\Delta^2}{12}. \qquad \blacksquare$$
     ///
 
-    When the quantity being rounded already carries noise with a standard deviation of about $\Delta$ or more, Chapter 5's theorem says the error is nearly uniform, and the rounding adds approximately independent noise: the total measurement noise variance is approximately $R + \Delta^2/12$. A scale that displays to $0.1$ lb adds only $0.01/12 \approx 0.0008\ \text{lb}^2$, negligible next to $R = 1\ \text{lb}^2$; the HX711's 24-bit steps are far smaller still. When the noise is much smaller than $\Delta$, the uniform model fails: every reading rounds to the same grid point, the error is essentially a constant, and a constant error is a bias, not noise, which no amount of averaging removes. The table repeats Chapter 5's experiment (a true value of $155.03$ lb, normal noise with standard deviation $\sigma$, step $\Delta = 0.1$ lb, $100{,}000$ simulated readings) and reports the mean and variance of the quantization error. (For more on when the uniform model holds, see [Wikipedia: Quantization (signal processing)](https://en.wikipedia.org/wiki/Quantization_(signal_processing)).)
+    When the quantity being rounded already carries noise with a standard deviation of about $\Delta$ or more, Chapter 5's theorem says the error is nearly uniform, and the rounding adds approximately independent noise: the total measurement noise variance is approximately $R + \Delta^2/12$. A scale that displays to $0.1$ kg adds only $0.01/12 \approx 0.0008\ \text{kg}^2$, negligible next to $R = 0.25\ \text{kg}^2$; the HX711's 24-bit steps are far smaller still. When the noise is much smaller than $\Delta$, the uniform model fails: every reading rounds to the same grid point, the error is essentially a constant, and a constant error is a bias, not noise, which no amount of averaging removes. The table repeats Chapter 5's experiment (a true value of $70.03$ kg, normal noise with standard deviation $\sigma$, step $\Delta = 0.1$ kg, $100{,}000$ simulated readings) and reports the mean and variance of the quantization error. (For more on when the uniform model holds, see [Wikipedia: Quantization (signal processing)](https://en.wikipedia.org/wiki/Quantization_(signal_processing)).)
     """)
     return
 
@@ -293,11 +293,11 @@ def _(mo, np):
     _g = np.random.default_rng(22).standard_normal(100_000)
     _D = 0.1
     _rows = [
-        r"| $\sigma$ (lb) | mean error (lb) | error variance (lb$^2$) | variance $\div\ \Delta^2/12$ |",
+        r"| $\sigma$ (kg) | mean error (kg) | error variance (kg$^2$) | variance $\div\ \Delta^2/12$ |",
         "|:---|:---:|:---:|:---:|",
     ]
     for _s in (0.005, 0.01, 0.02, 0.05, 0.2):
-        _y = 155.03 + _s * _g
+        _y = 70.03 + _s * _g
         _u = _D * np.floor(_y / _D + 0.5) - _y
         _rows.append(f"| ${_s}$ | ${_u.mean():+.4f}$ | ${_u.var():.6f}$ | ${_u.var() / (_D**2 / 12):.2f}$ |")
     mo.md("\n".join(_rows))
@@ -307,12 +307,12 @@ def _(mo, np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    From $\sigma = 0.05$ lb on, the error has mean $0$ and variance $\Delta^2/12$ to within a percent. At $\sigma = 0.005$ lb nearly every reading rounds to $155.0$, so the error is a nearly constant $-0.03$ lb with almost no variance.
+    From $\sigma = 0.05$ kg on, the error has mean $0$ and variance $\Delta^2/12$ to within a percent. At $\sigma = 0.005$ kg nearly every reading rounds to $70.0$, so the error is a nearly constant $-0.03$ kg with almost no variance.
 
     <!-- label: ch9-sec-noise-that-is-not-white -->
     ### Noise That Is Not White
 
-    The sample variance assumes the noise in different readings is uncorrelated. Some sensors, gyroscopes in particular, also have slowly wandering errors, and then the sample variance depends on how long you record. The standard tool for separating noise types by time scale is the *Allan variance* ([Wikipedia: Allan variance](https://en.wikipedia.org/wiki/Allan_variance)), which we will meet again with inertial sensors in Parts V and VI.
+    The sample variance assumes the noise in different readings is uncorrelated. Some sensors, gyroscopes in particular, also have slowly wandering errors, and then the sample variance depends on how long we record. The standard tool for separating noise types by time scale is the *Allan variance* ([Wikipedia: Allan variance](https://en.wikipedia.org/wiki/Allan_variance)), which we will meet again with inertial sensors in Parts V and VI.
     """)
     return
 
@@ -323,7 +323,7 @@ def _(mo):
     <!-- label: ch9-sec-process-noise -->
     ## Process Noise
 
-    The Introduction distinguished the change we *expect* between two steps, $\Delta x_k$, from the change that actually happens. While bulking you might plan to gain $0.2$ lb per day, but water and food make the actual daily change wander around that plan. On the scale, the load on the platform wanders a little as you shift your weight. The gap between expected and actual change is what makes the prediction uncertain, and it gets a name.
+    The Introduction distinguished the change we *expect* between two steps, $\Delta x_k$, from the change that actually happens. While bulking you might plan to gain $0.1$ kg per day, but water and food make the actual daily change wander around that plan. On the scale, the load on the platform wanders a little as you shift your weight. The gap between expected and actual change is what makes the prediction uncertain, and it gets a name.
 
     /// note | 📖 **Definition**
     <u>**Process noise**</u>
@@ -536,7 +536,7 @@ def _(mo):
     <!-- label: ch9-sec-the-scale-with-a-shifting-load -->
     ### The Scale With a Shifting Load
 
-    To see process noise at work, simulate a person whose load on the platform wanders as they shift their weight: a random walk starting at $155$ lb with $Q = 0.01\ \text{lb}^2$ per step (a standard deviation of $0.1$ lb per tenth of a second), measured with $R = 1\ \text{lb}^2$ at 10 SPS for 15 seconds. The filter starts from the vague guess $\hat x_0 = 150$ lb, $P_0 = 100\ \text{lb}^2$. Adjust the filter's $Q$ and $R$ (the simulation's true values are $0.01$ and $1$), and tick the box to pick up the Introduction's 10 lb cat halfway through. The right panel shows the gain $K_k$, which by item 3 of the Optimal Gain theorem also equals $P_k/R$: it settles to a constant, which is the subject of the next section.
+    To see process noise at work, simulate a person whose load on the platform wanders as they shift their weight: a random walk starting at $70$ kg with $Q = 0.0025\ \text{kg}^2$ per step (a standard deviation of $0.05$ kg per tenth of a second), measured with $R = 0.25\ \text{kg}^2$ at 10 SPS for 15 seconds. The filter starts from the vague guess $\hat x_0 = 67.5$ kg, $P_0 = 25\ \text{kg}^2$. Adjust the filter's $Q$ and $R$ (the simulation's true values are $0.0025$ and $0.25$), and tick the box to pick up the Introduction's 5 kg cat halfway through. The right panel shows the gain $K_k$, which by item 3 of the Optimal Gain theorem also equals $P_k/R$: it settles to a constant, which is the subject of the next section.
     """)
     return
 
@@ -544,20 +544,20 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     kf_Q = mo.ui.slider(
-        steps=[0.0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0], value=0.01,
-        label=r"Filter's $Q$ (lb$^2$ per step)", show_value=True,
+        steps=[0.0, 0.00003, 0.0001, 0.0003, 0.001, 0.0025, 0.01, 0.03, 0.1, 0.25], value=0.0025,
+        label=r"Filter's $Q$ (kg$^2$ per step)", show_value=True,
     )
     kf_R = mo.ui.slider(
-        steps=[0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 10.0], value=1.0, label=r"Filter's $R$ (lb$^2$)", show_value=True,
+        steps=[0.0125, 0.025, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.5], value=0.25, label=r"Filter's $R$ (kg$^2$)", show_value=True,
     )
-    kf_cat = mo.ui.checkbox(value=False, label="Pick up a 10 lb cat at 7.5 s")
+    kf_cat = mo.ui.checkbox(value=False, label="Pick up a 5 kg cat at 7.5 s")
     return kf_Q, kf_R, kf_cat
 
 
 @app.cell
 def _(kf_cat, np, shift_t, shift_x, shift_z):
     # jb: include=false
-    _cat = np.where(shift_t > 7.5, 10.0, 0.0) if kf_cat.value else np.zeros_like(shift_t)
+    _cat = np.where(shift_t > 7.5, 5.0, 0.0) if kf_cat.value else np.zeros_like(shift_t)
     kf_truth = shift_x + _cat
     kf_z = shift_z + _cat
     return kf_truth, kf_z
@@ -578,7 +578,7 @@ def _(
     shift_t,
     steady_state,
 ):
-    _f = kalman_filter_1d(kf_z, 150.0, 100.0, kf_Q.value, kf_R.value)
+    _f = kalman_filter_1d(kf_z, 67.5, 25.0, kf_Q.value, kf_R.value)
     _err = _f["x"] - kf_truth
     _fig, (_ax1, _ax2) = plt.subplots(1, 2, figsize=(10, 3.9), gridspec_kw={"width_ratios": [1.6, 1]})
     _ax1.plot(shift_t, kf_z, ".", color="C0", markersize=3, label="measurements")
@@ -586,10 +586,10 @@ def _(
     _ax1.plot(shift_t, _f["x"], color="C1", linewidth=1.8, label="Kalman estimate")
     _ax1.fill_between(shift_t, _f["x"] - 2 * np.sqrt(_f["P"]), _f["x"] + 2 * np.sqrt(_f["P"]), color="C1", alpha=0.2,
                       label=r"$\pm 2\sqrt{P_k}$")
-    _lo = min(kf_truth.min(), 152.0) - 2
-    _ax1.set_ylim(_lo, kf_truth.max() + 4)
+    _lo = min(kf_truth.min(), 68.5) - 1
+    _ax1.set_ylim(_lo, kf_truth.max() + 2)
     _ax1.set_xlabel("time (s)")
-    _ax1.set_ylabel("load (lb)")
+    _ax1.set_ylabel("load (kg)")
     _ax1.set_title("Kalman filter on a shifting load", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper left", ncol=2)
@@ -608,8 +608,8 @@ def _(
         mo.hstack([kf_Q, kf_R, kf_cat], justify="start", gap=2),
         graphic(_fig),
         mo.md(
-            rf"Over the last 10 seconds: actual RMS error ${np.sqrt(np.mean(_err[50:] ** 2)):.3f}$ lb; "
-            rf"the filter's reported $\sqrt{{P_k}}$ averages ${np.sqrt(np.mean(_f['P'][50:])):.3f}$ lb. "
+            rf"Over the last 10 seconds: actual RMS error ${np.sqrt(np.mean(_err[50:] ** 2)):.3f}$ kg; "
+            rf"the filter's reported $\sqrt{{P_k}}$ averages ${np.sqrt(np.mean(_f['P'][50:])):.3f}$ kg. "
             rf"Final gain $K_{{150}} = {_f['K'][-1]:.4f}$."
         ),
     ])
@@ -621,7 +621,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Things to try: with $Q = 0$ the filter is the cumulative average with a prior, its gain keeps falling like $1/k$, and it never catches up with the cat. With $Q = 1$ it follows every wiggle of the noise. In between, for $Q$ within a factor of about three of the true $0.01$ (with $R = 1$), the actual error is smallest and the reported $\sqrt{P_k}$ describes it well. A single 15-second run cannot pin $Q$ down more precisely than that, which is why the tests at the end of this chapter average over many steps.
+    Things to try: with $Q = 0$ the filter is the cumulative average with a prior, its gain keeps falling like $1/k$, and it never catches up with the cat. With $Q = 0.25$ it follows every wiggle of the noise. In between, for $Q$ within a factor of about three of the true $0.0025$ (with $R = 0.25$), the actual error is smallest and the reported $\sqrt{P_k}$ describes it well. A single 15-second run cannot pin $Q$ down more precisely than that, which is why the tests at the end of this chapter average over many steps.
 
     <!-- label: ch9-sec-steady-state -->
     ## Steady State
@@ -954,15 +954,15 @@ def _(
     plt,
     shift_t,
 ):
-    _P0 = 100.0
-    _f = kalman_filter_1d(kf_z, 150.0, _P0, kf_Q.value, kf_R.value)
+    _P0 = 25.0
+    _f = kalman_filter_1d(kf_z, 67.5, _P0, kf_Q.value, kf_R.value)
     _nis = _f["innov"] ** 2 / _f["S"]
     _lo, _hi = nis_interval(shift_t.size)
 
-    _cat = np.where(shift_t > 7.5, 10.0, 0.0) if kf_cat.value else np.zeros_like(shift_t)
+    _cat = np.where(shift_t > 7.5, 5.0, 0.0) if kf_cat.value else np.zeros_like(shift_t)
     _x_mc = nis_mc_x + _cat
     _z_mc = _x_mc + nis_mc_v
-    _x0_mc = _x_mc[:, 0] * 0 + 155.0 + np.sqrt(_P0) * nis_mc_e0
+    _x0_mc = _x_mc[:, 0] * 0 + 70.0 + np.sqrt(_P0) * nis_mc_e0
     _g = kalman_filter_1d(_z_mc, _x0_mc, _P0, kf_Q.value, kf_R.value)
     _nis_mc = _g["innov"] ** 2 / _g["S"]
     _y = _f["innov"]
@@ -972,9 +972,9 @@ def _(
     _ax1.plot(shift_t, _y, ".", color="C0", markersize=3, label=r"innovation $\tilde y_k$")
     _ax1.fill_between(shift_t, -2 * np.sqrt(_f["S"]), 2 * np.sqrt(_f["S"]), color="C1", alpha=0.2, label=r"$\pm 2\sqrt{S_k}$")
     _ax1.axhline(0, color="black", linewidth=0.8)
-    _ax1.set_ylim(-6, 12)
+    _ax1.set_ylim(-3, 6)
     _ax1.set_xlabel("time (s)")
-    _ax1.set_ylabel("innovation (lb)")
+    _ax1.set_ylabel("innovation (kg)")
     _ax1.set_title("Innovations of one run", style="italic")
     _ax1.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax1.legend(fontsize=8, loc="upper left")
@@ -1010,7 +1010,7 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    With the true settings ($Q = 0.01$, $R = 1$) the histogram follows the $\chi^2_1$ density and the average NIS is close to $1$. Shrinking $Q$ or $R$ makes the filter overconfident and pushes the average up; enlarging them pushes it down. Picking up the cat produces a burst of huge innovations that no correctly tuned random-walk filter expects. Notice also the correlation of neighboring innovations. It is near zero with the right settings and clearly negative when $Q$ is too large: the filter chases the noise, so each innovation partly undoes the previous one. When $Q$ is too small it is positive on average, because a lagging filter's innovations share a sign for long stretches, but a single 15-second run may not show this clearly.
+    With the true settings ($Q = 0.0025$, $R = 0.25$) the histogram follows the $\chi^2_1$ density and the average NIS is close to $1$. Shrinking $Q$ or $R$ makes the filter overconfident and pushes the average up; enlarging them pushes it down. Picking up the cat produces a burst of huge innovations that no correctly tuned random-walk filter expects. Notice also the correlation of neighboring innovations. It is near zero with the right settings and clearly negative when $Q$ is too large: the filter chases the noise, so each innovation partly undoes the previous one. When $Q$ is too small it is positive on average, because a lagging filter's innovations share a sign for long stretches, but a single 15-second run may not show this clearly.
 
     The figure below repeats the experiment for many mis-tuned filters at once. Each point is the average NIS (left) or the actual RMS error (right) over 300 runs, for a filter whose $Q$ (or $R$) is the true value multiplied by the factor on the horizontal axis, with the other variance correct. The NIS crosses $1$ at the true value, and the actual error is smallest there, which is the practical meaning of "optimal".
     """)
@@ -1032,13 +1032,13 @@ def _(
     # jb: include=false
     _factors = np.array([0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0, 100.0])
     _z = nis_mc_x + nis_mc_v
-    _x0 = 155.0 + 10.0 * nis_mc_e0
+    _x0 = 70.0 + 5.0 * nis_mc_e0
     _res = {"Q": ([], []), "R": ([], [])}
     for _which in ("Q", "R"):
         for _fac in _factors:
             _Qf = shift_Q * _fac if _which == "Q" else shift_Q
             _Rf = shift_R * _fac if _which == "R" else shift_R
-            _g = kalman_filter_1d(_z, _x0, 100.0, _Qf, _Rf)
+            _g = kalman_filter_1d(_z, _x0, 25.0, _Qf, _Rf)
             _res[_which][0].append(np.mean(_g["innov"][:, 20:] ** 2 / _g["S"][20:]))
             _res[_which][1].append(np.sqrt(np.mean((_g["x"][:, 20:] - nis_mc_x[:, 20:]) ** 2)))
 
@@ -1056,7 +1056,7 @@ def _(
     _ax1.legend(fontsize=8)
     _ax2.set_xscale("log")
     _ax2.set_xlabel("filter's value / true value")
-    _ax2.set_ylabel("actual RMS error (lb)")
+    _ax2.set_ylabel("actual RMS error (kg)")
     _ax2.set_title("Actual error of a mis-tuned filter", style="italic")
     _ax2.grid(visible=True, alpha=0.9, linewidth=0.4, which="both")
     _ax2.legend(fontsize=8)
@@ -1087,21 +1087,21 @@ def _(mo):
     <!-- label: ch9-sec-tuning-on-the-bulking-data -->
     ## Tuning on the Bulking Data
 
-    Now the Introduction's 28 daily weigh-ins while bulking: the true weight rises by $0.2$ lb per day, and each reading has noise with standard deviation $1$ lb. Choose the expected daily change $\Delta x$, the filter's $Q$, and the filter's $R$ (the readings' true noise variance is $1$). The filter starts from $\hat x_0 = 150$ lb with $P_0 = 100\ \text{lb}^2$.
+    Now the Introduction's 28 daily weigh-ins while bulking: the true weight rises by $0.1$ kg per day, and each reading has noise with standard deviation $0.5$ kg. Choose the expected daily change $\Delta x$, the filter's $Q$, and the filter's $R$ (the readings' true noise variance is $0.25$). The filter starts from $\hat x_0 = 67.5$ kg with $P_0 = 25\ \text{kg}^2$.
 
-    - With $\Delta x = 0$ the random-walk model must explain the steady gain as process noise. A large $Q$ lets it follow the trend but passes more noise; a small $Q$ makes it lag. By the steady-state theorem and Chapter 6's ramp-lag formula, the lag approaches $(0.2 - \Delta x)\frac{1 - K_\infty}{K_\infty}$ lb once the filter has settled (for small $Q$ that takes longer than 28 days), and the innovations stay positive on average. For small $Q$ the NIS flags the mismatch. With the default $Q = 0.1$ it does not, even though the estimate lags by about half a pound: passing the test is not proof of a good model.
-    - With $\Delta x = 0.2$ the model is right, and a small $Q$ works best.
+    - With $\Delta x = 0$ the random-walk model must explain the steady gain as process noise. A large $Q$ lets it follow the trend but passes more noise; a small $Q$ makes it lag. By the steady-state theorem and Chapter 6's ramp-lag formula, the lag approaches $(0.1 - \Delta x)\frac{1 - K_\infty}{K_\infty}$ kg once the filter has settled (for small $Q$ that takes longer than 28 days), and the innovations stay positive on average. For small $Q$ the NIS flags the mismatch. With the default $Q = 0.025$ it does not, even though the estimate lags by about a quarter of a kilogram: passing the test is not proof of a good model.
+    - With $\Delta x = 0.1$ the model is right, and a small $Q$ works best.
     """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    bulk_dx = mo.ui.slider(steps=[0.0, 0.1, 0.2, 0.3], value=0.0, label=r"Expected change $\Delta x$ (lb/day)", show_value=True)
+    bulk_dx = mo.ui.slider(steps=[0.0, 0.05, 0.1, 0.15], value=0.0, label=r"Expected change $\Delta x$ (kg/day)", show_value=True)
     bulk_Q = mo.ui.slider(
-        steps=[0.0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0], value=0.1, label=r"Filter's $Q$ (lb$^2$ per day)", show_value=True,
+        steps=[0.0, 0.0003, 0.001, 0.0025, 0.01, 0.025, 0.1, 0.25], value=0.025, label=r"Filter's $Q$ (kg$^2$ per day)", show_value=True,
     )
-    bulk_R = mo.ui.slider(steps=[0.25, 0.5, 1.0, 2.0, 4.0], value=1.0, label=r"Filter's $R$ (lb$^2$)", show_value=True)
+    bulk_R = mo.ui.slider(steps=[0.0625, 0.125, 0.25, 0.5, 1.0], value=0.25, label=r"Filter's $R$ (kg$^2$)", show_value=True)
     return bulk_Q, bulk_R, bulk_dx
 
 
@@ -1121,7 +1121,7 @@ def _(
     plt,
     steady_state,
 ):
-    _f = kalman_filter_1d(bulk_z, 150.0, 100.0, bulk_Q.value, bulk_R.value, dx=bulk_dx.value)
+    _f = kalman_filter_1d(bulk_z, 67.5, 25.0, bulk_Q.value, bulk_R.value, dx=bulk_dx.value)
     _nis = _f["innov"] ** 2 / _f["S"]
     _lo, _hi = nis_interval(bulk_z.size)
     _rmse = np.sqrt(np.mean((_f["x"][7:] - bulk_x[7:]) ** 2))
@@ -1133,9 +1133,9 @@ def _(
     _ax.plot(bulk_days, _f["x"], color="C1", linewidth=2, label=r"estimate $\hat x_k$")
     _ax.fill_between(bulk_days, _f["x"] - 2 * np.sqrt(_f["P"]), _f["x"] + 2 * np.sqrt(_f["P"]), color="C1", alpha=0.2,
                      label=r"$\pm 2\sqrt{P_k}$")
-    _ax.set_ylim(151, 164)
+    _ax.set_ylim(68, 74.5)
     _ax.set_xlabel("day")
-    _ax.set_ylabel("weight (lb)")
+    _ax.set_ylabel("weight (kg)")
     _ax.set_title("Kalman filter on the bulking weigh-ins", style="italic")
     _ax.grid(visible=True, alpha=0.9, linewidth=0.4)
     _ax.legend(fontsize=8, loc="upper left", ncol=2)
@@ -1144,9 +1144,9 @@ def _(
     if bulk_Q.value > 0:
         _p, _K, _Pinf = steady_state(bulk_Q.value, bulk_R.value)
         _ss = (
-            rf"Steady-state gain $K_\infty = {_K:.3f}$; predicted steady lag $(0.2 - \Delta x)(1 - K_\infty)/K_\infty = "
-            rf"{(0.2 - bulk_dx.value) * (1 - _K) / _K:.2f}$ lb; actual average of $x_k - \hat x_k$ over days 15–28: "
-            rf"${np.mean(bulk_x[14:] - _f['x'][14:]):.2f}$ lb."
+            rf"Steady-state gain $K_\infty = {_K:.3f}$; predicted steady lag $(0.1 - \Delta x)(1 - K_\infty)/K_\infty = "
+            rf"{(0.1 - bulk_dx.value) * (1 - _K) / _K:.2f}$ kg; actual average of $x_k - \hat x_k$ over days 15–28: "
+            rf"${np.mean(bulk_x[14:] - _f['x'][14:]):.2f}$ kg."
         )
     else:
         _ss = r"With $Q = 0$ the gain keeps shrinking like $1/k$; there is no steady state."
@@ -1156,7 +1156,7 @@ def _(
         graphic(_fig),
         mo.md(
             rf"Average NIS ${_nis.mean():.2f}$, {_verdict} the 95% interval $[{_lo:.2f}, {_hi:.2f}]$ for $N = 28$; "
-            rf"average innovation ${_f['innov'][7:].mean():+.2f}$ lb; RMS error over days 8–28: ${_rmse:.2f}$ lb. "
+            rf"average innovation ${_f['innov'][7:].mean():+.2f}$ kg; RMS error over days 8–28: ${_rmse:.2f}$ kg. "
             + _ss
         ),
     ])

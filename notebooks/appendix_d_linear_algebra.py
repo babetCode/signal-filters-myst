@@ -477,7 +477,7 @@ def _(mo):
 
     $$\begin{bmatrix} h & 1 \\ h & 1\end{bmatrix} \qquad\text{and}\qquad \begin{bmatrix} h & 1 \\ 0 & 1\end{bmatrix}.$$
 
-    The first pair of readings can never separate $x$ from $c$: the first matrix sends $(1, -h)$ (one more pound, $h$ fewer counts of offset) to $(h - h, h - h) = \mathbf 0$, so the states $(x, c)$ and $(x + 1, c - h)$ produce identical readings. The second pair can. The difference is whether the columns are linearly independent.
+    The first pair of readings can never separate $x$ from $c$: the first matrix sends $(1, -h)$ (one more kilogram, $h$ fewer counts of offset) to $(h - h, h - h) = \mathbf 0$, so the states $(x, c)$ and $(x + 1, c - h)$ produce identical readings. The second pair can. The difference is whether the columns are linearly independent.
 
     /// note | 📖 **Definition**
     <u>**Linear independence**</u>
