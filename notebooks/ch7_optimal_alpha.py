@@ -269,7 +269,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Why restrict ourselves to this form? Any estimate built linearly from the two sources is $a\hat x^- + bz$ for some numbers $a, b$. The next lemma shows that requiring the estimate to be right on average, whatever the true weight is, forces $a + b = 1$, which is exactly the form above.
+    Why restrict ourselves to this form? Any estimate built linearly from the two sources is $a\hat x^- + bz$ for some numbers $a, b$. The [Unbiased Combinations lemma](#ch7-lem-unbiased-combinations) below shows that requiring the estimate to be right on average, whatever the true weight is, forces $a + b = 1$, which is exactly the form above.
 
     /// admonition | 📐 **Lemma (Unbiased Combinations)**
         attrs: {class: lemma, id: ch7-lem-unbiased-combinations}
@@ -311,7 +311,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the previous lemma and linearity of expectation, $\mathbb E e = (1 - \alpha)\,\mathbb E e^- + \alpha\,\mathbb E v = 0$. If $x$ is constant, $\mathbb E\hat x = x + \mathbb E e = x$. $\blacksquare$
+    By the [Error of the Update lemma](#ch7-lem-error-of-the-update) and linearity of expectation, $\mathbb E e = (1 - \alpha)\,\mathbb E e^- + \alpha\,\mathbb E v = 0$. If $x$ is constant, $\mathbb E\hat x = x + \mathbb E e = x$. $\blacksquare$
     ///
 
     So the mean cannot tell us which gain to choose: every gain is right on average. The variance can.

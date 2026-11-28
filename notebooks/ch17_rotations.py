@@ -794,7 +794,7 @@ def make_rodrigues_fig(IMAGES_DIR, np, plt, setup_3d):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    So far $\mathbf R(\mathbf u, \vartheta)$ is just a matrix. The next theorem shows it is always a rotation matrix and, more surprisingly, that *every* rotation matrix is a single turn about some axis.
+    So far $\mathbf R(\mathbf u, \vartheta)$ is just a matrix. [Euler's Rotation Theorem](#ch17-thm-eulers-rotation-theorem) below shows it is always a rotation matrix and, more surprisingly, that *every* rotation matrix is a single turn about some axis.
 
     /// admonition | 📐 **Theorem (Euler's Rotation Theorem)**
         attrs: {class: theorem, id: ch17-thm-eulers-rotation-theorem}

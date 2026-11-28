@@ -78,8 +78,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [functions](#ch2-sec-functions), [the natural numbers](#ch2-sec-natural-numbers) $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
-    - [Chapter 3](ch3_sets_for_probability.md): [sequences](#ch3-sec-indexed-families-and-sequences), [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as [a complete ordered field](#ch3-thm-the-real-numbers) (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), [intervals](#ch3-sec-consequences-of-completeness), and [the extended real numbers](#ch3-sec-extended-real-numbers) $[0, \infty]$.
+    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`functions <function>`, the {term}`natural numbers` $\mathbb N = \{0, 1, 2, \ldots\}$, [induction](#ch2-thm-induction), and [the Recursion Theorem](#ch2-thm-recursion).
+    - [Chapter 3](ch3_sets_for_probability.md): {term}`sequences <sequence>`, [finite sums](#ch3-sec-finite-sums-and-products) $\sum$, [countable sets](#ch3-sec-countable-and-uncountable-sets), $\mathbb R$ as a {term}`complete ordered field` (every nonempty subset of $\mathbb R$ that is bounded above has a supremum), [the Archimedean property](#ch3-thm-archimedean-property) and [the density of](#ch3-thm-density-of-the-rationals) $\mathbb Q$, [absolute value and the triangle inequality](#ch3-lem-properties-of-absolute-value), {term}`intervals <interval>`, and the {term}`extended real numbers` $[0, \infty]$.
     ///
 
     <!-- label: appc-sec-how-to-read-this-appendix -->
@@ -273,7 +273,7 @@ def _(mo):
         attrs: {class: proof}
     Let $\varepsilon > 0$. In each part, "for large $n$" means "for all $n$ beyond some index", and finitely many such conditions can be met at once by taking the largest of the indices.
     1. For large $n$, $|a_n - a| < \varepsilon/2$ and $|b_n - b| < \varepsilon/2$, so $|(a_n + b_n) - (a + b)| \le |a_n - a| + |b_n - b| < \varepsilon$. If $c = 0$ the second claim is trivial; otherwise for large $n$, $|a_n - a| < \varepsilon/|c|$, so $|c\,a_n - c\,a| < \varepsilon$.
-    2. Write $a_n b_n - ab = a_n(b_n - b) + b(a_n - a)$. By the lemma, $|a_n| \le M$ for some $M > 0$. For large $n$, $|b_n - b| < \varepsilon/(2M)$ and $|a_n - a| < \varepsilon/(2|b| + 2)$, so $|a_n b_n - ab| < \varepsilon/2 + \varepsilon/2 = \varepsilon$.
+    2. Write $a_n b_n - ab = a_n(b_n - b) + b(a_n - a)$. By the [Convergent Sequences Are Bounded lemma](#appc-lem-convergent-sequences-are-bounded), $|a_n| \le M$ for some $M > 0$. For large $n$, $|b_n - b| < \varepsilon/(2M)$ and $|a_n - a| < \varepsilon/(2|b| + 2)$, so $|a_n b_n - ab| < \varepsilon/2 + \varepsilon/2 = \varepsilon$.
     3. By part 2 it suffices to show $1/b_n \to 1/b$. For large $n$, $|b_n - b| < |b|/2$, so by the reverse triangle inequality $|b_n| > |b|/2$, and then $\left|\frac{1}{b_n} - \frac{1}{b}\right| = \frac{|b - b_n|}{|b_n||b|} < \frac{2|b_n - b|}{|b|^2}$. For large $n$ this is below $\varepsilon$, because $|b_n - b| < \varepsilon|b|^2/2$ eventually.
     4. Suppose $a > b$ and let $\varepsilon := (a - b)/2$. For large $n$ (also $n \ge N_0$), $a_n > a - \varepsilon = b + \varepsilon > b_n$, contradicting $a_n \le b_n$.
     5. For large $n$, $a - \varepsilon < a_n \le c_n \le b_n < a + \varepsilon$, so $|c_n - a| < \varepsilon$. $\blacksquare$
@@ -354,7 +354,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the previous lemma the sequence has a monotone subsequence, which is bounded because the sequence is. By Monotone Convergence it converges. $\blacksquare$
+    By the [Monotone Subsequence lemma](#appc-lem-monotone-subsequence) the sequence has a monotone subsequence, which is bounded because the sequence is. By Monotone Convergence it converges. $\blacksquare$
     ///
 
     To prove that a sequence converges using the definition, we must already know the limit. The next definition tests convergence using only the terms themselves.
@@ -650,7 +650,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    For example, if $f(x) \to A$ and $g(x) \to B$ as $x \to a$, then for every sequence $x_n \to a$ in $D\setminus\{a\}$ we have $f(x_n) \to A$ and $g(x_n) \to B$, so $f(x_n) + g(x_n) \to A + B$ by the sequence laws; by the lemma, $f(x) + g(x) \to A + B$. The other laws follow in the same way. $\blacksquare$
+    For example, if $f(x) \to A$ and $g(x) \to B$ as $x \to a$, then for every sequence $x_n \to a$ in $D\setminus\{a\}$ we have $f(x_n) \to A$ and $g(x_n) \to B$, so $f(x_n) + g(x_n) \to A + B$ by the sequence laws; by the [Sequential Characterization of Limits lemma](#appc-lem-sequential-characterization-of-limits), $f(x) + g(x) \to A + B$. The other laws follow in the same way. $\blacksquare$
     ///
 
     [^countable-choice]: Choosing one $x_n$ for every $n$ at once uses the axiom of countable choice, as in [Chapter 3](#ch3-lem-countable-choice). The same remark applies to the proofs of uniform continuity and the extreme value theorem below.
@@ -724,7 +724,7 @@ def _(mo):
     Let $b := \max(1, y)$. The polynomial $x \mapsto x^2$ is continuous on $[0, b]$, with $0^2 = 0 \le y$ and $b^2 \ge b \ge y$, so the intermediate value theorem gives existence. Uniqueness: if $0 \le x < x'$ then $x^2 < x'^2$, so $x \mapsto x^2$ is strictly increasing on $[0, \infty)$. $\blacksquare$
     ///
 
-    The next lemma shows that inverses of strictly increasing functions between intervals are automatically continuous. We use it for $\sqrt{\phantom{y}}$ now and for the natural logarithm later.
+    The [Continuous Inverse lemma](#appc-lem-continuous-inverse) below shows that inverses of strictly increasing functions between intervals are automatically continuous. We use it for $\sqrt{\phantom{y}}$ now and for the natural logarithm later.
 
     /// admonition | 📐 **Lemma (Continuous Inverse)**
         attrs: {class: lemma, id: appc-lem-continuous-inverse}
@@ -1266,7 +1266,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    ($\Leftarrow$) Let $I_1$ and $I_2$ be the integrals over $[a, b]$ and $[b, c]$. By the previous lemma, $|f| \le M$ on $[a, c]$ for some $M > 0$. Given $\varepsilon > 0$, let $\delta_1, \delta_2$ work for $\varepsilon/3$ on the two pieces, and let $\delta := \min(\delta_1, \delta_2, \varepsilon/(6M))$. Let $(P, t)$ be a tagged subdivision of $[a, c]$ with mesh below $\delta$. If $b$ is one of its points, $(P, t)$ splits into tagged subdivisions of $[a, b]$ and $[b, c]$ with mesh below $\delta$, and its Riemann sum, the sum of theirs, is within $\frac{2\varepsilon}3$ of $I_1 + I_2$. Otherwise $b$ lies inside exactly one subinterval $[x_{j-1}, x_j]$. Inserting $b$ as a new point and tagging both new pieces with $b$ changes the Riemann sum by $(f(b) - f(t_j))\,\Delta x_j$, which has absolute value below $2M\delta \le \frac\varepsilon3$, and produces a tagged subdivision that splits as before. Either way, $|R(f, P, t) - (I_1 + I_2)| < \varepsilon$.
+    ($\Leftarrow$) Let $I_1$ and $I_2$ be the integrals over $[a, b]$ and $[b, c]$. By the [Integrable Functions Are Bounded lemma](#appc-lem-integrable-functions-are-bounded), $|f| \le M$ on $[a, c]$ for some $M > 0$. Given $\varepsilon > 0$, let $\delta_1, \delta_2$ work for $\varepsilon/3$ on the two pieces, and let $\delta := \min(\delta_1, \delta_2, \varepsilon/(6M))$. Let $(P, t)$ be a tagged subdivision of $[a, c]$ with mesh below $\delta$. If $b$ is one of its points, $(P, t)$ splits into tagged subdivisions of $[a, b]$ and $[b, c]$ with mesh below $\delta$, and its Riemann sum, the sum of theirs, is within $\frac{2\varepsilon}3$ of $I_1 + I_2$. Otherwise $b$ lies inside exactly one subinterval $[x_{j-1}, x_j]$. Inserting $b$ as a new point and tagging both new pieces with $b$ changes the Riemann sum by $(f(b) - f(t_j))\,\Delta x_j$, which has absolute value below $2M\delta \le \frac\varepsilon3$, and produces a tagged subdivision that splits as before. Either way, $|R(f, P, t) - (I_1 + I_2)| < \varepsilon$.
 
     ($\Rightarrow$) We check the Cauchy criterion on $[a, b]$ (the case $[b, c]$ is symmetric). Given $\varepsilon > 0$, let $\delta$ work for $\varepsilon/2$ on $[a, c]$, and fix a tagged subdivision $(Q, s)$ of $[b, c]$ with mesh below $\delta$. If $(P, t)$ and $(P', t')$ are tagged subdivisions of $[a, b]$ with meshes below $\delta$, appending $(Q, s)$ to each gives two tagged subdivisions of $[a, c]$ with meshes below $\delta$. Their Riemann sums are within $\frac\varepsilon2$ of the integral over $[a, c]$, so they differ by less than $\varepsilon$; and their difference is exactly $R(f, P, t) - R(f, P', t')$. The formula then follows from the first part.
 
@@ -1487,7 +1487,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    1. The coefficients $\frac{1}{n!}$ satisfy the lemma's hypothesis (the exponential series converges absolutely at $x = r$). By the lemma, $\exp'(x) = \sum_{n \ge 1} \frac{n\,x^{n-1}}{n!} = \sum_{n\ge1}\frac{x^{n-1}}{(n-1)!} = \exp(x)$. Every term with $n \ge 1$ vanishes at $0$, so $\exp(0) = 1$.
+    1. The coefficients $\frac{1}{n!}$ satisfy the lemma's hypothesis (the exponential series converges absolutely at $x = r$). By the [Differentiating a Power Series lemma](#appc-lem-differentiating-a-power-series), $\exp'(x) = \sum_{n \ge 1} \frac{n\,x^{n-1}}{n!} = \sum_{n\ge1}\frac{x^{n-1}}{(n-1)!} = \exp(x)$. Every term with $n \ge 1$ vanishes at $0$, so $\exp(0) = 1$.
     2. Let $g(x) := \exp(x)\exp(-x)$. By the product and chain rules, $g'(x) = \exp(x)\exp(-x) - \exp(x)\exp(-x) = 0$, so $g$ is constant on $\mathbb R$ and equals $g(0) = 1$.
     3. Fix $b$ and let $h(x) := \exp(x + b)\exp(-x)$. As in part 2, $h' = 0$, so $h(x) = h(0) = \exp(b)$. Multiplying by $\exp(x)$ and using part 2 gives $\exp(x + b) = \exp(x)\exp(b)$.
     4. By part 3, $\exp(x) = \exp(x/2)^2 \ge 0$, and $\exp(x) \ne 0$ by part 2.
@@ -1546,7 +1546,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    1. By the lemma, $\sin'(x) = \sum_n (-1)^n \frac{(2n+1)x^{2n}}{(2n+1)!} = \sum_n (-1)^n\frac{x^{2n}}{(2n)!} = \cos x$, and $\cos'(x) = \sum_{n\ge1}(-1)^n\frac{x^{2n-1}}{(2n-1)!} = -\sum_{m \ge 0}(-1)^m\frac{x^{2m+1}}{(2m+1)!} = -\sin x$, with $m = n - 1$. The values at $0$ are the constant terms.
+    1. By the [Differentiating a Power Series lemma](#appc-lem-differentiating-a-power-series), $\sin'(x) = \sum_n (-1)^n \frac{(2n+1)x^{2n}}{(2n+1)!} = \sum_n (-1)^n\frac{x^{2n}}{(2n)!} = \cos x$, and $\cos'(x) = \sum_{n\ge1}(-1)^n\frac{x^{2n-1}}{(2n-1)!} = -\sum_{m \ge 0}(-1)^m\frac{x^{2m+1}}{(2m+1)!} = -\sin x$, with $m = n - 1$. The values at $0$ are the constant terms.
     2. $(-x)^{2n+1} = -x^{2n+1}$ and $(-x)^{2n} = x^{2n}$, term by term.
     3. $\frac{d}{dx}\big(\sin^2 x + \cos^2 x\big) = 2\sin x\cos x - 2\cos x \sin x = 0$, so $\sin^2 + \cos^2$ is constant and equals its value $0 + 1$ at $0$. Then $\sin^2 x \le 1$, so $|\sin x| \le 1$, and likewise for $\cos$. $\blacksquare$
     ///
@@ -1670,9 +1670,9 @@ def _(mo):
     exist as real numbers, where $s \to a^+$ means $s \to -\infty$ if $a = -\infty$, and $t \to b^-$ means $t \to \infty$ if $b = \infty$. Its value is then the sum of the two limits. Otherwise the improper integral diverges.
     ///
 
-    The choice of $c$ does not matter: replacing $c$ by $c'$ changes the two integrals by $+\int_c^{c'} f$ and $-\int_c^{c'} f$ (additivity), so the limits exist for $c'$ exactly when they exist for $c$, and their sum is the same. Nor does the notation clash with the ordinary integral: if $a$ is finite and $f$ is Riemann integrable on $[a, c]$, then $f$ is bounded there, say by $M$, and $\left|\int_s^c f - \int_a^c f\right| = \left|\int_a^s f\right| \le M(s - a) \to 0$; the same holds at $b$. When only one endpoint is a problem, we simply write, for example, $\int_a^\infty f(x)\,dx = \lim_{t\to\infty}\int_a^t f(x)\,dx$. If $\lim_{s\to a^+}\int_s^c f$ exists, then $x \mapsto \int_a^x f(s)\,ds := \lim_{s\to a^+}\int_s^c f + \int_c^x f$ is continuous on $(a, b)$, by the lemma Integrals Are Continuous in Their Limits; [Chapter 5](#ch5-sec-cumulative-distribution-functions) uses this for cumulative distribution functions $\int_{-\infty}^x f$.
+    The choice of $c$ does not matter: replacing $c$ by $c'$ changes the two integrals by $+\int_c^{c'} f$ and $-\int_c^{c'} f$ (additivity), so the limits exist for $c'$ exactly when they exist for $c$, and their sum is the same. Nor does the notation clash with the ordinary integral: if $a$ is finite and $f$ is Riemann integrable on $[a, c]$, then $f$ is bounded there, say by $M$, and $\left|\int_s^c f - \int_a^c f\right| = \left|\int_a^s f\right| \le M(s - a) \to 0$; the same holds at $b$. When only one endpoint is a problem, we simply write, for example, $\int_a^\infty f(x)\,dx = \lim_{t\to\infty}\int_a^t f(x)\,dx$. If $\lim_{s\to a^+}\int_s^c f$ exists, then $x \mapsto \int_a^x f(s)\,ds := \lim_{s\to a^+}\int_s^c f + \int_c^x f$ is continuous on $(a, b)$, by the [Integrals Are Continuous in Their Limits lemma](#appc-lem-integrals-are-continuous-in-their-limits); [Chapter 5](#ch5-sec-cumulative-distribution-functions) uses this for cumulative distribution functions $\int_{-\infty}^x f$.
 
-    For **nonnegative** $f$, the integral $\int_c^t f$ increases with $t$ and $\int_s^c f$ increases as $s$ decreases. The next lemma shows that such limits always exist in $(-\infty, \infty]$, so for $f \ge 0$ we may write $\int_a^b f(x)\,dx = \infty$ when the improper integral diverges.
+    For **nonnegative** $f$, the integral $\int_c^t f$ increases with $t$ and $\int_s^c f$ increases as $s$ decreases. The [Monotone Functions Have One-Sided Limits lemma](#appc-lem-monotone-functions-have-one-sided-limits) below shows that such limits always exist in $(-\infty, \infty]$, so for $f \ge 0$ we may write $\int_a^b f(x)\,dx = \infty$ when the improper integral diverges.
 
     /// admonition | 📐 **Lemma (Monotone Functions Have One-Sided Limits)**
         attrs: {class: lemma, id: appc-lem-monotone-functions-have-one-sided-limits}
@@ -1697,7 +1697,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    For $c \le t < b$, monotonicity gives $\int_c^t f \le \int_c^t g \le \lim_{t' \to b^-}\int_c^{t'} g$, since $\int_c^{t'} g$ increases with $t'$. By the lemma, $\lim_{t\to b^-}\int_c^t f$ exists in $[0, \infty]$ and is at most the corresponding limit for $g$. The same argument applies at $a$, and adding the two pieces gives the claim. $\blacksquare$
+    For $c \le t < b$, monotonicity gives $\int_c^t f \le \int_c^t g \le \lim_{t' \to b^-}\int_c^{t'} g$, since $\int_c^{t'} g$ increases with $t'$. By the [Monotone Functions Have One-Sided Limits lemma](#appc-lem-monotone-functions-have-one-sided-limits), $\lim_{t\to b^-}\int_c^t f$ exists in $[0, \infty]$ and is at most the corresponding limit for $g$. The same argument applies at $a$, and adding the two pieces gives the claim. $\blacksquare$
     ///
 
     /// admonition | 📐 **Theorem (Absolute Convergence of Integrals)**
@@ -2033,7 +2033,7 @@ def _(mo):
     <!-- label: appc-sec-integrals-over-the-whole-space -->
     ### Integrals over the Whole Space
 
-    For a continuous $f: \mathbb R^n \to [0, \infty)$, the integrals $\int_{[-R, R]^n} f$ increase with $R$ (the larger box splits into the smaller one and pieces with nonnegative integrals), so by the lemma on monotone functions the limit
+    For a continuous $f: \mathbb R^n \to [0, \infty)$, the integrals $\int_{[-R, R]^n} f$ increase with $R$ (the larger box splits into the smaller one and pieces with nonnegative integrals), so by the [Monotone Functions Have One-Sided Limits lemma](#appc-lem-monotone-functions-have-one-sided-limits) the limit
     $$\int_{\mathbb R^n} f(\mathbf x)\,d\mathbf x := \lim_{R\to\infty}\int_{[-R, R]^n} f(\mathbf x)\,d\mathbf x$$
     exists in $[0, \infty]$. For $n = 1$ it agrees with the improper integral $\int_{-\infty}^\infty f(x)\,dx$. The two theorems below are standard results of Lebesgue integration theory, which we state without proof. They are phrased with Lebesgue integrals; for the continuous functions in this book, every Lebesgue integral that also exists as an (improper) Riemann integral in the sense above has the same value ([Wikipedia: Lebesgue integral](https://en.wikipedia.org/wiki/Lebesgue_integral)).
 

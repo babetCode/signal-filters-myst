@@ -60,7 +60,7 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [power sets](#ch2-sec-6-power-set), [the intersection](#ch2-lem-general-intersection) $\bigcap F$ of a nonempty set of sets, [sets of functions](#ch2-sec-functions) $Y^X$, and [the Axiom of Choice](#ch2-sec-10-choice) (used once, for the Vitali set).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`power sets <power set>`, [the intersection](#ch2-lem-general-intersection) $\bigcap F$ of a nonempty set of sets, [sets of functions](#ch2-sec-functions) $Y^X$, and [the Axiom of Choice](#ch2-sec-10-choice) (used once, for the Vitali set).
     - [Chapter 3](ch3_sets_for_probability.md): {term}`complements <complement>` and [De Morgan's laws](#ch3-thm-de-morgans-laws), {term}`indexed families <indexed family>` and [the Disjointification lemma](#ch3-lem-disjointification), {term}`partitions <partition>`, {term}`countable` and {term}`uncountable` sets (including [the Listing theorem](#ch3-thm-listing-countable-sets) and [the countability of](#ch3-thm-the-integers-and-the-rationals-are-countable) $\mathbb Q$), [the Archimedean property](#ch3-thm-archimedean-property), {term}`intervals <interval>`, and the {term}`extended real numbers`.
     - [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits): limits, [the limit laws](#appc-thm-limit-laws-for-sequences), and [Monotone Convergence](#appc-thm-monotone-convergence) (for the continuity of probability).
     - [Appendix C: Series](#appc-sec-series): [series of nonnegative terms](#appc-sec-series-with-nonnegative-terms), their value in $[0, \infty]$, and the theorem that such sums may be reordered and regrouped ([Nonnegative Sums in Any Order](#appc-thm-nonnegative-sums-in-any-order)).
@@ -241,7 +241,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Let $\mathfrak S$ be the set of $\sigma$-algebras on $\Omega$ that contain $\mathcal G$; it is a set by Separation. It is nonempty because $\mathcal P(\Omega) \in \mathfrak S$, so $\sigma(\mathcal G) = \bigcap \mathfrak S$ is defined (this is Chapter 2's proviso for $\bigcap$) and is a $\sigma$-algebra by the lemma. Each $G \in \mathcal G$ lies in every member of $\mathfrak S$, hence in $\bigcap \mathfrak S$. If $\mathcal F$ is a $\sigma$-algebra containing $\mathcal G$, then $\mathcal F \in \mathfrak S$, so $\bigcap \mathfrak S \subseteq \mathcal F$. $\blacksquare$
+    Let $\mathfrak S$ be the set of $\sigma$-algebras on $\Omega$ that contain $\mathcal G$; it is a set by Separation. It is nonempty because $\mathcal P(\Omega) \in \mathfrak S$, so $\sigma(\mathcal G) = \bigcap \mathfrak S$ is defined (this is Chapter 2's proviso for $\bigcap$) and is a $\sigma$-algebra by the [Intersections of $\sigma$-Algebras lemma](#ch4-lem-intersections-of-sigma-algebras). Each $G \in \mathcal G$ lies in every member of $\mathfrak S$, hence in $\bigcap \mathfrak S$. If $\mathcal F$ is a $\sigma$-algebra containing $\mathcal G$, then $\mathcal F \in \mathfrak S$, so $\bigcap \mathfrak S \subseteq \mathcal F$. $\blacksquare$
     ///
 
     The theorem gives a standard proof technique, sometimes called the **good-sets principle**: to show that every set in $\sigma(\mathcal G)$ has some property, show that the sets with the property form a $\sigma$-algebra containing $\mathcal G$. By the theorem, that $\sigma$-algebra contains $\sigma(\mathcal G)$.

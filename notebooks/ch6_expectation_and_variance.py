@@ -755,7 +755,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the lemma and linearity, $\mathbb E[\hat X_k] = \sum_i w_{k,i}\,x = x$ for every $x$. By Bienaymé's corollary, $\operatorname{Var}(\hat X_k) = \sigma^2\sum_i w_{k,i}^2$. Let $r := (1 - \alpha)^2$, so $0 \le r < 1$. Then
+    By the [EMA Weights lemma](#ch6-lem-ema-weights) and linearity, $\mathbb E[\hat X_k] = \sum_i w_{k,i}\,x = x$ for every $x$. By Bienaymé's corollary, $\operatorname{Var}(\hat X_k) = \sigma^2\sum_i w_{k,i}^2$. Let $r := (1 - \alpha)^2$, so $0 \le r < 1$. Then
     $$\sum_{i=1}^k w_{k,i}^2 = r^{k-1} + \alpha^2\sum_{i=2}^{k} r^{k-i} = r^{k-1} + \alpha^2\sum_{j=0}^{k-2} r^{j} = r^{k-1} + \alpha^2\,\frac{1 - r^{k-1}}{1 - r}$$
     by the finite geometric sum ([Appendix C: Series](#appc-sec-series)), which is the first form. Since $1 - r = \alpha(2 - \alpha)$, the factor $\frac{\alpha^2}{1-r}$ equals $\frac{\alpha}{2-\alpha}$, and
     $$r^{k-1} + \frac{\alpha}{2-\alpha}\big(1 - r^{k-1}\big) = \frac{\alpha}{2-\alpha} + r^{k-1}\,\frac{2(1-\alpha)}{2-\alpha} = \frac{\alpha + 2(1-\alpha)^{2k-1}}{2-\alpha}.$$

@@ -492,7 +492,7 @@ def _(mo):
     So $a'^2 = 2b'^2$ with $0 < b' < b$, that is, $b' \in B$, contradicting the minimality of $b$. $\blacksquare$
     ///
 
-    The proof of the next theorem uses one explicit map. For a rational $p > 0$, let
+    The proof of the [Incompleteness of $\mathbb Q$ theorem](#appb-thm-incompleteness-of-q) below uses one explicit map. For a rational $p > 0$, let
 
     $$\varphi(p) := \frac{2p + 2}{p + 2}, \qquad\text{so that}\qquad \varphi(p) - p = \frac{2 - p^2}{p + 2} \quad\text{and}\quad \varphi(p)^2 - 2 = \frac{2(p^2 - 2)}{(p + 2)^2}.$$
 
@@ -507,7 +507,7 @@ def _(mo):
         attrs: {class: proof}
     *Nonempty:* $0 \in S$. *Bounded above by 2:* if $q \in S$ and $2 < q$, then $q > 0$, and $4 < q^2$ by Inequality Rules, part 5, so $q \notin S$, a contradiction. Hence $q \le 2$ for every $q \in S$.
 
-    *No supremum.* Suppose $\sigma \in \mathbb Q$ is a supremum of $S$. Since $1 \in S$, $\sigma \ge 1 > 0$. By the Lemma, $\sigma^2 \neq 2$, so there are two cases.
+    *No supremum.* Suppose $\sigma \in \mathbb Q$ is a supremum of $S$. Since $1 \in S$, $\sigma \ge 1 > 0$. By the [No Rational Square Root of 2 lemma](#appb-lem-no-rational-square-root-of-2), $\sigma^2 \neq 2$, so there are two cases.
 
     - If $\sigma^2 < 2$, then $\varphi(\sigma) \in S$ and $\varphi(\sigma) > \sigma$, so $\sigma$ is not an upper bound of $S$.
     - If $\sigma^2 > 2$, then $\varphi(\sigma) < \sigma$, and $\varphi(\sigma)$ is an upper bound of $S$: if some $q \in S$ had $q > \varphi(\sigma) > 0$, then $q^2 > \varphi(\sigma)^2 > 2$ and $q > 0$, so $q \notin S$. So $\sigma$ is not the *least* upper bound.
@@ -725,7 +725,7 @@ def _(mo):
     <!-- label: appb-sec-uniqueness-of-the-real-numbers -->
     ## Uniqueness of the Real Numbers
 
-    Dedekind cuts are one construction among several. The next theorem says the choice does not matter.
+    Dedekind cuts are one construction among several. The [Uniqueness of the Real Numbers theorem](#appb-thm-uniqueness-of-the-real-numbers) below says the choice does not matter.
 
     /// admonition | 📐 **Theorem (Uniqueness of the Real Numbers)**
         attrs: {class: theorem, id: appb-thm-uniqueness-of-the-real-numbers}

@@ -62,11 +62,11 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 5](ch5_random_variables.md): [measurement noise](#ch5-sec-the-measurement-noise-model) and [the normal distribution](#ch5-sec-the-uniform-and-normal-distributions).
+    - [Chapter 5](ch5_random_variables.md): {term}`measurement noise` and the {term}`normal distribution`.
     - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b)$, [variances and covariances of sums](#ch6-sec-variance-of-sums), and [unbiased estimators](#ch6-sec-estimators).
     - [Chapter 7](ch7_optimal_alpha.md): [the optimal gain by completing the square](#ch7-sec-completing-the-square), and [what correlated errors do to an average](#ch7-sec-correlated-errors).
-    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter) and [the innovation variance](#ch9-sec-innovations).
-    - [Chapter 10](ch10_process_models.md): [system state](#ch10-sec-systems-states-and-inputs), [process model](#ch10-sec-linear-process-models), and [control input](#ch10-sec-systems-states-and-inputs).
+    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter) and the {term}`innovation variance`.
+    - [Chapter 10](ch10_process_models.md): {term}`system state`, {term}`process model`, and {term}`control input`.
     - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) (optional; only for the partial-derivative route to the normal equations) and [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) (only for the preview of nonlinear measurement functions).
     ///
     """)

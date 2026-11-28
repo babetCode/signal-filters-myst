@@ -366,7 +366,7 @@ def _(mo):
     $x_k - x_0 = \sum_{j=1}^k w_j$ (by induction on $k$), and the $w_j$ are pairwise uncorrelated, so the variance of the sum is the sum of the variances (Chapter 6): $kQ$. $\blacksquare$
     ///
 
-    So a random walk's typical distance from its start grows like $\sqrt{kQ}$ without bound. A filter tracking it can never stop listening to new measurements: its gain must stay away from $0$. The next theorem gives the prediction's error variance.
+    So a random walk's typical distance from its start grows like $\sqrt{kQ}$ without bound. A filter tracking it can never stop listening to new measurements: its gain must stay away from $0$. The [Prediction Step theorem](#ch9-thm-prediction-step) below gives the prediction's error variance.
 
     /// admonition | 📐 **Theorem (Prediction Step)**
         attrs: {class: theorem, id: ch9-thm-prediction-step}
@@ -475,7 +475,7 @@ def _(mo):
     *Update.* By the linearity of covariance again, $\operatorname{Cov}(e_k^-, v_k) = 0$, and $\mathbb E v_k = 0$, $\operatorname{Var} v_k = R$. So the pair $(\hat x_k^-, z_k)$ satisfies assumptions (A1)–(A3) of Chapter 7, and the Optimal Gain theorem says that $K_k = P_k^-/(P_k^- + R)$ is the optimal gain, with error variance $(1 - K_k)P_k^- = P_k$. By Chapter 7's Error of the Update lemma, $e_k = (1 - K_k)\,e_k^- + K_k v_k$, a linear combination of $e_0, w_1, \ldots, w_k, v_1, \ldots, v_k$ with mean $0$. $\blacksquare$
     ///
 
-    Two remarks. First, if in addition $e_0$, all $w_k$, and all $v_k$ are independent and normal, then by [Chapter 8](#ch8-cor-the-normal-bayes-filter)'s normal Bayes filter $\hat x_k$ is the posterior mean of $x_k$ given $z_1, \ldots, z_k$ (with prior $\mathcal N(\hat x_0, P_0)$ for $x_0$), and therefore the best estimator of any form in the mean-squared-error sense. Second, without normality, the theorem above still holds; it only uses means, variances, and covariances. (A stronger statement is also true: the Kalman filter's estimate has the smallest error variance among *all* linear combinations of $\hat x_0, z_1, \ldots, z_k$; this is the setting of Kalman's 1960 paper.)
+    Two remarks. First, if in addition $e_0$, all $w_k$, and all $v_k$ are independent and normal, then by [Chapter 8](#ch8-cor-the-normal-bayes-filter)'s normal Bayes filter $\hat x_k$ is the posterior mean of $x_k$ given $z_1, \ldots, z_k$ (with prior $\mathcal N(\hat x_0, P_0)$ for $x_0$), and therefore the best estimator of any form in the mean-squared-error sense. Second, without normality, the [Kalman Filter Is Optimal at Every Step theorem](#ch9-thm-the-kalman-filter-is-optimal-at-every-step) still holds; it only uses means, variances, and covariances. (A stronger statement is also true: the Kalman filter's estimate has the smallest error variance among *all* linear combinations of $\hat x_0, z_1, \ldots, z_k$; this is the setting of Kalman's 1960 paper.)
 
     /// admonition | 📐 **Theorem (No Process Noise)**
         attrs: {class: theorem, id: ch9-thm-no-process-noise}

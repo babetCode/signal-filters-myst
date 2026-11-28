@@ -57,7 +57,7 @@ def display_settings(dedent, mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 1](ch1_language_of_logic.md): [connectives, truth tables](#ch1-sec-connectives-and-truth-tables), [quantifiers](#ch1-sec-quantifiers), and [informal proofs](#ch1-sec-proof-techniques).
+    - [Chapter 1](ch1_language_of_logic.md): [connectives, truth tables](#ch1-sec-connectives-and-truth-tables), {term}`quantifiers <quantifier>`, and [informal proofs](#ch1-sec-proof-techniques).
     - [Chapter 2](ch2_axioms_of_set_theory.md) (optional): [the ZFC axioms](#ch2-sec-the-axioms-of-zfc) used as examples here.
     ///
     """)
@@ -283,7 +283,7 @@ def _(mo):
     By induction on formulas. For atomic $\varphi$, every variable in $\varphi$ is free, so $s$ and $s'$ give them the same values and clauses 1–2 agree. For $\lnot\varphi$ and $\varphi \land \psi$, the free variables of the parts are free in the whole, so the induction hypothesis applies to the parts and clauses 3–4 agree. For $\exists x\,\varphi$: its free variables are those of $\varphi$ other than $x$. For each $a \in A$, the assignments $s(x \mid a)$ and $s'(x \mid a)$ agree on $x$ (both give $a$) and on every other free variable of $\varphi$, so by the induction hypothesis $\mathfrak A \models \varphi[s(x \mid a)]$ iff $\mathfrak A \models \varphi[s'(x \mid a)]$. Hence the two sides of clause 5 agree. $\blacksquare$
     ///
 
-    A sentence has no free variables, so by the lemma it is satisfied by all assignments or by none. (At least one assignment exists because $A$ is nonempty.) We say a sentence $\sigma$ is *true in* $\mathfrak A$, written $\mathfrak A \models \sigma$, if it is satisfied by every assignment, and *false in* $\mathfrak A$ otherwise. For example, $\exists x\,\lnot\exists y\,(y \in x)$ is true in $(\mathbb N, <)$, because nothing is less than $0$, while $\forall x\,\exists y\,(y \in x)$ is false there.
+    A sentence has no free variables, so by the [Coincidence lemma](#appa-lem-coincidence) it is satisfied by all assignments or by none. (At least one assignment exists because $A$ is nonempty.) We say a sentence $\sigma$ is *true in* $\mathfrak A$, written $\mathfrak A \models \sigma$, if it is satisfied by every assignment, and *false in* $\mathfrak A$ otherwise. For example, $\exists x\,\lnot\exists y\,(y \in x)$ is true in $(\mathbb N, <)$, because nothing is less than $0$, while $\forall x\,\exists y\,(y \in x)$ is false there.
     """)
     return
 
@@ -386,7 +386,7 @@ def _(mo):
     <!-- label: appa-sec-try-it-a-structure-checker -->
     ### Try It: A Structure Checker
 
-    Build a structure with up to four objects $a, b, c, d$ by choosing which objects are "members" of which (a check at "$a$ E $b$" means $a \mathrel{E} b$). The checker evaluates each sentence below with the satisfaction clauses, by brute force over all assignments, and reports whether the structure is a model of it. For a false sentence that begins with $\forall$, it shows a counterexample for the leading universal variables; for a true sentence that begins with $\exists$, it shows a witness. Start from a preset, then edit the checkboxes. The preset "One self-member" with 1 object is the counter-model from the theorem above. Can you find a counter-model with more objects? You will not find a structure satisfying both Pairing and Regularity: no finite one exists[^finite-pairing], a first hint that models of set theory must be infinite.
+    Build a structure with up to four objects $a, b, c, d$ by choosing which objects are "members" of which (a check at "$a$ E $b$" means $a \mathrel{E} b$). The checker evaluates each sentence below with the satisfaction clauses, by brute force over all assignments, and reports whether the structure is a model of it. For a false sentence that begins with $\forall$, it shows a counterexample for the leading universal variables; for a true sentence that begins with $\exists$, it shows a witness. Start from a preset, then edit the checkboxes. The preset "One self-member" with 1 object is the counter-model from the [Extensionality Does Not Imply Empty Set theorem](#appa-thm-extensionality-does-not-imply-empty-set). Can you find a counter-model with more objects? You will not find a structure satisfying both Pairing and Regularity: no finite one exists[^finite-pairing], a first hint that models of set theory must be infinite.
 
     [^finite-pairing]: Suppose a structure has $n$ objects and satisfies Pairing. For each of the $n(n+1)/2$ ways to choose two objects or one object, Pairing requires an object whose members are exactly those chosen, and objects with different members are different objects. So $n \ge n(n+1)/2$, which forces $n = 1$. With a single object $a$, Pairing (with $x = y = a$) requires $a \mathrel{E} a$, and then Regularity fails for $x = a$, because the only member of $a$ is $a$ itself, which shares the member $a$ with $a$.
     """)

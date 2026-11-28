@@ -410,7 +410,11 @@ A label is a name for a heading or a result that links can point to. Labels are 
 
 - **Link to the most specific target** that contains what is referenced: the theorem, definition, or section, not its page. Link to a whole page (`[Chapter 7](ch7_optimal_alpha.md)`) only when the whole page is meant.
 - **Syntax:** `[link text](#label)`, which works across pages. Always give link text; never `[](#label)`, which renders a page-relative number such as "Theorem 3".
-- **Link text** names the target. When the target is on another page, the link text or its sentence also names that page: "by the [Closure Properties lemma](#ch4-lem-closure-properties)" on the same page; "[Appendix C: Series](#appc-sec-series)" or "the [Recursion Theorem](#ch2-thm-recursion) of Chapter 2" from another page.
+- **Link text.** Between them, the link text and its sentence name both the target and, if it is on another page, that page. Three forms are used:
+  - the link text names the target: "by the [Closure Properties lemma](#ch4-lem-closure-properties)", or "the [Recursion Theorem](#ch2-thm-recursion) of Chapter 2";
+  - the link text names the page and the section: "[Appendix C: Series](#appc-sec-series)";
+  - a parenthetical citation, where the sentence names the target and the link text names the page: "by linearity of expectation ([Chapter 6](#ch6-thm-linearity-and-positivity-of-expectation))".
+- **Prerequisites items** link each listed concept to its target (a `{term}` for a defined term, a label otherwise). The leading "Chapter N" link points at the whole page when the item lists several concepts from it.
 - **Definitions:** link to a defined term with `{term}`, not with a label.
 - Until a target has a label, link to its page and name the section in the link text: `[Appendix C: Series](appendix_c_calculus.md)`.
 

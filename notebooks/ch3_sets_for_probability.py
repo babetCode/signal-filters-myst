@@ -466,7 +466,7 @@ def _(mo):
     Preimages commute with every set operation; images do not. A condition on a measured value becomes a set of outcomes through a preimage, and combining conditions with "not", "or", and "and" combines those sets in the same way.
     ///
 
-    The explorer below shows preimages under the dice sum $s$. Choose two sets of sums $B_1$ and $B_2$ and an operation. The right panel shows $s^{-1}[B_1 \cup B_2]$ (or $\cap$, or $\setminus$), and by the lemma it always coincides with the same operation applied to the two left panels.
+    The explorer below shows preimages under the dice sum $s$. Choose two sets of sums $B_1$ and $B_2$ and an operation. The right panel shows $s^{-1}[B_1 \cup B_2]$ (or $\cap$, or $\setminus$), and by the [Preimages Preserve Set Operations lemma](#ch3-lem-preimages-preserve-set-operations) it always coincides with the same operation applied to the two left panels.
     """)
     return
 
@@ -650,7 +650,7 @@ def _(mo):
     The identity $\operatorname{id}_X$ is a bijection; the inverse of a bijection is a bijection (Inverse Functions lemma); and a composition of bijections is a bijection (Compositions lemma). $\blacksquare$
     ///
 
-    The bijection $\operatorname{succ} : \mathbb N \to \mathbb N^+$ shows $\mathbb N \approx \mathbb N^+$: an infinite set can be equinumerous to a part of itself. For the sets $\{1, \ldots, n\}$ this is impossible, which is the content of the next lemma.
+    The bijection $\operatorname{succ} : \mathbb N \to \mathbb N^+$ shows $\mathbb N \approx \mathbb N^+$: an infinite set can be equinumerous to a part of itself. For the sets $\{1, \ldots, n\}$ this is impossible, which is the content of the [Pigeonhole Principle](#ch3-lem-pigeonhole-principle) below.
 
     /// admonition | 📐 **Lemma (Pigeonhole Principle)**
         attrs: {class: lemma, id: ch3-lem-pigeonhole-principle}
@@ -1381,7 +1381,7 @@ def _(mo):
     If $S \subseteq [0, \infty]$ is nonempty, then $\sup S \ge s$ for some $s \in S$, so $\sup S \ge 0$. $\blacksquare$
     ///
 
-    **Infinite sums.** For a sequence $(a_n)_{n=1}^\infty$ in $[0, \infty]$, the partial sums $\sum_{n=1}^N a_n$ never decrease as $N$ grows (we only add terms $\ge 0$), and by the lemma they always have a supremum in $[0, \infty]$. [Appendix C: Series](#appc-sec-series) defines $\sum_{n=1}^\infty a_n$ as this supremum, shows that it is the limit of the partial sums when they are bounded, and proves that such sums may be reordered and regrouped freely. So a series of nonnegative terms always has a value in $[0, \infty]$. This is what lets Chapter 4 add up infinitely many probabilities without first checking convergence. Two examples we use there:
+    **Infinite sums.** For a sequence $(a_n)_{n=1}^\infty$ in $[0, \infty]$, the partial sums $\sum_{n=1}^N a_n$ never decrease as $N$ grows (we only add terms $\ge 0$), and by the [Suprema in the Extended Reals lemma](#ch3-lem-suprema-in-the-extended-reals) they always have a supremum in $[0, \infty]$. [Appendix C: Series](#appc-sec-series) defines $\sum_{n=1}^\infty a_n$ as this supremum, shows that it is the limit of the partial sums when they are bounded, and proves that such sums may be reordered and regrouped freely. So a series of nonnegative terms always has a value in $[0, \infty]$. This is what lets Chapter 4 add up infinitely many probabilities without first checking convergence. Two examples we use there:
 
     - $\sum_{n=1}^\infty 0 = 0$, because every partial sum is $0$;
     - $\sum_{n=1}^\infty c = \infty$ for every $c \in (0, \infty]$. If $c = \infty$, the first partial sum is already $\infty$. If $c$ is real, the $N$-th partial sum is $Nc$ (induction and distributivity), and for every real $u$ the Archimedean property gives $N > u/c$, so $Nc > u$; hence no real number is an upper bound.

@@ -285,7 +285,7 @@ def _(mo):
 
     Because $\lor$ is commutative and associative, so is $\cup$: $A \cup B = B \cup A$ and $(A \cup B) \cup C = A \cup (B \cup C)$, since in each case both sides have the same elements. For any sets $a$, $b$, $c$, the set $\bigcup\{\{a, b\}, \{b, c\}\} = \{a, b\} \cup \{b, c\}$ has exactly the elements $a$, $b$, $c$. At the other extreme, $\bigcup \emptyset = \emptyset$, because no $A \in \emptyset$ contributes elements.
 
-    **Roster notation.** Pairing and Union together let us list sets explicitly: $\{a, b, c\} := \{a, b\} \cup \{c\}$, then $\{a, b, c, d\} := \{a, b, c\} \cup \{d\}$, and so on for any list written out in full. By the Lemma, $x \in \{a, b, c\} \leftrightarrow (x = a \lor x = b \lor x = c)$.
+    **Roster notation.** Pairing and Union together let us list sets explicitly: $\{a, b, c\} := \{a, b\} \cup \{c\}$, then $\{a, b, c, d\} := \{a, b, c\} \cup \{d\}$, and so on for any list written out in full. By the [Binary Union lemma](#ch2-lem-binary-union), $x \in \{a, b, c\} \leftrightarrow (x = a \lor x = b \lor x = c)$.
     """)
     return
 
@@ -494,7 +494,7 @@ def _(mo):
 
     $$\forall A\,\big(A \neq \emptyset \rightarrow \existsin{x}{A}\,(x \cap A = \emptyset)\big).$$
 
-    **What it builds.** Nothing. Regularity (also called Foundation) forbids membership loops: there is no set with $x \in x$ (proved next), and no sets with $x \in y$ and $y \in x$ (apply Regularity to $\{x, y\}$: its element $x$ has $y$ in common with it, and its element $y$ has $x$ in common with it). More generally, it forbids [infinite descending membership chains](https://en.wikipedia.org/wiki/Axiom_of_regularity), so every set is built up in stages from $\emptyset$. Ordinary mathematics rarely needs it. We use it once, through the next theorem, to prove that different natural numbers have different successors.
+    **What it builds.** Nothing. Regularity (also called Foundation) forbids membership loops: there is no set with $x \in x$ (proved next), and no sets with $x \in y$ and $y \in x$ (apply Regularity to $\{x, y\}$: its element $x$ has $y$ in common with it, and its element $y$ has $x$ in common with it). More generally, it forbids [infinite descending membership chains](https://en.wikipedia.org/wiki/Axiom_of_regularity), so every set is built up in stages from $\emptyset$. Ordinary mathematics rarely needs it. We use it once, through the [No Set Is an Element of Itself theorem](#ch2-thm-no-set-is-an-element-of-itself) below, to prove that different natural numbers have different successors.
 
     /// admonition | 📐 **Theorem (No Set Is an Element of Itself)**
         attrs: {class: theorem, id: ch2-thm-no-set-is-an-element-of-itself}
@@ -601,7 +601,7 @@ def _(mo):
     $$X \times Y := \Big\{p \in \mathcal P\big(\mathcal P(X \cup Y)\big) : \existsin{a}{X}\,\existsin{b}{Y}\,\big(p = (a, b)\big)\Big\}.$$
     ///
 
-    By the Lemma, separating from $\mathcal P(\mathcal P(X \cup Y))$ loses no pairs: $p \in X \times Y \leftrightarrow \existsin{a}{X}\,\existsin{b}{Y}\,\big(p = (a, b)\big)$. Combined with the Characteristic Property, $(a, b) \in X \times Y \leftrightarrow (a \in X \land b \in Y)$. For example, $\{a, b\} \times \{c\} = \{(a, c), (b, c)\}$ for any sets $a$, $b$, $c$, and $X \times \emptyset = \emptyset$ for every $X$. In general $X \times Y \neq Y \times X$.
+    By the [Pairs Lie in a Power Set lemma](#ch2-lem-pairs-lie-in-a-power-set), separating from $\mathcal P(\mathcal P(X \cup Y))$ loses no pairs: $p \in X \times Y \leftrightarrow \existsin{a}{X}\,\existsin{b}{Y}\,\big(p = (a, b)\big)$. Combined with the Characteristic Property, $(a, b) \in X \times Y \leftrightarrow (a \in X \land b \in Y)$. For example, $\{a, b\} \times \{c\} = \{(a, c), (b, c)\}$ for any sets $a$, $b$, $c$, and $X \times \emptyset = \emptyset$ for every $X$. In general $X \times Y \neq Y \times X$.
 
     <!-- label: ch2-sec-relations -->
     ### Relations

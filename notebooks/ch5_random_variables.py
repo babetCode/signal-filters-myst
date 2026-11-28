@@ -174,7 +174,7 @@ def _(mo):
 
     and similarly $\{X \le b\} := X^{-1}\big[(-\infty, b]\big]$, $\{X = b\}$, $\{a < X \le b\}$, and so on. A comma inside braces means intersection: $\{X \in A, Y \in B\} := \{X \in A\} \cap \{Y \in B\}$. Random variables are written in uppercase and the numbers they take in lowercase, so "$x$ is a possible value of $X$." In particular, the Introduction's $z_k$ is the number the scale actually displayed. From now on $Z_k$ denotes the random variable "the $k$-th reading," and $z_k = Z_k(\omega)$ is its value on the outcome that occurred.
 
-    Checking the definition for every Borel set would be impractical. The next lemma reduces it to the rays.
+    Checking the definition for every Borel set would be impractical. The [Measurability Test lemma](#ch5-lem-measurability-test) below reduces it to the rays.
 
     /// admonition | 📐 **Lemma (Measurability Test)**
         attrs: {class: lemma, id: ch5-lem-measurability-test}
@@ -191,7 +191,7 @@ def _(mo):
     - If $B \in \mathcal A$, then $X^{-1}[\mathbb R \setminus B] = \Omega \setminus X^{-1}[B] \in \mathcal F$, so $\mathbb R \setminus B \in \mathcal A$.
     - If $B_1, B_2, \ldots \in \mathcal A$, then $X^{-1}\big[\bigcup_n B_n\big] = \bigcup_n X^{-1}[B_n] \in \mathcal F$, so $\bigcup_n B_n \in \mathcal A$.
 
-    By hypothesis $\mathcal A$ contains every ray $(-\infty, b]$. Since $\mathcal A$ is a $\sigma$-algebra, it contains the $\sigma$-algebra they generate, which is $\mathcal B(\mathbb R)$ by the previous lemma. So $X^{-1}[B] \in \mathcal F$ for every Borel set $B$. $\blacksquare$
+    By hypothesis $\mathcal A$ contains every ray $(-\infty, b]$. Since $\mathcal A$ is a $\sigma$-algebra, it contains the $\sigma$-algebra they generate, which is $\mathcal B(\mathbb R)$ by the [Rays Generate the Borel Sets lemma](#ch5-lem-rays-generate-the-borel-sets). So $X^{-1}[B] \in \mathcal F$ for every Borel set $B$. $\blacksquare$
     ///
 
     The proof never used $\mathbb P$, only $\mathcal F$. The same argument works for any function between two sets each equipped with a $\sigma$-algebra, a fact we use again below.
@@ -557,7 +557,7 @@ def _(mo):
     <!-- label: ch5-sec-functions-of-a-random-variable -->
     ## Functions of a Random Variable
 
-    A scale that reports in kilograms instead of pounds, or that adds a calibration offset, applies an affine map $x \mapsto ax + b$ to its readings. The next theorem says how densities transform under such maps.
+    A scale that reports in kilograms instead of pounds, or that adds a calibration offset, applies an affine map $x \mapsto ax + b$ to its readings. The [Density of $aX + b$ theorem](#ch5-thm-density-of-ax-b) below says how densities transform under such maps.
 
     /// admonition | 📐 **Theorem (Density of $aX + b$)**
         attrs: {class: theorem, id: ch5-thm-density-of-ax-b}
@@ -865,7 +865,7 @@ def _(mo):
     For Borel sets $B_i$, $\{g_i(X_i) \in B_i\} = \{X_i \in g_i^{-1}[B_i]\}$, and each $g_i^{-1}[B_i]$ is Borel. Apply the definition of independence to the Borel sets $g_i^{-1}[B_i]$. $\blacksquare$
     ///
 
-    For example, if the noise values $V_1, \ldots, V_n$ are independent, so are the readings $x_1 + V_1, \ldots, x_n + V_n$. We also need to *group* independent random variables, for example to know that $V_1 + V_2$ is independent of $V_3$. A function $g : \mathbb R^m \to \mathbb R$ is Borel iff $g^{-1}[B] \in \mathcal B(\mathbb R^m)$ for every $B \in \mathcal B(\mathbb R)$; continuous functions, such as sums, products, and linear combinations, are Borel, by the same fact about open sets as in one dimension. For Borel $g$, $g(X_1, \ldots, X_m)$ is a random variable, because $\{g(X_1, \ldots, X_m) \in B\} = \{(X_1, \ldots, X_m) \in g^{-1}[B]\}$ is an event by the lemma on vectors of random variables.
+    For example, if the noise values $V_1, \ldots, V_n$ are independent, so are the readings $x_1 + V_1, \ldots, x_n + V_n$. We also need to *group* independent random variables, for example to know that $V_1 + V_2$ is independent of $V_3$. A function $g : \mathbb R^m \to \mathbb R$ is Borel iff $g^{-1}[B] \in \mathcal B(\mathbb R^m)$ for every $B \in \mathcal B(\mathbb R)$; continuous functions, such as sums, products, and linear combinations, are Borel, by the same fact about open sets as in one dimension. For Borel $g$, $g(X_1, \ldots, X_m)$ is a random variable, because $\{g(X_1, \ldots, X_m) \in B\} = \{(X_1, \ldots, X_m) \in g^{-1}[B]\}$ is an event by the [Vectors of Random Variables lemma](#ch5-lem-vectors-of-random-variables).
 
     /// admonition | 📐 **Theorem (Grouping)**
         attrs: {class: theorem, id: ch5-thm-grouping}

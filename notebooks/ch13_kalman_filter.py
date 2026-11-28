@@ -67,14 +67,14 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the alpha-beta filter](#intro-sec-beta-weighting-term).
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [covariance](#ch6-sec-covariance-and-correlation).
+    - [Introduction](introduction.md): the {term}`alpha-beta filter`.
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); {term}`covariance`.
     - [Chapter 7](ch7_optimal_alpha.md): [the optimal gain by completing the square](#ch7-sec-completing-the-square).
-    - [Chapter 8](ch8_bayesian_view.md): [the minimum mean squared error estimator](#ch8-thm-the-posterior-mean-is-the-mmse-estimator) and [the Bayes filter](#ch8-sec-the-bayes-filter) (only for the cross-check section).
-    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), [process noise](#ch9-sec-process-noise), [white noise](#ch9-sec-process-noise), [steady-state gain](#ch9-thm-steady-state-gain), [innovation variance](#ch9-sec-innovations).
-    - [Chapter 10](ch10_process_models.md): [process models](#ch10-sec-linear-process-models), [control inputs](#ch10-sec-systems-states-and-inputs), [rate models](#ch10-sec-rate-models-when-the-state-needs-two-numbers).
-    - [Chapter 11](ch11_measurement_functions.md): [measurement models](#ch11-sec-from-pounds-to-counts), the gain $P^-h/(h^2P^- + R)$, [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [random vectors](#ch12-sec-random-vectors-and-mean-vectors), [mean vectors](#ch12-sec-random-vectors-and-mean-vectors), [covariance and cross-covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, [the multivariate normal distribution](#ch12-sec-the-multivariate-normal-distribution), [conditioning a joint Gaussian](#ch12-thm-conditioning-a-joint-normal-distribution).
+    - [Chapter 8](ch8_bayesian_view.md): the {term}`minimum mean squared error estimator` and the {term}`Bayes filter` (only for the cross-check section).
+    - [Chapter 9](ch9_noise_levels.md): [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), {term}`process noise`, {term}`white noise`, {term}`steady-state gain`, {term}`innovation variance`.
+    - [Chapter 10](ch10_process_models.md): {term}`process models <process model>`, {term}`control inputs <control input>`, [rate models](#ch10-sec-rate-models-when-the-state-needs-two-numbers).
+    - [Chapter 11](ch11_measurement_functions.md): {term}`measurement models <measurement model>`, the gain $P^-h/(h^2P^- + R)$, [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`random vectors <random vector>`, {term}`mean vectors <mean vector>`, [covariance and cross-covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, the {term}`multivariate normal distribution`, [conditioning a joint Gaussian](#ch12-thm-conditioning-a-joint-normal-distribution).
     - [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema): [at an interior minimum the derivative vanishes](#appc-lem-interior-extremum).
     - Appendix D: [Matrix Multiplication](#appd-sec-matrix-multiplication); [Transpose, Identity, and Inverse](#appd-sec-transpose-identity-and-inverse); [Linear Independence, Basis, and Rank](#appd-sec-linear-independence-basis-and-rank); [Trace](#appd-sec-trace); [Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices); [Derivatives with Respect to Matrices](#appd-sec-derivatives-with-respect-to-matrices).
     ///
@@ -255,7 +255,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the Lemma, $\mathbf e_k^- = \mathbf F\mathbf e_{k-1} - \mathbf w_k$, so $\mathbb E\mathbf e_k^- = \mathbf F\mathbf 0 - \mathbf 0 = \mathbf 0$ by linearity and (A2). The Lemma also gives $\operatorname{Cov}(\mathbf e_{k-1}, \mathbf w_k) = \mathbf 0$, so the last statement of the Covariance Rules (with $\mathbf A = \mathbf F$ and $\mathbf C = -\mathbf I$) gives $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$. $\blacksquare$
+    By the [Errors Are Linear in the Noise lemma](#ch13-lem-errors-are-linear-in-the-noise), $\mathbf e_k^- = \mathbf F\mathbf e_{k-1} - \mathbf w_k$, so $\mathbb E\mathbf e_k^- = \mathbf F\mathbf 0 - \mathbf 0 = \mathbf 0$ by linearity and (A2). The Lemma also gives $\operatorname{Cov}(\mathbf e_{k-1}, \mathbf w_k) = \mathbf 0$, so the last statement of the Covariance Rules (with $\mathbf A = \mathbf F$ and $\mathbf C = -\mathbf I$) gives $\mathbf P_k^- = \mathbf F\mathbf P_{k-1}\mathbf F^\top + \mathbf Q$. $\blacksquare$
     ///
 
     For $n = 1$ and $\mathbf F = a$ this is [Chapter 10](#ch10-thm-linear-prediction)'s $P_k^- = a^2P_{k-1} + Q$. The control input shifts the prediction but adds no uncertainty, because it is known exactly. A control input that is itself *measured* with noise, such as an accelerometer reading, contributes that noise to $\mathbf w_k$; Chapter 14 works this out for a cart.
@@ -302,7 +302,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the Lemma, $\mathbf e_k = (\mathbf I - \mathbf K_k\mathbf H)\mathbf e_k^- + \mathbf K_k\mathbf v_k$, so $\mathbb E\mathbf e_k = \mathbf 0$, and since $\operatorname{Cov}(\mathbf e_k^-, \mathbf v_k) = \mathbf 0$ the Covariance Rules give the formula. Each term has the form $\mathbf M\mathbf A\mathbf M^\top$ with $\mathbf A$ symmetric positive semidefinite, and $\mathbf a^\top\mathbf M\mathbf A\mathbf M^\top\mathbf a = (\mathbf M^\top\mathbf a)^\top\mathbf A(\mathbf M^\top\mathbf a) \ge 0$; a sum of symmetric positive semidefinite matrices is symmetric positive semidefinite. $\blacksquare$
+    By the [Errors Are Linear in the Noise lemma](#ch13-lem-errors-are-linear-in-the-noise), $\mathbf e_k = (\mathbf I - \mathbf K_k\mathbf H)\mathbf e_k^- + \mathbf K_k\mathbf v_k$, so $\mathbb E\mathbf e_k = \mathbf 0$, and since $\operatorname{Cov}(\mathbf e_k^-, \mathbf v_k) = \mathbf 0$ the Covariance Rules give the formula. Each term has the form $\mathbf M\mathbf A\mathbf M^\top$ with $\mathbf A$ symmetric positive semidefinite, and $\mathbf a^\top\mathbf M\mathbf A\mathbf M^\top\mathbf a = (\mathbf M^\top\mathbf a)^\top\mathbf A(\mathbf M^\top\mathbf a) \ge 0$; a sum of symmetric positive semidefinite matrices is symmetric positive semidefinite. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
@@ -781,7 +781,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    The map $\mathbf x_1 \mapsto (\mathbf z_1, \ldots, \mathbf z_N)$ is linear, so it is injective exactly when its null space, which is $\mathcal N_N$, is $\{\mathbf 0\}$ (if two states give equal outputs, their difference gives zero output). By the Lemma, $\mathcal N_N \supseteq \mathcal N_n$ for $N \le n$ and $\mathcal N_N = \mathcal N_n$ for $N \ge n$, so some $N$ works if and only if $\mathcal N_n = \{\mathbf 0\}$. And $\mathcal N_n$ is the null space of $\mathcal O$, which is $\{\mathbf 0\}$ exactly when the $n$ columns of $\mathcal O$ are linearly independent, that is, when $\operatorname{rank}\mathcal O = n$ (Appendix D). $\blacksquare$
+    The map $\mathbf x_1 \mapsto (\mathbf z_1, \ldots, \mathbf z_N)$ is linear, so it is injective exactly when its null space, which is $\mathcal N_N$, is $\{\mathbf 0\}$ (if two states give equal outputs, their difference gives zero output). By the [Null-Space Chain Stops by Step $n$ lemma](#ch13-lem-the-null-space-chain-stops-by-step-n), $\mathcal N_N \supseteq \mathcal N_n$ for $N \le n$ and $\mathcal N_N = \mathcal N_n$ for $N \ge n$, so some $N$ works if and only if $\mathcal N_n = \{\mathbf 0\}$. And $\mathcal N_n$ is the null space of $\mathcal O$, which is $\{\mathbf 0\}$ exactly when the $n$ columns of $\mathcal O$ are linearly independent, that is, when $\operatorname{rank}\mathcal O = n$ (Appendix D). $\blacksquare$
     ///
 
     For a time-varying model the same argument without the Lemma shows: $\mathbf x_1$ is determined by $\mathbf z_1, \ldots, \mathbf z_N$ if and only if the stacked matrix with rows $\mathbf H_1$, $\mathbf H_2\mathbf F_2$, $\mathbf H_3\mathbf F_3\mathbf F_2$, …, $\mathbf H_N\mathbf F_N\cdots\mathbf F_2$ has rank $n$.

@@ -81,10 +81,10 @@ def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
     - [Chapter 17](ch17_rotations.md): [rotation matrices](#ch17-sec-rotation-matrices), [ZYX Euler angles](#ch17-sec-elementary-rotations-and-euler-angles), [the kinematics](#ch17-sec-angular-velocity) $\dot{\mathbf R} = \mathbf R[\boldsymbol\omega]_\times$, [the exponential map](#ch17-sec-rotation-vectors-and-the-exponential-map), and [the small-angle approximation](#ch17-thm-small-angle-approximation).
-    - [Chapter 18](ch18_quaternions.md): [the Hamilton product](#ch18-sec-the-quaternions), $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
-    - [Chapter 19](ch19_ahrs.md): [the IMU sensor models](#ch19-sec-measurement-models), [specific force](#ch19-sec-inertial-sensors-and-their-models), [tilt from the accelerometer](#ch19-sec-tilt-from-the-accelerometer), and [the error-state convention](#ch19-sec-state-error-and-nominal-propagation) $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
-    - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): [likelihoods](#ch8-sec-prior-likelihood-posterior-and-evidence) and [the multivariate normal density](#ch12-sec-the-multivariate-normal-distribution) (only for the GLRT detector).
-    - [Chapter 9](ch9_noise_levels.md): [white noise](#ch9-sec-process-noise), [random walks](#ch9-sec-process-noise), and [the chi-squared distribution](#ch9-sec-checking-the-noise-levels).
+    - [Chapter 18](ch18_quaternions.md): the {term}`Hamilton product`, $\dot q = \tfrac12 q \otimes [0, \boldsymbol\omega]$, and [exact integration for a constant rate](#ch18-thm-exact-quaternion-update).
+    - [Chapter 19](ch19_ahrs.md): [the IMU sensor models](#ch19-sec-measurement-models), {term}`specific force`, [tilt from the accelerometer](#ch19-sec-tilt-from-the-accelerometer), and [the error-state convention](#ch19-sec-state-error-and-nominal-propagation) $q = \hat q \otimes \delta q(\delta\boldsymbol\theta)$.
+    - [Chapter 8](ch8_bayesian_view.md) and [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`likelihoods <likelihood>` and [the multivariate normal density](#ch12-sec-the-multivariate-normal-distribution) (only for the GLRT detector).
+    - [Chapter 9](ch9_noise_levels.md): {term}`white noise`, {term}`random walks <random walk>`, and the {term}`chi-squared distribution`.
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem) and [Appendix C: The Fundamental Theorem of Calculus](#appc-sec-the-fundamental-theorem-of-calculus).
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices) and [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential).
     ///
@@ -604,7 +604,7 @@ def _(mo):
     4. **Heading and pitch.** $\ \psi(\tau) = \psi_i + s(\tau)\,\Delta\psi_i$. The pitch must be toe-down ($\theta > 0$) around toe off and toe-up around heel strike. We use
     $$\theta(\tau) = A\,\tau^3(1-\tau)^4 + B\,\tau^4(1-\tau)^3,$$
     whose value and first two derivatives vanish at both ends, and choose $A, B$ so that $\theta(\tau_{\text{toe off}}) = \theta_{\text{toe off}}$ and $\theta(\tau_{\text{heel strike}}) = \theta_{\text{heel strike}}$: two linear equations in two unknowns. Roll is zero.
-    5. **Derivatives.** By the chain rule, $\dot{\mathbf p} = \mathbf p'(\tau)/T_m$ and $\ddot{\mathbf p} = \mathbf p''(\tau)/T_m^2$, and likewise for $\psi$ and $\theta$. The attitude is $\mathbf R = \mathbf R_z(\psi)\mathbf R_y(\theta)$, the true specific force is $\mathbf f^b = \mathbf R^\top(\ddot{\mathbf p} - \mathbf g^n)$, and the true body rate follows from the lemma below.
+    5. **Derivatives.** By the chain rule, $\dot{\mathbf p} = \mathbf p'(\tau)/T_m$ and $\ddot{\mathbf p} = \mathbf p''(\tau)/T_m^2$, and likewise for $\psi$ and $\theta$. The attitude is $\mathbf R = \mathbf R_z(\psi)\mathbf R_y(\theta)$, the true specific force is $\mathbf f^b = \mathbf R^\top(\ddot{\mathbf p} - \mathbf g^n)$, and the true body rate follows from the [Body Rate of a Yawing, Pitching Foot lemma](#ch20-lem-body-rate-of-a-yawing-pitching-foot) below.
     6. **Sensor errors.** Each bias component is the default magnitude with a random sign; white noise is added to every sample, exactly as in the IMU model.
 
     The defaults describe a comfortable walk: stride time $T = 1.1$ s, stride length $L = 1.4$ m (a gait speed of $1.27$ m/s), stance $60\%$, foot flat $30\%$ of the cycle (so $T_m = 0.77$ s), clearance $h_c = 0.12$ m, and pitch $0.5$ rad toe-down at toe off and $-0.35$ rad toe-up at heel strike.

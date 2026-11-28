@@ -57,11 +57,11 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 2](ch2_axioms_of_set_theory.md): [functions](#ch2-sec-functions), the set $Y^X$ of all functions from $X$ to $Y$, [Cartesian products](#ch2-sec-cartesian-products), [induction](#ch2-thm-induction), and [definition by recursion](#ch2-thm-recursion).
-    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-lem-rules-for-finite-sums) $\sum$, [composition](#ch3-lem-compositions) and [inverse functions](#ch3-lem-inverse-functions), and $\mathbb R$ as [a complete ordered field](#ch3-thm-the-real-numbers) (including [absolute value](#ch3-lem-properties-of-absolute-value)).
+    - [Chapter 2](ch2_axioms_of_set_theory.md): {term}`functions <function>`, the set $Y^X$ of all functions from $X$ to $Y$, {term}`Cartesian products <cartesian product>`, [induction](#ch2-thm-induction), and [definition by recursion](#ch2-thm-recursion).
+    - [Chapter 3](ch3_sets_for_probability.md): [finite sums](#ch3-lem-rules-for-finite-sums) $\sum$, {term}`composition` and {term}`inverse functions <inverse function>`, and $\mathbb R$ as a {term}`complete ordered field` (including {term}`absolute value`).
     - [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity): [square roots of nonnegative numbers](#appc-cor-square-roots).
     - Only for The Matrix Exponential: [Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits) ([limit laws](#appc-thm-limit-laws-for-sequences)), [Appendix C: Series](#appc-sec-series) ([comparison test](#appc-thm-comparison-test), [Cauchy product](#appc-cor-cauchy-product)), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), [Appendix C: Limits of Functions and Continuity](#appc-sec-limits-of-functions-and-continuity) ([intermediate value theorem](#appc-thm-intermediate-value-theorem)), [Appendix C: Derivatives](#appc-sec-derivatives) ([product rule](#appc-thm-differentiation-rules)), and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema).
-    - Only for Derivatives with Respect to Matrices: [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) ([partial derivatives](#appc-sec-partial-derivatives-gradients-and-jacobians)) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema) ([interior extrema](#appc-lem-interior-extremum)).
+    - Only for Derivatives with Respect to Matrices: [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables) ({term}`partial derivatives <partial derivative>`) and [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema) ([interior extrema](#appc-lem-interior-extremum)).
     ///
     """)
     return
@@ -517,7 +517,7 @@ def _(mo):
     "At least one way" is the spanning condition. If the list is independent and $\sum_j c_j\mathbf b_j = \sum_j d_j\mathbf b_j$, then $\sum_j(c_j - d_j)\mathbf b_j = \mathbf 0$, so $c_j = d_j$ for all $j$. Conversely, if representations are unique, then $\sum_j c_j\mathbf b_j = \mathbf 0 = \sum_j 0\,\mathbf b_j$ forces every $c_j = 0$. $\blacksquare$
     ///
 
-    The standard basis $(\mathbf e_1, \ldots, \mathbf e_n)$ is a basis of $\mathbb R^n$: it spans (shown under Vectors), and $\sum_j c_j\mathbf e_j = (c_1, \ldots, c_n) = \mathbf 0$ forces every $c_j = 0$. The next theorem, which we state without proof, says that every basis of $\mathbb R^n$ has $n$ vectors.
+    The standard basis $(\mathbf e_1, \ldots, \mathbf e_n)$ is a basis of $\mathbb R^n$: it spans (shown under Vectors), and $\sum_j c_j\mathbf e_j = (c_1, \ldots, c_n) = \mathbf 0$ forces every $c_j = 0$. The [Dimension theorem](#appd-thm-dimension) below, which we state without proof, says that every basis of $\mathbb R^n$ has $n$ vectors.
 
     /// admonition | 📐 **Theorem (Dimension)**
         attrs: {class: theorem, id: appd-thm-dimension}
@@ -630,7 +630,7 @@ def _(mo):
         attrs: {class: proof}
     For $n = 2$, (1), (3), and (4) are checked by expanding both sides, and (2) by
     $\det\Big(\begin{bmatrix} a & b \\ c & d\end{bmatrix}\begin{bmatrix} p & q \\ r & s\end{bmatrix}\Big) = (ap + br)(cq + ds) - (aq + bs)(cp + dr) = (ad - bc)(ps - qr)$.
-    (5) for $n = 2$ is the next lemma. For general $n$, see @axler2024 [Chapter 9] or [Wikipedia: Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants). $\blacksquare$
+    (5) for $n = 2$ is the [Inverse of a $2 \times 2$ Matrix lemma](#appd-lem-inverse-of-a-2-times-2-matrix) below. For general $n$, see @axler2024 [Chapter 9] or [Wikipedia: Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants). $\blacksquare$
     ///
 
     /// admonition | 📐 **Lemma (Inverse of a $2 \times 2$ Matrix)**
@@ -866,7 +866,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the theorem, $p_{\mathbf A}(\lambda) = (\lambda - \lambda_1)\cdots(\lambda - \lambda_n)$. A product in a field is $0$ exactly when a factor is, so the roots of $p_{\mathbf A}$, which are the eigenvalues by the lemma, are exactly $\lambda_1, \ldots, \lambda_n$. Multiplying out gives $\lambda^n - (\lambda_1 + \cdots + \lambda_n)\lambda^{n-1} + \cdots + (-1)^n\lambda_1\cdots\lambda_n$; compare coefficients with part 1 of the theorem. $\blacksquare$
+    By the theorem, $p_{\mathbf A}(\lambda) = (\lambda - \lambda_1)\cdots(\lambda - \lambda_n)$. A product in a field is $0$ exactly when a factor is, so the roots of $p_{\mathbf A}$, which are the eigenvalues by the [Characteristic Equation lemma](#appd-lem-characteristic-equation), are exactly $\lambda_1, \ldots, \lambda_n$. Multiplying out gives $\lambda^n - (\lambda_1 + \cdots + \lambda_n)\lambda^{n-1} + \cdots + (-1)^n\lambda_1\cdots\lambda_n$; compare coefficients with part 1 of the theorem. $\blacksquare$
     ///
     """)
     return
@@ -1298,7 +1298,7 @@ def _(mo):
     so unit vectors land on $E_{\mathbf A}$; and every $\mathbf y \in E_{\mathbf A}$ is $\mathbf S(\mathbf S^{-1}\mathbf y)$ with $\|\mathbf S^{-1}\mathbf y\|^2 = \mathbf y^\top\mathbf A^{-1}\mathbf y = 1$. $\blacksquare$
     ///
 
-    In the eigenvector coordinates $\mathbf z = \mathbf Q^\top\mathbf y$ of $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, the equation of $E_{\mathbf A}$ reads $\sum_i z_i^2/\lambda_i = 1$: an ellipse (for $n = 2$) with semi-axes $\sqrt{\lambda_i}$ along the eigenvectors. When $\mathbf A$ is a covariance matrix, $E_{\mathbf A}$ is the one-standard-deviation {term}`confidence ellipse` of [Chapter 12](#ch12-sec-mahalanobis-distance-and-confidence-ellipses). The unscented transform of [Chapter 16](#ch16-sec-the-unscented-transform) places its sigma points at the mean plus and minus (scaled) columns of a square root $\mathbf S$; by the lemma, those points lie on this ellipse whichever square root is used.
+    In the eigenvector coordinates $\mathbf z = \mathbf Q^\top\mathbf y$ of $\mathbf A = \mathbf Q\boldsymbol\Lambda\mathbf Q^\top$, the equation of $E_{\mathbf A}$ reads $\sum_i z_i^2/\lambda_i = 1$: an ellipse (for $n = 2$) with semi-axes $\sqrt{\lambda_i}$ along the eigenvectors. When $\mathbf A$ is a covariance matrix, $E_{\mathbf A}$ is the one-standard-deviation {term}`confidence ellipse` of [Chapter 12](#ch12-sec-mahalanobis-distance-and-confidence-ellipses). The unscented transform of [Chapter 16](#ch16-sec-the-unscented-transform) places its sigma points at the mean plus and minus (scaled) columns of a square root $\mathbf S$; by the [Square Roots Map the Unit Sphere onto the Same Ellipsoid lemma](#appd-lem-square-roots-map-the-unit-sphere-onto-the-same-ellipsoid), those points lie on this ellipse whichever square root is used.
 
     <!-- label: appd-sec-explore-two-square-roots-one-ellipse -->
     ### Explore: two square roots, one ellipse
@@ -1427,7 +1427,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Block multiplication: the last two factors multiply to $\begin{bmatrix} \mathbf A & \mathbf B \\ \mathbf 0 & \mathbf S\end{bmatrix}$, and multiplying by the first factor gives $\begin{bmatrix} \mathbf A & \mathbf B \\ \mathbf C\mathbf A^{-1}\mathbf A & \mathbf C\mathbf A^{-1}\mathbf B + \mathbf S\end{bmatrix} = \mathbf M$. By the lemma and property 2 of the determinant, $\det\mathbf M = 1\cdot\det\mathbf A\det\mathbf S\cdot 1$, and since $\det\mathbf A \ne 0$, $\det\mathbf M \ne 0 \iff \det\mathbf S \ne 0$ (property 5). If $\mathbf S$ is invertible, the middle factor has inverse $\begin{bmatrix} \mathbf A^{-1} & \mathbf 0 \\ \mathbf 0 & \mathbf S^{-1}\end{bmatrix}$, and by the inverse rules
+    Block multiplication: the last two factors multiply to $\begin{bmatrix} \mathbf A & \mathbf B \\ \mathbf 0 & \mathbf S\end{bmatrix}$, and multiplying by the first factor gives $\begin{bmatrix} \mathbf A & \mathbf B \\ \mathbf C\mathbf A^{-1}\mathbf A & \mathbf C\mathbf A^{-1}\mathbf B + \mathbf S\end{bmatrix} = \mathbf M$. By the [Unit Block-Triangular Matrices lemma](#appd-lem-unit-block-triangular-matrices) and property 2 of the determinant, $\det\mathbf M = 1\cdot\det\mathbf A\det\mathbf S\cdot 1$, and since $\det\mathbf A \ne 0$, $\det\mathbf M \ne 0 \iff \det\mathbf S \ne 0$ (property 5). If $\mathbf S$ is invertible, the middle factor has inverse $\begin{bmatrix} \mathbf A^{-1} & \mathbf 0 \\ \mathbf 0 & \mathbf S^{-1}\end{bmatrix}$, and by the inverse rules
     $$\mathbf M^{-1} = \begin{bmatrix} \mathbf I & -\mathbf A^{-1}\mathbf B \\ \mathbf 0 & \mathbf I\end{bmatrix}\begin{bmatrix} \mathbf A^{-1} & \mathbf 0 \\ \mathbf 0 & \mathbf S^{-1}\end{bmatrix}\begin{bmatrix} \mathbf I & \mathbf 0 \\ -\mathbf C\mathbf A^{-1} & \mathbf I\end{bmatrix},$$
     which multiplies out to the stated formula. $\blacksquare$
     ///
@@ -1848,7 +1848,7 @@ def _(mo):
     $$(\mathbf X - \mathbf X_\star)\mathbf S(\mathbf X - \mathbf X_\star)^\top = \mathbf X\mathbf S\mathbf X^\top - \mathbf X\mathbf M^\top - \mathbf M\mathbf X^\top + \mathbf M\mathbf S^{-1}\mathbf M^\top = f(\mathbf X) - \big(\mathbf C - \mathbf M\mathbf S^{-1}\mathbf M^\top\big).$$
     At $\mathbf X = \mathbf X_\star$ the left side is $\mathbf 0$, so $f(\mathbf X_\star) = \mathbf C - \mathbf M\mathbf S^{-1}\mathbf M^\top$, and the identity follows.
 
-    (1) $(\mathbf X - \mathbf X_\star)\mathbf S(\mathbf X - \mathbf X_\star)^\top$ is positive semidefinite by the Lemma (Building Positive Definite Matrices). (2) Let $\mathbf Y := \mathbf X - \mathbf X_\star$ with rows $\mathbf y_1^\top, \ldots, \mathbf y_m^\top$. Then $\operatorname{tr}(\mathbf Y\mathbf S\mathbf Y^\top) = \sum_i\mathbf y_i^\top\mathbf S\mathbf y_i \ge 0$, with equality only if every $\mathbf y_i = \mathbf 0$. (3) $\operatorname{tr}(\mathbf M\mathbf X^\top) = \operatorname{tr}(\mathbf X\mathbf M^\top)$, so $\operatorname{tr}f(\mathbf X) = \operatorname{tr}\mathbf C - 2\operatorname{tr}(\mathbf X\mathbf M^\top) + \operatorname{tr}(\mathbf X\mathbf S\mathbf X^\top)$, whose derivative is $-2\mathbf M + 2\mathbf X\mathbf S$ by the Trace Derivatives theorem. It vanishes exactly when $\mathbf X = \mathbf M\mathbf S^{-1}$. $\blacksquare$
+    (1) $(\mathbf X - \mathbf X_\star)\mathbf S(\mathbf X - \mathbf X_\star)^\top$ is positive semidefinite by the [Building Positive Definite Matrices lemma](#appd-lem-building-positive-definite-matrices). (2) Let $\mathbf Y := \mathbf X - \mathbf X_\star$ with rows $\mathbf y_1^\top, \ldots, \mathbf y_m^\top$. Then $\operatorname{tr}(\mathbf Y\mathbf S\mathbf Y^\top) = \sum_i\mathbf y_i^\top\mathbf S\mathbf y_i \ge 0$, with equality only if every $\mathbf y_i = \mathbf 0$. (3) $\operatorname{tr}(\mathbf M\mathbf X^\top) = \operatorname{tr}(\mathbf X\mathbf M^\top)$, so $\operatorname{tr}f(\mathbf X) = \operatorname{tr}\mathbf C - 2\operatorname{tr}(\mathbf X\mathbf M^\top) + \operatorname{tr}(\mathbf X\mathbf S\mathbf X^\top)$, whose derivative is $-2\mathbf M + 2\mathbf X\mathbf S$ by the Trace Derivatives theorem. It vanishes exactly when $\mathbf X = \mathbf M\mathbf S^{-1}$. $\blacksquare$
     ///
 
     **Example (the Kalman gain).** With $\mathbf C = \mathbf P^-$, $\mathbf M = \mathbf P^-\mathbf H^\top$, and $\mathbf S = \mathbf H\mathbf P^-\mathbf H^\top + \mathbf R$ (so $\mathbf X\mathbf M^\top = \mathbf K\mathbf H\mathbf P^-$, since $\mathbf P^-$ is symmetric), $f(\mathbf K) = \mathbf P^- - \mathbf K\mathbf H\mathbf P^- - \mathbf P^-\mathbf H^\top\mathbf K^\top + \mathbf K\mathbf S\mathbf K^\top$ is the error covariance after an update with an arbitrary gain $\mathbf K$ ([Chapter 13](#ch13-thm-update-with-an-arbitrary-gain) derives this). The theorem gives the minimizer $\mathbf K_\star = \mathbf P^-\mathbf H^\top\mathbf S^{-1}$ and the minimum $f(\mathbf K_\star) = (\mathbf I - \mathbf K_\star\mathbf H)\mathbf P^-$. For $m = n = 1$, $f(k) = P^- - 2kP^-h + k^2(h^2P^- + R)$ is minimized at $k_\star = P^-h/(h^2P^- + R)$, the gain of [Chapter 11](#ch11-thm-optimal-gain-with-a-measurement-function).

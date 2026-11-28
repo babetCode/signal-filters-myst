@@ -76,7 +76,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 17](ch17_rotations.md): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), [rotation vectors](#ch17-thm-rotation-vectors-and-the-matrix-exponential) and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
+    - [Chapter 17](ch17_rotations.md): [rotation matrices and their properties](#ch17-thm-properties-of-rotation-matrices) (especially $\mathbf R(\mathbf u\times\mathbf v) = \mathbf R\mathbf u\times\mathbf R\mathbf v$), [ZYX Euler angles and their extraction](#ch17-thm-euler-angles-from-a-rotation-matrix), [Rodrigues' formula](#ch17-thm-rodrigues-formula), [Euler's rotation theorem](#ch17-thm-eulers-rotation-theorem), {term}`rotation vectors <rotation vector>` and $\operatorname{Exp}$, [angular velocity](#ch17-sec-angular-velocity), and [the constant-angular-velocity theorem](#ch17-thm-constant-angular-velocity). The rotation angle is written $\vartheta$ because $\theta$ is pitch.
     - [Appendix D: Cross Products and Skew-Symmetric Matrices](#appd-sec-cross-products-and-skew-symmetric-matrices): $\mathbf a\times(\mathbf b\times\mathbf c) = \mathbf b(\mathbf a\cdot\mathbf c) - \mathbf c(\mathbf a\cdot\mathbf b)$ and $(\mathbf a\times\mathbf b)\cdot\mathbf c = \mathbf a\cdot(\mathbf b\times\mathbf c)$.
     - [Appendix D: The Matrix Exponential](#appd-sec-the-matrix-exponential): $\tfrac{d}{dt}\exp(t\mathbf A) = \mathbf A\exp(t\mathbf A) = \exp(t\mathbf A)\mathbf A$ and $\exp(-\mathbf A) = \exp(\mathbf A)^{-1}$.
     - [Chapter 3](ch3_sets_for_probability.md): the definition of a {term}`field`, for one remark.
@@ -174,7 +174,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the lemma and associativity,
+    By the [Conjugates lemma](#ch18-lem-conjugates) and associativity,
     $$\|p\otimes q\|^2 = (p\otimes q)\otimes(p\otimes q)^* = p\otimes(q\otimes q^*)\otimes p^* = p\otimes\|q\|^2\otimes p^* = \|q\|^2\,(p\otimes p^*) = \|q\|^2\|p\|^2,$$
     where we used that the real number $\|q\|^2$ acts as a scalar. Take square roots. $\blacksquare$
     ///

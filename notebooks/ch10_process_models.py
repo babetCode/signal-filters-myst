@@ -60,11 +60,11 @@ def display_settings(dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Introduction](introduction.md): [the bulking example](#intro-sec-alpha-beta-filter), [the prediction](#intro-sec-a-recursive-average) $\hat x_k^-$, and [the alpha-beta filter](#intro-sec-beta-weighting-term).
+    - [Introduction](introduction.md): [the bulking example](#intro-sec-alpha-beta-filter), the {term}`prediction` $\hat x_k^-$, and [the alpha-beta filter](#intro-sec-beta-weighting-term).
     - [Chapter 2](ch2_axioms_of_set_theory.md): [proof by induction](#ch2-thm-induction).
     - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), $\operatorname{Var}(aX + b) = a^2\operatorname{Var}(X)$, [the variance of a sum](#ch6-sec-variance-of-sums), and the fact that [independent random variables are uncorrelated](#ch6-thm-independent-implies-uncorrelated).
-    - [Chapter 7](ch7_optimal_alpha.md): [the estimation error](#ch7-sec-setting-up-the-problem) $e_k = \hat x_k - x_k$ and [the optimal gain](#ch7-thm-optimal-gain) $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
-    - [Chapter 9](ch9_noise_levels.md): [process noise](#ch9-sec-process-noise), [the random-walk model](#ch9-sec-process-noise), [white noise](#ch9-sec-process-noise), [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), [the innovation variance](#ch9-sec-innovations) $S_k = P_k^- + R$, the fact that [innovations are uncorrelated over time](#ch9-thm-properties-of-the-innovations), and [the normalized innovation squared](#ch9-sec-checking-the-noise-levels).
+    - [Chapter 7](ch7_optimal_alpha.md): the {term}`estimation error` $e_k = \hat x_k - x_k$ and the {term}`optimal gain` $K_k = P_k^-/(P_k^- + R)$ with $P_k = (1 - K_k)P_k^-$.
+    - [Chapter 9](ch9_noise_levels.md): [process noise](#ch9-sec-process-noise), [the random-walk model](#ch9-sec-process-noise), {term}`white noise`, [the scalar Kalman filter](#ch9-sec-the-scalar-kalman-filter), the {term}`innovation variance` $S_k = P_k^- + R$, the fact that [innovations are uncorrelated over time](#ch9-thm-properties-of-the-innovations), and the {term}`normalized innovation squared`.
     - [Appendix C: Derivatives](#appc-sec-derivatives), [Appendix C: The Mean Value Theorem and Extrema](#appc-sec-the-mean-value-theorem-and-extrema), [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem), [Appendix C: Exponential and Logarithm](#appc-sec-exponential-and-logarithm), and [Appendix C: Linear Differential Equations](#appc-sec-linear-differential-equations): only for the section on continuous-time models.
     ///
     """)
@@ -302,7 +302,7 @@ def _(mo):
         attrs: {class: proof}
     1. Let $P^* := Q/(1 - a^2)$, which satisfies $P^* = a^2 P^* + Q$. Subtracting, $P_k - P^* = a^2(P_{k-1} - P^*)$, so by induction $P_k - P^* = a^{2k}(P_0 - P^*) \to 0$ because $0 \le a^2 < 1$ ([Appendix C: Sequences and Limits](#appc-sec-sequences-and-limits)).
     2. With $a^2 = 1$ the recursion reads $P_k = P_{k-1} + Q$; induct.
-    3. The recursion $P_k = a^2 P_{k-1} + Q$ has the form of the lemma above (with $a^2$ in place of $a$ and $Q$ in place of $b u_j + w_j$), so $P_k = a^{2k}P_0 + \sum_{j=1}^{k} a^{2(k-j)} Q$. Every term is nonnegative, and the $j = 1$ term is $a^{2(k-1)}Q$. $\blacksquare$
+    3. The recursion $P_k = a^2 P_{k-1} + Q$ has the form of the [Solution of a Linear Model lemma](#ch10-lem-solution-of-a-linear-model) (with $a^2$ in place of $a$ and $Q$ in place of $b u_j + w_j$), so $P_k = a^{2k}P_0 + \sum_{j=1}^{k} a^{2(k-j)} Q$. Every term is nonnegative, and the $j = 1$ term is $a^{2(k-1)}Q$. $\blacksquare$
     ///
 
     In Chapter 9's random walk ($a = 1$) the prediction variance grows by $Q$ every day without a weigh-in. A model with $|a| < 1$ is pulled back toward an equilibrium, so its prediction uncertainty levels off instead, *provided the model is right*.
@@ -671,7 +671,7 @@ def _(mo):
     Given a continuous-time process model and a sample period $\Delta t > 0$, a *discretization* is a discrete-time process model whose state $x_k$ is meant to represent the continuous-time state at the sample times $t_k := t_0 + k\,\Delta t$. A discretization is *exact* if $x_k = x(t_k)$ for every $k$ (under stated assumptions about the input between samples); otherwise it is an approximation, and its error $x_k - x(t_k)$ must be analyzed.
     ///
 
-    The daily bookkeeping we did above, which uses the weight at the *start* of each day for the whole day, is one discretization. The next theorem gives the exact one.
+    The daily bookkeeping we did above, which uses the weight at the *start* of each day for the whole day, is one discretization. The [Exact Discretization theorem](#ch10-thm-exact-discretization) below gives the exact one.
 
     /// admonition | 📐 **Theorem (Exact Discretization)**
         attrs: {class: theorem, id: ch10-thm-exact-discretization}

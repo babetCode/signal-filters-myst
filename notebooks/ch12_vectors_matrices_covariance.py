@@ -60,12 +60,12 @@ def display_settings(Path, dedent, mo, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 4](ch4_probability_spaces.md): [almost surely](#ch4-sec-almost-surely), and [continuity of probability from below](#ch4-thm-continuity-from-below) (one lemma only).
-    - [Chapter 5](ch5_random_variables.md): [random variables](#ch5-sec-definition), [joint and marginal densities](#ch5-sec-joint-distributions), [independence as factorization of the joint density](#ch5-thm-factorization-criteria), and [the normal distribution](#ch5-sec-the-uniform-and-normal-distributions).
-    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), [variance](#ch6-sec-variance-and-standard-deviation), [covariance](#ch6-sec-covariance-and-correlation), [the correlation coefficient](#ch6-sec-covariance-and-correlation), and [Chebyshev's inequality](#ch6-thm-chebyshevs-inequality).
+    - [Chapter 4](ch4_probability_spaces.md): {term}`almost surely`, and [continuity of probability from below](#ch4-thm-continuity-from-below) (one lemma only).
+    - [Chapter 5](ch5_random_variables.md): {term}`random variables <random variable>`, [joint and marginal densities](#ch5-sec-joint-distributions), [independence as factorization of the joint density](#ch5-thm-factorization-criteria), and the {term}`normal distribution`.
+    - [Chapter 6](ch6_expectation_and_variance.md): [linearity of expectation](#ch6-thm-linearity-and-positivity-of-expectation), {term}`variance`, {term}`covariance`, the {term}`correlation coefficient`, and [Chebyshev's inequality](#ch6-thm-chebyshevs-inequality).
     - [Chapter 7](ch7_optimal_alpha.md) and [Chapter 11](ch11_measurement_functions.md): the optimal gains $P^-/(P^- + R)$ and $P^-h/(h^2P^- + R)$, and [the tare-offset example](#ch11-sec-two-unknowns-one-reading).
-    - [Chapter 8](ch8_bayesian_view.md): [conditional densities](#ch8-sec-conditional-densities) and [the minimum mean squared error estimator](#ch8-thm-the-posterior-mean-is-the-mmse-estimator).
-    - [Chapter 9](ch9_noise_levels.md): [the chi-squared distribution](#ch9-sec-checking-the-noise-levels) and [the normalized innovation squared](#ch9-sec-checking-the-noise-levels).
+    - [Chapter 8](ch8_bayesian_view.md): {term}`conditional densities <conditional density>` and the {term}`minimum mean squared error estimator`.
+    - [Chapter 9](ch9_noise_levels.md): the {term}`chi-squared distribution` and the {term}`normalized innovation squared`.
     - [Appendix C: Multiple Integrals](#appc-sec-multiple-integrals): [iterated integrals](#appc-thm-tonelli-and-fubini), [the change-of-variables formula](#appc-thm-change-of-variables), and [polar coordinates](#appc-cor-polar-coordinates).
     - [Appendix D: Linear Algebra](appendix_d_linear_algebra.md): the sections listed in [the toolkit below](#ch12-sec-notation-and-linear-algebra-toolkit).
     ///
@@ -215,7 +215,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    $\operatorname{Cov}(\mathbf x)$ is positive semidefinite, so it is positive definite iff $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a \neq 0$ for every $\mathbf a \neq \mathbf 0$. By the theorem above and the lemma, $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a = \operatorname{Var}(\mathbf a^\top\mathbf x) = 0$ iff $\mathbf a^\top\mathbf x$ is almost surely constant. $\blacksquare$
+    $\operatorname{Cov}(\mathbf x)$ is positive semidefinite, so it is positive definite iff $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a \neq 0$ for every $\mathbf a \neq \mathbf 0$. By the [Covariance Matrices Are Symmetric and Positive Semidefinite theorem](#ch12-thm-covariance-matrices-are-symmetric-and-positive-semidefinite) and the [Zero Variance lemma](#ch12-lem-zero-variance), $\mathbf a^\top\operatorname{Cov}(\mathbf x)\,\mathbf a = \operatorname{Var}(\mathbf a^\top\mathbf x) = 0$ iff $\mathbf a^\top\mathbf x$ is almost surely constant. $\blacksquare$
     ///
 
     For example, if $x$ is a weight, $c$ an offset, and $y = x + c$ a noise-free reading, then $[1, 1, -1]\,[x, c, y]^\top = 0$ always, so $\operatorname{Cov}([x, c, y]^\top)$ is singular. Measurement noise prevents this for a state and its measurement. For two components the condition is easy to read off.
@@ -358,7 +358,7 @@ def _(mo):
     2. For $\mathbf x$ from part 1, the affine-transformation theorem gives mean $\mathbf L\mathbf 0 + \boldsymbol\mu = \boldsymbol\mu$ and covariance $\mathbf L\mathbf I\mathbf L^\top = \boldsymbol\Sigma$. Means and covariances are computed from the density alone ([Chapter 6](#ch6-thm-lotus)), so every random vector with this density has the same mean and covariance. $\blacksquare$
     ///
 
-    Part 1 is also how simulations draw samples from $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$: draw independent standard normals and compute $\mathbf L\mathbf y + \boldsymbol\mu$ with `np.linalg.cholesky`. The next lemma lets us recognize a multivariate normal density from the shape of its exponent alone, without computing determinants.
+    Part 1 is also how simulations draw samples from $\mathcal N(\boldsymbol\mu, \boldsymbol\Sigma)$: draw independent standard normals and compute $\mathbf L\mathbf y + \boldsymbol\mu$ with `np.linalg.cholesky`. The [Normalization lemma](#ch12-lem-normalization) below lets us recognize a multivariate normal density from the shape of its exponent alone, without computing determinants.
 
     /// admonition | 📐 **Lemma (Normalization)**
         attrs: {class: lemma, id: ch12-lem-normalization}
@@ -614,7 +614,7 @@ def _(mo):
     $$\mathbf T\boldsymbol\Sigma = \begin{bmatrix}\boldsymbol\Sigma_{xx} - \mathbf G\boldsymbol\Sigma_{zx} & \boldsymbol\Sigma_{xz} - \mathbf G\boldsymbol\Sigma_{zz}\\ \boldsymbol\Sigma_{zx} & \boldsymbol\Sigma_{zz}\end{bmatrix} = \begin{bmatrix}\boldsymbol\Sigma_{x\mid z} & \mathbf 0\\ \boldsymbol\Sigma_{zx} & \boldsymbol\Sigma_{zz}\end{bmatrix}.$$
     Since $\boldsymbol\Sigma_{zz}^{-1}$ is symmetric, $\mathbf G^\top = \boldsymbol\Sigma_{zz}^{-1}\boldsymbol\Sigma_{zx}$, so $\boldsymbol\Sigma_{zz}\mathbf G^\top = \boldsymbol\Sigma_{zx}$. Multiplying on the right by $\mathbf T^\top = \begin{bmatrix}\mathbf I & \mathbf 0\\ -\mathbf G^\top & \mathbf I\end{bmatrix}$ therefore gives
     $$\mathbf T\boldsymbol\Sigma\mathbf T^\top = \begin{bmatrix}\boldsymbol\Sigma_{x\mid z} & \mathbf 0\\ \boldsymbol\Sigma_{zx} - \boldsymbol\Sigma_{zz}\mathbf G^\top & \boldsymbol\Sigma_{zz}\end{bmatrix} = \begin{bmatrix}\boldsymbol\Sigma_{x\mid z} & \mathbf 0\\ \mathbf 0 & \boldsymbol\Sigma_{zz}\end{bmatrix} =: \mathbf D.$$
-    $\mathbf T$ is invertible, with $\mathbf T^{-1} = \begin{bmatrix}\mathbf I & \mathbf G\\ \mathbf 0 & \mathbf I\end{bmatrix}$ (multiply to check), so $\mathbf D$ is positive definite by the lemma on positive definite matrices, and so is its block $\boldsymbol\Sigma_{x\mid z}$ (test $\mathbf D$ with vectors $[\mathbf a; \mathbf 0]$).
+    $\mathbf T$ is invertible, with $\mathbf T^{-1} = \begin{bmatrix}\mathbf I & \mathbf G\\ \mathbf 0 & \mathbf I\end{bmatrix}$ (multiply to check), so $\mathbf D$ is positive definite by the [Positive Definite Matrices lemma](#ch12-lem-positive-definite-matrices), and so is its block $\boldsymbol\Sigma_{x\mid z}$ (test $\mathbf D$ with vectors $[\mathbf a; \mathbf 0]$).
 
     3. From $\mathbf T\boldsymbol\Sigma\mathbf T^\top = \mathbf D$ we get $\boldsymbol\Sigma = \mathbf T^{-1}\mathbf D(\mathbf T^\top)^{-1}$ and so $\boldsymbol\Sigma^{-1} = \mathbf T^\top\mathbf D^{-1}\mathbf T$, where $\mathbf D^{-1}$ is block diagonal with blocks $\boldsymbol\Sigma_{x\mid z}^{-1}$ and $\boldsymbol\Sigma_{zz}^{-1}$. With $\mathbf d := [\mathbf d_x; \mathbf d_z]$, $\mathbf d^\top\boldsymbol\Sigma^{-1}\mathbf d = (\mathbf T\mathbf d)^\top\mathbf D^{-1}(\mathbf T\mathbf d)$ and $\mathbf T\mathbf d = [\mathbf d_x - \mathbf G\mathbf d_z;\ \mathbf d_z]$. Expanding block by block gives the claim. $\blacksquare$
     ///
@@ -629,7 +629,7 @@ def _(mo):
     mo.md(r"""
     Throughout, write $\mathbf d_x := \mathbf x - \boldsymbol\mu_x$, $\mathbf d_z := \mathbf z - \boldsymbol\mu_z$, and
     $$\mathbf m(\mathbf z) := \boldsymbol\mu_x + \mathbf G(\mathbf z - \boldsymbol\mu_z), \qquad \kappa_{x\mid z} := (2\pi)^{-n/2}\big(\det\boldsymbol\Sigma_{x\mid z}\big)^{-1/2}.$$
-    By the lemma, $\mathbf d_x - \mathbf G\mathbf d_z = \mathbf x - \mathbf m(\mathbf z)$, so the joint density factors as
+    By the [Completing the Square with a Schur Complement lemma](#ch12-lem-completing-the-square-with-a-schur-complement), $\mathbf d_x - \mathbf G\mathbf d_z = \mathbf x - \mathbf m(\mathbf z)$, so the joint density factors as
     $$f(\mathbf x, \mathbf z) = \kappa\,\exp\Big(-\tfrac12\,\mathbf d_z^\top\boldsymbol\Sigma_{zz}^{-1}\mathbf d_z\Big)\,\exp\Big(-\tfrac12\big(\mathbf x - \mathbf m(\mathbf z)\big)^\top\boldsymbol\Sigma_{x\mid z}^{-1}\big(\mathbf x - \mathbf m(\mathbf z)\big)\Big), \qquad (\ast)$$
     where $\kappa$ is the constant of the joint density.
 

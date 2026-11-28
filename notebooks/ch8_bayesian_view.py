@@ -185,7 +185,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    In filtering we rarely write down a joint density directly. Instead we specify how the measurement is produced, $z = x + v$, and the next lemma turns that into the ingredients of Bayes' theorem.
+    In filtering we rarely write down a joint density directly. Instead we specify how the measurement is produced, $z = x + v$, and the [Additive Noise lemma](#ch8-lem-additive-noise) below turns that into the ingredients of Bayes' theorem.
 
     /// admonition | 📐 **Lemma (Additive Noise)**
         attrs: {class: lemma, id: ch8-lem-additive-noise}

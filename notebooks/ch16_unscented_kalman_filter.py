@@ -79,11 +79,11 @@ def display_settings(Path, dedent, mo, np, plt):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 8](ch8_bayesian_view.md): [the Bayes filter](#ch8-sec-the-bayes-filter), [likelihoods](#ch8-sec-prior-likelihood-posterior-and-evidence), and [posteriors](#ch8-sec-prior-likelihood-posterior-and-evidence) (for particle filters).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [covariance matrices](#ch12-sec-covariance-matrices), [multivariate normal distributions](#ch12-sec-the-multivariate-normal-distribution), and [confidence ellipses](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
+    - [Chapter 8](ch8_bayesian_view.md): the {term}`Bayes filter`, {term}`likelihoods <likelihood>`, and {term}`posteriors <posterior>` (for particle filters).
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): [covariance matrices](#ch12-sec-covariance-matrices), {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
     - [Chapter 13](ch13_kalman_filter.md): [the Kalman filter](#ch13-sec-the-algorithm), [the Covariance Rules](#ch13-lem-covariance-rules), and [the Gaussian-conditioning form of the update](#ch13-thm-the-update-is-gaussian-conditioning).
     - [Chapter 14](ch14_kalman_filters_in_practice.md): [NEES consistency tests](#ch14-sec-consistency-tests).
-    - [Chapter 15](ch15_extended_kalman_filter.md): [nonlinear systems](#ch15-sec-nonlinear-systems), [linearization](#ch15-sec-linearization), [the extended Kalman filter](#ch15-sec-the-extended-kalman-filter), and [the pendulum example](#ch15-sec-example-tracking-a-pendulum), including [the Mean Error of the Tangent Line lemma](#ch15-lem-mean-error-of-the-tangent-line).
+    - [Chapter 15](ch15_extended_kalman_filter.md): {term}`nonlinear systems <nonlinear system>`, {term}`linearization`, the {term}`extended Kalman filter`, and [the pendulum example](#ch15-sec-example-tracking-a-pendulum), including [the Mean Error of the Tangent Line lemma](#ch15-lem-mean-error-of-the-tangent-line).
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
     - [Appendix D: Trace](#appd-sec-trace), [Appendix D: Symmetric and Positive Definite Matrices](#appd-sec-symmetric-and-positive-definite-matrices), and [Appendix D: Cholesky Decomposition](#appd-sec-cholesky-decomposition).
     ///

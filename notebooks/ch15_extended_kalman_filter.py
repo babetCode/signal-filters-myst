@@ -73,13 +73,13 @@ def _(mo):
     /// important | 🔗 **Prerequisites**
     - [Chapter 5](ch5_random_variables.md): [the distribution of](#ch5-cor-affine-maps-of-normal-and-uniform-random-variables) $aX + b$ when $X$ is normal.
     - [Chapter 6](ch6_expectation_and_variance.md): [linearity and monotonicity of expectation](#ch6-thm-linearity-and-positivity-of-expectation); [the law of large numbers](#ch6-thm-weak-law-of-large-numbers).
-    - [Chapter 10](ch10_process_models.md): [process models](#ch10-sec-linear-process-models) and [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
-    - [Chapter 11](ch11_measurement_functions.md): [measurement functions](#ch11-sec-from-pounds-to-counts).
-    - [Chapter 12](ch12_vectors_matrices_covariance.md): [mean vectors](#ch12-sec-random-vectors-and-mean-vectors), [covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, [multivariate normal distributions](#ch12-sec-the-multivariate-normal-distribution), and [confidence ellipses](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
-    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's [predict and update equations](#ch13-sec-the-algorithm), and [the Joseph form](#ch13-sec-update).
-    - [Chapter 14](ch14_kalman_filters_in_practice.md): [the continuous white-noise acceleration model](#ch14-sec-continuous-white-noise-acceleration) for $\mathbf Q$, [multi-rate operation](#ch14-sec-missing-measurements-and-multi-rate-data), [NEES consistency tests](#ch14-sec-consistency-tests), and [filter divergence](#ch14-sec-filter-divergence).
+    - [Chapter 10](ch10_process_models.md): {term}`process models <process model>` and [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
+    - [Chapter 11](ch11_measurement_functions.md): {term}`measurement functions <measurement function>`.
+    - [Chapter 12](ch12_vectors_matrices_covariance.md): {term}`mean vectors <mean vector>`, [covariance matrices](#ch12-sec-covariance-matrices), $\operatorname{Cov}(\mathbf A\mathbf x + \mathbf b) = \mathbf A\boldsymbol\Sigma\mathbf A^\top$, {term}`multivariate normal distributions <multivariate normal distribution>`, and {term}`confidence ellipses <confidence ellipse>`.
+    - [Chapter 13](ch13_kalman_filter.md): the Kalman filter's [predict and update equations](#ch13-sec-the-algorithm), and the {term}`Joseph form`.
+    - [Chapter 14](ch14_kalman_filters_in_practice.md): [the continuous white-noise acceleration model](#ch14-sec-continuous-white-noise-acceleration) for $\mathbf Q$, [multi-rate operation](#ch14-sec-missing-measurements-and-multi-rate-data), [NEES consistency tests](#ch14-sec-consistency-tests), and {term}`filter divergence`.
     - [Appendix C: Taylor's Theorem](#appc-sec-taylors-theorem): [the Lagrange form of the remainder](#appc-thm-taylors-theorem-with-lagrange-remainder).
-    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): [partial derivatives](#appc-sec-partial-derivatives-gradients-and-jacobians), [the Jacobian](#appc-sec-partial-derivatives-gradients-and-jacobians), [the chain rule](#appc-thm-chain-rule-in-several-variables), and [first-order Taylor approximation](#appc-thm-first-order-taylor-approximation).
+    - [Appendix C: Functions of Several Variables](#appc-sec-functions-of-several-variables): {term}`partial derivatives <partial derivative>`, the {term}`Jacobian`, [the chain rule](#appc-thm-chain-rule-in-several-variables), and [first-order Taylor approximation](#appc-thm-first-order-taylor-approximation).
     ///
     """)
     return
@@ -326,7 +326,7 @@ def _(mo):
     where $\mathbf J_\phi(\mathbf a)$ is the {term}`Jacobian` of $\phi$ at $\mathbf a$. To *linearize* $\phi$ at $\mathbf a$ is to replace $\phi$ by this function.
     ///
 
-    For $n = m = 1$ the linearization is the tangent line of the previous section. The next theorem says in what sense it approximates $\phi$.
+    For $n = m = 1$ the linearization is the tangent line of the previous section. The [First-Order Taylor Approximation theorem](#ch15-thm-first-order-taylor-approximation) below says in what sense it approximates $\phi$.
 
     /// admonition | 📐 **Theorem (First-Order Taylor Approximation)**
         attrs: {class: theorem, id: ch15-thm-first-order-taylor-approximation}
@@ -425,7 +425,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    By the Lemma on linearizing an affine function, $\mathbf F_k = \mathbf F$ and $\mathbf H_k = \mathbf H$ for every $k$. Moreover $f(\hat{\mathbf x}_{k-1}, \mathbf u_k) = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $h(\hat{\mathbf x}_k^-) = \mathbf H\hat{\mathbf x}_k^-$. Substituting these into the EKF's equations gives Chapter 13's equations term by term. $\blacksquare$
+    By the [Linearizing an Affine Function lemma](#ch15-lem-linearizing-an-affine-function), $\mathbf F_k = \mathbf F$ and $\mathbf H_k = \mathbf H$ for every $k$. Moreover $f(\hat{\mathbf x}_{k-1}, \mathbf u_k) = \mathbf F\hat{\mathbf x}_{k-1} + \mathbf B\mathbf u_k$ and $h(\hat{\mathbf x}_k^-) = \mathbf H\hat{\mathbf x}_k^-$. Substituting these into the EKF's equations gives Chapter 13's equations term by term. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**

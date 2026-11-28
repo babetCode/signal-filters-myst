@@ -76,8 +76,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     /// important | 🔗 **Prerequisites**
-    - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular [the state-space model](#ch13-sec-the-state-space-model) and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), [the Joseph form](#ch13-sec-update), [the Kalman gain](#ch13-thm-kalman-gain), [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
-    - [Chapter 9](ch9_noise_levels.md): [the normalized innovation squared](#ch9-sec-checking-the-noise-levels), [the chi-squared distribution](#ch9-sec-checking-the-noise-levels), [filter consistency](#ch9-sec-checking-the-noise-levels), and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
+    - [Chapter 13](ch13_kalman_filter.md): the whole chapter, in particular the {term}`state-space model` and [its assumptions](#ch13-sec-assumptions) (A1)–(A6), the {term}`Joseph form`, the {term}`Kalman gain`, [observability](#ch13-sec-observability), and the piecewise-constant acceleration model.
+    - [Chapter 9](ch9_noise_levels.md): the {term}`normalized innovation squared`, the {term}`chi-squared distribution`, {term}`filter consistency`, and what $Q = 0$ [does to the gain](#ch9-thm-no-process-noise).
     - [Chapter 10](ch10_process_models.md): [discretization of continuous-time models](#ch10-sec-continuous-time-models-and-discretization).
     - [Chapter 12](ch12_vectors_matrices_covariance.md): [affine transformations of multivariate normal vectors](#ch12-thm-invertible-affine-maps-preserve-normality); [Mahalanobis distance](#ch12-sec-mahalanobis-distance-and-confidence-ellipses).
     - [Chapter 5](ch5_random_variables.md): [independence](#ch5-sec-independence); [the distribution of a sum of independent random variables](#ch5-sec-sums-of-independent-random-variables).
@@ -488,7 +488,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    Because $\mathbf R^{-1} = \operatorname{diag}(\mathbf R_a^{-1}, \mathbf R_b^{-1})$, block multiplication gives $\mathbf H^\top\mathbf R^{-1}\mathbf H = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf H_b$ and $\mathbf H^\top\mathbf R^{-1}\mathbf z = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf z_b$. By the Lemma, the first update produces $\mathbf P_a$ with $\mathbf P_a^{-1} = (\mathbf P^-)^{-1} + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a$, which is positive definite, and $\mathbf P_a^{-1}\hat{\mathbf x}_a = (\mathbf P^-)^{-1}\hat{\mathbf x}^- + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a$. Applying the Lemma again with $(\hat{\mathbf x}_a, \mathbf P_a)$ as the prediction adds the $b$ terms, so the final $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$ equal those of the single update. These two quantities determine $\mathbf P$ and $\hat{\mathbf x}$. $\blacksquare$
+    Because $\mathbf R^{-1} = \operatorname{diag}(\mathbf R_a^{-1}, \mathbf R_b^{-1})$, block multiplication gives $\mathbf H^\top\mathbf R^{-1}\mathbf H = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf H_b$ and $\mathbf H^\top\mathbf R^{-1}\mathbf z = \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a + \mathbf H_b^\top\mathbf R_b^{-1}\mathbf z_b$. By the [Information Form of the Update lemma](#ch14-lem-information-form-of-the-update), the first update produces $\mathbf P_a$ with $\mathbf P_a^{-1} = (\mathbf P^-)^{-1} + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf H_a$, which is positive definite, and $\mathbf P_a^{-1}\hat{\mathbf x}_a = (\mathbf P^-)^{-1}\hat{\mathbf x}^- + \mathbf H_a^\top\mathbf R_a^{-1}\mathbf z_a$. Applying the Lemma again with $(\hat{\mathbf x}_a, \mathbf P_a)$ as the prediction adds the $b$ terms, so the final $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$ equal those of the single update. These two quantities determine $\mathbf P$ and $\hat{\mathbf x}$. $\blacksquare$
     ///
 
     /// note | 📖 **Definition**
@@ -504,7 +504,7 @@ def _(mo):
 
     /// admonition | ✍️ **Proof**
         attrs: {class: proof}
-    $\operatorname{Cov}(\mathbf L^{-1}\mathbf v) = \mathbf L^{-1}\mathbf L\mathbf L^\top\mathbf L^{-\top} = \mathbf I$. The transformed update has $(\mathbf L^{-1}\mathbf H)^\top(\mathbf L^{-1}\mathbf H) = \mathbf H^\top(\mathbf L\mathbf L^\top)^{-1}\mathbf H = \mathbf H^\top\mathbf R^{-1}\mathbf H$ and $(\mathbf L^{-1}\mathbf H)^\top\mathbf z' = \mathbf H^\top\mathbf R^{-1}\mathbf z$, so by the Lemma it produces the same $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$. $\blacksquare$
+    $\operatorname{Cov}(\mathbf L^{-1}\mathbf v) = \mathbf L^{-1}\mathbf L\mathbf L^\top\mathbf L^{-\top} = \mathbf I$. The transformed update has $(\mathbf L^{-1}\mathbf H)^\top(\mathbf L^{-1}\mathbf H) = \mathbf H^\top(\mathbf L\mathbf L^\top)^{-1}\mathbf H = \mathbf H^\top\mathbf R^{-1}\mathbf H$ and $(\mathbf L^{-1}\mathbf H)^\top\mathbf z' = \mathbf H^\top\mathbf R^{-1}\mathbf z$, so by the [Information Form of the Update lemma](#ch14-lem-information-form-of-the-update) it produces the same $\mathbf P^{-1}$ and $\mathbf P^{-1}\hat{\mathbf x}$. $\blacksquare$
     ///
     """)
     return
