@@ -1,6 +1,6 @@
 # Project Style Guide
 
-This guide is the single reference for writing and revising the book's pages. It is written for the author and for any agent asked to improve a chapter. When this guide and an older document (such as `notebooks-old-drafts/v2_style_guide.md`) disagree, this guide wins.
+This guide is the single reference for writing and revising the book's pages. It is written for the author and for any agent asked to improve a chapter.
 
 Two markers flag conventions that are not fully in place yet:
 

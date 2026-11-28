@@ -45,7 +45,7 @@ def imports():
 
 
 @app.cell(hide_code=True)
-def display_format(dedent, mo):
+def display_settings(dedent, mo):
     # jb: include=false
     mo.latex(dedent(
         r"""\newcommand{\existsin}[2]{\exists #1 \!\!\in\!\! #2\,}

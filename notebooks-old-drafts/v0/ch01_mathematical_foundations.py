@@ -54,7 +54,7 @@ def imports():
 
 
 @app.cell
-def display_format(dedent, mo, plt, schemdraw):
+def display_settings(dedent, mo, plt, schemdraw):
     # jb: include=false
     plt.style.use('default')
     schemdraw.use("svg")
